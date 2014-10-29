@@ -1,0 +1,53 @@
+NCAR laplace_sphere_wk Kernel:
+
+  The NCAR kernel laplace_sphere_wk represents an important derivative operator that is used within 
+the HOMME dynamical core.  We have created a single thread kernel that executes this operator a user 
+selectable number of times.  On KNC hardware we can execute this kernel itmax=1000000 times in approximately 
+0.625 seconds.  For the purposes of KNL simulation it is acceptible to reduce itmax to a much smaller value.
+
+We have supplied two different versions of this kernel which are found in the subdirectories: 
+
+	homme_laplace_sphere_wk 
+	homme_laplace_sphere_wk2
+
+To build these kernels cd into one of the directories and type 'make build' which builds a single threaded 
+executible: kernel_laplace_sphere_wk.exe.  A sample output from a KNC run is seen below.  Note that there is 
+both a timing output as well as a correctness check 'laplace is identical'.  Certain optimizations may introduce 
+a bit level of change of the output laplace. For example a none bit-for-bit difference is illustrated by the 
+following diagnostic output.  
+
+ RMS of difference is   2.330032900491916E-026
+
+Note that because the RMS difference is less then 1.0e-15 this is an acceptible difference. 
+
+I would like to use these two kernels to explore several different questions.  They are:
+
+   (1) Two nearly identical versions of this kernel are provided.  One executes in 0.6255 usec 
+	per call while the other in 0.936 usec per call.  I suspect that this is due to an alignment 
+        issue.  I would like to understand the reason for the difference in execution rates for these 
+	very similar operators and what flags would be necessary to eliminate the performance difference.
+
+    (2) Using the most recent version of the Intel compiler 15.0.0, this kernel will generate incorrect 
+	results if the precise floating-point model is used.  I would like to see if this compiler bug 
+	is also present in the KNL compiler stack.
+
+    (3) I would like to understand if there are additinoal source code transformations or compiler flags 
+        that could improve the performance of these kernels on KNL.
+
+
+ [kernel_laplace_sphere_wk] total time (sec):   0.625525000000000     
+ [kernel_laplace_sphere_wk] time per call (usec):   0.625525000000000     
+ laplace is identical.
+ Reference:  -1.848635016191521E-010 -9.320376757885987E-010
+ -2.591990100895926E-009 -5.561694497401643E-009 -2.190131437054576E-010
+ -9.661873178749041E-010 -2.626139742982232E-009 -5.595844139487948E-009
+ -3.245511949610286E-010 -1.071725369130475E-009 -2.731677794237803E-009
+ -5.701382190743518E-009 -5.556854515600377E-010 -1.302859625729484E-009
+ -2.962812050836811E-009 -5.932516447342528E-009
+ Modified:   -1.848635016191521E-010 -9.320376757885987E-010
+ -2.591990100895926E-009 -5.561694497401643E-009 -2.190131437054576E-010
+ -9.661873178749041E-010 -2.626139742982232E-009 -5.595844139487948E-009
+ -3.245511949610286E-010 -1.071725369130475E-009 -2.731677794237803E-009
+ -5.701382190743518E-009 -5.556854515600377E-010 -1.302859625729484E-009
+ -2.962812050836811E-009 -5.932516447342528E-009
+  
