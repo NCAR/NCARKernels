@@ -4,7 +4,7 @@ FPP = cpp
 FPPFLAGS = -I. -traditional -P
 FC = ifort
 #BASE = -mmic -vec-report=6 -fp-model fast -ftz -traceback
-BASE = -vec-report=6 -ftz -fp-model fast -traceback
+BASE = -qopt-report=5 -ftz -fp-model fast -traceback
 
 # -02
 #FFLAGS = -O2 $(BASE)
