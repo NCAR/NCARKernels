@@ -22,6 +22,7 @@
       integer :: seed1(n),seed2(n),seed3(n), seed4(n)
       integer*8 c1,c2,ck1,ck2,cr,cm
       real*8 dt,dtk
+!dir$ attributes align : 64 :: r,rk
  
       s = 0.0
       a = 0.0
