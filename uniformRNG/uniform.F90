@@ -23,17 +23,18 @@
       integer*8 c1,c2,ck1,ck2,cr,cm
       real*8 dt,dtk
 !dir$ attributes align : 64 :: r,rk
+!dir$ attributes align : 64 :: seed1,seed2,seed3,seed4
  
       s = 0.0
       a = 0.0
       b = 1.0
 !      sigma  = 2.0
-!      brng=VSL_BRNG_MT19937
-      brng=VSL_BRNG_SMT19937
+!      brng=VSL_BRNG_SMT19937
+      brng=VSL_BRNG_SFMT19937
 !      method=VSL_RNG_METHOD_GAUSSIAN_ICDF
       method=VSL_RNG_METHOD_UNIFORM_STD
 !      method=VSL_RNG_METHOD_UNIFORM_STD_ACCURATE
-      seed=777
+      seed=7776578
       do i=1,n
          seed1(i) = seed*1+i
          seed2(i) = seed*2+i
