@@ -1,0 +1,22 @@
+pnetcdf(6):ERROR:105: Unable to locate a modulefile for 'pnetcdf/1.2.0'
+pnetcdf(6):ERROR:105: Unable to locate a modulefile for 'pnetcdf/1.2.0'
+export: Command not found.
+export: Command not found.
+export: Command not found.
+forrtl: error (78): process killed (SIGTERM)
+Image              PC                Routine            Line        Source             
+PSrad.exe          00000000007AF421  Unknown               Unknown  Unknown
+PSrad.exe          00000000007AD7B7  Unknown               Unknown  Unknown
+PSrad.exe          000000000074C1B4  Unknown               Unknown  Unknown
+PSrad.exe          000000000074BFC6  Unknown               Unknown  Unknown
+PSrad.exe          00000000006F5722  Unknown               Unknown  Unknown
+PSrad.exe          00000000006F91B9  Unknown               Unknown  Unknown
+libpthread.so.0    00002B886E7144D0  Unknown               Unknown  Unknown
+PSrad.exe          0000000000448198  mo_lrtm_gas_optic         819  mo_lrtm_gas_optics.f90
+PSrad.exe          000000000043CA48  mo_lrtm_gas_optic         277  mo_lrtm_gas_optics.f90
+PSrad.exe          000000000042E11D  mo_lrtm_driver_mp         323  mo_lrtm_driver.f90
+PSrad.exe          00000000004B6934  mo_psrad_interfac         434  mo_psrad_interface.f90
+PSrad.exe          0000000000578130  MAIN__                    623  radiation_prog.f90
+PSrad.exe          0000000000403BF1  Unknown               Unknown  Unknown
+libc.so.6          00002B886EE9B644  Unknown               Unknown  Unknown
+PSrad.exe          0000000000403B29  Unknown               Unknown  Unknown

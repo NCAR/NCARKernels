@@ -1,0 +1,10 @@
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+ Reading namelists from namelist
+ calculating zenith angles for Julian day:   182.000000000000     
+  0.000000000000000E+000 oclock
+ -------------------------------------------
+ ------------setting done!------------------
+ -------------------------------------------
+ calculating radiation for timestep:            1  from:            1
+Terminated

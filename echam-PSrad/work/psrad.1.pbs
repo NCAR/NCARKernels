@@ -1,0 +1,15 @@
+#PBS -q regular
+#PBS -l nodes=1
+#PBS -l walltime=02:00:00
+#PBS -N my_job
+#PBS -e my_job.$PBS_JOBID.err
+#PBS -o my_job.$PBS_JOBID.out
+#PBS -V
+
+cd $PBS_O_WORKDIR
+export OMP_NUM_THREADS=16
+export KMP_AFFINITY=balanced
+export I_MPI_PIN_MODE=mpd
+get_micfile
+mpirun.mic -n 1 -hostfile micfile.$PBS_JOBID -ppn 1 ./PSrad.exe < namelist
+

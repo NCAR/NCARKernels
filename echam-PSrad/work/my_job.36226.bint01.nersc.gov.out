@@ -1,0 +1,27 @@
+Warning: no access to tty (Bad file descriptor).
+Thus no job control in this shell.
+ Reading namelists from namelist
+ kproma, nlon          16          12
+ calculating zenith angles for Julian day:   182.000000000000     
+  0.000000000000000E+000 oclock
+ -------------------------------------------
+ ------------setting done!------------------
+ -------------------------------------------
+ calculating radiation for timestep:            1  from:            1
+ after call to psrad_interface
+ [psrad_interface] total time(sec):    344.267674000000     
+ [psrad_interface] time per call (usec):    298843.467013889     
+ Done with computation
+ Shortwave flux ranges: 
+ fswdn  0.000000000000000E+000  0.000000000000000E+000
+ fswup  0.000000000000000E+000  0.000000000000000E+000
+ fswdnc  0.000000000000000E+000  0.000000000000000E+000
+ fswupc  0.000000000000000E+000  0.000000000000000E+000
+ Boundary means : 
+ fswdn  0.000000000000000E+000  0.000000000000000E+000
+ fswup  0.000000000000000E+000  0.000000000000000E+000
+ fswdnc  0.000000000000000E+000  0.000000000000000E+000
+ fswupc  0.000000000000000E+000  0.000000000000000E+000
+ Boundary means, net : 
+ fswdn  0.000000000000000E+000  0.000000000000000E+000
+ fswdnc  0.000000000000000E+000  0.000000000000000E+000

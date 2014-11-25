@@ -1,0 +1,18 @@
+&radctl 
+ ih2o=1 
+ ico2=2 
+ ich4=2 
+ io3=1 
+ io2=2 
+ in2o=2 
+ icfc=0 
+ iaero=3 
+ lw_spec_samp=1, sw_spec_samp=1 
+ l_do_sep_clear_sky=T
+/ 
+&sa_rad_ctl
+ outDir = "../output/6.2",
+ day=1, nday=182.,
+ kproma=16
+ infile ='Sample-Data.nc' 
+/

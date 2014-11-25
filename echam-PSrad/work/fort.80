@@ -1,0 +1,7 @@
+ isolrad = 0 --> standard rrtm solar constant
+ ldiur =.TRUE.  --> diurnal cycle on
+ instantaneous forcing diagnostic:
+ solar radiation  F thermal radiation  F
+ nmonth=0 --> annual cycle on
+ LW sampling strategy:  1 using 140 g-points per time step
+ SW sampling strategy:  1 using 112 g-points per time step
