@@ -1,0 +1,17 @@
+* kernel and supporting files
+  - The kernel, micro_mg_tend subroutine, is located at line # 242 of micro_mg2_0.F90
+  - program statement is in kernel_micro_mg_tend.F90
+  - The other files are a subset of CESM source files that only contain information to run the micro_mg_tend subroutine
+ 
+* compilation and execution
+  - Place all files in a directory
+  - Adjust FC and FFLAGS macros in Makefile to use a particular compiler. Default compiler is ifort
+  - run "make"
+
+* verification
+  - "make" command will run kernel and print verification output on screen
+  - In general, verification is considered as pass if it shows "IDENTICAL" or "Normalized RMS of difference" is around machine-precision
+  - One data files are provided for verification. The data files are generated from running PSrad which is compiled by Intel 15.0 compiler with "-O3 -xHost" compiler flags
+
+* performance measurement
+  - No performance measurment is provided within kernel.
