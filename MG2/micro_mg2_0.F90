@@ -99,6 +99,10 @@ use wv_sat_methods, only: &
      qsat_water => wv_sat_qsat_water, &
      qsat_ice => wv_sat_qsat_ice
 
+#if defined CPRPGI
+use shr_spfn_mod, only: gamma => shr_spfn_gamma
+#endif
+
 ! Parameters from the utilities module.
 ! TODO:
 ! leave only names used in kernel and subsequent names

@@ -41,6 +41,10 @@ module micro_mg_utils
 !--------------------------------------------------------------------------
 
 use kgen_utils, only : read_var
+   
+#if defined CPRPGI
+   use shr_spfn_mod, only : gamma => shr_spfn_gamma
+#endif
 
 implicit none
 private

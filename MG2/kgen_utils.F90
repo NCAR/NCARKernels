@@ -102,7 +102,7 @@
     character(*), intent(in) :: varname
     logical, intent(in) :: var, ref_var
 
-    IF ( var == ref_var ) THEN
+    IF ( var .eqv. ref_var ) THEN
         WRITE(*,*) trim(adjustl(varname)), " is IDENTICAL( ", var, " )."
     ELSE
         WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
