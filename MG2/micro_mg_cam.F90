@@ -190,6 +190,8 @@
 
     type(check_t) :: Status
     real(r8) :: tolerance
+!dir$ attributes align:64 :: packed_t, packed_q, packed_qc, packed_qi, packed_nc, packed_ni 
+!dir$ attributes align:64 :: packed_qr, packed_qs, packed_nr, packed_ns, packed_relvar
 
 
     tolerance = 5.0e-11

@@ -696,6 +696,9 @@ subroutine micro_mg_tend ( &
 
   ! number of sub-steps for loops over "n" (for sedimentation)
   integer nstep
+!dir$ assume_aligned qcn:64
+
+!dir$ attributes align: 64:: qc
 
   !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
@@ -720,7 +723,9 @@ subroutine micro_mg_tend ( &
   deltat = deltatin
 
   ! Copies of input concentrations that may be changed internally.
+!dir$ vector aligned 
   qc = qcn
+
   nc = ncn
   qi = qin
   ni = nin
