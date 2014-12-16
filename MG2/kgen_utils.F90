@@ -96,9 +96,9 @@
        write (*,*) TRIM(kname),' KGENPrtCheck: Number of warnings detected: ',check%numWarning
        write (*,*) TRIM(kname),' KGENPrtCheck: Number of fatal errors detected: ', check%numFatal
        if (check%numFatal> 0) then 
-            write(*,*) TRIM(kname),' KGENPrtCheck: correctness FAILED'
+            write(*,*) TRIM(kname),' KGENPrtCheck: verification FAILED'
        else
-            write(*,*) TRIM(kname),' KGENPrtCheck: correctness PASSED'
+            write(*,*) TRIM(kname),' KGENPrtCheck: verification PASSED'
        endif
     
     end subroutine KgenPrtCheck
