@@ -46,6 +46,7 @@
 
     real(r8),                    intent(in)    :: dtime
     integer, intent(in) :: kgen_unit
+    integer :: omp_get_num_threads
 
     ! Packed versions of inputs.
     real(r8), allocatable :: packed_t(:,:)
@@ -84,6 +85,7 @@
     real(r8), allocatable :: packed_liqcldf(:,:)
     real(r8), allocatable :: packed_icecldf(:,:)
 
+   
 
     ! Packed versions of outputs.
     real(r8), allocatable, target :: packed_rate1ord_cw2pr_st(:,:), ref_packed_rate1ord_cw2pr_st(:,:)
@@ -184,18 +186,20 @@
 
     integer*8 c1,c2,cr,cm
     real*8 dt
-    integer :: itmax=1000
-    integer :: i
+    integer :: itmax
+    integer :: it, nThreads
+    character(len=40) :: FMT,FMT2
+   
     character(len=80), parameter :: kname='[MG2]'
 
-    type(check_t) :: Status
+    type(check_t) :: status, vstatus
     real(r8) :: tolerance
 !dir$ attributes align:64 :: packed_t, packed_q, packed_qc, packed_qi, packed_nc, packed_ni 
 !dir$ attributes align:64 :: packed_qr, packed_qs, packed_nr, packed_ns, packed_relvar
 
 
-    tolerance = 5.0e-11
-    call KGENinitcheck(Status,tolerance)
+    tolerance = 6.0e-11
+    call KGENinitcheck(vstatus,tolerance)
 
     ! READ local variables
     READ(UNIT=kgen_unit) nlev
@@ -397,7 +401,7 @@
     call read_var(ref_reff_rain_dum, kgen_unit)
     call read_var(ref_reff_snow_dum, kgen_unit)
 
-    call KGENApplyPert(packed_t)
+    ! call KGENApplyPert(packed_t)
     ! RUN KERNEL
     call micro_mg_tend2_0( &
          mgncol,         nlev,           dtime/num_steps,&
@@ -452,92 +456,122 @@
          packed_frzimm,  packed_frzcnt,  packed_frzdep   )
 
     ! verify kernel output
-    call verify_var("packed_rate1ord_cw2pr_st", status, packed_rate1ord_cw2pr_st, ref_packed_rate1ord_cw2pr_st)
-    call verify_var("packed_tlat", status, packed_tlat, ref_packed_tlat)
-    call verify_var("packed_qvlat", status, packed_qvlat, ref_packed_qvlat)
-    call verify_var("packed_qctend", status, packed_qctend, ref_packed_qctend)
-    call verify_var("packed_qitend", status, packed_qitend, ref_packed_qitend)
-    call verify_var("packed_nctend", status, packed_nctend, ref_packed_nctend)
-    call verify_var("packed_nitend", status, packed_nitend, ref_packed_nitend)
-    call verify_var("packed_qrtend", status, packed_qrtend, ref_packed_qrtend)
-    call verify_var("packed_qstend", status, packed_qstend, ref_packed_qstend)
-    call verify_var("packed_nrtend", status, packed_nrtend, ref_packed_nrtend)
-    call verify_var("packed_nstend", status, packed_nstend, ref_packed_nstend)
-    call verify_var("packed_prect",status,  packed_prect, ref_packed_prect)
-    call verify_var("packed_preci",status,  packed_preci, ref_packed_preci)
-    call verify_var("packed_nevapr", status, packed_nevapr, ref_packed_nevapr)
-    call verify_var("packed_evapsnow", status, packed_evapsnow, ref_packed_evapsnow)
-    call verify_var("packed_prain", status, packed_prain, ref_packed_prain)
-    call verify_var("packed_prodsnow", status, packed_prodsnow, ref_packed_prodsnow)
-    call verify_var("packed_cmeout", status, packed_cmeout, ref_packed_cmeout)
-    call verify_var("packed_qsout", status, packed_qsout, ref_packed_qsout)
-    call verify_var("packed_rflx", status, packed_rflx, ref_packed_rflx)
-    call verify_var("packed_sflx", status, packed_sflx, ref_packed_sflx)
-    call verify_var("packed_qrout", status, packed_qrout, ref_packed_qrout)
-    call verify_var("packed_qcsevap", status, packed_qcsevap, ref_packed_qcsevap)
-    call verify_var("packed_qisevap", status, packed_qisevap, ref_packed_qisevap)
-    call verify_var("packed_qvres", status, packed_qvres, ref_packed_qvres)
-    call verify_var("packed_cmei", status, packed_cmei, ref_packed_cmei)
-    call verify_var("packed_vtrmc", status, packed_vtrmc, ref_packed_vtrmc)
-    call verify_var("packed_vtrmi", status, packed_vtrmi, ref_packed_vtrmi)
-    call verify_var("packed_umr", status, packed_umr, ref_packed_umr)
-    call verify_var("packed_ums", status, packed_ums, ref_packed_ums)
-    call verify_var("packed_qcsedten", status, packed_qcsedten, ref_packed_qcsedten)
-    call verify_var("packed_qisedten", status, packed_qisedten, ref_packed_qisedten)
-    call verify_var("packed_pra", status, packed_pra, ref_packed_pra)
-    call verify_var("packed_prc", status, packed_prc, ref_packed_prc)
-    call verify_var("packed_mnuccc", status, packed_mnuccc, ref_packed_mnuccc)
-    call verify_var("packed_mnucct", status, packed_mnucct, ref_packed_mnucct)
-    call verify_var("packed_msacwi", status, packed_msacwi, ref_packed_msacwi)
-    call verify_var("packed_psacws", status, packed_psacws, ref_packed_psacws)
-    call verify_var("packed_bergs", status, packed_bergs, ref_packed_bergs)
-    call verify_var("packed_berg", status, packed_berg, ref_packed_berg)
-    call verify_var("packed_melt", status, packed_melt, ref_packed_melt)
-    call verify_var("packed_homo", status, packed_homo, ref_packed_homo)
-    call verify_var("packed_qcres", status, packed_qcres, ref_packed_qcres)
-    call verify_var("packed_prci", status, packed_prci, ref_packed_prci)
-    call verify_var("packed_prai", status, packed_prai, ref_packed_prai)
-    call verify_var("packed_qires", status, packed_qires, ref_packed_qires)
-    call verify_var("packed_mnuccr", status, packed_mnuccr, ref_packed_mnuccr)
-    call verify_var("packed_pracs", status, packed_pracs, ref_packed_pracs)
-    call verify_var("packed_meltsdt", status, packed_meltsdt, ref_packed_meltsdt)
-    call verify_var("packed_frzrdt", status, packed_frzrdt, ref_packed_frzrdt)
-    call verify_var("packed_mnuccd", status, packed_mnuccd, ref_packed_mnuccd)
-    call verify_var("packed_nrout", status, packed_nrout, ref_packed_nrout)
-    call verify_var("packed_nsout", status, packed_nsout, ref_packed_nsout)
-    call verify_var("packed_refl", status, packed_refl, ref_packed_refl)
-    call verify_var("packed_arefl", status, packed_arefl, ref_packed_arefl)
-    call verify_var("packed_areflz", status, packed_areflz, ref_packed_areflz)
-    call verify_var("packed_frefl", status, packed_frefl, ref_packed_frefl)
-    call verify_var("packed_csrfl", status, packed_csrfl, ref_packed_csrfl)
-    call verify_var("packed_acsrfl", status, packed_acsrfl, ref_packed_acsrfl)
-    call verify_var("packed_fcsrfl", status, packed_fcsrfl, ref_packed_fcsrfl)
-    call verify_var("packed_rercld", status, packed_rercld, ref_packed_rercld)
-    call verify_var("packed_ncai", status, packed_ncai, ref_packed_ncai)
-    call verify_var("packed_ncal", status, packed_ncal, ref_packed_ncal)
-    call verify_var("packed_qrout2", status, packed_qrout2, ref_packed_qrout2)
-    call verify_var("packed_qsout2", status, packed_qsout2, ref_packed_qsout2)
-    call verify_var("packed_nrout2", status, packed_nrout2, ref_packed_nrout2)
-    call verify_var("packed_nsout2", status, packed_nsout2, ref_packed_nsout2)
-    call verify_var("packed_freqs", status, packed_freqs, ref_packed_freqs)
-    call verify_var("packed_freqr", status, packed_freqr, ref_packed_freqr)
-    call verify_var("packed_nfice", status, packed_nfice, ref_packed_nfice)
-    call verify_var("packed_qcrat", status, packed_qcrat, ref_packed_qcrat)
-    call verify_var("packed_rel", status, packed_rel, ref_packed_rel)
-    call verify_var("packed_rei", status, packed_rei, ref_packed_rei)
-    call verify_var("packed_lambdac", status, packed_lambdac, ref_packed_lambdac)
-    call verify_var("packed_mu", status, packed_mu, ref_packed_mu)
-    call verify_var("packed_des", status, packed_des, ref_packed_des)
-    call verify_var("packed_dei", status, packed_dei, ref_packed_dei)
-    call verify_var("rel_fn_dum", status, rel_fn_dum, ref_rel_fn_dum)
-    call verify_var("dsout2_dum", status, dsout2_dum, ref_dsout2_dum)
-    call verify_var("drout_dum", status, drout_dum, ref_drout_dum)
-    call verify_var("reff_rain_dum", status, reff_rain_dum, ref_reff_rain_dum)
-    call verify_var("reff_snow_dum", status, reff_snow_dum, ref_reff_snow_dum)
+    call verify_var("packed_rate1ord_cw2pr_st", vstatus, packed_rate1ord_cw2pr_st, ref_packed_rate1ord_cw2pr_st)
+    call verify_var("packed_tlat", vstatus, packed_tlat, ref_packed_tlat)
+    call verify_var("packed_qvlat", vstatus, packed_qvlat, ref_packed_qvlat)
+    call verify_var("packed_qctend", vstatus, packed_qctend, ref_packed_qctend)
+    call verify_var("packed_qitend", vstatus, packed_qitend, ref_packed_qitend)
+    call verify_var("packed_nctend", vstatus, packed_nctend, ref_packed_nctend)
+    call verify_var("packed_nitend", vstatus, packed_nitend, ref_packed_nitend)
+    call verify_var("packed_qrtend", vstatus, packed_qrtend, ref_packed_qrtend)
+    call verify_var("packed_qstend", vstatus, packed_qstend, ref_packed_qstend)
+    call verify_var("packed_nrtend", vstatus, packed_nrtend, ref_packed_nrtend)
+    call verify_var("packed_nstend", vstatus, packed_nstend, ref_packed_nstend)
+    call verify_var("packed_prect",vstatus,  packed_prect, ref_packed_prect)
+    call verify_var("packed_preci",vstatus,  packed_preci, ref_packed_preci)
+    call verify_var("packed_nevapr", vstatus, packed_nevapr, ref_packed_nevapr)
+    call verify_var("packed_evapsnow", vstatus, packed_evapsnow, ref_packed_evapsnow)
+    call verify_var("packed_prain", vstatus, packed_prain, ref_packed_prain)
+    call verify_var("packed_prodsnow", vstatus, packed_prodsnow, ref_packed_prodsnow)
+    call verify_var("packed_cmeout", vstatus, packed_cmeout, ref_packed_cmeout)
+    call verify_var("packed_qsout", vstatus, packed_qsout, ref_packed_qsout)
+    call verify_var("packed_rflx", vstatus, packed_rflx, ref_packed_rflx)
+    call verify_var("packed_sflx", vstatus, packed_sflx, ref_packed_sflx)
+    call verify_var("packed_qrout", vstatus, packed_qrout, ref_packed_qrout)
+    call verify_var("packed_qcsevap", vstatus, packed_qcsevap, ref_packed_qcsevap)
+    call verify_var("packed_qisevap", vstatus, packed_qisevap, ref_packed_qisevap)
+    call verify_var("packed_qvres", vstatus, packed_qvres, ref_packed_qvres)
+    call verify_var("packed_cmei", vstatus, packed_cmei, ref_packed_cmei)
+    call verify_var("packed_vtrmc", vstatus, packed_vtrmc, ref_packed_vtrmc)
+    call verify_var("packed_vtrmi", vstatus, packed_vtrmi, ref_packed_vtrmi)
+    call verify_var("packed_umr", vstatus, packed_umr, ref_packed_umr)
+    call verify_var("packed_ums", vstatus, packed_ums, ref_packed_ums)
+    call verify_var("packed_qcsedten", vstatus, packed_qcsedten, ref_packed_qcsedten)
+    call verify_var("packed_qisedten", vstatus, packed_qisedten, ref_packed_qisedten)
+    call verify_var("packed_pra", vstatus, packed_pra, ref_packed_pra)
+    call verify_var("packed_prc", vstatus, packed_prc, ref_packed_prc)
+    call verify_var("packed_mnuccc", vstatus, packed_mnuccc, ref_packed_mnuccc)
+    call verify_var("packed_mnucct", vstatus, packed_mnucct, ref_packed_mnucct)
+    call verify_var("packed_msacwi", vstatus, packed_msacwi, ref_packed_msacwi)
+    call verify_var("packed_psacws", vstatus, packed_psacws, ref_packed_psacws)
+    call verify_var("packed_bergs", vstatus, packed_bergs, ref_packed_bergs)
+    call verify_var("packed_berg", vstatus, packed_berg, ref_packed_berg)
+    call verify_var("packed_melt", vstatus, packed_melt, ref_packed_melt)
+    call verify_var("packed_homo", vstatus, packed_homo, ref_packed_homo)
+    call verify_var("packed_qcres", vstatus, packed_qcres, ref_packed_qcres)
+    call verify_var("packed_prci", vstatus, packed_prci, ref_packed_prci)
+    call verify_var("packed_prai", vstatus, packed_prai, ref_packed_prai)
+    call verify_var("packed_qires", vstatus, packed_qires, ref_packed_qires)
+    call verify_var("packed_mnuccr", vstatus, packed_mnuccr, ref_packed_mnuccr)
+    call verify_var("packed_pracs", vstatus, packed_pracs, ref_packed_pracs)
+    call verify_var("packed_meltsdt", vstatus, packed_meltsdt, ref_packed_meltsdt)
+    call verify_var("packed_frzrdt", vstatus, packed_frzrdt, ref_packed_frzrdt)
+    call verify_var("packed_mnuccd", vstatus, packed_mnuccd, ref_packed_mnuccd)
+    call verify_var("packed_nrout", vstatus, packed_nrout, ref_packed_nrout)
+    call verify_var("packed_nsout", vstatus, packed_nsout, ref_packed_nsout)
+    call verify_var("packed_refl", vstatus, packed_refl, ref_packed_refl)
+    call verify_var("packed_arefl", vstatus, packed_arefl, ref_packed_arefl)
+    call verify_var("packed_areflz", vstatus, packed_areflz, ref_packed_areflz)
+    call verify_var("packed_frefl", vstatus, packed_frefl, ref_packed_frefl)
+    call verify_var("packed_csrfl", vstatus, packed_csrfl, ref_packed_csrfl)
+    call verify_var("packed_acsrfl", vstatus, packed_acsrfl, ref_packed_acsrfl)
+    call verify_var("packed_fcsrfl", vstatus, packed_fcsrfl, ref_packed_fcsrfl)
+    call verify_var("packed_rercld", vstatus, packed_rercld, ref_packed_rercld)
+    call verify_var("packed_ncai", vstatus, packed_ncai, ref_packed_ncai)
+    call verify_var("packed_ncal", vstatus, packed_ncal, ref_packed_ncal)
+    call verify_var("packed_qrout2", vstatus, packed_qrout2, ref_packed_qrout2)
+    call verify_var("packed_qsout2", vstatus, packed_qsout2, ref_packed_qsout2)
+    call verify_var("packed_nrout2", vstatus, packed_nrout2, ref_packed_nrout2)
+    call verify_var("packed_nsout2", vstatus, packed_nsout2, ref_packed_nsout2)
+    call verify_var("packed_freqs", vstatus, packed_freqs, ref_packed_freqs)
+    call verify_var("packed_freqr", vstatus, packed_freqr, ref_packed_freqr)
+    call verify_var("packed_nfice", vstatus, packed_nfice, ref_packed_nfice)
+    call verify_var("packed_qcrat", vstatus, packed_qcrat, ref_packed_qcrat)
+    call verify_var("packed_rel", vstatus, packed_rel, ref_packed_rel)
+    call verify_var("packed_rei", vstatus, packed_rei, ref_packed_rei)
+    call verify_var("packed_lambdac", vstatus, packed_lambdac, ref_packed_lambdac)
+    call verify_var("packed_mu", vstatus, packed_mu, ref_packed_mu)
+    call verify_var("packed_des", vstatus, packed_des, ref_packed_des)
+    call verify_var("packed_dei", vstatus, packed_dei, ref_packed_dei)
+    call verify_var("rel_fn_dum", vstatus, rel_fn_dum, ref_rel_fn_dum)
+    call verify_var("dsout2_dum", vstatus, dsout2_dum, ref_dsout2_dum)
+    call verify_var("drout_dum", vstatus, drout_dum, ref_drout_dum)
+    call verify_var("reff_rain_dum", vstatus, reff_rain_dum, ref_reff_rain_dum)
+    call verify_var("reff_snow_dum", vstatus, reff_snow_dum, ref_reff_snow_dum)
 
-    call KGENPrtCheck(kname,status)
+    call KGENPrtCheck(kname,vstatus)
+ 
+#if defined(_OPENMP) 
+    !$OMP PARALLEL
+        nThreads = omp_get_num_threads()
+    !$OMP END PARALLEL
+#else
+    nThreads = 1
+#endif
+    itmax=1024*nThreads
+
     call system_clock(c1,cr,cm)
-    do i=1,itmax
+    !$OMP PARALLEL DEFAULT(NONE) &
+    !$OMP SHARED(itmax,mgncol,nlev,dtime,num_steps, &
+    !$OMP packed_t, packed_q, packed_qc, packed_qi, packed_nc, packed_ni, packed_qr, packed_qs,  &
+    !$OMP packed_nr, packed_ns, packed_relvar, packed_accre_enhan, packed_p, packed_pdel, packed_cldn, &
+    !$OMP packed_liqcldf, packed_icecldf, packed_naai, packed_npccn, packed_rndst, packed_nacon) & 
+    !$OMP PRIVATE(it,packed_rate1ord_cw2pr_st,packed_tlat,packed_qvlat, &
+    !$OMP packed_qctend, packed_qitend, packed_nctend, packed_nitend, packed_qrtend, packed_qstend, &
+    !$OMP packed_nrtend,packed_nstend, packed_rel, rel_fn_dum, packed_rei, packed_prect, packed_preci, &
+    !$OMP packed_nevapr,packed_evapsnow, packed_prain, packed_prodsnow, packed_cmeout, packed_dei, &
+    !$OMP packed_mu,packed_lambdac, packed_qsout, packed_des, packed_rflx, packed_sflx, packed_qrout, &
+    !$OMP reff_rain_dum, reff_snow_dum, packed_qcsevap, packed_qisevap, packed_qvres, packed_cmei, packed_vtrmc, packed_vtrmi, &
+    !$OMP packed_umr, packed_ums, packed_qcsedten, packed_qisedten, packed_pra,             packed_prc, &
+    !$OMP packed_mnuccc, packed_mnucct, packed_msacwi, packed_psacws,  packed_bergs,   packed_berg, packed_melt,            packed_homo, &
+    !$OMP packed_qcres,packed_prci, packed_prai, packed_qires,   packed_mnuccr,  packed_pracs,packed_meltsdt, packed_frzrdt,  packed_mnuccd, &
+    !$OMP packed_nrout, packed_nsout, packed_refl, packed_arefl,   packed_areflz,packed_frefl,   packed_csrfl,   packed_acsrfl, &
+    !$OMP packed_fcsrfl, packed_rercld, packed_ncai, packed_ncal, packed_qrout2,          packed_qsout2, &
+    !$OMP packed_nrout2, packed_nsout2, drout_dum, dsout2_dum, packed_freqs,           packed_freqr, & 
+    !$OMP packed_nfice, packed_qcrat, errstring, packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,packed_frzimm,  packed_frzcnt,  packed_frzdep   )
+
+    !$OMP DO
+    do it=1,itmax
     ! RUN KERNEL
     call micro_mg_tend2_0( &
          mgncol,         nlev,           dtime/num_steps,&
@@ -591,10 +625,19 @@
          packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,&
          packed_frzimm,  packed_frzcnt,  packed_frzdep   )
     enddo 
+    !$OMP END DO
+    !$OMP END PARALLEL
     call system_clock(c2,cr,cm)
     dt = dble(c2-c1)/dble(cr)
-    print *, TRIM(kname), ' total time (sec): ',dt
-    print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
+
+   
+    FMT = "(1X,A,A,I3,A,I5,A,F7.5)"
+    write(*,FMT) TRIM(kname), ' [NTHR := ',nThreads, '] [itmax:= ',itmax,'] total time (sec): ',dt
+    if( nThreads == 1) then 
+        FMT2 = "(1X,A,A,I3,A,I5,A,F9.3)"
+        write(*,FMT2) TRIM(kname), ' [NTHR := ',nThreads,'] [itmax:= ',itmax,'] time per call (usec): ',1.e6*dt/dble(itmax)
+    endif
+
 
     end subroutine micro_mg_cam_tend
 

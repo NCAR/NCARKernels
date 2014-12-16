@@ -76,6 +76,8 @@
        check%Passed   = .TRUE.
        check%numFatal = 0
        check%numWarning = 0
+       check%numTotal = 0
+       check%numIdentical = 0
        check%VerboseLevel = 0
        if(present(tolerance)) then 
          check%tolerance = tolerance
