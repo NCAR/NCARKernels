@@ -186,7 +186,7 @@
 
     integer*8 c1,c2,cr,cm
     real*8 dt
-    integer :: itmax
+    integer :: itmax=10000
     integer :: it, nThreads
     character(len=40) :: FMT,FMT2
    
@@ -540,15 +540,17 @@
     call verify_var("reff_snow_dum", vstatus, reff_snow_dum, ref_reff_snow_dum)
 
     call KGENPrtCheck(kname,vstatus)
+     
  
+    FMT = "(1X,A,A,4(E24.17))"
+    write (*,FMT) TRIM(kname), ' Diagnostic: ',sum(packed_tlat),sum(packed_qvlat),sum(packed_qctend), sum(packed_rei)
 #if defined(_OPENMP) 
     !$OMP PARALLEL
-        nThreads = omp_get_num_threads()
+    nThreads = omp_get_num_threads()
     !$OMP END PARALLEL
 #else
     nThreads = 1
 #endif
-    itmax=1024*nThreads
 
     call system_clock(c1,cr,cm)
     !$OMP PARALLEL DEFAULT(NONE) &
@@ -631,7 +633,7 @@
     dt = dble(c2-c1)/dble(cr)
 
    
-    FMT = "(1X,A,A,I3,A,I5,A,F7.5)"
+    FMT = "(1X,A,A,I3,A,I5,A,F8.3)"
     write(*,FMT) TRIM(kname), ' [NTHR := ',nThreads, '] [itmax:= ',itmax,'] total time (sec): ',dt
     if( nThreads == 1) then 
         FMT2 = "(1X,A,A,I3,A,I5,A,F9.3)"

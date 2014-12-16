@@ -5,7 +5,7 @@ FC := ifort
 #FFLAGS := -O3 -fp-model precise -I./ -DCPRINTEL
 # Haswell
 # FFLAGS := -O3 -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-FFLAGS := -O3 -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
+FFLAGS := -O3 -openmp -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
 #FFLAGS := -O3 -xHost -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
 
 #
