@@ -194,8 +194,6 @@
 
     type(check_t) :: status, vstatus
     real(r8) :: tolerance
-!dir$ attributes align:64 :: packed_t, packed_q, packed_qc, packed_qi, packed_nc, packed_ni 
-!dir$ attributes align:64 :: packed_qr, packed_qs, packed_nr, packed_ns, packed_relvar
 
 
     tolerance = 6.0e-11
@@ -401,7 +399,11 @@
     call read_var(ref_reff_rain_dum, kgen_unit)
     call read_var(ref_reff_snow_dum, kgen_unit)
 
+    !---------------------------------------------------------
+    ! Apply a pertubation to the initial value for Temperature 
     ! call KGENApplyPert(packed_t)
+    !---------------------------------------------------------
+
     ! RUN KERNEL
     call micro_mg_tend2_0( &
          mgncol,         nlev,           dtime/num_steps,&
@@ -551,6 +553,7 @@
 #else
     nThreads = 1
 #endif
+
 
     call system_clock(c1,cr,cm)
     !$OMP PARALLEL DEFAULT(NONE) &

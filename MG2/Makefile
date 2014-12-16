@@ -1,17 +1,23 @@
 #
 # Intel 
 FC := ifort
+#
+# Knights Corner
+#
 #FFLAGS := -mmic -O3 -qopt-report=5 -fp-model fast -no-prec-div -no-prec-sqrt -I./
-#FFLAGS := -O3 -fp-model precise -I./ -DCPRINTEL
+#
 # Haswell
+# 
 # FFLAGS := -O3 -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-FFLAGS := -O3 -openmp -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-#FFLAGS := -O3 -xHost -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-
+#FFLAGS := -O3 -openmp -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
+#
+# Sandy Bridge
+#
+FFLAGS := -O3 -openmp -xAVX -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
 #
 # PGI 
-#FC := pgf95
-#FFLAGS := -O3 -DCPRPGI -I./
+# FC := pgf95
+# FFLAGS := -O3 -DCPRPGI -I./
 #
 # GFORTRAN
 #FC :=gfortran

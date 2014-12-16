@@ -1,17 +1,46 @@
-* kernel and supporting files
-  - The kernel, micro_mg_tend subroutine, is located at line # 242 of micro_mg2_0.F90
-  - program statement is in kernel_micro_mg_tend.F90
-  - The other files are a subset of CESM source files that only contain information to run the micro_mg_tend subroutine
+MG2 kernel
+
+
+  This kernel represents version 2 of the Morrison-Gettleman micro-physics package that has been extracted from CESM1.3.  
+This code represents approximately 10% of the total cost of CAM on Yellowstone.  The MG2 kernel several source files and 
+is build using the provide Makefile by typing 'make'. This code can be run on either single threaded or using an entired 
+shared memory node using OpenMP. The Makefile will need to be modifyed and the OMP_NUM_THREAD environment variable should 
+be set to enable parallel execution.   Note that this kernel has been tested on Intel, Cray, PGI, and GNU compilers.  This 
+kernel tests the abilty of the compiler to generate optimize code.  It is likely that code transformations in addition to 
+compiler and directive insertion can decrease the execution time for this kernel. 
+
  
-* compilation and execution
-  - Place all files in a directory
-  - Adjust FC and FFLAGS macros in Makefile to use a particular compiler. Default compiler is ifort
-  - run "make"
+Correctness:
 
-* verification
-  - "make" command will run kernel and print verification output on screen
-  - In general, verification is considered as pass if it shows "IDENTICAL" or "Normalized RMS of difference" is around machine-precision
-  - One data files are provided for verification. The data files are generated from running PSrad which is compiled by Intel 15.0 compiler with "-O3 -xHost" compiler flags
+   There are two separate tests for correctness for this kernel, both must be satisfied inorder for any modification to be deemed 
+acceptable.  The two correctness tests are as follows:
 
-* performance measurement
-  - No performance measurment is provided within kernel.
+    (1) Each of the outputs from the main computational routine are verified against results calculated based on a baseline run 
+	on Yellowstone using the Intel 14.1.3 compiler.  The normalized RMS error for each output variable must be less then 6.0e-11.
+        A 'tolerance' value of 6.0e-11 is determined based on the impact that a bit-pertubation has on the initial temperature field.  
+        Code exists within the kernel to calculate the normalized RMS error.  A pass of the verification test will generate the 
+        following output:
+
+       	     [MG2] KGENPrtCheck: verification PASSED
+ 
+   (2) In addition to passing the verification test described above, the kernel must produce reproducible answers.  Specifically 
+       if the kernel is executed 10 times on the same system it must generate the same values for the 'Diagnostic' output line.  Any
+       compiler optimization that prevents run-to-run reproducability due to the use of different code branches based on argument 
+       alignment are not acceptible.  
+
+Performance:
+
+   In addition to generating correctness output, the kernel also provides timing runs.  Sample output for both a single thread and 
+OpenMP execution is provided below. Note that for the multi-threaded output the 'time per call' is not provided. 
+
+Single-threaded:
+
+ [MG2] [NTHR :=   1] [itmax:= 10000] total time (sec):   10.746
+ [MG2] [NTHR :=   1] [itmax:= 10000] time per call (usec):  1074.633
+
+Multi-threaded:
+ 
+ [MG2] [NTHR :=   8] [itmax:= 10000] total time (sec):    1.554
+
+
+Please contact John Dennis (dennis@ucar.edu) for any questions concerning this kernel.
