@@ -30,13 +30,23 @@
               REAL(KIND=real_kind) legdg(np,np)
             END TYPE derivative_t
 
+        TYPE :: element_t
+           REAL(KIND=real_kind) dinv(2,2,np,np)
+        END TYPE element_t
 
-            REAL(KIND=real_kind) s(np, np,nelem)
-            TYPE(derivative_t) deriv
-            REAL(KIND=real_kind), DIMENSION(2, 2, np, np) :: dinv
-            REAL(KIND=real_kind), dimension(np,np,2,2) :: dinv2 
-            REAL(KIND=real_kind) KGEN_RESULT_ds(np, np, 2,nelem)
-            REAL(KIND=real_kind) KGEN_ds(np, np, 2)
+        TYPE :: element_t2
+           REAL(KIND=real_kind) dinv2(np,np,2,2)
+        END TYPE element_t2
+
+        type (element_t), allocatable :: elem(:)
+        type (element_t2), allocatable :: elem2(:)
+
+        REAL(KIND=real_kind) s(np, np,nelem)
+        TYPE(derivative_t) deriv
+        REAL(KIND=real_kind), DIMENSION(2, 2, np, np,nelem) :: dinv
+        REAL(KIND=real_kind), dimension(np,np,2,2,nelem) :: dinv2 
+        REAL(KIND=real_kind) KGEN_RESULT_ds(np, np, 2,nelem)
+        REAL(KIND=real_kind) KGEN_ds(np, np, 2)
 
         !JMD manual timer additions
         integer*8 c1,c2,cr,cm
@@ -45,35 +55,45 @@
         integer :: itmax=10000
         character(len=80), parameter :: kname='[kernel_gradient_sphere]'
         character(len=80), parameter :: kname2='[kernel_gradient_sphere_v2]'
-        
         integer :: it
         !JMD
+!dir$ attributes align:64 :: elem2
+
+        allocate(elem(nelem))
+        allocate(elem2(nelem))
 
 
             ! populate dummy initial values
             do j=1,np
                 do i=1,np
-                    Dinv(1,1,i,j) = 0.2_real_kind * j
-                    Dinv(2,1,i,j) = 0.3_real_kind * i*j
-                    Dinv(2,1,i,j) = 0.4_real_kind * i
-                    Dinv(2,2,i,j) = 0.5_real_kind * j
                     s(i,j,:) = 0.6_real_kind * i*j
                     deriv%Dvv(i,j) = 0.8_real_kind * j
-                    Dinv2(i,j,1,1) = Dinv(1,1,i,j)
-                    Dinv2(i,j,1,2) = Dinv(1,2,i,j)
-                    Dinv2(i,j,2,1) = Dinv(2,1,i,j)
-                    Dinv2(i,j,2,2) = Dinv(2,2,i,j)
+
+                    Dinv(1,1,i,j,:) = 0.2_real_kind * j
+                    Dinv(2,1,i,j,:) = 0.3_real_kind * i*j
+                    Dinv(2,1,i,j,:) = 0.4_real_kind * i
+                    Dinv(2,2,i,j,:) = 0.5_real_kind * j
+                    Dinv2(i,j,1,1,:) = Dinv(1,1,i,j,:)
+                    Dinv2(i,j,1,2,:) = Dinv(1,2,i,j,:)
+                    Dinv2(i,j,2,1,:) = Dinv(2,1,i,j,:)
+                    Dinv2(i,j,2,2,:) = Dinv(2,2,i,j,:)
                 end do
             end do
+            do ie=1,nelem
+               elem(ie)%dinv   = Dinv(:,:,:,:,ie)
+               elem2(ie)%dinv2 = Dinv2(:,:,:,:,ie)
+            enddo
 
             ! reference result
-            KGEN_ds = gradient_sphere_ref(s,deriv,dinv)
+            ! KGEN_ds = gradient_sphere_ref(s,deriv,dinv(:,:,:,:,1))
+            KGEN_ds = gradient_sphere_ref(s,deriv,elem(1)%dinv)
 
             call system_clock(c1,cr,cm)
             ! modified result
             do it=1,itmax
                do ie=1,nelem
-                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere(s(:,:,ie),deriv,dinv)
+!                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere(s(:,:,ie),deriv,dinv(:,:,:,:,ie))
+                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere(s(:,:,ie),deriv,elem(ie)%dinv)
                enddo
             enddo
             call system_clock(c2,cr,cm)
@@ -87,7 +107,8 @@
             ! modified result
             do it=1,itmax
                do ie=1,nelem
-                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,dinv2)
+!                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,dinv2(:,:,:,:,ie))
+                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,elem2(ie)%dinv2)
                enddo
             enddo
             call system_clock(c2,cr,cm)
@@ -200,6 +221,7 @@
 
         end function gradient_sphere
 
+!DIR$ ATTRIBUTES FORCEINLINE :: gradient_sphere_v2
         function gradient_sphere_v2(s,deriv,Dinv) result(ds)
         !
         !   input s:  scalar
@@ -219,6 +241,7 @@
               real(kind=real_kind) ::  dsdx00
               real(kind=real_kind) ::  dsdy00
               real(kind=real_kind) ::  v1(np,np),v2(np,np)
+!dir$ attributes align: 64 :: v1, v2, ds
 
               do j=1,np
                     do l=1,np
