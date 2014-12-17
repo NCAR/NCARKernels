@@ -10,6 +10,8 @@
 
         INTEGER , PARAMETER  :: nc = 4
 
+        INTEGER , PARAMETER :: nelem = 64*30
+
         INTEGER , PARAMETER  :: nip = 3
 
         INTEGER , PARAMETER  :: nipm = nip-1
@@ -195,7 +197,7 @@
         integer*8 c1,c2,cr,cm
         integer*8 c12,c22,cr2
         real*8 dt, dt2
-        integer :: itmax=10000000
+        integer :: itmax=10000
         character(len=80), parameter :: kname='[kernel_divergence_sphere]'
         character(len=80), parameter :: kname2='[kernel_divergence_sphere_v2]'
         integer :: it
@@ -205,8 +207,8 @@
         REAL(KIND=real_kind) :: DvvTemp(np,np)
 
 
-                REAL(KIND=real_kind) KGEN_RESULT_div(np, np)
-                REAL(KIND=real_kind) KGEN_RESULT_div_v2(np, np)
+                REAL(KIND=real_kind) KGEN_RESULT_div(np, np,nelem)
+                REAL(KIND=real_kind) KGEN_RESULT_div_v2(np, np,nelem)
                 REAL(KIND=real_kind) KGEN_div(np, np)
 
 
@@ -240,8 +242,10 @@
             call system_clock(c12,cr2,cm)
             ! modified result
             do it=1,itmax
+               do ie=1,nelem
 !JMD               KGEN_RESULT_div = divergence_sphere_v2(v,deriv,elem,DinvTemp)
-               KGEN_RESULT_div = divergence_sphere_v2(v,dvvTemp,elem,DinvTemp)
+               KGEN_RESULT_div(:,:,ie) = divergence_sphere_v2(v,dvvTemp,elem,DinvTemp)
+               enddo
             enddo
             call system_clock(c22,cr2,cm)
             dt2 = dble(c22-c12)/dble(cr2)
@@ -275,7 +279,9 @@
             call system_clock(c1,cr,cm)
             ! modified result
             do it=1,itmax
-               KGEN_RESULT_div = divergence_sphere(v,deriv,elem)
+               do ie=1,nelem
+               KGEN_RESULT_div(:,:,ie) = divergence_sphere(v,deriv,elem)
+               enddo
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
@@ -283,17 +289,17 @@
             print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
 
-            IF ( ALL( KGEN_div == KGEN_RESULT_div ) ) THEN
+            IF ( ALL( KGEN_div == KGEN_RESULT_div(:,:,1) ) ) THEN
                 WRITE(*,*) "div is identical."
                 WRITE(*,*) "Modified: ", KGEN_div
-                WRITE(*,*) "Reference:  ", KGEN_RESULT_div
+                WRITE(*,*) "Reference:  ", KGEN_RESULT_div(:,:,1)
             ELSE
                 WRITE(*,*) "div is NOT identical."
-                WRITE(*,*) COUNT( KGEN_div /= KGEN_RESULT_div), " of ", SIZE( KGEN_RESULT_div ), " elements are different."
-                WRITE(*,*) "RMS of difference is ", SQRT(SUM((KGEN_div - KGEN_RESULT_div)**2)/SIZE(KGEN_div))
-                WRITE(*,*) "Minimum difference is ", MINVAL(ABS(KGEN_div - KGEN_RESULT_div))
-                WRITE(*,*) "Maximum difference is ", MAXVAL(ABS(KGEN_div - KGEN_RESULT_div))
-                WRITE(*,*) "Mean value of kernel-generated div is ", SUM(KGEN_RESULT_div)/SIZE(KGEN_RESULT_div)
+                WRITE(*,*) COUNT( KGEN_div /= KGEN_RESULT_div(:,:,1)), " of ", SIZE( KGEN_RESULT_div ), " elements are different."
+                WRITE(*,*) "RMS of difference is ", SQRT(SUM((KGEN_div - KGEN_RESULT_div(:,:,1))**2)/SIZE(KGEN_div))
+                WRITE(*,*) "Minimum difference is ", MINVAL(ABS(KGEN_div - KGEN_RESULT_div(:,:,1)))
+                WRITE(*,*) "Maximum difference is ", MAXVAL(ABS(KGEN_div - KGEN_RESULT_div(:,:,1)))
+                WRITE(*,*) "Mean value of kernel-generated div is ", SUM(KGEN_RESULT_div(:,:,1))/SIZE(KGEN_RESULT_div(:,:,1))
                 WRITE(*,*) "Mean value of original div is ", SUM(KGEN_div)/SIZE(KGEN_div)
                 WRITE(*,*) ""
                 STOP
@@ -443,26 +449,14 @@
         ! compute d/dx and d/dy
               do j=1,np
                     do l=1,np
-!                          dudx00=0.0d0
-!                          dvdy00=0.0d0
-!JMD                          do i=1,np
-                                i=1
+                         dudx00=0.0d0
+                         dvdy00=0.0d0
+!DIR$ UNROLL(4)
+                         do i=1,np
                                 dudx00 = Dvv(i,l  )*gv1(i,j  )
                                 dvdy00 = Dvv(i,l  )*gv2(j  ,i)
 
-                                i=i+1
-                                dudx00 = dudx00 + Dvv(i,l  )*gv1(i,j  )
-                                dvdy00 = dvdy00 + Dvv(i,l  )*gv2(j  ,i)
-
-                                i=i+1
-                                dudx00 = dudx00 + Dvv(i,l  )*gv1(i,j  )
-                                dvdy00 = dvdy00 + Dvv(i,l  )*gv2(j  ,i)
-
-                                i=i+1
-                                dudx00 = dudx00 + Dvv(i,l  )*gv1(i,j  )
-                                dvdy00 = dvdy00 + Dvv(i,l  )*gv2(j  ,i)
-
-!JMD                          end do
+                          end do
                           div(l  ,j  ) = dudx00
                           vvtemp(j  ,l  ) = dvdy00
                     end do

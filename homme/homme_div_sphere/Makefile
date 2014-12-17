@@ -2,11 +2,11 @@
 FC := ifort
 SRC := ./kernel_divergence_sphere.F90
 EXE := ${SRC:.F90=.exe}
-#FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
+FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
 #FFLAGS := -O3 -qopt-report=5 -fp-model fast
 FLAGS := ${FFLAGS}
 
-all: run build
+all: build
 
 run: ${EXE}
 	${EXE}

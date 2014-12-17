@@ -7,6 +7,7 @@
         REAL(KIND=real_kind)   :: hypervis_scaling = 0
         INTEGER , PARAMETER  :: nc = 4
         INTEGER , PARAMETER  :: nip = 3
+        INTEGER , PARAMETER  :: nelem = 64*30
         INTEGER , PARAMETER  :: nipm = nip-1
         INTEGER , PARAMETER  :: nep = nipm*nc+1
 
@@ -180,12 +181,12 @@
         TYPE(derivative_t) deriv
         TYPE(element_t) elem
         LOGICAL var_coef
-        REAL(KIND=real_kind) KGEN_RESULT_laplace(np, np)
+        REAL(KIND=real_kind) KGEN_RESULT_laplace(np, np, nelem)
         REAL(KIND=real_kind) KGEN_laplace(np, np)
         !JMD manual timer additions
         integer*8 c1,c2,cr,cm
         real*8 dt
-        integer :: itmax=1000000
+        integer :: itmax=10000
         character(len=80), parameter :: kname='[kernel_laplace_sphere_wk]'
         integer :: it
         !JMD
@@ -220,32 +221,34 @@
         call system_clock(c1,cr,cm)
         ! modified result
         do it=1,itmax
-            KGEN_RESULT_laplace = laplace_sphere_wk(s,deriv,elem,var_coef)
+           do ie=1,nelem
+              KGEN_RESULT_laplace(:,:,ie) = laplace_sphere_wk(s,deriv,elem,var_coef)
+           enddo
         enddo
         call system_clock(c2,cr,cm)
         dt = dble(c2-c1)/dble(cr)
         print *, TRIM(kname), ' total time (sec): ',dt
         print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
-        IF ( ALL( KGEN_laplace == KGEN_RESULT_laplace ) ) THEN
+        IF ( ALL( KGEN_laplace == KGEN_RESULT_laplace(:,:,1) ) ) THEN
             WRITE(*,*) "laplace is identical."
             WRITE(*,*) ""
-            WRITE(*,*) "Mean value of kernel-generated laplace is ", SUM(KGEN_RESULT_laplace)/SIZE(KGEN_RESULT_laplace)
+            WRITE(*,*) "Mean value of kernel-generated laplace is ", SUM(KGEN_RESULT_laplace)/SIZE(KGEN_RESULT_laplace(:,:,1))
             WRITE(*,*) "Mean value of original laplace is ", SUM(KGEN_laplace)/SIZE(KGEN_laplace)
             WRITE(*,*) ""
             WRITE(*,*) "Reference: ", KGEN_laplace
-            WRITE(*,*) "Modified:  ", KGEN_RESULT_laplace
+            WRITE(*,*) "Modified:  ", KGEN_RESULT_laplace(:,:,1)
         ELSE
             WRITE(*,*) "laplace is NOT identical."
-            WRITE(*,*) COUNT( KGEN_laplace /= KGEN_RESULT_laplace), " of ", SIZE( KGEN_RESULT_laplace ), " elements are different."
-            WRITE(*,*) "RMS of difference is ", SQRT(SUM((KGEN_laplace - KGEN_RESULT_laplace)**2)/SIZE(KGEN_laplace))
-            WRITE(*,*) "Minimum difference is ", MINVAL(ABS(KGEN_laplace - KGEN_RESULT_laplace))
-            WRITE(*,*) "Maximum difference is ", MAXVAL(ABS(KGEN_laplace - KGEN_RESULT_laplace))
-            WRITE(*,*) "Mean value of kernel-generated laplace is ", SUM(KGEN_RESULT_laplace)/SIZE(KGEN_RESULT_laplace)
+            WRITE(*,*) COUNT( KGEN_laplace /= KGEN_RESULT_laplace(:,:,1)), " of ", SIZE( KGEN_RESULT_laplace(:,:,1) ), " elements are different."
+            WRITE(*,*) "RMS of difference is ", SQRT(SUM((KGEN_laplace - KGEN_RESULT_laplace(:,:,1))**2)/SIZE(KGEN_laplace))
+            WRITE(*,*) "Minimum difference is ", MINVAL(ABS(KGEN_laplace - KGEN_RESULT_laplace(:,:,1)))
+            WRITE(*,*) "Maximum difference is ", MAXVAL(ABS(KGEN_laplace - KGEN_RESULT_laplace(:,:,1)))
+            WRITE(*,*) "Mean value of kernel-generated laplace is ", SUM(KGEN_RESULT_laplace(:,:,1))/SIZE(KGEN_RESULT_laplace(:,:,1))
             WRITE(*,*) "Mean value of original laplace is ", SUM(KGEN_laplace)/SIZE(KGEN_laplace)
             WRITE(*,*) ""
             WRITE(*,*) "Reference: ", KGEN_laplace
-            WRITE(*,*) "Modified:  ", KGEN_RESULT_laplace
+            WRITE(*,*) "Modified:  ", KGEN_RESULT_laplace(:,:,1)
             WRITE(*,*) ""
             STOP
         END IF
@@ -410,6 +413,7 @@
             DO l=1,np
               dsdx00 = 0.0d0
               dsdy00 = 0.0d0
+!DIR$ UNROLL(4)
               DO i=1,np
                 dsdx00 = dsdx00 + deriv%dvv(i,l)*s(i,j)
                 dsdy00 = dsdy00 + deriv%dvv(i,l)*s(j  ,i)

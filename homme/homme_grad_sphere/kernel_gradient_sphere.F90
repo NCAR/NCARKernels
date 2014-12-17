@@ -8,7 +8,7 @@
 
         INTEGER , PARAMETER  :: np = 4
 
-        INTEGER , Parameter  :: nelem = 64
+        INTEGER , Parameter  :: nelem = 30*64
 
         INTEGER , PARAMETER  :: nc = 4
 
@@ -33,7 +33,8 @@
 
             REAL(KIND=real_kind) s(np, np,nelem)
             TYPE(derivative_t) deriv
-            REAL(KIND=real_kind) , DIMENSION(2, 2, np, np) :: dinv
+            REAL(KIND=real_kind), DIMENSION(2, 2, np, np) :: dinv
+            REAL(KIND=real_kind), dimension(np,np,2,2) :: dinv2 
             REAL(KIND=real_kind) KGEN_RESULT_ds(np, np, 2,nelem)
             REAL(KIND=real_kind) KGEN_ds(np, np, 2)
 
@@ -41,8 +42,10 @@
         integer*8 c1,c2,cr,cm
         real*8 dt
         real*8 flops 
-        integer :: itmax=100000
+        integer :: itmax=10000
         character(len=80), parameter :: kname='[kernel_gradient_sphere]'
+        character(len=80), parameter :: kname2='[kernel_gradient_sphere_v2]'
+        
         integer :: it
         !JMD
 
@@ -56,6 +59,10 @@
                     Dinv(2,2,i,j) = 0.5_real_kind * j
                     s(i,j,:) = 0.6_real_kind * i*j
                     deriv%Dvv(i,j) = 0.8_real_kind * j
+                    Dinv2(i,j,1,1) = Dinv(1,1,i,j)
+                    Dinv2(i,j,1,2) = Dinv(1,2,i,j)
+                    Dinv2(i,j,2,1) = Dinv(2,1,i,j)
+                    Dinv2(i,j,2,2) = Dinv(2,2,i,j)
                 end do
             end do
 
@@ -71,13 +78,23 @@
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
-            flops = real(nelem,kind=real_kind)*real(4*np*np*np + 5*np*np,kind=real_kind)*real(itmax,kind=real_kind)
+!            flops = real(nelem,kind=real_kind)*real(4*np*np*np + 5*np*np,kind=real_kind)*real(itmax,kind=real_kind)
             print *, TRIM(kname), ' total time (sec): ',dt
-            print *, TRIM(kname), ' Gflop rate: ', 1.0e-9*flops/dt
+!            print *, TRIM(kname), ' Gflop rate: ', 1.0e-9*flops/dt
             print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
-
-
+            call system_clock(c1,cr,cm)
+            ! modified result
+            do it=1,itmax
+               do ie=1,nelem
+                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,dinv2)
+               enddo
+            enddo
+            call system_clock(c2,cr,cm)
+            dt2 = dble(c2-c1)/dble(cr)
+            print *, TRIM(kname2), ' total time (sec): ',dt2
+!            print *, TRIM(kname2), ' Gflop rate: ', 1.0e-9*flops/dt2
+            print *, TRIM(kname2), ' time per call (usec): ',1.e6*dt2/dble(itmax)
 
 
             IF ( ALL( KGEN_ds == KGEN_RESULT_ds(:,:,:,1) ) ) THEN
@@ -182,5 +199,49 @@
               enddo
 
         end function gradient_sphere
+
+        function gradient_sphere_v2(s,deriv,Dinv) result(ds)
+        !
+        !   input s:  scalar
+        !   output  ds: spherical gradient of s, lat-lon coordinates
+        !
+
+              type (derivative_t), intent(in) :: deriv
+              real(kind=real_kind), intent(in), dimension(np,np,2,2) :: Dinv
+              real(kind=real_kind), intent(in) :: s(np,np)
+
+              real(kind=real_kind) :: ds(np,np,2)
+
+              integer i
+              integer j
+              integer l
+
+              real(kind=real_kind) ::  dsdx00
+              real(kind=real_kind) ::  dsdy00
+              real(kind=real_kind) ::  v1(np,np),v2(np,np)
+
+              do j=1,np
+                    do l=1,np
+                          dsdx00=0.0d0
+                          dsdy00=0.0d0
+!dir$ UNROLL(4)
+                          do i=1,np
+                                dsdx00 = dsdx00 + deriv%Dvv(i,l  )*s(i,j  )
+                                dsdy00 = dsdy00 + deriv%Dvv(i,l  )*s(j  ,i)
+                          end do
+                          v1(l  ,j  ) = dsdx00*rrearth
+                          v2(j  ,l  ) = dsdy00*rrearth
+                    end do
+              end do
+        ! convert covarient to latlon
+              do j=1,np
+                    do i=1,np
+                          ds(i,j,1)=Dinv(i,j,1,1)*v1(i,j) + Dinv(i,j,2,1)*v2(i,j)
+                          ds(i,j,2)=Dinv(i,j,1,2)*v1(i,j) + Dinv(i,j,2,2)*v2(i,j)
+                    enddo
+              enddo
+
+        end function gradient_sphere_v2
+
 
         end program kgen_kernel_gradient_sphere
