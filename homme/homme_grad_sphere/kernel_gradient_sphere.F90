@@ -53,7 +53,7 @@
         real*8 dt
         real*8 flops 
         integer :: itmax=10000
-        character(len=80), parameter :: kname='[kernel_gradient_sphere]'
+        character(len=80), parameter :: kname1='[kernel_gradient_sphere_v1]'
         character(len=80), parameter :: kname2='[kernel_gradient_sphere_v2]'
         integer :: it
         !JMD
@@ -92,16 +92,15 @@
             ! modified result
             do it=1,itmax
                do ie=1,nelem
-!                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere(s(:,:,ie),deriv,dinv(:,:,:,:,ie))
-                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere(s(:,:,ie),deriv,elem(ie)%dinv)
+!                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v1(s(:,:,ie),deriv,dinv(:,:,:,:,ie))
+                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v1(s(:,:,ie),deriv,elem(ie)%dinv)
                enddo
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
 !            flops = real(nelem,kind=real_kind)*real(4*np*np*np + 5*np*np,kind=real_kind)*real(itmax,kind=real_kind)
-            print *, TRIM(kname), ' total time (sec): ',dt
-!            print *, TRIM(kname), ' Gflop rate: ', 1.0e-9*flops/dt
-            print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
+            print *, TRIM(kname1), ' total time (sec): ',dt
+            print *, TRIM(kname1), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
             call system_clock(c1,cr,cm)
             ! modified result
@@ -114,7 +113,6 @@
             call system_clock(c2,cr,cm)
             dt2 = dble(c2-c1)/dble(cr)
             print *, TRIM(kname2), ' total time (sec): ',dt2
-!            print *, TRIM(kname2), ' Gflop rate: ', 1.0e-9*flops/dt2
             print *, TRIM(kname2), ' time per call (usec): ',1.e6*dt2/dble(itmax)
 
 
@@ -179,7 +177,7 @@
         end function gradient_sphere_ref
 
 
-        function gradient_sphere(s,deriv,Dinv) result(ds)
+        function gradient_sphere_v1(s,deriv,Dinv) result(ds)
         !
         !   input s:  scalar
         !   output  ds: spherical gradient of s, lat-lon coordinates
@@ -219,7 +217,7 @@
                     enddo
               enddo
 
-        end function gradient_sphere
+        end function gradient_sphere_v1
 
 !DIR$ ATTRIBUTES FORCEINLINE :: gradient_sphere_v2
         function gradient_sphere_v2(s,deriv,Dinv) result(ds)
