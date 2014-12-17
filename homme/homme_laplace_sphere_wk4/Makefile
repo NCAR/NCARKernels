@@ -9,8 +9,8 @@ EXE := ${SRC:.F90=.exe}
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -no-vec
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -mP2OPT_hpo_matrix_opt_framework=0
 
-FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast=2
-#FFLAGS := -O3 -qopt-report=5 -fp-model fast
+#FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast=2
+FFLAGS := -O3 -qopt-report=5 -fp-model fast
 FLAGS := ${FFLAGS}
 
 all: build 
