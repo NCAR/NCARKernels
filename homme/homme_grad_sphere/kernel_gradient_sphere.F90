@@ -176,7 +176,7 @@
 
         end function gradient_sphere_ref
 
-
+!DIR$ ATTRIBUTES FORCEINLINE :: gradient_sphere_v1
         function gradient_sphere_v1(s,deriv,Dinv) result(ds)
         !
         !   input s:  scalar
