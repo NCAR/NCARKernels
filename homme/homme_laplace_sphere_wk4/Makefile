@@ -4,8 +4,8 @@ EXE := ${SRC:.F90=.exe}
 #
 # PGI
 #
-FC := pgf95
-FFLAGS := -O3
+# FC := pgf95
+# FFLAGS := -O3
 
 #
 # Intel
@@ -19,6 +19,14 @@ FFLAGS := -O3
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -mP2OPT_hpo_matrix_opt_framework=0
 #FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast=2
 #FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
+
+#
+# GFORTRAN
+# 
+ FC :=gfortran
+ FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
+# #
+#
 
 FLAGS := ${FFLAGS}
 
