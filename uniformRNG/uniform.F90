@@ -14,6 +14,7 @@
       real(kind=8) a, b     ! parameters of normal distribution
  
       TYPE (VSL_STREAM_STATE) :: stream
+      type (VSL_STREAM_STATE) :: stream2
  
       integer(kind=4) errcode
       integer(kind=4) i,j
@@ -21,7 +22,7 @@
 
       integer :: seed1(n),seed2(n),seed3(n), seed4(n)
       integer*8 c1,c2,ck1,ck2,cr,cm
-      real*8 dt,dtk
+      real*8 dt, dt2, dtk
 !dir$ attributes align : 64 :: r,rk
 !dir$ attributes align : 64 :: seed1,seed2,seed3,seed4
  
@@ -29,8 +30,6 @@
       a = 0.0
       b = 1.0
 !      sigma  = 2.0
-!      brng=VSL_BRNG_SMT19937
-      brng=VSL_BRNG_SFMT19937
 !      method=VSL_RNG_METHOD_GAUSSIAN_ICDF
       method=VSL_RNG_METHOD_UNIFORM_STD
 !      method=VSL_RNG_METHOD_UNIFORM_STD_ACCURATE
@@ -43,7 +42,10 @@
       enddo
  
 !     ***** Initializing *****
+      brng=VSL_BRNG_SFMT19937
       errcode=vslnewstream( stream, brng,  seed )
+      brng=VSL_BRNG_MT19937
+      errcode=vslnewstream( stream2, brng,  seed )
  
 !     ***** Generating *****
       call system_clock(c1,cr,cm)
@@ -52,6 +54,15 @@
       end do
       call system_clock(c2,cr,cm)
       dt = dble(c2-c1)/dble(cr)
+
+!     ***** Generating *****
+      call system_clock(c1,cr,cm)
+      do i = 1,ntrials
+          errcode=vdrnguniform( method, stream2, n, r, a, b )
+      end do
+      call system_clock(c2,cr,cm)
+      dt2 = dble(c2-c1)/dble(cr)
+
 
 
       call system_clock(ck1,cr,cm)
@@ -71,7 +82,10 @@
 !      print *,"Sample mean of normal distribution = ", s
 !      print *,"Sample mean of normal distribution = ", sk
        print *,'Total time (MKL): ',dt
-       print *,' MegaRNumbers (MKL): ', 1.0e-6*dble(n*ntrials)/dt 
+       print *,' MegaRNumbers SFMT (MKL): ', 1.0e-6*dble(n*ntrials)/dt 
+       print *,'------'
+       print *,'Total time (MKL): ',dt2
+       print *,' MegaRNumbers MT (MKL): ', 1.0e-6*dble(n*ntrials)/dt2
        print *,'------'
        print *,'Total time (kissvec): ',dtk
        print *,' MegaRNumbers (kissvec): ', 1.0e-6*dble(n*ntrials)/dtk 
