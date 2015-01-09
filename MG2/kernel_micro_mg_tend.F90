@@ -41,7 +41,8 @@
 
         kgen_filepath = "micro_mg_tend." // trim(adjustl(kgen_counter_conv)) // "." // trim(adjustl(kgen_mpi_rank_conv))
         kgen_unit = kgen_get_newunit(kgen_mpi_rank+kgen_counter)
-        OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
+        OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", &
+		IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
         WRITE (*,*)
         IF ( kgen_ierr /= 0 ) THEN
             CALL kgen_error_stop( "FILE OPEN ERROR: " // trim(adjustl(kgen_filepath)) )

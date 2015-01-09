@@ -8,7 +8,6 @@ MODULE shr_kind_mod
    !----------------------------------------------------------------------------
    ! precision/kind constants add data public
    !----------------------------------------------------------------------------
-   public
-   integer,parameter :: SHR_KIND_R8 = selected_real_kind(12) ! 8 byte real
+   integer,parameter, public  :: shr_kind_r8 = selected_real_kind(12) ! 8 byte real
 
 END MODULE shr_kind_mod
