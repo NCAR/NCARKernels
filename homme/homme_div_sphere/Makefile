@@ -10,16 +10,21 @@ EXE := ${SRC:.F90=.exe}
 #
 # Intel
 #
-#FC := ifort
-#FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
-#FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
-#FFLAGS := -O3 -qopt-report=5 -fp-model fast
+ FC := ifort
+# FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
+# FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
+ FFLAGS := -O3 -xAVX -qopt-report=5 -fp-model fast
 #
 # GFORTRAN
 # 
- FC :=gfortran
- FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
+# FC :=gfortran
+# FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
 # #
+#
+# Cray 
+#
+#  FC := ftn
+#  FFLAGS := -O2
 #
 
 FLAGS := ${FFLAGS}

@@ -412,6 +412,7 @@
 
         end function divergence_sphere
 
+!DIR$ ATTRIBUTES FORCEINLINE :: divergence_sphere_v2
         function divergence_sphere_v2(v,dvv,elem,Dinv2) result(div)
         !
         !   input:  v = velocity in lat-lon coordinates
