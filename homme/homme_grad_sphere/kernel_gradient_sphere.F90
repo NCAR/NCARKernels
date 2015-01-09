@@ -36,31 +36,43 @@
 
         TYPE :: element_t2
            REAL(KIND=real_kind) dinv2(np,np,2,2)
+           REAL(KIND=real_kind) ds(np,np,2)
         END TYPE element_t2
 
         type (element_t), allocatable :: elem(:)
         type (element_t2), allocatable :: elem2(:)
 
+
         REAL(KIND=real_kind) s(np, np,nelem)
         TYPE(derivative_t) deriv
         REAL(KIND=real_kind), DIMENSION(2, 2, np, np,nelem) :: dinv
+        REAL(KIND=real_kind), DIMENSION(np,np,2,2) :: dinv2b
         REAL(KIND=real_kind), dimension(np,np,2,2,nelem) :: dinv2 
         REAL(KIND=real_kind) KGEN_RESULT_ds(np, np, 2,nelem)
+        REAL(KIND=real_kind), dimension(np,np,2) ::  KGEN_RESULT_ds2b
         REAL(KIND=real_kind) KGEN_ds(np, np, 2)
 
         !JMD manual timer additions
         integer*8 c1,c2,cr,cm
         real*8 dt
         real*8 flops 
-        integer :: itmax=10000
+        integer :: itmax
         character(len=80), parameter :: kname1='[kernel_gradient_sphere_v1]'
-        character(len=80), parameter :: kname2='[kernel_gradient_sphere_v2]'
+        character(len=80), parameter :: kname2a='[kernel_gradient_sphere_v2a]'
+        character(len=80), parameter :: kname2b='[kernel_gradient_sphere_v2b]'
+        character(len=80), parameter :: kname2c='[kernel_gradient_sphere_v2c]'
+        character(len=80), parameter :: kname2d='[kernel_gradient_sphere_v2d]'
+        character(len=80), parameter :: kname2e='[kernel_gradient_sphere_v2e]'
+        character(len=80), parameter :: kname2f='[kernel_gradient_sphere_v2f]'
         integer :: it
         !JMD
-!dir$ attributes align:64 :: elem2
+!DIR$ ATTRIBUTES ALIGN:64 :: element_t2
+!DIR$ ATTRIBUTES align:64 :: elem, elem2
+!DIR$ ATTRIBUTES ALIGN:64 :: KGEN_RESULT_ds
 
         allocate(elem(nelem))
         allocate(elem2(nelem))
+        itmax = ceiling(real(10000000,kind=real_kind)/real(nelem,kind=real_kind))
 
 
             ! populate dummy initial values
@@ -83,6 +95,7 @@
                elem(ie)%dinv   = Dinv(:,:,:,:,ie)
                elem2(ie)%dinv2 = Dinv2(:,:,:,:,ie)
             enddo
+            dinv2b = Dinv2(:,:,:,:,1)
 
             ! reference result
             ! KGEN_ds = gradient_sphere_ref(s,deriv,dinv(:,:,:,:,1))
@@ -93,7 +106,7 @@
             do it=1,itmax
                do ie=1,nelem
 !                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v1(s(:,:,ie),deriv,dinv(:,:,:,:,ie))
-                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v1(s(:,:,ie),deriv,elem(ie)%dinv)
+                  KGEN_RESULT_ds(:,:,:,ie)= gradient_sphere_v1(s(:,:,ie),deriv,elem(ie)%dinv)
                enddo
             enddo
             call system_clock(c2,cr,cm)
@@ -102,24 +115,97 @@
             print *, TRIM(kname1), ' total time (sec): ',dt
             print *, TRIM(kname1), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
+#if 0
             call system_clock(c1,cr,cm)
             ! modified result
             do it=1,itmax
                do ie=1,nelem
-!                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,dinv2(:,:,:,:,ie))
-                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,elem2(ie)%dinv2)
+                  KGEN_RESULT_ds(:,:,:,ie)  = gradient_sphere_v2(s(:,:,ie),deriv,dinv2(:,:,:,:,ie))
                enddo
             enddo
             call system_clock(c2,cr,cm)
-            dt2 = dble(c2-c1)/dble(cr)
-            print *, TRIM(kname2), ' total time (sec): ',dt2
-            print *, TRIM(kname2), ' time per call (usec): ',1.e6*dt2/dble(itmax)
+            dt = dble(c2-c1)/dble(cr)
+            print *, TRIM(kname2a), ' total time (sec): ',dt
+            print *, TRIM(kname2a), ' time per call (usec): ',1.e6*dt/dble(itmax)
+#endif
+
+            if(nelem==1) then 
+               call system_clock(c1,cr,cm)
+               ! modified result
+               do it=1,itmax
+                  do ie=1,nelem
+                     KGEN_RESULT_ds2b = gradient_sphere_v2(s(:,:,ie),deriv,elem2(ie)%dinv2)
+                  enddo
+               enddo
+               call system_clock(c2,cr,cm)
+               dt = dble(c2-c1)/dble(cr)
+               print *, TRIM(kname2b), ' total time (sec): ',dt
+               print *, TRIM(kname2b), ' time per call (usec): ',1.e6*dt/dble(itmax)
+            endif
+
+#if 0
+            call system_clock(c1,cr,cm)
+            ! modified result
+            do it=1,itmax
+               do ie=1,nelem
+                   elem2(ie)%ds  = gradient_sphere_v2(s(:,:,ie),deriv,elem2(ie)%dinv2)
+               enddo
+            enddo
+            call system_clock(c2,cr,cm)
+            dt = dble(c2-c1)/dble(cr)
+            print *, TRIM(kname2c), ' total time (sec): ',dt
+            print *, TRIM(kname2c), ' time per call (usec): ',1.e6*dt/dble(itmax)
+#endif
+
+            call system_clock(c1,cr,cm)
+            ! modified result
+            do it=1,itmax
+               do ie=1,nelem
+                  elem2(ie)%ds  = gradient_sphere_v2(s(:,:,ie),deriv,elem2(ie)%dinv2)
+               enddo
+            enddo
+            call system_clock(c2,cr,cm)
+            dt = dble(c2-c1)/dble(cr)
+            print *, TRIM(kname2d), ' total time (sec): ',dt
+            print *, TRIM(kname2d), ' time per call (usec): ',1.e6*dt/dble(itmax)
+
+            if (nelem == 1) then 
+               call system_clock(c1,cr,cm)
+               ! modified result
+               do it=1,itmax
+                  do ie=1,nelem
+                     KGEN_RESULT_ds2b  = gradient_sphere_v2(s(:,:,ie),deriv,dinv2(:,:,:,:,ie))
+                  enddo
+               enddo
+               call system_clock(c2,cr,cm)
+               dt = dble(c2-c1)/dble(cr)
+               print *, TRIM(kname2e), ' total time (sec): ',dt
+               print *, TRIM(kname2e), ' time per call (usec): ',1.e6*dt/dble(itmax)
+            endif
+
+#if 0
+            call system_clock(c1,cr,cm)
+            ! modified result
+            do it=1,itmax
+               do ie=1,nelem
+                  KGEN_RESULT_ds(:,:,:,ie) = gradient_sphere_v2(s(:,:,ie),deriv,dinv2(:,:,:,:,ie))
+               enddo
+            enddo
+            call system_clock(c2,cr,cm)
+            dt = dble(c2-c1)/dble(cr)
+            print *, TRIM(kname2f), ' total time (sec): ',dt
+            print *, TRIM(kname2f), ' time per call (usec): ',1.e6*dt/dble(itmax)
+#endif
+
+
+
+
 
 
             IF ( ALL( KGEN_ds == KGEN_RESULT_ds(:,:,:,1) ) ) THEN
                 WRITE(*,*) "ds is identical."
-                WRITE(*,*) "Modified: ", KGEN_ds
-                WRITE(*,*) "Reference:  ", KGEN_RESULT_ds(:,:,:,1)
+!                WRITE(*,*) "Modified: ", KGEN_ds
+!                WRITE(*,*) "Reference:  ", KGEN_RESULT_ds(:,:,:,1)
             ELSE
                 WRITE(*,*) "ds is NOT identical."
                 WRITE(*,*) COUNT( KGEN_ds /= KGEN_RESULT_ds(:,:,:,1)), " of ", SIZE( KGEN_RESULT_ds(:,:,:,1) ), " elements are different."
@@ -231,6 +317,7 @@
               real(kind=real_kind), intent(in) :: s(np,np)
 
               real(kind=real_kind) :: ds(np,np,2)
+!DIR$ ATTRIBUTES ALIGN:64 :: ds
 
               integer i
               integer j
@@ -239,13 +326,12 @@
               real(kind=real_kind) ::  dsdx00
               real(kind=real_kind) ::  dsdy00
               real(kind=real_kind) ::  v1(np,np),v2(np,np)
-!dir$ attributes align: 64 :: v1, v2, ds
 
               do j=1,np
                     do l=1,np
                           dsdx00=0.0d0
                           dsdy00=0.0d0
-!dir$ UNROLL(4)
+!DIR$ UNROLL(4)
                           do i=1,np
                                 dsdx00 = dsdx00 + deriv%Dvv(i,l  )*s(i,j  )
                                 dsdy00 = dsdy00 + deriv%Dvv(i,l  )*s(j  ,i)
