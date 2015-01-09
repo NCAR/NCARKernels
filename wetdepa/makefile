@@ -2,6 +2,7 @@
 .SUFFIXES: .F90 .f90 .o
 FPP = cpp
 FPPFLAGS = -I. -traditional -P
+
 FC = ifort
 #BASE = -mmic -vec-report=6 -fp-model fast -ftz -traceback
 BASE = -qopt-report=5 -ftz -fp-model fast -traceback
@@ -13,18 +14,26 @@ BASE = -qopt-report=5 -ftz -fp-model fast -traceback
 #FFLAGS = -O3 $(BASE)
 
 # -O3 -fast
-FFLAGS = -O3 -fast -mmic $(BASE)
+# FFLAGS = -O3 -fast -mmic $(BASE)
+FFLAGS = -O2 -xAVX $(BASE)
 
-OBJS  = wetdepa_driver.o wetdep.o kinds_mod.o params.o
-OBJS0 = wetdepa_driver.o wetdep_orig.o kinds_mod.o params.o
+#
+# Cray compiler
+#
+#FC := ftn
+#FFLAGS := -O2 -N 255
+
+
+OBJS  = wetdepa_driver.o wetdep.o kinds_mod.o params.o shr_const_mod.o shr_kind_mod.o
+OBJS0 = wetdepa_driver.o wetdep_orig.o kinds_mod.o params.o shr_const_mod.o shr_kind_mod.o
 
 all: wetdepa_driver wetdepa_driver_v0
 
-.f90.o:
+.F90.o:
 	$(FC) $(FFLAGS) -c $<
 
-.F90.f90:
-	$(FPP) $(FPPFLAGS) $< >$*.f90 
+#.F90.f90:
+#	$(FPP) $(FPPFLAGS) $< >$*.f90 
 
 wetdepa_driver: $(OBJS)
 	$(FC) $(FFLAGS) -o wetdepa_driver $(OBJS)
