@@ -1,8 +1,8 @@
 !#define GENERATE_DRIVER
-#define _DRIVER
-#define _PDOG
-#define _RPDOG
-#define _RDELTAT
+
+
+
+
 module wetdep
 
 !----------------------------------------------------------------------- 
@@ -11,29 +11,16 @@ module wetdep
 ! 
 !-----------------------------------------------------------------------
 
-#ifdef _DRIVER 
+
 
 use kinds_mod 
 use params,    only: pcols, pver, gravit, rair, tmelt
-#ifdef GENERATE_DRIVER
-use cam_logfile,  only: iulog
-use spmd_utils,   only: iam  
-use print_mod, only: subPrint,InputPrint,OutputPrint,InitSubPrint,FiniSubPrint
-#endif
 
-#else
 
-use shr_kind_mod, only: r8 => shr_kind_r8
-use ppgrid,       only: pcols, pver
-use physconst,    only: gravit, rair, tmelt
-use phys_control, only: cam_physpkg_is
-use cam_logfile,  only: iulog
-#ifdef GENERATE_DRIVER
-use spmd_utils,   only: iam
-use print_mod, only: subPrint,InputPrint,OutputPrint,InitSubPrint,FiniSubPrint
-#endif
 
-#endif
+
+
+
 
 implicit none
 save
@@ -47,9 +34,6 @@ public :: clddiag     ! calc of cloudy volume and rain mixing ratio
 real(r8), parameter :: cmftau = 3600._r8
 real(r8), parameter :: rhoh2o = 1000._r8            ! density of water
 real(r8), parameter :: molwta = 28.97_r8            ! molecular weight dry air gm/mole
-#ifdef GENERATE_DRIVER
- logical, save :: firstTrip= .true. 
-#endif
 
 !==============================================================================
 contains
@@ -325,42 +309,6 @@ subroutine wetdepa_v2(t, p, q, pdel, &
       !    and sol_factic is 1.0 for both cloudborne and interstitial.
       real(r8) :: rdeltat
 
-#ifdef GENERATE_DRIVER
-  if((iam .eq. 22) .and. (firstTrip)) then 
-      call InitSubPrint('wetdepa_v2')
-      call InputPrint('t',t)
-      call InputPrint('p',p)
-      call InputPrint('q',q)
-      call InputPrint('pdel',pdel)
-      call InputPrint('cldt',cldt)
-      call InputPrint('cldc',cldc)
-      call InputPrint('cmfdqr',cmfdqr)
-      call InputPrint('evapc',evapc)
-      call InputPrint('conicw',conicw)
-      call InputPrint('cwat',cwat)
-      call InputPrint('precs',precs)
-      call InputPrint('conds',conds)
-      call InputPrint('evaps',evaps)
-      call InputPrint('cldv',cldv)
-      call InputPrint('cldvcu',cldvcu)
-      call InputPrint('cldvst',cldvst)
-      call InputPrint('dlf',dlf)
-      call InputPrint('deltat',deltat)
-      call InputPrint('tracer',tracer)
-      call InputPrint('sol_fact',sol_fact)
-      call InputPrint('ncol',ncol)
-      call InputPrint('scavcoef',scavcoef)
-      if(present(is_strat_cloudborne)) call InputPrint('is_strat_cloudborne',is_strat_cloudborne)
-      if(present(rate1ord_cw2pr_st)) call InputPrint('rate1ord_cw2pr_st',rate1ord_cw2pr_st)
-      if(present(qqcw)) call InputPrint('qqcw',qqcw)
-      if(present(f_act_conv)) call InputPrint('f_act_conv',f_act_conv)
-      if(present(sol_facti_in)) call InputPrint('sol_facti_in',sol_facti_in)
-      if(present(sol_factbi_in)) call InputPrint('sol_factbi_in',sol_factbi_in)
-      if(present(sol_factii_in)) call InputPrint('sol_factii_in',sol_factii_in)
-      if(present(sol_factic_in)) call InputPrint('sol_factic_in',sol_factic_in)
-      if(present(sol_factiic_in)) call InputPrint('sol_factiic_in',sol_factiic_in)
-   endif
-#endif
 
 
       ! ------------------------------------------------------------------------
@@ -429,23 +377,14 @@ subroutine wetdepa_v2(t, p, q, pdel, &
             ! ****************** Evaporation **************************
             ! calculate the fraction of strat precip from above 
             !                 which evaporates within this layer
-#ifdef _PDOG
             fracev(i) = evaps(i,k)*pdog(i) &
                      /max(1.e-12_r8,precabs(i))
-#else
-            fracev(i) = evaps(i,k)*pdel(i,k)/gravit &
-                     /max(1.e-12_r8,precabs(i))
-#endif
 
             ! trap to ensure reasonable ratio bounds
             fracev(i) = max(0._r8,min(1._r8,fracev(i)))
 
 ! Sungsu : Same as above but convective precipitation part
-#ifdef _PDOG
             fracev_cu(i) = evapc(i,k)*pdog(i)/max(1.e-12_r8,precabc(i))
-#else
-            fracev_cu(i) = evapc(i,k)*pdel(i,k)/gravit/max(1.e-12_r8,precabc(i))
-#endif
             fracev_cu(i) = max(0._r8,min(1._r8,fracev_cu(i)))
 ! Sungsu
             ! ****************** Convection ***************************
@@ -518,42 +457,25 @@ subroutine wetdepa_v2(t, p, q, pdel, &
                      ! fracp = max(0._r8,min(1._r8,fracp))
                      fracp(i) = precs(i,k)*deltat/max(cwat(i,k)+precs(i,k)*deltat,1.e-12_r8) ! Sungsu. Mar.19.2010.
                      fracp(i) = max(0._r8,min(1._r8,fracp(i)))
-#ifdef _RDELTAT
                      srcs1(i) = sol_facti *fracp(i)*tracer(i,k)*rdeltat*(1._r8-weight(i)) &  ! Liquid
                               + sol_factii*fracp(i)*tracer(i,k)*rdeltat*(weight(i))          ! Ice
-#else
-                     srcs1(i) = sol_facti *fracp(i)*tracer(i,k)/deltat*(1._r8-weight(i)) &  ! Liquid
-                              + sol_factii*fracp(i)*tracer(i,k)/deltat*(weight(i))          ! Ice
-#endif
                      ! only strat in-cloud removal affects strat-cloudborne aerosol
                      srcs2(i) = 0._r8
                   enddo
                else
                   do i=1,ncol
-#ifdef _RDELTAT
                      tracer_incu(i) = f_act_conv(i,k)*(tracer(i,k)+& 
                            min(qqcw(i,k),tracer(i,k)*((cldt(i,k)-cldc(i,k))/max(0.01_r8,(1._r8-(cldt(i,k)-cldc(i,k)))))))              
                      srcs1(i) = sol_factic(i,k)*cldc(i,k)*fracp(i)*tracer_incu(i)*(1._r8-weight(i))*rdeltat &  ! Liquid
                               + sol_factiic    *cldc(i,k)*fracp(i)*tracer_incu(i)*(weight(i))*rdeltat          ! Ice
-#else
-                     tracer_incu(i) = f_act_conv(i,k)*(tracer(i,k)+& 
-                           min(qqcw(i,k),tracer(i,k)*((cldt(i,k)-cldc(i,k))/max(0.01_r8,(1._r8-(cldt(i,k)-cldc(i,k)))))))              
-                     srcs1(i) = sol_factic(i,k)*cldc(i,k)*fracp(i)*tracer_incu(i)*(1._r8-weight(i))/deltat &  ! Liquid
-                              + sol_factiic    *cldc(i,k)*fracp(i)*tracer_incu(i)*(weight(i))/deltat          ! Ice
-#endif
 
                      tracer_mean(i) = tracer(i,k)*(1._r8-cldc(i,k)*f_act_conv(i,k))-cldc(i,k)*f_act_conv(i,k)*&
                            min(qqcw(i,k),tracer(i,k)*((cldt(i,k)-cldc(i,k))/max(0.01_r8,(1._r8-(cldt(i,k)-cldc(i,k))))))
                      tracer_mean(i) = max(0._r8,tracer_mean(i)) 
                      odds(i)  = max(min(1._r8,precabc(i)/max(cldmabc(i),1.e-5_r8)*scavcoef(i,k)*deltat),0._r8) ! Dana and Hales coefficient (/mm)
 
-#ifdef _RDELTAT
                      srcs2(i) = sol_factb *cldmabc(i)*odds(i)*tracer_mean(i)*(1._r8-weight(i))*rdeltat & ! Liquid
                               + sol_factbi*cldmabc(i)*odds(i)*tracer_mean(i)*(weight(i))*rdeltat         ! Ice
-#else
-                     srcs2(i) = sol_factb *cldmabc(i)*odds(i)*tracer_mean(i)*(1._r8-weight(i))/deltat & ! Liquid
-                              + sol_factbi*cldmabc(i)*odds(i)*tracer_mean(i)*(weight(i))/deltat         ! Ice
-#endif
                      !Note that using the temperature-determined weight doesn't make much sense here
                      srcc(i) = srcs1(i) + srcs2(i)  ! convective tend by both processes
                      finc(i) = srcs1(i)/(srcc(i) + 1.e-36_r8) ! fraction in-cloud
@@ -562,34 +484,19 @@ subroutine wetdepa_v2(t, p, q, pdel, &
                      odds(i) = precabs(i)/max(cldvst(i,k),1.e-5_r8)*scavcoef(i,k)*deltat
                      odds(i) = max(min(1._r8,odds(i)),0._r8)
 
-#ifdef _RDELTAT
                      srcs2(i) = sol_factb *cldvst(i,k)*odds(i)*tracer_mean(i)*(1._r8-weight(i))*rdeltat & ! Liquid
                               + sol_factbi*cldvst(i,k)*odds(i)*tracer_mean(i)*(weight(i))*rdeltat         ! Ice
-#else
-                     srcs2(i) = sol_factb *cldvst(i,k)*odds(i)*tracer_mean(i)*(1._r8-weight(i))/deltat & ! Liquid
-                              + sol_factbi*cldvst(i,k)*odds(i)*tracer_mean(i)*(weight(i))/deltat         ! Ice
-#endif
                   enddo
                end if
             else
                do i=1,ncol
-#ifdef _RDELTAT
                   srcs1(i) = sol_factic(i,k)*cldc(i,k)*fracp(i)*tracer(i,k)*(1._r8-weight(i))*rdeltat &  ! liquid
                            +  sol_factiic*cldc(i,k)*fracp(i)*tracer(i,k)*(weight(i))*rdeltat      ! ice
-#else
-                  srcs1(i) = sol_factic(i,k)*cldc(i,k)*fracp(i)*tracer(i,k)*(1._r8-weight(i))/deltat &  ! liquid
-                           +  sol_factiic*cldc(i,k)*fracp(i)*tracer(i,k)*(weight(i))/deltat      ! ice
-#endif
                    odds(i) = max( &
                              min(1._r8,precabc(i)/max(cldmabc(i),1.e-5_r8) &
                            * scavcoef(i,k)*deltat),0._r8) ! Dana and Hales coefficient (/mm)
-#ifdef _RDELTAT
                    srcs2(i) = sol_factb*cldmabc(i)*odds(i)*tracer(i,k)*(1._r8-weight(i))*rdeltat & ! liquid
                             +  sol_factbi*cldmabc(i)*odds(i)*tracer(i,k)*(weight(i))*rdeltat    !ice
-#else
-                   srcs2(i) = sol_factb*cldmabc(i)*odds(i)*tracer(i,k)*(1._r8-weight(i))/deltat & ! liquid
-                            +  sol_factbi*cldmabc(i)*odds(i)*tracer(i,k)*(weight(i))/deltat    !ice
-#endif
                    !Note that using the temperature-determined weight doesn't make much sense here
                    srcc(i) = srcs1(i) + srcs2(i)  ! convective tend by both processes
                    finc(i) = srcs1(i)/(srcc(i) + 1.e-36_r8) ! fraction in-cloud
@@ -608,23 +515,13 @@ subroutine wetdepa_v2(t, p, q, pdel, &
                    !            srcs1 = cldv(i,k)*fracp*tracer(i,k)/deltat &
                    !            srcs1 = cldt(i,k)*fracp*tracer(i,k)/deltat            ! all condensate
                    !            Jan.02.2010. Sungsu : cldt --> cldt - cldc below.
-#ifdef _RDELTAT
                    srcs1(i) = sol_facti*(cldt(i,k)-cldc(i,k))*fracp(i)*tracer(i,k)*rdeltat*(1._r8-weight(i)) &  ! liquid
                             + sol_factii*(cldt(i,k)-cldc(i,k))*fracp(i)*tracer(i,k)*rdeltat*(weight(i))       ! ice
-#else
-                   srcs1(i) = sol_facti*(cldt(i,k)-cldc(i,k))*fracp(i)*tracer(i,k)/deltat*(1._r8-weight(i)) &  ! liquid
-                            + sol_factii*(cldt(i,k)-cldc(i,k))*fracp(i)*tracer(i,k)/deltat*(weight(i))       ! ice
-#endif
 
                    odds(i) = precabs(i)/max(cldvst(i,k),1.e-5_r8)*scavcoef(i,k)*deltat
                    odds(i) = max(min(1._r8,odds(i)),0._r8)
-#ifdef _RDELTAT
                    srcs2  = sol_factb*(cldvst(i,k)*odds(i)) *tracer(i,k)*(1._r8-weight(i))*rdeltat & ! liquid
                           + sol_factbi*(cldvst(i,k)*odds(i)) *tracer(i,k)*(weight(i))*rdeltat       ! ice
-#else
-                   srcs2  = sol_factb*(cldvst(i,k)*odds(i)) *tracer(i,k)*(1._r8-weight(i))/deltat & ! liquid
-                          + sol_factbi*(cldvst(i,k)*odds(i)) *tracer(i,k)*(weight(i))/deltat       ! ice
-#endif
                enddo
             end if
 
@@ -654,44 +551,25 @@ subroutine wetdepa_v2(t, p, q, pdel, &
             ! tend is all tracer removed by scavenging, plus all re-appearing from evaporation above
             ! Sungsu added cumulus contribution in the below 3 blocks
          
-#ifdef _RPDOG
             scavt(i,k) = -srct(i) + (fracev(i)*scavab(i)+fracev_cu(i)*scavabc(i))*rpdog(i)
-#else
-            scavt(i,k) = -srct(i) + (fracev(i)*scavab(i)+fracev_cu(i)*scavabc(i))*gravit/pdel(i,k)
-#endif
             iscavt(i,k) = -(srcc(i)*finc(i) + srcs(i)*fins(i))*omsm
 
             if ( present(icscavt) ) icscavt(i,k) = -(srcc(i)*finc(i)) * omsm
             if ( present(isscavt) ) isscavt(i,k) = -(srcs(i)*fins(i)) * omsm
-#ifdef _RPDOG
             if ( present(bcscavt) ) bcscavt(i,k) = -(srcc(i) * (1-finc(i))) * omsm +  &
                  fracev_cu(i)*scavabc(i)*rpdog(i)
             if ( present(bsscavt) ) bsscavt(i,k) = -(srcs(i) * (1-fins(i))) * omsm +  &
                  fracev(i)*scavab(i)*rpdog(i)
-#else
-            if ( present(bcscavt) ) bcscavt(i,k) = -(srcc(i) * (1-finc(i))) * omsm +  &
-                 fracev_cu(i)*scavabc(i)*gravit/pdel(i,k)
-            if ( present(bsscavt) ) bsscavt(i,k) = -(srcs(i) * (1-fins(i))) * omsm +  &
-                 fracev(i)*scavab(i)*gravit/pdel(i,k)
-#endif
 
             dblchek(i) = tracer(i,k) + deltat*scavt(i,k)
 
             ! now keep track of scavenged mass and precip
 
-#ifdef _PDOG
             scavab(i) = scavab(i)*(1-fracev(i)) + srcs(i)*pdog(i)
             precabs(i) = precabs(i) + (precs(i,k) - evaps(i,k))*pdog(i)
             scavabc(i) = scavabc(i)*(1-fracev_cu(i)) + srcc(i)*pdog(i)
             precabc(i) = precabc(i) + (cmfdqr(i,k) - evapc(i,k))*pdog(i)
             tracab(i) = tracab(i) + tracer(i,k)*pdog(i)
-#else
-            scavab(i) = scavab(i)*(1-fracev(i)) + srcs(i)*pdel(i,k)/gravit
-            precabs(i) = precabs(i) + (precs(i,k) - evaps(i,k))*pdel(i,k)/gravit
-            scavabc(i) = scavabc(i)*(1-fracev_cu(i)) + srcc(i)*pdel(i,k)/gravit
-            precabc(i) = precabc(i) + (cmfdqr(i,k) - evapc(i,k))*pdel(i,k)/gravit
-            tracab(i) = tracab(i) + tracer(i,k)*pdel(i,k)/gravit
-#endif
 
 
        ! Jan.16.2010. Sungsu
@@ -720,33 +598,14 @@ subroutine wetdepa_v2(t, p, q, pdel, &
          if ( found ) then
             do i = 1,ncol
                if (dblchek(i) .lt. 0._r8) then
-#ifdef _DRIVER
                   write(*,*) ' wetdapa: negative value ', i, k, tracer(i,k), &
                        dblchek(i), scavt(i,k), srct(i), rat(i), fracev(i)
-#else
-                  write(iulog,*) ' wetdapa: negative value ', i, k, tracer(i,k), &
-                       dblchek(i), scavt(i,k), srct(i), rat(i), fracev(i)
-#endif
                endif
             end do
          endif
 
       end do ! End of k = 1, pver
 
-#ifdef GENERATE_DRIVER
-  if((iam .eq. 22) .and. (firstTrip)) then 
-      call SubPrint('wetdepa_v2')
-      call OutputPrint('scavt',scavt)
-      call OutputPrint('iscavt',iscavt)
-      call OutputPrint('fracis',fracis)
-      if(present(icscavt)) call OutputPrint('icscavt',icscavt)
-      if(present(isscavt)) call OutputPrint('isscavt',isscavt)
-      if(present(bcscavt)) call OutputPrint('bcscavt',bcscavt)
-      if(present(bsscavt)) call OutputPrint('bsscavt',bsscavt)
-      firstTrip=.false.
-      call FiniSubPrint()
-   endif
-#endif
 
    end subroutine wetdepa_v2
 
@@ -904,183 +763,6 @@ subroutine wetdepa_v2(t, p, q, pdel, &
       ! the amount of tracer which is pulled out.
       !
 
-#ifndef _DRIVER 
-      do i = 1,pcols
-         precabs(i) = 0
-         precabc(i) = 0
-         scavab(i) = 0
-         scavabc(i) = 0
-         tracab(i) = 0
-         cldmabs(i) = 0
-         cldmabc(i) = 0
-      end do
-
-      do k = 1,pver
-         do i = 1,ncol
-            tc     = t(i,k) - tmelt
-            weight = max(0._r8,min(-tc*0.05_r8,1.0_r8)) ! fraction of condensate that is ice
-            weight = 0._r8                                 ! assume no ice
-
-            pdog = pdel(i,k)/gravit
-
-            ! ****************** Evaporation **************************
-            ! calculate the fraction of strat precip from above 
-            !                 which evaporates within this layer
-            fracev(i) = evaps(i,k)*pdel(i,k)/gravit &
-                     /max(1.e-12_r8,precabs(i))
-
-            ! trap to ensure reasonable ratio bounds
-            fracev(i) = max(0._r8,min(1._r8,fracev(i)))
-
-            ! ****************** Convection ***************************
-            ! now do the convective scavenging
-
-            ! set odds proportional to fraction of the grid box that is swept by the 
-            ! precipitation =precabc/rhoh20*(area of sphere projected on plane
-            !                                /volume of sphere)*deltat
-            ! assume the radius of a raindrop is 1 e-3 m from Rogers and Yau,
-            ! unless the fraction of the area that is cloud is less than odds, in which
-            ! case use the cloud fraction (assumes precabs is in kg/m2/s)
-            ! is really: precabs*3/4/1000./1e-3*deltat
-            ! here I use .1 from Balkanski
-            !
-            ! use a local rate of convective rain production for incloud scav
-            !odds=max(min(1._r8, &
-            !     cmfdqr(i,k)*pdel(i,k)/gravit*0.1_r8*deltat),0._r8)
-            !++mcb -- change cldc to cldt; change cldt to cldv (9/17/96)
-            !            srcs1 =  cldt(i,k)*odds*tracer(i,k)*(1.-weight) &
-            ! srcs1 =  cldv(i,k)*odds*tracer(i,k)*(1.-weight) &
-            !srcs1 =  cldc(i,k)*odds*tracer(i,k)*(1.-weight) &
-            !         /deltat 
-
-            ! fraction of convective cloud water converted to rain
-            fracp = cmfdqr(i,k)*deltat/max(1.e-8_r8,conicw(i,k))
-            ! note cmfdrq can be negative from evap of rain, so constrain it
-            fracp = max(min(1._r8,fracp),0._r8)
-            ! remove that amount from within the convective area
-!           srcs1 = cldc(i,k)*fracp*tracer(i,k)*(1._r8-weight)/deltat ! liquid only
-!           srcs1 = cldc(i,k)*fracp*tracer(i,k)/deltat             ! any condensation
-!           srcs1 = 0.
-            srcs1 = sol_factic(i,k)*cldt(i,k)*fracp*tracer(i,k)*(1._r8-weight)/deltat &  ! liquid
-                 +  sol_factiic*cldt(i,k)*fracp*tracer(i,k)*(weight)/deltat      ! ice
-
-
-            !--mcb
-
-            ! scavenge below cloud
-
-            !            cldmabc(i) = max(cldc(i,k),cldmabc(i))
-            !            cldmabc(i) = max(cldt(i,k),cldmabc(i))
-            cldmabc(i) = max(cldv(i,k),cldmabc(i))
-            cldmabc(i) = cldv(i,k)
-
-            odds=max( &
-                 min(1._r8,precabc(i)/max(cldmabc(i),1.e-5_r8) &
-                 *scavcoef(i,k)*deltat),0._r8) ! Dana and Hales coefficient (/mm)
-            srcs2 = sol_factb*cldmabc(i)*odds*tracer(i,k)*(1._r8-weight)/deltat & ! liquid
-                 +  sol_factbi*cldmabc(i)*odds*tracer(i,k)*(weight)/deltat    !ice
-            !Note that using the temperature-determined weight doesn't make much sense here
-
-
-            srcc = srcs1 + srcs2  ! convective tend by both processes
-            finc = srcs1/(srcc + 1.e-36_r8) ! fraction in-cloud
-
-            ! ****************** Stratiform ***********************
-            ! now do the stratiform scavenging
-
-            ! incloud scavenging
-
-            ! fracp is the fraction of cloud water converted to precip
-            fracp =  precs(i,k)*deltat/max(cwat(i,k),1.e-12_r8)
-            fracp = max(0._r8,min(1._r8,fracp))
-!           fracp = 0.     ! for debug
-
-            ! assume the corresponding amnt of tracer is removed
-            !++mcb -- remove cldc; change cldt to cldv 
-            !            srcs1 = (cldt(i,k)-cldc(i,k))*fracp*tracer(i,k)/deltat
-            !            srcs1 = cldv(i,k)*fracp*tracer(i,k)/deltat &
-!           srcs1 = cldt(i,k)*fracp*tracer(i,k)/deltat            ! all condensate
-            srcs1 = sol_facti*cldt(i,k)*fracp*tracer(i,k)/deltat*(1._r8-weight) &  ! liquid
-                 + sol_factii*cldt(i,k)*fracp*tracer(i,k)/deltat*(weight)       ! ice
-
-
-            ! below cloud scavenging
-
-!           volume undergoing below cloud scavenging
-            cldmabs(i) = cldv(i,k)   ! precipitating volume
-!           cldmabs(i) = cldt(i,k)   ! local cloud volume
-
-            odds = precabs(i)/max(cldmabs(i),1.e-5_r8)*scavcoef(i,k)*deltat
-            odds = max(min(1._r8,odds),0._r8)
-            srcs2 =sol_factb*(cldmabs(i)*odds) *tracer(i,k)*(1._r8-weight)/deltat & ! liquid
-                 + sol_factbi*(cldmabs(i)*odds) *tracer(i,k)*(weight)/deltat       ! ice
-            !Note that using the temperature-determined weight doesn't make much sense here
-
-
-            srcs = srcs1 + srcs2             ! total stratiform scavenging
-            fins=srcs1/(srcs + 1.e-36_r8)    ! fraction taken by incloud processes
-
-            ! make sure we dont take out more than is there
-            ! ratio of amount available to amount removed
-            rat(i) = tracer(i,k)/max(deltat*(srcc+srcs),1.e-36_r8)
-            if (rat(i).lt.1._r8) then
-               srcs = srcs*rat(i)
-               srcc = srcc*rat(i)
-            endif
-            srct(i) = (srcc+srcs)*omsm
-
-            
-            ! fraction that is not removed within the cloud
-            ! (assumed to be interstitial, and subject to convective transport)
-            fracp = deltat*srct(i)/max(cldmabs(i)*tracer(i,k),1.e-36_r8)  ! amount removed
-            fracp = max(0._r8,min(1._r8,fracp))
-            fracis(i,k) = 1._r8 - fracp
-
-            ! tend is all tracer removed by scavenging, plus all re-appearing from evaporation above
-            scavt(i,k) = -srct(i) + fracev(i)*scavab(i)*gravit/pdel(i,k)
-            iscavt(i,k) = -(srcc*finc + srcs*fins)*omsm
-
-            if ( present(icscavt) ) icscavt(i,k) = -(srcc*finc) * omsm
-            if ( present(isscavt) ) isscavt(i,k) = -(srcs*fins) * omsm
-            if ( present(bcscavt) ) bcscavt(i,k) = -(srcc * (1-finc)) * omsm
-            if ( present(bsscavt) ) bsscavt(i,k) = -(srcs * (1-fins)) * omsm +  &
-                 fracev(i)*scavab(i)*gravit/pdel(i,k)
-
-            dblchek(i) = tracer(i,k) + deltat*scavt(i,k)
-
-            ! now keep track of scavenged mass and precip
-            scavab(i) = scavab(i)*(1-fracev(i)) + srcs*pdel(i,k)/gravit
-            precabs(i) = precabs(i) + (precs(i,k) - evaps(i,k))*pdel(i,k)/gravit
-            scavabc(i) = scavabc(i) + srcc*pdel(i,k)/gravit
-            precabc(i) = precabc(i) + (cmfdqr(i,k))*pdel(i,k)/gravit
-            tracab(i) = tracab(i) + tracer(i,k)*pdel(i,k)/gravit
-
-         end do
-
-         found = .false.
-         do i = 1,ncol
-            if ( dblchek(i) < 0._r8 ) then
-               found = .true.
-               exit
-            end if
-         end do
-
-         if ( found ) then
-            do i = 1,ncol
-               if (dblchek(i) .lt. 0._r8) then
-#ifdef _DRIVER
-                  write(*,*) ' wetdapa: negative value ', i, k, tracer(i,k), &
-                       dblchek(i), scavt(i,k), srct(i), rat(i), fracev(i)
-#else
-                  write(iulog,*) ' wetdapa: negative value ', i, k, tracer(i,k), &
-                       dblchek(i), scavt(i,k), srct(i), rat(i), fracev(i)
-#endif
-               endif
-            end do
-         endif
-
-      end do
-#endif
 
    end subroutine wetdepa_v1
 
@@ -1264,11 +946,7 @@ subroutine wetdepa_v2(t, p, q, pdel, &
             scavin = precic*(1._r8-weight)*mplb
 
             ! fraction of precip which entered above that leaves below
-#ifdef _DRIVER
             if (.TRUE.) then
-#else
-            if (cam_physpkg_is('cam5')) then
-#endif
                ! Sungsu added evaporation of convective precipitation below.
                precxx = precab(i)-pdog*(evaps(i,k)+evapc(i,k))
             else

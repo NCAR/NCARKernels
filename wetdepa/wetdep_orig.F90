@@ -9,11 +9,11 @@ module wetdep
 
 use kinds_mod 
 use params,    only: pcols, pver, gravit, rair, tmelt
-#ifdef GENERATE_DRIVER
-use cam_logfile,  only: iulog
-use spmd_utils,   only: iam  
-use print_mod, only: subPrint,InputPrint,OutputPrint,InitSubPrint,FiniSubPrint
-#endif
+
+
+
+
+
 
 implicit none
 save
@@ -27,9 +27,9 @@ public :: clddiag     ! calc of cloudy volume and rain mixing ratio
 real(r8), parameter :: cmftau = 3600._r8
 real(r8), parameter :: rhoh2o = 1000._r8            ! density of water
 real(r8), parameter :: molwta = 28.97_r8            ! molecular weight dry air gm/mole
-#ifdef GENERATE_DRIVER
- logical, save :: firstTrip= .true. 
-#endif
+
+
+
 
 !==============================================================================
 contains
@@ -303,42 +303,6 @@ subroutine wetdepa_v2(t, p, q, pdel, &
       ! For convective cloud, cloudborne aerosol is not treated explicitly,
       !    and sol_factic is 1.0 for both cloudborne and interstitial.
 
-#ifdef GENERATE_DRIVER
-  if((iam .eq. 22) .and. (firstTrip)) then 
-      call InitSubPrint('wetdepa_v2')
-      call InputPrint('t',t)
-      call InputPrint('p',p)
-      call InputPrint('q',q)
-      call InputPrint('pdel',pdel)
-      call InputPrint('cldt',cldt)
-      call InputPrint('cldc',cldc)
-      call InputPrint('cmfdqr',cmfdqr)
-      call InputPrint('evapc',evapc)
-      call InputPrint('conicw',conicw)
-      call InputPrint('cwat',cwat)
-      call InputPrint('precs',precs)
-      call InputPrint('conds',conds)
-      call InputPrint('evaps',evaps)
-      call InputPrint('cldv',cldv)
-      call InputPrint('cldvcu',cldvcu)
-      call InputPrint('cldvst',cldvst)
-      call InputPrint('dlf',dlf)
-      call InputPrint('deltat',deltat)
-      call InputPrint('tracer',tracer)
-      call InputPrint('sol_fact',sol_fact)
-      call InputPrint('ncol',ncol)
-      call InputPrint('scavcoef',scavcoef)
-      if(present(is_strat_cloudborne)) call InputPrint('is_strat_cloudborne',is_strat_cloudborne)
-      if(present(rate1ord_cw2pr_st)) call InputPrint('rate1ord_cw2pr_st',rate1ord_cw2pr_st)
-      if(present(qqcw)) call InputPrint('qqcw',qqcw)
-      if(present(f_act_conv)) call InputPrint('f_act_conv',f_act_conv)
-      if(present(sol_facti_in)) call InputPrint('sol_facti_in',sol_facti_in)
-      if(present(sol_factbi_in)) call InputPrint('sol_factbi_in',sol_factbi_in)
-      if(present(sol_factii_in)) call InputPrint('sol_factii_in',sol_factii_in)
-      if(present(sol_factic_in)) call InputPrint('sol_factic_in',sol_factic_in)
-      if(present(sol_factiic_in)) call InputPrint('sol_factiic_in',sol_factiic_in)
-   endif
-#endif
 
 
       ! ------------------------------------------------------------------------
@@ -662,20 +626,6 @@ subroutine wetdepa_v2(t, p, q, pdel, &
 
       end do ! End of k = 1, pver
 
-#ifdef GENERATE_DRIVER
-  if((iam .eq. 22) .and. (firstTrip)) then 
-      call SubPrint('wetdepa_v2')
-      call OutputPrint('scavt',scavt)
-      call OutputPrint('iscavt',iscavt)
-      call OutputPrint('fracis',fracis)
-      if(present(icscavt)) call OutputPrint('icscavt',icscavt)
-      if(present(isscavt)) call OutputPrint('isscavt',isscavt)
-      if(present(bcscavt)) call OutputPrint('bcscavt',bcscavt)
-      if(present(bsscavt)) call OutputPrint('bsscavt',bsscavt)
-      firstTrip=.false.
-      call FiniSubPrint()
-   endif
-#endif
 
    end subroutine wetdepa_v2
 
