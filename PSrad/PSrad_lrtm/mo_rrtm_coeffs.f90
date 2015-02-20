@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_rrtm_coeffs.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:27
+! Generated at: 2015-02-19 15:30:32
+! KGEN version: 0.4.4
 
 
 
@@ -23,16 +23,16 @@
         coln2o, colco, colch4, colo2, colbrd, fac00, fac01, fac10, fac11, rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, &
         rat_h2on2o, rat_h2on2o_1, rat_h2och4, rat_h2och4_1, rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, selffac, selffrac, &
         indself, forfac, forfrac, indfor, minorfrac, scaleminor, scaleminorn2, indminor)
-            INTEGER, intent(in) :: klev
             INTEGER, intent(in) :: kbdim
+            INTEGER, intent(in) :: klev
             INTEGER, intent(in) :: kproma
             ! number of columns
             ! maximum number of column as first dim is declared in calling (sub)prog.
             ! total number of layers
+            REAL(KIND=wp), intent(in) :: wkl(:,:,:)
+            REAL(KIND=wp), intent(in) :: play(kbdim,klev)
             REAL(KIND=wp), intent(in) :: tlay(kbdim,klev)
             REAL(KIND=wp), intent(in) :: coldry(kbdim,klev)
-            REAL(KIND=wp), intent(in) :: play(kbdim,klev)
-            REAL(KIND=wp), intent(in) :: wkl(:,:,:)
             REAL(KIND=wp), intent(in) :: wbroad(kbdim,klev)
             ! layer pressures (mb)
             ! layer temperatures (K)
@@ -42,12 +42,12 @@
             !
             ! Output Dimensions kproma, klev unless otherwise specified
             !
-            INTEGER, intent(out) :: indself(kbdim,klev)
             INTEGER, intent(out) :: laytrop(kbdim)
+            INTEGER, intent(out) :: jp(kbdim,klev)
             INTEGER, intent(out) :: jt(kbdim,klev)
             INTEGER, intent(out) :: jt1(kbdim,klev)
             INTEGER, intent(out) :: indfor(kbdim,klev)
-            INTEGER, intent(out) :: jp(kbdim,klev)
+            INTEGER, intent(out) :: indself(kbdim,klev)
             INTEGER, intent(out) :: indminor(kbdim,klev)
             !< tropopause layer index
             !
@@ -57,16 +57,16 @@
             !
             !
             REAL(KIND=wp), intent(out) :: forfac(kbdim,klev)
-            REAL(KIND=wp), intent(out) :: forfrac(kbdim,klev)
             REAL(KIND=wp), intent(out) :: colch4(kbdim,klev)
             REAL(KIND=wp), intent(out) :: colco2(kbdim,klev)
             REAL(KIND=wp), intent(out) :: colh2o(kbdim,klev)
             REAL(KIND=wp), intent(out) :: coln2o(kbdim,klev)
+            REAL(KIND=wp), intent(out) :: forfrac(kbdim,klev)
             REAL(KIND=wp), intent(out) :: selffrac(kbdim,klev)
             REAL(KIND=wp), intent(out) :: colo3(kbdim,klev)
             REAL(KIND=wp), intent(out) :: fac00(kbdim,klev)
-            REAL(KIND=wp), intent(out) :: fac01(kbdim,klev)
             REAL(KIND=wp), intent(out) :: colo2(kbdim,klev)
+            REAL(KIND=wp), intent(out) :: fac01(kbdim,klev)
             REAL(KIND=wp), intent(out) :: fac10(kbdim,klev)
             REAL(KIND=wp), intent(out) :: fac11(kbdim,klev)
             REAL(KIND=wp), intent(out) :: selffac(kbdim,klev)
@@ -160,8 +160,8 @@
             ! total number of layers
             REAL(KIND=wp), intent(in) :: play(kbdim,klev)
             REAL(KIND=wp), intent(in) :: tlay(kbdim,klev)
-            REAL(KIND=wp), intent(in) :: coldry(kbdim,klev)
             REAL(KIND=wp), intent(in) :: wkl(:,:,:)
+            REAL(KIND=wp), intent(in) :: coldry(kbdim,klev)
             ! layer pressures (mb)
             ! layer temperatures (K)
             ! dry air column density (mol/cm2)

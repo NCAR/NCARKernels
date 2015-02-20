@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_lrtm_gas_optics.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:36
+! Generated at: 2015-02-19 15:30:40
+! KGEN version: 0.4.4
 
 
 
@@ -223,8 +223,8 @@
             REAL(KIND=wp), intent(in) :: scaleminorn2(:)
             !    Dimensions: (nlayers)
             REAL(KIND=wp), intent(in) :: fac11(:)
-            REAL(KIND=wp), intent(in) :: fac00(:)
             REAL(KIND=wp), intent(in) :: fac01(:)
+            REAL(KIND=wp), intent(in) :: fac00(:)
             REAL(KIND=wp), intent(in) :: fac10(:) !
             !    Dimensions: (nlayers)
             REAL(KIND=wp), intent(in) :: rat_h2oco2(:)
@@ -1248,9 +1248,9 @@
                 USE rrlw_kg06, ONLY: selfref
                 USE rrlw_kg06, ONLY: forref
                 USE rrlw_kg06, ONLY: ka_mco2
-                USE rrlw_kg06, ONLY: cfc11adj
-                USE rrlw_kg06, ONLY: absa
                 USE rrlw_kg06, ONLY: cfc12
+                USE rrlw_kg06, ONLY: absa
+                USE rrlw_kg06, ONLY: cfc11adj
                 USE rrlw_kg06, ONLY: fracrefa
                 ! ------- Declarations -------
                 ! Local

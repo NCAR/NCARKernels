@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_lrtm_solver.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:27
+! Generated at: 2015-02-19 15:30:36
+! KGEN version: 0.4.4
 
 
 
@@ -42,8 +42,8 @@
             REAL(KIND=wp), intent(in) :: levplnk(kbdim, 0:klev)
             !< Planck function at layer edges, level i is the top of layer i
             REAL(KIND=wp), intent(in) :: secdiff(kbdim)
-            REAL(KIND=wp), intent(in) :: surfplanck(kbdim)
-            REAL(KIND=wp), intent(in) :: surfemis(kbdim) !< dimension (kbdim)
+            REAL(KIND=wp), intent(in) :: surfemis(kbdim)
+            REAL(KIND=wp), intent(in) :: surfplanck(kbdim) !< dimension (kbdim)
             !< Planck function at surface
             !< Surface emissivity
             !< secant of integration angle - depends on band, column water vapor
@@ -147,10 +147,10 @@
             ! over a wide range of precipitable water values.
             REAL(KIND=wp), dimension(nbndlw), parameter :: a0 = (/ 1.66_wp,  1.55_wp,  1.58_wp,  1.66_wp, 1.54_wp, 1.454_wp,  &
             1.89_wp,  1.33_wp,                   1.668_wp, 1.66_wp,  1.66_wp,  1.66_wp, 1.66_wp,  1.66_wp,  1.66_wp,  1.66_wp /)
-            REAL(KIND=wp), dimension(nbndlw), parameter :: a2 = (/ 0.00_wp, -12.0_wp, -11.7_wp,  0.00_wp, -0.72_wp,-0.243_wp,  &
-            0.19_wp,-0.062_wp,                  0.414_wp, 0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp, 0.00_wp /)
             REAL(KIND=wp), dimension(nbndlw), parameter :: a1 = (/ 0.00_wp,  0.25_wp,  0.22_wp,  0.00_wp,  0.13_wp, 0.446_wp, &
             -0.10_wp,  0.40_wp,                 -0.006_wp, 0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp /)
+            REAL(KIND=wp), dimension(nbndlw), parameter :: a2 = (/ 0.00_wp, -12.0_wp, -11.7_wp,  0.00_wp, -0.72_wp,-0.243_wp,  &
+            0.19_wp,-0.062_wp,                  0.414_wp, 0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp,  0.00_wp, 0.00_wp /)
             IF (iband == 1 .or. iband == 4 .or. iband >= 10) THEN
                 find_secdiff = 1.66_wp
                 ELSE

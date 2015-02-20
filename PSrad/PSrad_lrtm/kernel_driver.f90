@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : kernel_driver.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:26
+! Generated at: 2015-02-19 15:30:29
+! KGEN version: 0.4.4
 
 
 PROGRAM kernel_driver
@@ -33,9 +33,9 @@ PROGRAM kernel_driver
     IMPLICIT NONE
 
     ! read interface
-    interface kgen_read_var
-        procedure read_var_real_wp_dim1
-    end interface kgen_read_var
+    !interface kgen_read_var
+    !    procedure read_var_real_wp_dim1
+    !end interface kgen_read_var
 
 
     INTEGER :: kgen_ierr, kgen_unit
@@ -44,17 +44,17 @@ PROGRAM kernel_driver
     CHARACTER(LEN=16) :: kgen_counter_conv
     INTEGER, DIMENSION(3), PARAMETER :: kgen_counter_at = (/ 1, 10, 50 /)
     CHARACTER(LEN=1024) :: kgen_filepath
-    INTEGER :: kbdim
-    INTEGER :: ktrac
-    INTEGER :: klev
     INTEGER :: nb_sw
+    INTEGER :: klev
     REAL(KIND=wp), allocatable :: tk_sfc(:)
     INTEGER :: kproma
+    INTEGER :: kbdim
+    INTEGER :: ktrac
 
     DO kgen_repeat_counter = 0, 2
         kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 3)+1)
         WRITE( kgen_counter_conv, * ) kgen_counter
-        kgen_filepath = "./lrtm." // trim(adjustl(kgen_counter_conv))
+        kgen_filepath = "/glade/p/work/youngsun/temp/echam-PSrad/kernel/lrtm." // trim(adjustl(kgen_counter_conv))
         kgen_unit = kgen_get_newunit()
         OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
         WRITE (*,*)
@@ -86,13 +86,14 @@ PROGRAM kernel_driver
         call read_externs_mo_random_numbers(kgen_unit)
 
         ! driver variables
-            READ(UNIT=kgen_unit) klev
             READ(UNIT=kgen_unit) kbdim
+            READ(UNIT=kgen_unit) klev
             READ(UNIT=kgen_unit) nb_sw
             READ(UNIT=kgen_unit) kproma
             READ(UNIT=kgen_unit) ktrac
-            call kgen_read_var(tk_sfc, kgen_unit)
-        call psrad_interface(klev, kbdim, nb_sw, kproma, ktrac, tk_sfc, kgen_unit)
+            !call kgen_read_var(tk_sfc, kgen_unit)
+            call read_var_real_wp_dim1(tk_sfc, kgen_unit)
+        call psrad_interface(kbdim, klev, nb_sw, kproma, ktrac, tk_sfc, kgen_unit)
 
             CLOSE (UNIT=kgen_unit)
         END DO

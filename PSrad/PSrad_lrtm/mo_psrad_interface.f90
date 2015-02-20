@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_psrad_interface.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:25
+! Generated at: 2015-02-19 15:30:28
+! KGEN version: 0.4.4
 
 
 
@@ -16,6 +16,7 @@
         USE mo_lrtm_driver, ONLY: lrtm
         USE mo_spec_sampling, ONLY: spec_sampling_strategy
         IMPLICIT NONE
+        PUBLIC lw_strat
         PUBLIC read_externs_mo_psrad_interface
         INTEGER, PARAMETER :: kgen_dp = selected_real_kind(15, 307)
         PUBLIC psrad_interface
@@ -28,7 +29,6 @@
             integer :: VerboseLevel
             real(kind=kgen_dp) :: tolerance
         end type check_t
-        PUBLIC lw_strat
         TYPE(spec_sampling_strategy), save :: lw_strat
         !< Spectral sampling strategies for longwave, shortwave
         INTEGER, parameter :: rng_seed_size = 4
@@ -106,36 +106,36 @@
         !!    index = 7 => O2
         !
 
-        SUBROUTINE psrad_interface(klev, kbdim, nb_sw, kproma, ktrac, tk_sfc, kgen_unit)
+        SUBROUTINE psrad_interface(kbdim, klev, nb_sw, kproma, ktrac, tk_sfc, kgen_unit)
             integer, intent(in) :: kgen_unit
 
             ! read interface
-            interface kgen_read_var
-                procedure read_var_real_wp_dim1
-                procedure read_var_real_wp_dim2
-                procedure read_var_real_wp_dim3
-                procedure read_var_integer_4_dim2
-            end interface kgen_read_var
+            !interface kgen_read_var
+            !    procedure read_var_real_wp_dim2
+            !    procedure read_var_real_wp_dim1
+            !    procedure read_var_real_wp_dim3
+            !    procedure read_var_integer_4_dim2
+            !end interface kgen_read_var
 
 
 
             ! verification interface
-            interface kgen_verify_var
-                procedure verify_var_logical
-                procedure verify_var_integer
-                procedure verify_var_real
-                procedure verify_var_character
-                procedure verify_var_real_wp_dim1
-                procedure verify_var_real_wp_dim2
-                procedure verify_var_real_wp_dim3
-                procedure verify_var_integer_4_dim2
-            end interface kgen_verify_var
+            !interface kgen_verify_var
+            !    procedure verify_var_logical
+            !    procedure verify_var_integer
+            !    procedure verify_var_real
+            !    procedure verify_var_character
+            !    procedure verify_var_real_wp_dim2
+            !    procedure verify_var_real_wp_dim1
+            !    procedure verify_var_real_wp_dim3
+            !    procedure verify_var_integer_4_dim2
+            !end interface kgen_verify_var
 
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
-            INTEGER, intent(in) :: klev
             INTEGER, intent(in) :: kbdim
+            INTEGER, intent(in) :: klev
             INTEGER, intent(in) :: nb_sw
             INTEGER, intent(in) :: kproma
             INTEGER, intent(in) :: ktrac
@@ -192,8 +192,8 @@
             ! -------------------------------------------------------------------------------------
             !< loop indicies
             !< index for clear or cloudy
-            REAL(KIND=wp) :: pm_sfc      (kbdim)
             REAL(KIND=wp) :: zsemiss     (kbdim,nbndlw)
+            REAL(KIND=wp) :: pm_sfc      (kbdim)
             !< LW surface emissivity by band
             !< pressure thickness in Pa
             !< surface pressure in mb
@@ -203,13 +203,13 @@
             ! --- vertically reversed _vr variables
             !
             REAL(KIND=wp) :: cld_frc_vr(kbdim,klev)
-            REAL(KIND=wp) :: cld_tau_lw_vr(kbdim,klev,nbndlw)
             REAL(KIND=wp) :: aer_tau_lw_vr(kbdim,klev,nbndlw)
-            REAL(KIND=wp) :: wx_vr        (kbdim,maxxsec,klev)
             REAL(KIND=wp) :: pm_fl_vr  (kbdim,klev)
             REAL(KIND=wp) :: tk_fl_vr  (kbdim,klev)
             REAL(KIND=wp) :: tk_hl_vr  (kbdim,klev+1)
+            REAL(KIND=wp) :: cld_tau_lw_vr(kbdim,klev,nbndlw)
             REAL(KIND=wp) :: wkl_vr       (kbdim,maxinpx,klev)
+            REAL(KIND=wp) :: wx_vr        (kbdim,maxxsec,klev)
             REAL(KIND=wp) :: col_dry_vr(kbdim,klev)
             !< number of molecules/cm2 of
             !< full level pressure [mb]
@@ -238,12 +238,12 @@
             !< aerosol single scattering albedo
             REAL(KIND=wp) :: flx_uplw_vr(kbdim,klev+1)
             REAL(KIND=wp), allocatable :: ref_flx_uplw_vr(:,:)
-            REAL(KIND=wp) :: flx_dnlw_vr(kbdim,klev+1)
-            REAL(KIND=wp), allocatable :: ref_flx_dnlw_vr(:,:)
             REAL(KIND=wp) :: flx_uplw_clr_vr(kbdim,klev+1)
             REAL(KIND=wp), allocatable :: ref_flx_uplw_clr_vr(:,:)
             REAL(KIND=wp) :: flx_dnlw_clr_vr(kbdim,klev+1)
             REAL(KIND=wp), allocatable :: ref_flx_dnlw_clr_vr(:,:)
+            REAL(KIND=wp) :: flx_dnlw_vr(kbdim,klev+1)
+            REAL(KIND=wp), allocatable :: ref_flx_dnlw_vr(:,:)
             !< upward flux, total sky
             !< upward flux, clear sky
             !< downward flux, total sky
@@ -292,38 +292,45 @@
             !
             ! Seeds for random numbers come from least significant digits of pressure field
             !
-            tolerance = 1.E-14
+            tolerance = 1.E-12
             CALL kgen_init_check(check_status, tolerance)
-            READ(UNIT=kgen_unit) pm_sfc
             READ(UNIT=kgen_unit) zsemiss
+            READ(UNIT=kgen_unit) pm_sfc
             READ(UNIT=kgen_unit) cld_frc_vr
-            READ(UNIT=kgen_unit) cld_tau_lw_vr
             READ(UNIT=kgen_unit) aer_tau_lw_vr
-            READ(UNIT=kgen_unit) wx_vr
             READ(UNIT=kgen_unit) pm_fl_vr
             READ(UNIT=kgen_unit) tk_fl_vr
             READ(UNIT=kgen_unit) tk_hl_vr
+            READ(UNIT=kgen_unit) cld_tau_lw_vr
             READ(UNIT=kgen_unit) wkl_vr
+            READ(UNIT=kgen_unit) wx_vr
             READ(UNIT=kgen_unit) col_dry_vr
             READ(UNIT=kgen_unit) flx_uplw_vr
-            READ(UNIT=kgen_unit) flx_dnlw_vr
             READ(UNIT=kgen_unit) flx_uplw_clr_vr
             READ(UNIT=kgen_unit) flx_dnlw_clr_vr
+            READ(UNIT=kgen_unit) flx_dnlw_vr
             READ(UNIT=kgen_unit) rnseeds
             READ(UNIT=kgen_unit) n_gpts_ts
-            call kgen_read_var(ref_flx_uplw_vr, kgen_unit)
-            call kgen_read_var(ref_flx_dnlw_vr, kgen_unit)
-            call kgen_read_var(ref_flx_uplw_clr_vr, kgen_unit)
-            call kgen_read_var(ref_flx_dnlw_clr_vr, kgen_unit)
-            call kgen_read_var(ref_rnseeds, kgen_unit)
+
+            !call kgen_read_var(ref_flx_uplw_vr, kgen_unit)
+            !call kgen_read_var(ref_flx_uplw_clr_vr, kgen_unit)
+            !call kgen_read_var(ref_flx_dnlw_clr_vr, kgen_unit)
+            !call kgen_read_var(ref_flx_dnlw_vr, kgen_unit)
+            !call kgen_read_var(ref_rnseeds, kgen_unit)
+            call read_var_real_wp_dim2(ref_flx_uplw_vr, kgen_unit)
+            call read_var_real_wp_dim2(ref_flx_uplw_clr_vr, kgen_unit)
+            call read_var_real_wp_dim2(ref_flx_dnlw_clr_vr, kgen_unit)
+            call read_var_real_wp_dim2(ref_flx_dnlw_vr, kgen_unit)
+            call read_var_integer_4_dim2(ref_rnseeds, kgen_unit)
+
             ! call to kernel
             CALL lrtm(kproma, kbdim, klev, pm_fl_vr, pm_sfc, tk_fl_vr, tk_hl_vr, tk_sfc, wkl_vr, wx_vr, col_dry_vr, zsemiss, cld_frc_vr, cld_tau_lw_vr, aer_tau_lw_vr, rnseeds, lw_strat, n_gpts_ts, flx_uplw_vr, flx_dnlw_vr, flx_uplw_clr_vr, flx_dnlw_clr_vr)
             ! kernel verification for output variables
-            call kgen_verify_var("flx_uplw_vr", check_status, flx_uplw_vr, ref_flx_uplw_vr)
-            call kgen_verify_var("flx_dnlw_vr", check_status, flx_dnlw_vr, ref_flx_dnlw_vr)
-            call kgen_verify_var("flx_uplw_clr_vr", check_status, flx_uplw_clr_vr, ref_flx_uplw_clr_vr)
-            call kgen_verify_var("flx_dnlw_clr_vr", check_status, flx_dnlw_clr_vr, ref_flx_dnlw_clr_vr)
-            call kgen_verify_var("rnseeds", check_status, rnseeds, ref_rnseeds)
+            call verify_var_real_wp_dim2("flx_uplw_vr", check_status, flx_uplw_vr, ref_flx_uplw_vr)
+            call verify_var_real_wp_dim2("flx_uplw_clr_vr", check_status, flx_uplw_clr_vr, ref_flx_uplw_clr_vr)
+            call verify_var_real_wp_dim2("flx_dnlw_clr_vr", check_status, flx_dnlw_clr_vr, ref_flx_dnlw_clr_vr)
+            call verify_var_real_wp_dim2("flx_dnlw_vr", check_status, flx_dnlw_vr, ref_flx_dnlw_vr)
+            call verify_var_integer_4_dim2("rnseeds", check_status, rnseeds, ref_rnseeds)
             CALL kgen_print_check("lrtm", check_status)
             CALL system_clock(start_clock, rate_clock)
             DO kgen_intvar=1,10
@@ -350,20 +357,6 @@
         CONTAINS
 
         ! read subroutines
-        subroutine read_var_real_wp_dim1(var, kgen_unit)
-            integer, intent(in) :: kgen_unit
-            real(kind=wp), intent(out), dimension(:), allocatable :: var
-            integer, dimension(2,1) :: kgen_bound
-            logical is_save
-            
-            READ(UNIT = kgen_unit) is_save
-            if ( is_save ) then
-                READ(UNIT = kgen_unit) kgen_bound(1, 1)
-                READ(UNIT = kgen_unit) kgen_bound(2, 1)
-                ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
-                READ(UNIT = kgen_unit) var
-            end if
-        end subroutine
         subroutine read_var_real_wp_dim2(var, kgen_unit)
             integer, intent(in) :: kgen_unit
             real(kind=wp), intent(out), dimension(:,:), allocatable :: var
@@ -377,6 +370,20 @@
                 READ(UNIT = kgen_unit) kgen_bound(1, 2)
                 READ(UNIT = kgen_unit) kgen_bound(2, 2)
                 ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
+                READ(UNIT = kgen_unit) var
+            end if
+        end subroutine
+        subroutine read_var_real_wp_dim1(var, kgen_unit)
+            integer, intent(in) :: kgen_unit
+            real(kind=wp), intent(out), dimension(:), allocatable :: var
+            integer, dimension(2,1) :: kgen_bound
+            logical is_save
+            
+            READ(UNIT = kgen_unit) is_save
+            if ( is_save ) then
+                READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
                 READ(UNIT = kgen_unit) var
             end if
         end subroutine
@@ -515,20 +522,20 @@
             END IF
         end subroutine
 
-        subroutine verify_var_real_wp_dim1(varname, check_status, var, ref_var)
+        subroutine verify_var_real_wp_dim2(varname, check_status, var, ref_var)
             character(*), intent(in) :: varname
             type(check_t), intent(inout) :: check_status
-            real(kind=wp), intent(in), dimension(:) :: var
-            real(kind=wp), intent(in), allocatable, dimension(:) :: ref_var
+            real(kind=wp), intent(in), dimension(:,:) :: var
+            real(kind=wp), intent(in), allocatable, dimension(:,:) :: ref_var
             real(kind=wp) :: nrmsdiff, rmsdiff
-            real(kind=wp), allocatable :: temp(:), temp2(:)
+            real(kind=wp), allocatable :: temp(:,:), temp2(:,:)
             integer :: n
         
         
             IF ( ALLOCATED(ref_var) ) THEN
                 check_status%numTotal = check_status%numTotal + 1
-                allocate(temp(SIZE(var,dim=1)))
-                allocate(temp2(SIZE(var,dim=1)))
+                allocate(temp(SIZE(var,dim=1),SIZE(var,dim=2)))
+                allocate(temp2(SIZE(var,dim=1),SIZE(var,dim=2)))
                 IF ( ALL( var == ref_var ) ) THEN
                     check_status%numIdentical = check_status%numIdentical + 1            
                     if(check_status%verboseLevel > 1) then
@@ -576,20 +583,20 @@
             END IF
         end subroutine
 
-        subroutine verify_var_real_wp_dim2(varname, check_status, var, ref_var)
+        subroutine verify_var_real_wp_dim1(varname, check_status, var, ref_var)
             character(*), intent(in) :: varname
             type(check_t), intent(inout) :: check_status
-            real(kind=wp), intent(in), dimension(:,:) :: var
-            real(kind=wp), intent(in), allocatable, dimension(:,:) :: ref_var
+            real(kind=wp), intent(in), dimension(:) :: var
+            real(kind=wp), intent(in), allocatable, dimension(:) :: ref_var
             real(kind=wp) :: nrmsdiff, rmsdiff
-            real(kind=wp), allocatable :: temp(:,:), temp2(:,:)
+            real(kind=wp), allocatable :: temp(:), temp2(:)
             integer :: n
         
         
             IF ( ALLOCATED(ref_var) ) THEN
                 check_status%numTotal = check_status%numTotal + 1
-                allocate(temp(SIZE(var,dim=1),SIZE(var,dim=2)))
-                allocate(temp2(SIZE(var,dim=1),SIZE(var,dim=2)))
+                allocate(temp(SIZE(var,dim=1)))
+                allocate(temp2(SIZE(var,dim=1)))
                 IF ( ALL( var == ref_var ) ) THEN
                     check_status%numIdentical = check_status%numIdentical + 1            
                     if(check_status%verboseLevel > 1) then

@@ -2,16 +2,16 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_lrtm_driver.f90
-! Generated at: 0.4.3
-! KGEN version: 2015-02-17 09:08:35
+! Generated at: 2015-02-19 15:30:29
+! KGEN version: 0.4.4
 
 
 
     MODULE mo_lrtm_driver
         USE mo_kind, ONLY: wp
         USE mo_physical_constants, ONLY: amw
-        USE mo_physical_constants, ONLY: grav
         USE mo_physical_constants, ONLY: amd
+        USE mo_physical_constants, ONLY: grav
         USE mo_rrtm_params, ONLY: nbndlw
         USE mo_rrtm_params, ONLY: ngptlw
         USE mo_radiation_parameters, ONLY: do_gpoint
@@ -60,8 +60,8 @@
 
         SUBROUTINE lrtm(kproma, kbdim, klev, play, psfc, tlay, tlev, tsfc, wkl, wx, coldry, emis, cldfr, taucld, tauaer, rnseeds, &
         strategy, n_gpts_ts, uflx, dflx, uflxc, dflxc)
-            INTEGER, intent(in) :: kbdim
             INTEGER, intent(in) :: klev
+            INTEGER, intent(in) :: kbdim
             INTEGER, intent(in) :: kproma
             !< Maximum block length
             !< Number of horizontal columns
@@ -128,43 +128,43 @@
             ! Planck function at level interfaces
             ! Planck function at surface
             ! Surface emission
-            REAL(KIND=wp) :: zgpfu(kbdim,0:klev)
             REAL(KIND=wp) :: zgpfd(kbdim,0:klev)
-            REAL(KIND=wp) :: zgpcd(kbdim,0:klev)
+            REAL(KIND=wp) :: zgpfu(kbdim,0:klev)
             REAL(KIND=wp) :: zgpcu(kbdim,0:klev)
+            REAL(KIND=wp) :: zgpcd(kbdim,0:klev)
             ! < gpoint clearsky downward flux
             ! < gpoint clearsky downward flux
             ! < gpoint fullsky downward flux
             ! < gpoint fullsky downward flux
             ! -----------------
             ! Variables for gas optics calculations
-            INTEGER :: jp      (kbdim,klev)
-            INTEGER :: indminor(kbdim,klev)
-            INTEGER :: jt      (kbdim,klev)
             INTEGER :: jt1     (kbdim,klev)
             INTEGER :: indfor  (kbdim,klev)
             INTEGER :: indself (kbdim,klev)
+            INTEGER :: indminor(kbdim,klev)
             INTEGER :: laytrop (kbdim     )
+            INTEGER :: jp      (kbdim,klev)
+            INTEGER :: jt      (kbdim,klev)
             !< tropopause layer index
             !< lookup table index
             !< lookup table index
             !< lookup table index
             REAL(KIND=wp) :: wbrodl      (kbdim,klev)
-            REAL(KIND=wp) :: selffrac    (kbdim,klev)
-            REAL(KIND=wp) :: colco2      (kbdim,klev)
+            REAL(KIND=wp) :: selffac     (kbdim,klev)
+            REAL(KIND=wp) :: colh2o      (kbdim,klev)
             REAL(KIND=wp) :: colo3       (kbdim,klev)
             REAL(KIND=wp) :: coln2o      (kbdim,klev)
-            REAL(KIND=wp) :: minorfrac   (kbdim,klev)
             REAL(KIND=wp) :: colco       (kbdim,klev)
+            REAL(KIND=wp) :: selffrac    (kbdim,klev)
             REAL(KIND=wp) :: colch4      (kbdim,klev)
             REAL(KIND=wp) :: colo2       (kbdim,klev)
-            REAL(KIND=wp) :: forfrac     (kbdim,klev)
-            REAL(KIND=wp) :: scaleminor  (kbdim,klev)
             REAL(KIND=wp) :: colbrd      (kbdim,klev)
-            REAL(KIND=wp) :: forfac      (kbdim,klev)
-            REAL(KIND=wp) :: colh2o      (kbdim,klev)
+            REAL(KIND=wp) :: minorfrac   (kbdim,klev)
             REAL(KIND=wp) :: scaleminorn2(kbdim,klev)
-            REAL(KIND=wp) :: selffac     (kbdim,klev)
+            REAL(KIND=wp) :: scaleminor  (kbdim,klev)
+            REAL(KIND=wp) :: forfac      (kbdim,klev)
+            REAL(KIND=wp) :: colco2      (kbdim,klev)
+            REAL(KIND=wp) :: forfrac     (kbdim,klev)
             !< column amount (h2o)
             !< column amount (co2)
             !< column amount (o3)
@@ -179,18 +179,18 @@
             REAL(KIND=wp) :: fac01(kbdim,klev)
             REAL(KIND=wp) :: fac10(kbdim,klev)
             REAL(KIND=wp) :: fac11(kbdim,klev)
+            REAL(KIND=wp) :: rat_n2oco2  (kbdim,klev)
+            REAL(KIND=wp) :: rat_o3co2   (kbdim,klev)
             REAL(KIND=wp) :: rat_h2on2o  (kbdim,klev)
             REAL(KIND=wp) :: rat_n2oco2_1(kbdim,klev)
-            REAL(KIND=wp) :: rat_h2oco2_1(kbdim,klev)
             REAL(KIND=wp) :: rat_h2on2o_1(kbdim,klev)
-            REAL(KIND=wp) :: rat_h2och4  (kbdim,klev)
-            REAL(KIND=wp) :: rat_n2oco2  (kbdim,klev)
+            REAL(KIND=wp) :: rat_h2oco2_1(kbdim,klev)
             REAL(KIND=wp) :: rat_h2oo3   (kbdim,klev)
-            REAL(KIND=wp) :: rat_h2och4_1(kbdim,klev)
+            REAL(KIND=wp) :: rat_h2och4  (kbdim,klev)
+            REAL(KIND=wp) :: rat_h2oco2  (kbdim,klev)
             REAL(KIND=wp) :: rat_h2oo3_1 (kbdim,klev)
             REAL(KIND=wp) :: rat_o3co2_1 (kbdim,klev)
-            REAL(KIND=wp) :: rat_o3co2   (kbdim,klev)
-            REAL(KIND=wp) :: rat_h2oco2  (kbdim,klev)
+            REAL(KIND=wp) :: rat_h2och4_1(kbdim,klev)
             ! -----------------
             INTEGER :: jl
             INTEGER :: ig
