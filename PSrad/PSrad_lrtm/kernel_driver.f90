@@ -54,7 +54,7 @@ PROGRAM kernel_driver
     DO kgen_repeat_counter = 0, 2
         kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 3)+1)
         WRITE( kgen_counter_conv, * ) kgen_counter
-        kgen_filepath = "/glade/p/work/youngsun/temp/echam-PSrad/kernel/lrtm." // trim(adjustl(kgen_counter_conv))
+        kgen_filepath = "./lrtm." // trim(adjustl(kgen_counter_conv))
         kgen_unit = kgen_get_newunit()
         OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
         WRITE (*,*)
