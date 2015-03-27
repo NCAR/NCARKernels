@@ -440,6 +440,27 @@ END INTERFACE
             rrpk_jt(:,0,:) = jt
             rrpk_jt(:,1,:) = jt1
             DO ig = 1, n_gpts_ts
+                igpt=igs(1,ig)
+                IF(ngb(igpt) == 3) Then
+                        jl=kproma
+                        !print *,"==================================="
+                        !print *,kproma
+                        call taumol03_lwr(jl,laytrop(1), klev,                          &
+                            rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
+                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
+                            selffac(1:jl,:),selffrac(1:jl,:),forfac(1:jl,:),forfrac(1:jl,:), &
+                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), indself(1:jl,:), &
+                            indfor(1:jl,:), indminor(1:jl,:), &
+                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
+                        call taumol03_upr(jl,laytrop(1), klev,                          &
+                            rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
+                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
+                            forfac(1:jl,:),forfrac(1:jl,:),           &
+                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), &
+                            indfor(1:jl,:), indminor(1:jl,:), &
+                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
+                        taug=rrpk_taug(jl,:)
+                ENDIF
                 DO jl = 1, kproma
                     ib = ibs(jl, ig)
                     igpt = igs(jl, ig)
@@ -448,23 +469,8 @@ END INTERFACE
                     !   CFC gas concentrations (wx) need the same normalization
                     !   Per Eli Mlawer the k values used in gas optics tables have been multiplied by 1e20
                     wx_loc(:,:) = 1.e-20_wp * wx(jl,:,:)
-                    IF (ngb(igpt) == 3) THEN
-                        call taumol03_lwr(jl,laytrop(jl), klev,                          &
-                            rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
-                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
-                            selffac(1:jl,:),selffrac(1:jl,:),forfac(1:jl,:),forfrac(1:jl,:), &
-                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), indself(1:jl,:), &
-                            indfor(1:jl,:), indminor(1:jl,:), &
-                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
-                        call taumol03_upr(jl,laytrop(jl), klev,                          &
-                            rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
-                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
-                            forfac(1:jl,:),forfrac(1:jl,:),           &
-                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), &
-                            indfor(1:jl,:), indminor(1:jl,:), &
-                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
-                        taug=rrpk_taug(jl,:)
-                    ELSE
+                    IF (ngb(igpt) /= 3) THEN
+                    
                         CALL gas_optics_lw(klev, igpt, play        (jl,:), wx_loc    (:,:), coldry      (jl,:), laytrop     (jl), jp  &
                             (jl,:), jt        (jl,:), jt1         (jl,:), colh2o      (jl,:), colco2      (jl,:), colo3     (jl,:)&
                             , coln2o      (jl,:), colco       (jl,:), colch4      (jl,:), colo2     (jl,:), colbrd      (jl,:), fac00     &

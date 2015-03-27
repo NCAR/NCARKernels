@@ -185,7 +185,7 @@ DO lay = 1,laytrop  ! loop over layers
       ! This loop should vectorize 
       ! =============================
 !dir$ SIMD
-      DO icol=ncol,ncol  ! Vectorizes with dir - 14.0.2
+      DO icol=1,ncol  ! Vectorizes with dir - 14.0.2
          speccomb(icol) = colh2o(icol,lay) + rat_h2oco2(icol,i,lay)*colco2(icol,lay)
          specparm(icol) = colh2o(icol,lay)/speccomb(icol)
          IF (specparm(icol) .GE. oneminus) specparm(icol) = oneminus
@@ -197,7 +197,7 @@ DO lay = 1,laytrop  ! loop over layers
       ! The only conditional loop
       ! =========================
 
-      DO icol=ncol,ncol  ! Vectorizes as is 14.0.2
+      DO icol=1,ncol  ! Vectorizes as is 14.0.2
          !IF (specparm(icol) .GE. oneminus) specparm(icol) = oneminus
          IF (specparm(icol) .LT. 0.125_wp) THEN
             caseType(icol)=1
@@ -223,7 +223,7 @@ DO lay = 1,laytrop  ! loop over layers
       ! ==================================
 
 !dir$ SIMD
-      DO icol=ncol,ncol  ! Vectorizes with dir 14.0.2
+      DO icol=1,ncol  ! Vectorizes with dir 14.0.2
          ind0(icol) = ((jp(icol,lay)-(1*MOD(i+1,2)))*5+(jt(icol,i,lay)-1))*nspa(3) +js(icol)
          ind00(icol) = ind0(icol) + caseTypeOperations(1,caseType(icol))
          ind01(icol) = ind0(icol) + caseTypeOperations(2,caseType(icol))
@@ -240,7 +240,7 @@ DO lay = 1,laytrop  ! loop over layers
       ! ===============================================================
 
 !dir$ SIMD
-      DO icol=ncol,ncol ! Vectorizes with dir 14.0.2
+      DO icol=1,ncol ! Vectorizes with dir 14.0.2
 
          fk0 = p4(icol)
          fk1 = 1.0_wp - p(icol) - 2.0_wp*p4(icol)  
@@ -262,7 +262,7 @@ DO lay = 1,laytrop  ! loop over layers
    ! ===================================================================================
 
 !dir$ SIMD
-   DO icol=ncol,ncol  ! Vectorizes with dir 14.0.2
+   DO icol=1,ncol  ! Vectorizes with dir 14.0.2
       tauself(icol) = selffac(icol,lay)*(selfref(indself(icol,lay),ig) +&
                      selffrac(icol,lay)*(selfref(indself(icol,lay)+1,ig)- selfref(indself(icol,lay),ig)))
        taufor(icol) =  forfac(icol,lay)*( forref(indfor(icol,lay),ig) +&
@@ -275,17 +275,17 @@ DO lay = 1,laytrop  ! loop over layers
    ! =====================================================================
 
 !dir$ SIMD
-   DO icol=ncol,ncol !vectorizes with dir 14.0.2
+   DO icol=1,ncol !vectorizes with dir 14.0.2
       speccomb_mn2o(icol) = colh2o(icol,lay) +refrat_m_a*colco2(icol,lay)
       specparm_mn2o(icol) = colh2o(icol,lay)/speccomb_mn2o(icol)
    END DO
 
-   do icol=ncol,ncol ! vectorizes as is 14.0.2
+   do icol=1,ncol ! vectorizes as is 14.0.2
       IF (specparm_mn2o(icol) .GE. oneminus) specparm_mn2o(icol) =oneminus
    end do
 
 !dir$ SIMD ! vectorizes with dir 14.0.2
-   DO icol=ncol,ncol
+   DO icol=1,ncol
       specmult_mn2o(icol) = 8.0_wp*specparm_mn2o(icol)
       jmn2o(icol) = 1 + INT(specmult_mn2o(icol))
       fmn2o(icol) = MOD(specmult_mn2o(icol),1.0_wp)
@@ -297,7 +297,7 @@ DO lay = 1,laytrop  ! loop over layers
    ! =========================
 
 !dir$ SIMD
-   do icol=ncol,ncol ! vectorizes with dir 14.0.2
+   do icol=1,ncol ! vectorizes with dir 14.0.2
       n2om1(icol)   = ka_mn2o(jmn2o(icol),indminor(icol,lay)  ,ig) + &
                       fmn2o(icol)*(ka_mn2o(jmn2o(icol)+1,indminor(icol,lay),ig) - &
                                    ka_mn2o(jmn2o(icol),indminor(icol,lay)  ,ig))
@@ -315,12 +315,12 @@ DO lay = 1,laytrop  ! loop over layers
    ! ========================================================================
 
 !dir$ SIMD
-   do icol=ncol,ncol  ! vectorized with dir 14.0.2
+   do icol=1,ncol  ! vectorized with dir 14.0.2
       chi_n2o(icol) = coln2o(icol,lay)/coldry(icol,lay)
       ratn2o(icol) = 1.e20*chi_n2o(icol)/chi_mls(4,jp(icol,lay)+1)
    end do
 
-   do icol=ncol,ncol ! vectorizes as is 14.0.2
+   do icol=1,ncol ! vectorizes as is 14.0.2
       IF (ratn2o(icol) .GT. 1.5_wp) THEN
          adjfac(icol) = 0.5_wp+(ratn2o(icol)-0.5_wp)**0.65_wp
          adjcoln2o(icol) =adjfac(icol)*chi_mls(4,jp(icol,lay)+1)*coldry(icol,lay)*1.e-20_wp
@@ -337,22 +337,22 @@ DO lay = 1,laytrop  ! loop over layers
    ! ===========================================================================================
 
 !dir$ SIMD  ! DOES NOT VECTORIZE even with SIMD dir 14.0.2
-   DO icol=ncol,ncol
+   DO icol=1,ncol
       taug(icol,lay) = tau_major(icol,0) + tau_major(icol,1) +tauself(icol) + taufor(icol) + adjcoln2o(icol)*absn2o(icol)
    END DO
 
 !dir$ SIMD ! vectorizes with dir 14.0.2
-   DO icol=ncol,ncol
+   DO icol=1,ncol
       speccomb_planck(icol) = colh2o(icol,lay)+refrat_planck_a*colco2(icol,lay)
       specparm_planck(icol) = colh2o(icol,lay)/speccomb_planck(icol)
    END DO
 
-   DO icol=ncol,ncol ! vectorizes as is 14.0.2
+   DO icol=1,ncol ! vectorizes as is 14.0.2
       IF (specparm_planck(icol) .GE. oneminus) specparm_planck(icol)=oneminus
    END DO
 
 !dir$ SIMD
-   DO icol=ncol,ncol !vectorizes with dir 14.0.2
+   DO icol=1,ncol !vectorizes with dir 14.0.2
       specmult_planck(icol) = 8.0_wp*specparm_planck(icol)
       jpl(icol)= 1 + INT(specmult_planck(icol))
       fpl(icol) = MOD(specmult_planck(icol),1.0_wp)

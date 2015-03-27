@@ -129,7 +129,7 @@ DO lay = laytrop+1, nlayers
       ! =============================
 
 !dir$ SIMD
-      DO icol=ncol,ncol ! Vectorizes with dir 14.0.2
+      DO icol=1,ncol ! Vectorizes with dir 14.0.2
          speccomb(icol) = colh2o(icol,lay) + rat_h2oco2(icol,i,lay)*colco2(icol,lay)
          specparm(icol) = colh2o(icol,lay)/speccomb(icol)
          IF (specparm(icol) .ge. oneminus) specparm(icol) = oneminus 
@@ -140,7 +140,7 @@ DO lay = laytrop+1, nlayers
       END DO
 
 !dir$ SIMD
-      DO icol=ncol,ncol ! Vectorizes with dir 14.0.2
+      DO icol=1,ncol ! Vectorizes with dir 14.0.2
          tau_major(icol,i) = speccomb(icol) * &
              ((1.0_wp - fs(icol))*fac0(icol,i,lay)*absb(ind0(icol)  ,ig) + &
                         fs(icol) *fac0(icol,i,lay)*absb(ind0(icol)+1,ig) + &
@@ -154,7 +154,7 @@ DO lay = laytrop+1, nlayers
    ! Note the use of 1D bilinear interpolation of selfref and forref lookup table values
    ! ===================================================================================
 !dir$ SIMD
-   DO icol=ncol,ncol ! Vectorizes with dir 14.0.2
+   DO icol=1,ncol ! Vectorizes with dir 14.0.2
       taufor(icol)  =  forfac(icol,lay)*( forref(indfor(icol,lay),ig) +  &
                       forfrac(icol,lay)*( forref(indfor(icol,lay)+1,ig) -  forref(indfor(icol,lay),ig)))
    END DO
@@ -163,7 +163,7 @@ DO lay = laytrop+1, nlayers
    ! Note the use of 2D bilinear interpolation ka_mn2o lookup table values
    ! =====================================================================
 !$DIR SIMD
-   DO icol=ncol,ncol ! Vectorizes with dir 14.0.2
+   DO icol=1,ncol ! Vectorizes with dir 14.0.2
       speccomb_mn2o(icol) = colh2o(icol,lay) + refrat_m_b*colco2(icol,lay)
       specparm_mn2o(icol) = colh2o(icol,lay)/speccomb_mn2o(icol)
       IF (specparm_mn2o(icol) .GE. oneminus) specparm_mn2o(icol) = oneminus
@@ -179,12 +179,12 @@ DO lay = laytrop+1, nlayers
    ! ========================================================================
 
 !dir$ SIMD
-   DO icol=ncol,ncol ! loop vectorized with directive 14.0.2
+   DO icol=1,ncol ! loop vectorized with directive 14.0.2
       chi_n2o(icol) = coln2o(icol,lay)/coldry(icol,lay)
       ratn2o(icol) = 1.e20*chi_n2o(icol)/chi_mls(4,jp(icol,lay)+1)
    END DO
 
-   DO icol=ncol,ncol ! Loop vectorized as is 14.0.2
+   DO icol=1,ncol ! Loop vectorized as is 14.0.2
       IF (ratn2o(icol) .GT. 1.5_wp) THEN
          adjfac(icol) = 0.5_wp+(ratn2o(icol)-0.5_wp)**0.65_wp
          adjcoln2o(icol) = adjfac(icol)*chi_mls(4,jp(icol,lay)+1)*coldry(icol,lay)*1.e-20_wp
@@ -198,7 +198,7 @@ DO lay = laytrop+1, nlayers
    ! =========================
 
 !dir$ SIMD
-   DO icol=ncol,ncol ! loop vectorizes with directive 14.0.2
+   DO icol=1,ncol ! loop vectorizes with directive 14.0.2
       n2om1(icol)   = kb_mn2o(jmn2o(icol),indminor(icol,lay)  ,ig) + &
                       fmn2o(icol)*(kb_mn2o(jmn2o(icol)+1,indminor(icol,lay)  ,ig) - &
                       kb_mn2o(jmn2o(icol)  ,indminor(icol,lay)  ,ig))
@@ -209,18 +209,18 @@ DO lay = laytrop+1, nlayers
    END DO
 
 !dir$ SIMD
-   DO icol=ncol,ncol ! loop vectorizes with directive 14.0.2
+   DO icol=1,ncol ! loop vectorizes with directive 14.0.2
       taug(icol,lay) =  tau_major(icol,0) + tau_major(icol,1) + taufor(icol) + adjcoln2o(icol)*absn2o(icol)
    END DO
 
 !dir$ SIMD
-   DO icol=ncol,ncol ! loop vectorizes with directive 14.0.2
+   DO icol=1,ncol ! loop vectorizes with directive 14.0.2
       speccomb_planck(icol) = colh2o(icol,lay)+refrat_planck_b*colco2(icol,lay)
       specparm_planck(icol) = colh2o(icol,lay)/speccomb_planck(icol)
    END DO
 
 !dir$ SIMD
-   DO icol=ncol,ncol  ! loop vectorizes with directive 14.0.2
+   DO icol=1,ncol  ! loop vectorizes with directive 14.0.2
       IF (specparm_planck(icol) .GE. oneminus) specparm_planck(icol)=oneminus
       specmult_planck(icol) = 4.0_wp*specparm_planck(icol)
       jpl(icol)= 1 + INT(specmult_planck(icol))
