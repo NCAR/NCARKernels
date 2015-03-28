@@ -31,6 +31,7 @@
         USE mo_cld_sampling, ONLY: sample_cld_state
         USE mo_spec_sampling, ONLY: spec_sampling_strategy
         USE mo_spec_sampling, ONLY: get_gpoint_set
+        USE mo_taumol03, ONLY: taumol03_lwr,taumol03_upr
         USE rrlw_planck, ONLY: chi_mls
         USE rrlw_kg03, ONLY: selfref
         USE rrlw_kg03, ONLY: forref
@@ -223,131 +224,6 @@
             REAL(KIND=wp) :: smp_tau(kbdim, klev, n_gpts_ts)
             LOGICAL :: cldmask(kbdim, klev, n_gpts_ts)
             LOGICAL :: colcldmask(kbdim,       n_gpts_ts) !< cloud mask in each cell
-            INTEGER :: rrpk_counter=0           
-
-
-INTERFACE
-   SUBROUTINE taumol03_lwr(ncol, laytrop, nlayers,                      &
-                         rat_h2oco2, colco2, colh2o, coln2o, coldry, &
-                         fac0, fac1, minorfrac,                      &
-                         selffac,selffrac,forfac,forfrac,            &
-                         jp, jt, ig, indself, &
-                         indfor, indminor, &
-                         taug, fracs)
-   USE mo_kind, only : wp
-   USE mo_lrtm_setup, ONLY: nspa
-   USE mo_lrtm_setup, ONLY: nspb
-   USE rrlw_planck, ONLY: chi_mls
-   USE rrlw_kg03, ONLY: selfref
-   USE rrlw_kg03, ONLY: forref
-   USE rrlw_kg03, ONLY: ka_mn2o
-   USE rrlw_kg03, ONLY: absa
-   USE rrlw_kg03, ONLY: fracrefa
-   USE rrlw_kg03, ONLY: kb_mn2o
-   USE rrlw_kg03, ONLY: absb
-   USE rrlw_kg03, ONLY: fracrefb
-
-IMPLICIT NONE
-
-   real(kind=wp), PARAMETER :: oneminus = 1.0_wp - 1.0e-06_wp
-
-   integer, intent(in) :: ncol                  ! number of simd columns
-   integer, intent(in) :: laytrop               ! number of layers for loweratmosphere kernel
-   integer, intent(in) :: nlayers               ! total number of layers
-
-   real(kind=wp), intent(in), dimension(ncol,0:1,nlayers) :: rat_h2oco2,fac0,fac1    ! not sure of ncol depend
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: colco2,colh2o,coln2o,coldry ! these appear to be gas concentrations
-
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: selffac,selffrac       ! not sure of ncol depend
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: forfac,forfrac         ! not sure of ncol depend
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: minorfrac              ! not sure of ncol depend
-
-   ! Look up tables and related lookup indices
-   ! I assume all lookup indices depend on 3D position
-   ! =================================================
-
-   !real(kind=wp), intent(in) :: chi_mls(:,:)    ! lookup table 
-
-   !real(kind=wp), intent(in) :: absa(:,:)       ! read only look up table
-   integer, intent(in) :: jp(ncol,nlayers)      ! I assume jp depends on ncol
-   integer, intent(in) :: jt(ncol,0:1,nlayers)  ! likewise for jt
-   !integer, intent(in) :: nspa(:)               ! not sure of the dimension of
-   !nspa, but indexes into absa
-   integer, intent(in) :: ig                    ! ig indexes into lookup tables
-
-   !real(kind=wp), intent(in) :: selfref(:,:)    ! read only look up table
-   integer, intent(in) :: indself(ncol,nlayers) ! self index array
-
-   !real(kind=wp), intent(in) :: forref(:,:)     ! read only look up table
-   integer, intent(in) :: indfor(ncol,nlayers)  ! for index array 
-
-   !real(kind=wp), intent(in) :: ka_mn2o(:,:,:)   ! read only look up table
-   integer, intent(in) :: indminor(ncol,nlayers) ! ka_mn2o index array
-   !real(kind=wp), intent(in) :: fracrefa(:,:)    ! read only look up table
-
-   real(kind=wp), intent(out), dimension(ncol,nlayers) :: taug  ! kernel result 
-   real(kind=wp), intent(out), dimension(ncol,nlayers) :: fracs ! kernel result 
-   END SUBROUTINE taumol03_lwr
-END INTERFACE
-
-INTERFACE
-SUBROUTINE taumol03_upr(ncol, laytrop, nlayers,                     &
-                        rat_h2oco2, colco2, colh2o, coln2o, coldry, &
-                        fac0, fac1, minorfrac, &
-                        forfac,forfrac,        &
-                        jp, jt, ig,        &
-                        indfor, indminor, &
-                        taug, fracs)
-   use mo_kind, only : wp
-   USE mo_lrtm_setup, ONLY: nspa
-   USE mo_lrtm_setup, ONLY: nspb
-   USE rrlw_planck, ONLY: chi_mls
-   USE rrlw_kg03, ONLY: selfref
-   USE rrlw_kg03, ONLY: forref
-   USE rrlw_kg03, ONLY: ka_mn2o
-   USE rrlw_kg03, ONLY: absa
-   USE rrlw_kg03, ONLY: fracrefa
-   USE rrlw_kg03, ONLY: kb_mn2o
-   USE rrlw_kg03, ONLY: absb
-   USE rrlw_kg03, ONLY: fracrefb
-
-IMPLICIT NONE
-
-   real(kind=wp), PARAMETER :: oneminus = 1.0_wp - 1.0e-06_wp
-
-   integer, intent(in) :: ncol                  ! number of simd columns
-   integer, intent(in) :: laytrop               ! number of layers for lower atmosphere kernel
-   integer, intent(in) :: nlayers               ! total number of layers
-   real(kind=wp), intent(in), dimension(ncol,0:1,nlayers) ::rat_h2oco2,fac0,fac1    ! not sure of ncol depend
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: colco2,colh2o,coln2o,coldry ! these appear to be gas concentrations
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: forfac,forfrac! not sure of ncol depend
-   real(kind=wp), intent(in), dimension(ncol,nlayers) :: minorfrac! not sure of ncol depend
-
-   ! Look up tables and related lookup indices
-   ! I assume all lookup indices depend on 3D position
-   ! =================================================
-
-   integer, intent(in) :: jp(ncol,nlayers)      ! I assume jp depends on ncol
-   integer, intent(in) :: jt(ncol,0:1,nlayers)  ! likewise for jt
-   integer, intent(in) :: ig                    ! ig indexes into lookup tables
-   integer, intent(in) :: indfor(ncol,nlayers)  ! for index array 
-
-   integer, intent(in) :: indminor(ncol,nlayers) ! ka_mn2o index array
-
-   real(kind=wp), intent(out), dimension(ncol,nlayers) :: taug  ! kernel result 
-   real(kind=wp), intent(out), dimension(ncol,nlayers) :: fracs ! kernel result 
-
-   END SUBROUTINE taumol03_upr
-END INTERFACE
-
-
-
-
-
-
-
-
-
             !< cloud mask for each column
             !
             ! --------------------------------
@@ -443,8 +319,6 @@ END INTERFACE
                 igpt=igs(1,ig)
                 IF(ngb(igpt) == 3) Then
                         jl=kproma
-                        !print *,"==================================="
-                        !print *,kproma
                         call taumol03_lwr(jl,laytrop(1), klev,                          &
                             rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
                             rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
@@ -459,7 +333,6 @@ END INTERFACE
                             jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), &
                             indfor(1:jl,:), indminor(1:jl,:), &
                             rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
-                        taug=rrpk_taug(jl,:)
                 ENDIF
                 DO jl = 1, kproma
                     ib = ibs(jl, ig)
@@ -479,6 +352,8 @@ END INTERFACE
                             jl,:), rat_n2oco2  (jl,:), rat_n2oco2_1(jl,:), rat_o3co2 (jl,:), rat_o3co2_1 (jl,:), selffac     (jl,:), &
                             selffrac    (jl,:), indself   (jl,:), forfac      (jl,:), forfrac     (jl,:), indfor      (jl,:), minorfrac (&
                             jl,:), scaleminor  (jl,:), scaleminorn2(jl,:), indminor    (jl,:), fracs     (jl,:,ig), taug)
+                    ELSE
+                            taug=rrpk_taug(jl,:)
                     END IF
                     DO jk = 1, klev
                         taut(jl,jk,ig) = taug(jk) + tauaer(jl,jk,ib)

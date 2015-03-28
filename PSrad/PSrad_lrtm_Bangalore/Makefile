@@ -3,7 +3,7 @@
 FC := ifort
 FC_FLAGS := -O3 -xHost -mkl
 
-ALL_OBJS := kernel_driver.o mo_psrad_interface.o mo_lrtm_kgs.o mo_cld_sampling.o mo_lrtm_solver.o mo_rrtm_coeffs.o mo_exception_stub.o mo_physical_constants.o mo_radiation_parameters.o mo_kind.o mo_spec_sampling.o mo_random_numbers.o mo_lrtm_setup.o mo_math_constants.o mo_rrtm_params.o mo_rad_fastmath.o mo_lrtm_driver.o mo_lrtm_gas_optics.o mo_taumol03_lwr.o mo_taumol03_upr.o 
+ALL_OBJS := kernel_driver.o mo_psrad_interface.o mo_lrtm_kgs.o mo_cld_sampling.o mo_lrtm_solver.o mo_rrtm_coeffs.o mo_exception_stub.o mo_physical_constants.o mo_radiation_parameters.o mo_kind.o mo_spec_sampling.o mo_random_numbers.o mo_lrtm_setup.o mo_math_constants.o mo_rrtm_params.o mo_rad_fastmath.o mo_taumol03.o mo_lrtm_driver.o mo_lrtm_gas_optics.o 
 
 run: build
 	
@@ -26,10 +26,7 @@ mo_cld_sampling.o: mo_cld_sampling.f90 mo_kind.o mo_random_numbers.o mo_exceptio
 mo_lrtm_solver.o: mo_lrtm_solver.f90 mo_kind.o mo_rrtm_params.o mo_rad_fastmath.o mo_math_constants.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
-mo_taumol03_lwr.o: mo_taumol03_lwr.f90 mo_kind.o mo_lrtm_setup.o mo_rrlw_planck.o
-	${FC} ${FC_FLAGS} -c -o $@ $<
-
-mo_taumol03_upr.o: mo_taumol03_upr.f90 mo_kind.o mo_lrtm_setup.o mo_rrlw_planck.o
+mo_taumol03.o: mo_taumol03.f90 mo_kind.o mo_lrtm_setup.o mo_lrtm_kgs.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 mo_rrlw_planck.o: mo_rrlw_planck.f90 
@@ -68,7 +65,7 @@ mo_rrtm_params.o: mo_rrtm_params.f90 mo_kind.o
 mo_rad_fastmath.o: mo_rad_fastmath.f90 mo_kind.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
-mo_lrtm_driver.o: mo_lrtm_driver.f90 mo_rrtm_params.o mo_kind.o mo_spec_sampling.o mo_radiation_parameters.o mo_lrtm_setup.o mo_cld_sampling.o mo_rrtm_coeffs.o mo_lrtm_gas_optics.o mo_lrtm_kgs.o mo_physical_constants.o mo_lrtm_solver.o
+mo_lrtm_driver.o: mo_lrtm_driver.f90 mo_rrtm_params.o mo_kind.o mo_spec_sampling.o mo_radiation_parameters.o mo_lrtm_setup.o mo_cld_sampling.o mo_rrtm_coeffs.o mo_lrtm_gas_optics.o mo_taumol03.o mo_lrtm_kgs.o mo_physical_constants.o mo_lrtm_solver.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 mo_lrtm_gas_optics.o: mo_lrtm_gas_optics.f90 mo_kind.o mo_lrtm_setup.o mo_lrtm_kgs.o mo_exception_stub.o
