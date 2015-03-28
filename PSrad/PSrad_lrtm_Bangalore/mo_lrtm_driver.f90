@@ -32,6 +32,7 @@
         USE mo_spec_sampling, ONLY: spec_sampling_strategy
         USE mo_spec_sampling, ONLY: get_gpoint_set
         USE mo_taumol03, ONLY: taumol03_lwr,taumol03_upr
+        USE mo_taumol04, ONLY: taumol04_lwr,taumol04_upr
         USE rrlw_planck, ONLY: chi_mls
         USE rrlw_kg03, ONLY: selfref
         USE rrlw_kg03, ONLY: forref
@@ -116,7 +117,8 @@
             !< Clr sky longwave upward   flux [W/m2], (kbdim,0:klev)
             !< Clr sky longwave downward flux [W/m2], (kbdim,0:klev)
             REAL(KIND=wp) :: taug(klev) !< Properties for one column at a time >! gas optical depth
-            REAL(KIND=wp) :: rrpk_taug(kbdim,klev)
+            REAL(KIND=wp) :: rrpk_taug03(kbdim,klev)
+            REAL(KIND=wp) :: rrpk_taug04(kbdim,klev)
             REAL(KIND=wp) :: fracs(kbdim,klev,n_gpts_ts)
             REAL(KIND=wp) :: taut  (kbdim,klev,n_gpts_ts)
             REAL(KIND=wp) :: tautot(kbdim,klev,n_gpts_ts)
@@ -206,6 +208,7 @@
             REAL(KIND=wp) :: rat_h2och4  (kbdim,klev)
             REAL(KIND=wp) :: rat_h2oco2  (kbdim,klev)
             REAL(KIND=wp) :: rrpk_rat_h2oco2  (kbdim,0:1,klev)
+            REAL(KIND=wp) :: rrpk_rat_o3co2  (kbdim,0:1,klev)
             REAL(KIND=wp) :: rat_h2oo3_1 (kbdim,klev)
             REAL(KIND=wp) :: rat_o3co2_1 (kbdim,klev)
             REAL(KIND=wp) :: rat_h2och4_1(kbdim,klev)
@@ -309,6 +312,8 @@
             !IBM* ASSERT(NODEPS)
             rrpk_rat_h2oco2(:,0,:) = rat_h2oco2
             rrpk_rat_h2oco2(:,1,:) = (rat_h2oco2_1)
+            rrpk_rat_o3co2(:,0,:) = rat_o3co2
+            rrpk_rat_o3co2(:,1,:) = (rat_o3co2_1)
             rrpk_fac0(:,0,:) = fac00
             rrpk_fac0(:,1,:) = fac01
             rrpk_fac1(:,0,:) = fac10
@@ -325,14 +330,31 @@
                             selffac(1:jl,:),selffrac(1:jl,:),forfac(1:jl,:),forfrac(1:jl,:), &
                             jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), indself(1:jl,:), &
                             indfor(1:jl,:), indminor(1:jl,:), &
-                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
+                            rrpk_taug03(1:jl,:),fracs(1:jl,:,ig))
                         call taumol03_upr(jl,laytrop(1), klev,                          &
                             rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:), coln2o(1:jl,:), coldry(1:jl,:), &
                             rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
                             forfac(1:jl,:),forfrac(1:jl,:),           &
                             jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), &
                             indfor(1:jl,:), indminor(1:jl,:), &
-                            rrpk_taug(1:jl,:),fracs(1:jl,:,ig))
+                            rrpk_taug03(1:jl,:),fracs(1:jl,:,ig))
+                ENDIF
+                IF(ngb(igpt) == 4) Then
+                        jl=kproma
+                        call taumol04_lwr(jl,laytrop(1), klev,                          &
+                            rrpk_rat_h2oco2(1:jl,:,:), colco2(1:jl,:), colh2o(1:jl,:),  coldry(1:jl,:), &
+                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
+                            selffac(1:jl,:),selffrac(1:jl,:),forfac(1:jl,:),forfrac(1:jl,:), &
+                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), indself(1:jl,:), &
+                            indfor(1:jl,:), &
+                            rrpk_taug04(1:jl,:),fracs(1:jl,:,ig))
+                        call taumol04_upr(jl,laytrop(1), klev,                          &
+                            rrpk_rat_o3co2(1:jl,:,:), colco2(1:jl,:), colo3(1:jl,:),  coldry(1:jl,:), &
+                            rrpk_fac0(1:jl,:,:), rrpk_fac1(1:jl,:,:), minorfrac(1:jl,:), &
+                            forfac(1:jl,:),forfrac(1:jl,:),           &
+                            jp(1:jl,:), rrpk_jt(1:jl,:,:), (igpt-ngs(ngb(igpt)-1)), &
+                            indfor(1:jl,:), &
+                            rrpk_taug04(1:jl,:),fracs(1:jl,:,ig))
                 ENDIF
                 DO jl = 1, kproma
                     ib = ibs(jl, ig)
@@ -342,8 +364,11 @@
                     !   CFC gas concentrations (wx) need the same normalization
                     !   Per Eli Mlawer the k values used in gas optics tables have been multiplied by 1e20
                     wx_loc(:,:) = 1.e-20_wp * wx(jl,:,:)
-                    IF (ngb(igpt) /= 3) THEN
-                    
+                    IF (ngb(igpt) == 3) THEN
+                        taug = rrpk_taug03(jl,:)
+                    ELSEIF (ngb(igpt) == 4) THEN
+                        taug = rrpk_taug04(jl,:)
+                    ELSE                    
                         CALL gas_optics_lw(klev, igpt, play        (jl,:), wx_loc    (:,:), coldry      (jl,:), laytrop     (jl), jp  &
                             (jl,:), jt        (jl,:), jt1         (jl,:), colh2o      (jl,:), colco2      (jl,:), colo3     (jl,:)&
                             , coln2o      (jl,:), colco       (jl,:), colch4      (jl,:), colo2     (jl,:), colbrd      (jl,:), fac00     &
@@ -352,8 +377,6 @@
                             jl,:), rat_n2oco2  (jl,:), rat_n2oco2_1(jl,:), rat_o3co2 (jl,:), rat_o3co2_1 (jl,:), selffac     (jl,:), &
                             selffrac    (jl,:), indself   (jl,:), forfac      (jl,:), forfrac     (jl,:), indfor      (jl,:), minorfrac (&
                             jl,:), scaleminor  (jl,:), scaleminorn2(jl,:), indminor    (jl,:), fracs     (jl,:,ig), taug)
-                    ELSE
-                            taug=rrpk_taug(jl,:)
                     END IF
                     DO jk = 1, klev
                         taut(jl,jk,ig) = taug(jk) + tauaer(jl,jk,ib)
