@@ -1,3 +1,4 @@
+
 ! Define flags for compilers supporting Fortran 2008 intrinsics
 ! HAVE_GAMMA_INTRINSICS: gamma and log_gamma
 ! HAVE_ERF_INTRINSICS: erf, erfc, and erfc_scaled
@@ -8,20 +9,15 @@
 ! HAVE_ERF_EXTERNALS: erf and erfc
 
 ! These compilers have the intrinsics.
-
-#if defined CPRIBM || defined __GFORTRAN__
- define HAVE_ERF_INTRINSICS
- define HAVE_GAMMA_INTRINSICS
-#endif
-
-#if defined CPRCRAY
- define HAVE_ERF_INTRINSICS
+#if defined CPRIBM || defined CPRINTEL || defined __GFORTRAN__ || defined CPRCRAY
+#define HAVE_GAMMA_INTRINSICS
+#define HAVE_ERF_INTRINSICS
 #endif
 
 ! PGI has external erf/derf and erfc/derfc, and will link them for you, but
 ! it does not consider them "intrinsics" right now.
-#if defined CPRPGI 
- define HAVE_ERF_EXTERNALS
+#if defined CPRPGI
+#define HAVE_ERF_EXTERNALS
 #endif
 
 ! As of 5.3.1, NAG does not have any of these.

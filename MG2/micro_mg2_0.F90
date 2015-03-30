@@ -1,4 +1,4 @@
-
+ 
 module micro_mg2_0
 
 !---------------------------------------------------------------------------------
@@ -99,9 +99,8 @@ use wv_sat_methods, only: &
      qsat_water => wv_sat_qsat_water, &
      qsat_ice => wv_sat_qsat_ice
 
-#if defined CPRIBM || defined __GFORTRAN__
-#else
- use shr_spfn_mod, only: gamma => shr_spfn_gamma
+#if defined CPRPGI
+use shr_spfn_mod, only: gamma => shr_spfn_gamma
 #endif
 
 ! Parameters from the utilities module.
@@ -125,7 +124,6 @@ use micro_mg_utils, only: &
     bi, &
     bc, &
     mi0
-
 
 implicit none
 private
@@ -327,7 +325,6 @@ subroutine micro_mg_tend ( &
        accrete_cloud_ice_snow, &
        evaporate_sublimate_precip, &
        bergeron_process_snow
-
 
   !Authors: Hugh Morrison, Andrew Gettelman, NCAR, Peter Caldwell, LLNL
   ! e-mail: morrison@ucar.edu, andrew@ucar.edu
@@ -691,7 +688,6 @@ subroutine micro_mg_tend ( &
   real(r8) :: dumns(mgncol,nlev)  ! snow number concentration
   ! Array dummy variable
   real(r8) :: dum_2D(mgncol,nlev)
-  real(r8) :: nstepir, pdelinv(nlev)
 
   ! loop array variables
   ! "i" and "k" are column/level iterators for internal (MG) variables
@@ -699,7 +695,7 @@ subroutine micro_mg_tend ( &
   integer i, k, n
 
   ! number of sub-steps for loops over "n" (for sedimentation)
-  integer nstep, istat
+  integer nstep
 
 
   !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -791,8 +787,8 @@ subroutine micro_mg_tend ( &
   do k=1,nlev
      do i=1,mgncol
 
-!DIR$ FORCEINLINE
         call qsat_water(t(i,k), p(i,k), esl(i,k), qvl(i,k))
+
         ! make sure when above freezing that esi=esl, not active yet
         if (t(i,k) >= tmelt) then
            esi(i,k)=esl(i,k)
@@ -961,8 +957,8 @@ subroutine micro_mg_tend ( &
 
   end if
 
-  !=============================================================================
 
+  !=============================================================================
   pre_vert_loop: do k=1,nlev
 
      pre_col_loop: do i=1,mgncol
@@ -1313,7 +1309,7 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
         call accrete_cloud_ice_snow(t(:,k), rho(:,k), asn(:,k), qiic(:,k), niic(:,k), &
-            qsic(:,k), lams(:,k), n0s(:,k), prai(:,k), nprai(:,k) )
+             qsic(:,k), lams(:,k), n0s(:,k), prai(:,k), nprai(:,k))
      else
         prai(:,k) = 0._r8
         nprai(:,k) = 0._r8
@@ -1980,31 +1976,25 @@ subroutine micro_mg_tend ( &
      ! for sedimentation calculations
      !-------------------------------------------------------------------
      ! include precip species
-
-     do k=1,nlev
-       pdelinv(k) = 1._r8/pdel(i,k)
-     enddo
-
      nstep = 1 + int(max( &
-          maxval( fi*pdelinv), &
-          maxval( fc*pdelinv), &
-          maxval(fni*pdelinv), &
-          maxval(fnc*pdelinv), &
-          maxval( fr*pdelinv), &
-          maxval(fnr*pdelinv), &
-          maxval( fs*pdelinv), &
-          maxval(fns*pdelinv)) &
+          maxval( fi/pdel(i,:)), &
+          maxval( fc/pdel(i,:)), &
+          maxval(fni/pdel(i,:)), &
+          maxval(fnc/pdel(i,:)), &
+          maxval( fr/pdel(i,:)), &
+          maxval(fnr/pdel(i,:)), &
+          maxval( fs/pdel(i,:)), &
+          maxval(fns/pdel(i,:))) &
           * deltat)
 
-     nstepir = 1._r8/real(nstep)
 
      ! loop over sedimentation sub-time step to ensure stability
 
      ! note we should separate rain sedimentation from cloud, since
      ! fallspeeds are so much higher and sub-steps are needed for rain but
      ! not cloud, this should be done for code later
-     !==============================================================
 
+     !==============================================================
      do n = 1,nstep
 
         if (do_cldice) then
@@ -2023,43 +2013,43 @@ subroutine micro_mg_tend ( &
         faloutns = fns * dumns(i,:)
 
         ! top of model
+
         k = 1
+        faltndi = falouti(k)/pdel(i,k)
+        faltndni = faloutni(k)/pdel(i,k)
+        faltndc = faloutc(k)/pdel(i,k)
+        faltndnc = faloutnc(k)/pdel(i,k)
 
-        faltndi = falouti(k)*pdelinv(k)
-        faltndni = faloutni(k)*pdelinv(k)
-        faltndc = faloutc(k)*pdelinv(k)
-        faltndnc = faloutnc(k)*pdelinv(k)
-
-        faltndr = faloutr(k)*pdelinv(k)
-        faltndnr = faloutnr(k)*pdelinv(k) 
-        faltnds = falouts(k)*pdelinv(k)
-        faltndns = faloutns(k)*pdelinv(k)
+        faltndr = faloutr(k)/pdel(i,k)
+        faltndnr = faloutnr(k)/pdel(i,k)
+        faltnds = falouts(k)/pdel(i,k)
+        faltndns = faloutns(k)/pdel(i,k)
 
         ! add fallout terms to microphysical tendencies
 
-        qitend(i,k) = qitend(i,k)-faltndi*nstepir
-        nitend(i,k) = nitend(i,k)-faltndni*nstepir
-        qctend(i,k) = qctend(i,k)-faltndc*nstepir
-        nctend(i,k) = nctend(i,k)-faltndnc*nstepir
+        qitend(i,k) = qitend(i,k)-faltndi/nstep
+        nitend(i,k) = nitend(i,k)-faltndni/nstep
+        qctend(i,k) = qctend(i,k)-faltndc/nstep
+        nctend(i,k) = nctend(i,k)-faltndnc/nstep
 
-        qrtend(i,k) = qrtend(i,k)-faltndr*nstepir
-        nrtend(i,k) = nrtend(i,k)-faltndnr*nstepir
-        qstend(i,k) = qstend(i,k)-faltnds*nstepir
-        nstend(i,k) = nstend(i,k)-faltndns*nstepir
+        qrtend(i,k) = qrtend(i,k)-faltndr/nstep
+        nrtend(i,k) = nrtend(i,k)-faltndnr/nstep
+        qstend(i,k) = qstend(i,k)-faltnds/nstep
+        nstend(i,k) = nstend(i,k)-faltndns/nstep
 
         ! sedimentation tendencies for output
-        qcsedten(i,k)=qcsedten(i,k)-faltndc*nstepir
-        qisedten(i,k)=qisedten(i,k)-faltndi*nstepir
+        qcsedten(i,k)=qcsedten(i,k)-faltndc/nstep
+        qisedten(i,k)=qisedten(i,k)-faltndi/nstep
 
-        dumi(i,k) = dumi(i,k)-faltndi*deltat*nstepir
-        dumni(i,k) = dumni(i,k)-faltndni*deltat*nstepir
-        dumc(i,k) = dumc(i,k)-faltndc*deltat*nstepir
-        dumnc(i,k) = dumnc(i,k)-faltndnc*deltat*nstepir
+        dumi(i,k) = dumi(i,k)-faltndi*deltat/nstep
+        dumni(i,k) = dumni(i,k)-faltndni*deltat/nstep
+        dumc(i,k) = dumc(i,k)-faltndc*deltat/nstep
+        dumnc(i,k) = dumnc(i,k)-faltndnc*deltat/nstep
 
-        dumr(i,k) = dumr(i,k)-faltndr*deltat*nstepir
-        dumnr(i,k) = dumnr(i,k)-faltndnr*deltat*nstepir
-        dums(i,k) = dums(i,k)-faltnds*deltat*nstepir
-        dumns(i,k) = dumns(i,k)-faltndns*deltat*nstepir
+        dumr(i,k) = dumr(i,k)-faltndr*deltat/real(nstep)
+        dumnr(i,k) = dumnr(i,k)-faltndnr*deltat/real(nstep)
+        dums(i,k) = dums(i,k)-faltnds*deltat/real(nstep)
+        dumns(i,k) = dumns(i,k)-faltndns*deltat/real(nstep)
 
         do k = 2,nlev
 
@@ -2075,55 +2065,55 @@ subroutine micro_mg_tend ( &
            dum1=icldm(i,k)/icldm(i,k-1)
            dum1=min(dum1,1._r8)
 
-           faltndqie=(falouti(k)-falouti(k-1))*pdelinv(k)
-           faltndi=(falouti(k)-dum1*falouti(k-1))*pdelinv(k)
-           faltndni=(faloutni(k)-dum1*faloutni(k-1))*pdelinv(k)
-           faltndqce=(faloutc(k)-faloutc(k-1))*pdelinv(k)
-           faltndc=(faloutc(k)-dum*faloutc(k-1))*pdelinv(k)
-           faltndnc=(faloutnc(k)-dum*faloutnc(k-1))*pdelinv(k)
+           faltndqie=(falouti(k)-falouti(k-1))/pdel(i,k)
+           faltndi=(falouti(k)-dum1*falouti(k-1))/pdel(i,k)
+           faltndni=(faloutni(k)-dum1*faloutni(k-1))/pdel(i,k)
+           faltndqce=(faloutc(k)-faloutc(k-1))/pdel(i,k)
+           faltndc=(faloutc(k)-dum*faloutc(k-1))/pdel(i,k)
+           faltndnc=(faloutnc(k)-dum*faloutnc(k-1))/pdel(i,k)
 
-           faltndr=(faloutr(k)-faloutr(k-1))*pdelinv(k)
-           faltndnr=(faloutnr(k)-faloutnr(k-1))*pdelinv(k)
-           faltnds=(falouts(k)-falouts(k-1))*pdelinv(k)
-           faltndns=(faloutns(k)-faloutns(k-1))*pdelinv(k)
+           faltndr=(faloutr(k)-faloutr(k-1))/pdel(i,k)
+           faltndnr=(faloutnr(k)-faloutnr(k-1))/pdel(i,k)
+           faltnds=(falouts(k)-falouts(k-1))/pdel(i,k)
+           faltndns=(faloutns(k)-faloutns(k-1))/pdel(i,k)
 
            ! add fallout terms to eulerian tendencies
 
-           qitend(i,k) = qitend(i,k)-faltndi*nstepir
-           nitend(i,k) = nitend(i,k)-faltndni*nstepir
-           qctend(i,k) = qctend(i,k)-faltndc*nstepir
-           nctend(i,k) = nctend(i,k)-faltndnc*nstepir
+           qitend(i,k) = qitend(i,k)-faltndi/nstep
+           nitend(i,k) = nitend(i,k)-faltndni/nstep
+           qctend(i,k) = qctend(i,k)-faltndc/nstep
+           nctend(i,k) = nctend(i,k)-faltndnc/nstep
 
-           qrtend(i,k) = qrtend(i,k)-faltndr*nstepir
-           nrtend(i,k) = nrtend(i,k)-faltndnr*nstepir
-           qstend(i,k) = qstend(i,k)-faltnds*nstepir
-           nstend(i,k) = nstend(i,k)-faltndns*nstepir
+           qrtend(i,k) = qrtend(i,k)-faltndr/nstep
+           nrtend(i,k) = nrtend(i,k)-faltndnr/nstep
+           qstend(i,k) = qstend(i,k)-faltnds/nstep
+           nstend(i,k) = nstend(i,k)-faltndns/nstep
 
            ! sedimentation tendencies for output
-           qcsedten(i,k)=qcsedten(i,k)-faltndc*nstepir
-           qisedten(i,k)=qisedten(i,k)-faltndi*nstepir
+           qcsedten(i,k)=qcsedten(i,k)-faltndc/nstep
+           qisedten(i,k)=qisedten(i,k)-faltndi/nstep
 
            ! add terms to to evap/sub of cloud water
 
-           qvlat(i,k)=qvlat(i,k)-(faltndqie-faltndi)*nstepir
+           qvlat(i,k)=qvlat(i,k)-(faltndqie-faltndi)/nstep
            ! for output
-           qisevap(i,k)=qisevap(i,k)-(faltndqie-faltndi)*nstepir
-           qvlat(i,k)=qvlat(i,k)-(faltndqce-faltndc)*nstepir
+           qisevap(i,k)=qisevap(i,k)-(faltndqie-faltndi)/nstep
+           qvlat(i,k)=qvlat(i,k)-(faltndqce-faltndc)/nstep
            ! for output
-           qcsevap(i,k)=qcsevap(i,k)-(faltndqce-faltndc)*nstepir
+           qcsevap(i,k)=qcsevap(i,k)-(faltndqce-faltndc)/nstep
 
-           tlat(i,k)=tlat(i,k)+(faltndqie-faltndi)*xxls*nstepir
-           tlat(i,k)=tlat(i,k)+(faltndqce-faltndc)*xxlv*nstepir
+           tlat(i,k)=tlat(i,k)+(faltndqie-faltndi)*xxls/nstep
+           tlat(i,k)=tlat(i,k)+(faltndqce-faltndc)*xxlv/nstep
 
-           dumi(i,k) = dumi(i,k)-faltndi*deltat*nstepir
-           dumni(i,k) = dumni(i,k)-faltndni*deltat*nstepir
-           dumc(i,k) = dumc(i,k)-faltndc*deltat*nstepir
-           dumnc(i,k) = dumnc(i,k)-faltndnc*deltat*nstepir
+           dumi(i,k) = dumi(i,k)-faltndi*deltat/nstep
+           dumni(i,k) = dumni(i,k)-faltndni*deltat/nstep
+           dumc(i,k) = dumc(i,k)-faltndc*deltat/nstep
+           dumnc(i,k) = dumnc(i,k)-faltndnc*deltat/nstep
 
-           dumr(i,k) = dumr(i,k)-faltndr*deltat*nstepir
-           dumnr(i,k) = dumnr(i,k)-faltndnr*deltat*nstepir
-           dums(i,k) = dums(i,k)-faltnds*deltat*nstepir
-           dumns(i,k) = dumns(i,k)-faltndns*deltat*nstepir
+           dumr(i,k) = dumr(i,k)-faltndr*deltat/real(nstep)
+           dumnr(i,k) = dumnr(i,k)-faltndnr*deltat/real(nstep)
+           dums(i,k) = dums(i,k)-faltnds*deltat/real(nstep)
+           dumns(i,k) = dumns(i,k)-faltndns*deltat/real(nstep)
 
         end do   !! k loop
 
@@ -2132,8 +2122,8 @@ subroutine micro_mg_tend ( &
         ! to get total precip (cloud + precip water) rate
 
         prect(i) = prect(i)+(faloutc(nlev)+falouti(nlev)+ &
-             faloutr(nlev)+falouts(nlev))/g*nstepir/1000._r8
-        preci(i) = preci(i)+(falouts(nlev)+falouti(nlev))/g*nstepir/1000._r8
+             faloutr(nlev)+falouts(nlev))/g/real(nstep)/1000._r8
+        preci(i) = preci(i)+(falouts(nlev)+falouti(nlev))/g/real(nstep)/1000._r8
 
      end do   !! nstep loop
 

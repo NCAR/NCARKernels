@@ -41,10 +41,9 @@ module micro_mg_utils
 !--------------------------------------------------------------------------
 
 use kgen_utils, only : read_var
-  
-#if defined CPRIBM || defined __GFORTRAN__
-#else
- use shr_spfn_mod, only: gamma => shr_spfn_gamma
+   
+#if defined CPRPGI
+   use shr_spfn_mod, only : gamma => shr_spfn_gamma
 #endif
 
 implicit none
@@ -1015,7 +1014,6 @@ elemental subroutine ice_autoconversion(t, qiic, lami, n0i, dcs, prci, nprci)
 end subroutine ice_autoconversion
 
 ! Basic routine for getting size distribution parameters.
-
 elemental subroutine size_dist_param_basic(props, qic, nic, lam, n0)
   type(MGHydrometeorProps), intent(in) :: props
   real(r8), intent(in) :: qic
