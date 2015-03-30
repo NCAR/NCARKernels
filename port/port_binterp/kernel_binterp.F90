@@ -11,7 +11,7 @@
 
     PROGRAM kernel_binterp
     USE resolvers
-
+    USE omp_lib
     IMPLICIT NONE
 
 
@@ -91,7 +91,6 @@
     !JMD
 
     ! READ CALLER INSTATE
-
     READ(UNIT = kgen_unit) itab
     READ(UNIT = kgen_unit) refr
     READ(UNIT = kgen_unit) cext
@@ -379,10 +378,26 @@
         integer im,jm,km,ncol
         real(r8) table(km,im,jm),xtab(im),ytab(jm),out(pcols,km)
         integer i,ix(pcols),ip1,j,jy(pcols),jp1,k,ic
-        real(r8) x(pcols),dx,t(pcols),y(pcols),dy,u(pcols),              tu(pcols),tuc(pcols),tcu(pcols),tcuc(pcols)
-
-        if(ix(1).gt.0)go to 30
+        real(r8) x(pcols),dx,t(pcols),y(pcols),dy,u(pcols),tu(pcols),tuc(pcols),tcu(pcols),tcuc(pcols)
+        real(r8) temp1,temp2,temp3,temp4
+!dir$ assume_aligned table:64
+!dir$ assume_aligned xtab:64
+!dir$ assume_aligned ytab:64
+!dir$ assume_aligned out:64
+!dir$ assume_aligned ix:64
+!dir$ assume_aligned jy:64
+!dir$ assume_aligned x:64
+!dir$ assume_aligned t:64
+!dir$ assume_aligned tu:64
+!dir$ assume_aligned y:64
+!dir$ assume_aligned u:64
+!dir$ assume_aligned tuc:64
+!dir$ assume_aligned tcu:64
+!dir$ assume_aligned tcuc:64
+     	!print *,km
+        if(ix(1).gt.0) go to 30
         if(im.gt.1)then
+!dir$ SIMD
             do ic=1,ncol
                 do i=1,im
                     if(x(ic).lt.xtab(i))go to 10
@@ -392,15 +407,16 @@
                 dx=(xtab(ip1)-xtab(ix(ic)))
                 if(abs(dx).gt.1.e-20_r8)then
                     t(ic)=(x(ic)-xtab(ix(ic)))/dx
-                    else
+                else
                     t(ic)=0._r8
                 endif
             end do
-            else
+        else
             ix(:ncol)=1
             t(:ncol)=0._r8
         endif
         if(jm.gt.1)then
+!dir$ SIMD
             do ic=1,ncol
                 do j=1,jm
                     if(y(ic).lt.ytab(j))go to 20
@@ -410,18 +426,16 @@
                 dy=(ytab(jp1)-ytab(jy(ic)))
                 if(abs(dy).gt.1.e-20_r8)then
                     u(ic)=(y(ic)-ytab(jy(ic)))/dy
-                    if(u(ic).lt.0._r8.or.u(ic).gt.1._r8)then
-                        ! write(iulog,*) 'u,y,jy,ytab,dy=',u(ic),y(ic),jy(ic),ytab(jy(ic)),dy
-                    endif
-                    else
+                else
                     u(ic)=0._r8
                 endif
             end do
-            else
+        else
             jy(:ncol)=1
             u(:ncol)=0._r8
         endif
         30 continue
+!Do not use SIMD here
         do ic=1,ncol
             tu(ic)=t(ic)*u(ic)
             tuc(ic)=t(ic)-tu(ic)
@@ -429,9 +443,10 @@
             tcu(ic)=u(ic)-tu(ic)
             jp1=min(jy(ic)+1,jm)
             ip1=min(ix(ic)+1,im)
+!dir$ SIMD
             do k=1,km
-                out(ic,k)=tcuc(ic)*table(k,ix(ic),jy(ic))+tuc(ic)*table(k,ip1,jy(ic))                  +tu(ic)*table(k,ip1,jp1)+tcu(ic)*table(k,ix(ic),jp1)
-            end do
+                out(ic,k) = tcuc(ic) * table(k,ix(ic),jy(ic)) + tuc(ic) * table(k,ip1,jy(ic)) + tu(ic) * table(k,ip1,jp1) + tcu(ic) * table(k,ix(ic),jp1)
+	    end do
         enddo
         return
     end subroutine binterp
