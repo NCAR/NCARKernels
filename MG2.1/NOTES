@@ -1,3 +1,0 @@
-module switch intel/12.1.5 intel/15.0.1
-
-bsub < mg2.yellowstone.pbs
