@@ -651,15 +651,15 @@ subroutine micro_mg_tend ( &
   real(r8) :: relhum(mgncol,nlev)
 
   ! parameters for cloud water and cloud ice sedimentation calculations
-  real(r8) :: fc(nlev)
-  real(r8) :: fnc(nlev)
-  real(r8) :: fi(nlev)
-  real(r8) :: fni(nlev)
+  real(r8) :: fc(mgncol,nlev)
+  real(r8) :: fnc(mgncol,nlev)
+  real(r8) :: fi(mgncol,nlev)
+  real(r8) :: fni(mgncol,nlev)
 
-  real(r8) :: fr(nlev)
-  real(r8) :: fnr(nlev)
-  real(r8) :: fs(nlev)
-  real(r8) :: fns(nlev)
+  real(r8) :: fr(mgncol,nlev)
+  real(r8) :: fnr(mgncol,nlev)
+  real(r8) :: fs(mgncol,nlev)
+  real(r8) :: fns(mgncol,nlev)
 
   real(r8) :: faloutc(nlev)
   real(r8) :: faloutnc(nlev)
@@ -1174,7 +1174,7 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
         call ice_autoconversion_vl(t(:,k), qiic(:,k), lami(:,k), n0i(:,k), &
-             dcs, prci(:,k), nprci(:,k), mgncol)
+             dcs, prci(:,k), nprci(:,k))
      else
         ! Add in the particles that we have already converted to snow, and
         ! don't do any further autoconversion of ice.
@@ -1875,11 +1875,11 @@ subroutine micro_mg_tend ( &
   nevapr = nevapr + evapsnow
   prain = prain + prodsnow
 
-  sed_col_loop: do i=1,mgncol
 
-!dir$ vector aligned
      do k=1,nlev
 
+!dir$ vector aligned
+     do i=1,mgncol
         ! calculate sedimentation for cloud water and ice
         !================================================================================
 
@@ -1907,32 +1907,34 @@ subroutine micro_mg_tend ( &
         if (nicons) then
            dumni(i,k)=ninst/rho(i,k)
         end if
+     enddo
 
         ! obtain new slope parameter to avoid possible singularity
 
-        call size_dist_param_basic(mg_ice_props, dumi(i,k), dumni(i,k), &
-             lami(i,k))
+        call size_dist_param_basic_vl(mg_ice_props, dumi(:,k), dumni(:,k), &
+             lami(:,k), mgncol)
 
-        call size_dist_param_liq(mg_liq_props, dumc(i,k), dumnc(i,k), rho(i,k), &
-             pgam(i,k), lamc(i,k))
+        call size_dist_param_liq_vl(mg_liq_props, dumc(:,k), dumnc(:,k), rho(:,k), &
+             pgam(:,k), lamc(:,k), mgncol)
 
         ! calculate number and mass weighted fall velocity for droplets and cloud ice
         !-------------------------------------------------------------------
 
-
+!dir$ vector aligned
+       do i=1,mgncol
         if (dumc(i,k).ge.qsmall) then
 
            vtrmc(i,k)=acn(i,k)*gamma(4._r8+bc+pgam(i,k))/ &
                 (lamc(i,k)**bc*gamma(pgam(i,k)+4._r8))
 
-           fc(k) = g*rho(i,k)*vtrmc(i,k)
+           fc(i,k) = g*rho(i,k)*vtrmc(i,k)
 
-           fnc(k) = g*rho(i,k)* &
+           fnc(i,k) = g*rho(i,k)* &
                 acn(i,k)*gamma(1._r8+bc+pgam(i,k))/ &
                 (lamc(i,k)**bc*gamma(pgam(i,k)+1._r8))
         else
-           fc(k) = 0._r8
-           fnc(k)= 0._r8
+           fc(i,k) = 0._r8
+           fnc(i,k)= 0._r8
         end if
 
         ! calculate number and mass weighted fall velocity for cloud ice
@@ -1942,19 +1944,22 @@ subroutine micro_mg_tend ( &
            vtrmi(i,k)=min(ain(i,k)*gamma_bi_plus4/(6._r8*lami(i,k)**bi), &
                 1.2_r8*rhof(i,k))
 
-           fi(k) = g*rho(i,k)*vtrmi(i,k)
-           fni(k) = g*rho(i,k)* &
+           fi(i,k) = g*rho(i,k)*vtrmi(i,k)
+           fni(i,k) = g*rho(i,k)* &
                 min(ain(i,k)*gamma_bi_plus1/lami(i,k)**bi,1.2_r8*rhof(i,k))
         else
-           fi(k) = 0._r8
-           fni(k)= 0._r8
+           fi(i,k) = 0._r8
+           fni(i,k)= 0._r8
         end if
+     enddo
 
         ! fallspeed for rain
 
-        call size_dist_param_basic(mg_rain_props, dumr(i,k), dumnr(i,k), &
-             lamr(i,k))
+        call size_dist_param_basic_vl(mg_rain_props, dumr(:,k), dumnr(:,k), &
+             lamr(:,k), mgncol)
 
+!dir$ vector aligned
+     do i=1,mgncol
         if (lamr(i,k).ge.qsmall) then
 
            ! 'final' values of number and mass weighted mean fallspeed for rain (m/s)
@@ -1962,31 +1967,34 @@ subroutine micro_mg_tend ( &
            unr(i,k) = min(arn(i,k)*gamma_br_plus1/lamr(i,k)**br,9.1_r8*rhof(i,k))
            umr(i,k) = min(arn(i,k)*gamma_br_plus4/(6._r8*lamr(i,k)**br),9.1_r8*rhof(i,k))
 
-           fr(k) = g*rho(i,k)*umr(i,k)
-           fnr(k) = g*rho(i,k)*unr(i,k)
+           fr(i,k) = g*rho(i,k)*umr(i,k)
+           fnr(i,k) = g*rho(i,k)*unr(i,k)
 
         else
-           fr(k)=0._r8
-           fnr(k)=0._r8
+           fr(i,k)=0._r8
+           fnr(i,k)=0._r8
         end if
+     enddo
 
         ! fallspeed for snow
 
-        call size_dist_param_basic(mg_snow_props, dums(i,k), dumns(i,k), &
-             lams(i,k))
+        call size_dist_param_basic_vl(mg_snow_props, dums(:,k), dumns(:,k), &
+             lams(:,k), mgncol)
 
+!dir$ vector aligned
+     do i=1,mgncol
         if (lams(i,k).ge.qsmall) then
 
            ! 'final' values of number and mass weighted mean fallspeed for snow (m/s)
            ums(i,k) = min(asn(i,k)*gamma_bs_plus4/(6._r8*lams(i,k)**bs),1.2_r8*rhof(i,k))
            uns(i,k) = min(asn(i,k)*gamma_bs_plus1/lams(i,k)**bs,1.2_r8*rhof(i,k))
 
-           fs(k) = g*rho(i,k)*ums(i,k)
-           fns(k) = g*rho(i,k)*uns(i,k)
+           fs(i,k) = g*rho(i,k)*ums(i,k)
+           fns(i,k) = g*rho(i,k)*uns(i,k)
 
         else
-           fs(k)=0._r8
-           fns(k)=0._r8
+           fs(i,k)=0._r8
+           fns(i,k)=0._r8
         end if
 
         ! redefine dummy variables - sedimentation is calculated over grid-scale
@@ -2006,6 +2014,7 @@ subroutine micro_mg_tend ( &
         if (dumr(i,k).lt.qsmall) dumnr(i,k)=0._r8
         if (dums(i,k).lt.qsmall) dumns(i,k)=0._r8
 
+     end do
      end do       !!! vertical loop
 
      ! initialize nstep for sedimentation sub-steps
@@ -2015,20 +2024,22 @@ subroutine micro_mg_tend ( &
      !-------------------------------------------------------------------
      ! include precip species
 
+     do i=1,mgncol
+
 !dir$ vector aligned
      do k=1,nlev
        pdelinv(k) = 1._r8/pdel(i,k)
      enddo
 
      nstep = 1 + int(max( &
-          maxval( fi*pdelinv), &
-          maxval( fc*pdelinv), &
-          maxval(fni*pdelinv), &
-          maxval(fnc*pdelinv), &
-          maxval( fr*pdelinv), &
-          maxval(fnr*pdelinv), &
-          maxval( fs*pdelinv), &
-          maxval(fns*pdelinv)) &
+          maxval( fi(i,:)*pdelinv), &
+          maxval( fc(i,:)*pdelinv), &
+          maxval(fni(i,:)*pdelinv), &
+          maxval(fnc(i,:)*pdelinv), &
+          maxval( fr(i,:)*pdelinv), &
+          maxval(fnr(i,:)*pdelinv), &
+          maxval( fs(i,:)*pdelinv), &
+          maxval(fns(i,:)*pdelinv)) &
           * deltat)
 
      nstepir = 1._r8/real(nstep)
@@ -2043,19 +2054,19 @@ subroutine micro_mg_tend ( &
      do n = 1,nstep
 
         if (do_cldice) then
-           falouti  = fi  * dumi(i,:)
-           faloutni = fni * dumni(i,:)
+           falouti  = fi(i,:)  * dumi(i,:)
+           faloutni = fni(i,:) * dumni(i,:)
         else
            falouti  = 0._r8
            faloutni = 0._r8
         end if
-        faloutc  = fc  * dumc(i,:)
-        faloutnc = fnc * dumnc(i,:)
+        faloutc  = fc(i,:)  * dumc(i,:)
+        faloutnc = fnc(i,:) * dumnc(i,:)
 
-        faloutr  = fr  * dumr(i,:)
-        faloutnr = fnr * dumnr(i,:)
-        falouts  = fs  * dums(i,:)
-        faloutns = fns * dumns(i,:)
+        faloutr  = fr(i,:)  * dumr(i,:)
+        faloutnr = fnr(i,:) * dumnr(i,:)
+        falouts  = fs(i,:)  * dums(i,:)
+        faloutns = fns(i,:) * dumns(i,:)
 
         ! top of model
         k = 1
@@ -2172,6 +2183,7 @@ subroutine micro_mg_tend ( &
         preci(i) = preci(i)+(falouts(nlev)+falouti(nlev))/g*nstepir/1000._r8
 
      end do   !! nstep loop
+     enddo
 
      ! end sedimentation
      !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -2179,8 +2191,10 @@ subroutine micro_mg_tend ( &
      ! get new update for variables that includes sedimentation tendency
      ! note : here dum variables are grid-average, NOT in-cloud
 
-!dir$ vector aligned
      do k=1,nlev
+
+!dir$ vector aligned
+     do i=1,mgncol
 
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._r8)
         dumi(i,k) = max(qi(i,k)+qitend(i,k)*deltat,0._r8)
@@ -2206,12 +2220,15 @@ subroutine micro_mg_tend ( &
         if (dumi(i,k).lt.qsmall) dumni(i,k)=0._r8
         if (dumr(i,k).lt.qsmall) dumnr(i,k)=0._r8
         if (dums(i,k).lt.qsmall) dumns(i,k)=0._r8
+     enddo
 
         ! calculate instantaneous processes (melting, homogeneous freezing)
         !====================================================================
 
         ! melting of snow at +2 C
 
+!dir$ vector aligned
+     do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat > snowmelt) then
            if (dums(i,k) > 0._r8) then
 
@@ -2236,7 +2253,10 @@ subroutine micro_mg_tend ( &
               meltsdttot(i,k)=meltsdttot(i,k) + dum1
            end if
         end if
+     enddo
 
+!dir$ vector aligned
+     do i=1,mgncol
         ! freezing of rain at -5 C
 
         if (t(i,k)+tlat(i,k)/cpp*deltat < rainfrze) then
@@ -2278,9 +2298,11 @@ subroutine micro_mg_tend ( &
 
            end if
         end if
+     enddo
 
-
-        if (do_cldice) then
+     if (do_cldice) then
+!dir$ vector aligned
+     do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat > tmelt) then
               if (dumi(i,k) > 0._r8) then
 
@@ -2312,10 +2334,13 @@ subroutine micro_mg_tend ( &
                  tlat(i,k)=tlat(i,k)-xlf*dum*dumi(i,k)/deltat
               end if
            end if
+     enddo
 
            ! homogeneously freeze droplets at -40 C
            !-----------------------------------------------------------------
 
+!dir$ vector aligned
+     do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat < 233.15_r8) then
               if (dumc(i,k) > 0._r8) then
 
@@ -2343,12 +2368,15 @@ subroutine micro_mg_tend ( &
                  tlat(i,k)=tlat(i,k)+xlf*dum*dumc(i,k)/deltat
               end if
            end if
+     enddo
 
            ! remove any excess over-saturation, which is possible due to non-linearity when adding
            ! together all microphysical processes
            !-----------------------------------------------------------------
            ! follow code similar to old CAM scheme
 
+!dir$ vector aligned
+     do i=1,mgncol
            qtmp=q(i,k)+qvlat(i,k)*deltat
            ttmp=t(i,k)+tlat(i,k)/cpp*deltat
 
@@ -2383,8 +2411,11 @@ subroutine micro_mg_tend ( &
               qvres(i,k)=-dum
               tlat(i,k)=tlat(i,k)+dum*(1._r8-dum1)*xxlv+dum*dum1*xxls
            end if
-        end if
+     enddo
+     end if
 
+!dir$ vector aligned
+     do i=1,mgncol
         ! calculate effective radius for pass to radiation code
         !=========================================================
         ! if no cloud water, default value is 10 micron for droplets,
@@ -2422,7 +2453,10 @@ subroutine micro_mg_tend ( &
 
         ! cloud ice effective radius
         !-----------------------------------------------------------------
+     enddo
 
+!dir$ vector aligned
+     do i=1,mgncol
         if (do_cldice) then
            if (dumi(i,k).ge.qsmall) then
 
@@ -2537,11 +2571,12 @@ subroutine micro_mg_tend ( &
 
         end if
 
-
+     enddo
      end do ! vertical k loop
 
-!dir$ vector aligned
      do k=1,nlev
+!dir$ vector aligned
+     do i=1,mgncol
         ! if updated q (after microphysics) is zero, then ensure updated n is also zero
         !=================================================================================
         if (qc(i,k)+qctend(i,k)*deltat.lt.qsmall) nctend(i,k)=-nc(i,k)/deltat
@@ -2550,8 +2585,8 @@ subroutine micro_mg_tend ( &
         if (qs(i,k)+qstend(i,k)*deltat.lt.qsmall) nstend(i,k)=-ns(i,k)/deltat
 
      end do
+     end do
 
-  end do sed_col_loop! i loop
 
 
   ! DO STUFF FOR OUTPUT:
