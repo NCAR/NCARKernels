@@ -1827,14 +1827,15 @@ subroutine micro_mg_tend ( &
   ! divide by precip fraction to get in-precip (local) values of
   ! rain mass and number, divide by rhow to get rain number in kg^-1
 
-  call size_dist_param_basic(mg_rain_props, qric, nric, lamr, n0r)
-
+  do k=1,nlev
+  call size_dist_param_basic_vl(mg_rain_props, qric(:,k), nric(:,k), lamr(:,k), mgncol, n0=n0r(:,k))
   ! Calculate rercld
 
   ! calculate mean size of combined rain and cloud water
 
-  call calc_rercld(lamr, n0r, lamc, cdist1, pgam, qric, qcic, &
-       rercld)
+  call calc_rercld_vl(lamr(:,k), n0r(:,k), lamc(:,k), cdist1(:,k), pgam(:,k), qric(:,k), qcic(:,k), &
+       rercld(:,k))
+  enddo
 
   ! Assign variables back to start-of-timestep values
   ! Some state variables are changed before the main microphysics loop
@@ -2785,34 +2786,38 @@ end subroutine calc_rercld
 
 subroutine calc_rercld_vl(lamr, n0r, lamc, cdist1, pgam, qric, qcic, &
      rercld)
-  real(r8), intent(in) :: lamr          ! rain size parameter (slope)
-  real(r8), intent(in) :: n0r           ! rain size parameter (intercept)
-  real(r8), intent(in) :: lamc          ! size distribution parameter (slope)
-  real(r8), intent(in) :: cdist1        ! for droplet freezing
-  real(r8), intent(in) :: pgam          ! droplet size parameter
-  real(r8), intent(in) :: qric          ! in-cloud rain mass mixing ratio
-  real(r8), intent(in) :: qcic          ! in-cloud cloud liquid
+  real(r8), intent(in) :: lamr(:)          ! rain size parameter (slope)
+  real(r8), intent(in) :: n0r(:)           ! rain size parameter (intercept)
+  real(r8), intent(in) :: lamc(:)          ! size distribution parameter (slope)
+  real(r8), intent(in) :: cdist1(:)        ! for droplet freezing
+  real(r8), intent(in) :: pgam(:)          ! droplet size parameter
+  real(r8), intent(in) :: qric(:)          ! in-cloud rain mass mixing ratio
+  real(r8), intent(in) :: qcic(:)          ! in-cloud cloud liquid
 
-  real(r8), intent(inout) :: rercld     ! effective radius calculation for rain + cloud
+  real(r8), intent(inout) :: rercld(:)     ! effective radius calculation for rain + cloud
 
   ! combined size of precip & cloud drops
   real(r8) :: Atmp
+  integer :: i
 
+!dir$ vector aligned
+  do i=1,size(lamr)
   ! Rain drops
-  if (lamr > 0._r8) then
-     Atmp = n0r * pi / (2._r8 * lamr**3._r8)
+  if (lamr(i) > 0._r8) then
+     Atmp = n0r(i) * pi / (2._r8 * lamr(i)**3._r8)
   else
      Atmp = 0._r8
   end if
 
   ! Add cloud drops
-  if (lamc > 0._r8) then
-     Atmp = Atmp + cdist1 * pi * gamma(pgam+3._r8)/(4._r8 * lamc**2._r8)
+  if (lamc(i) > 0._r8) then
+     Atmp = Atmp + cdist1(i) * pi * gamma(pgam(i)+3._r8)/(4._r8 * lamc(i)**2._r8)
   end if
 
   if (Atmp > 0._r8) then
-     rercld = rercld + 3._r8 *(qric + qcic) / (4._r8 * rhow * Atmp)
+     rercld(i) = rercld(i) + 3._r8 *(qric(i) + qcic(i)) / (4._r8 * rhow * Atmp)
   end if
+  enddo
 
 end subroutine calc_rercld_vl
 
