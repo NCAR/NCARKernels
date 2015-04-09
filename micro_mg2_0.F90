@@ -310,8 +310,10 @@ subroutine micro_mg_tend ( &
   use micro_mg_utils, only: &
        size_dist_param_liq, &
        size_dist_param_liq_vl, &
+       size_dist_param_liq_inline, &
        size_dist_param_basic, &
        size_dist_param_basic_vl, &
+       size_dist_param_basic_inline, &
        avg_diameter
 
   ! Microphysical processes.
@@ -2281,7 +2283,7 @@ subroutine micro_mg_tend ( &
               ! get mean size of rain = 1/lamr, add frozen rain to either snow or cloud ice
               ! depending on mean rain size
 
-              call size_dist_param_basic(mg_rain_props, dumr(i,k), dumnr(i,k), &
+              call size_dist_param_basic_inline(mg_rain_props, dumr(i,k), dumnr(i,k), &
                    lamr(i,k))
 
               if (lamr(i,k) < 1._r8/Dcs) then
@@ -2462,7 +2464,7 @@ subroutine micro_mg_tend ( &
            if (dumi(i,k).ge.qsmall) then
 
               dum_2D(i,k) = dumni(i,k)
-              call size_dist_param_basic(mg_ice_props, dumi(i,k), dumni(i,k), &
+              call size_dist_param_basic_inline(mg_ice_props, dumi(i,k), dumni(i,k), &
                    lami(i,k))
 
               if (dumni(i,k) /=dum_2D(i,k)) then
@@ -2503,7 +2505,7 @@ subroutine micro_mg_tend ( &
 
            dum = dumnc(i,k)
 
-           call size_dist_param_liq(mg_liq_props, dumc(i,k), dumnc(i,k), rho(i,k), &
+           call size_dist_param_liq_inline(mg_liq_props, dumc(i,k), dumnc(i,k), rho(i,k), &
                 pgam(i,k), lamc(i,k))
 
            if (dum /= dumnc(i,k)) then
@@ -2526,7 +2528,7 @@ subroutine micro_mg_tend ( &
 
            ! Pass in "false" adjust flag to prevent number from being changed within
            ! size distribution subroutine.
-           call size_dist_param_liq(mg_liq_props, dumc(i,k), dumnc(i,k), rho(i,k), &
+           call size_dist_param_liq_inline(mg_liq_props, dumc(i,k), dumnc(i,k), rho(i,k), &
                 pgam(i,k), lamc(i,k))
 
            effc_fn(i,k) = (pgam(i,k)+3._r8)/lamc(i,k)/2._r8*1.e6_r8
@@ -2545,7 +2547,7 @@ subroutine micro_mg_tend ( &
 
            dum = dumnr(i,k)
 
-           call size_dist_param_basic(mg_rain_props, dumr(i,k), dumnr(i,k), &
+           call size_dist_param_basic_inline(mg_rain_props, dumr(i,k), dumnr(i,k), &
                 lamr(i,k))
 
            if (dum /= dumnr(i,k)) then
@@ -2562,7 +2564,7 @@ subroutine micro_mg_tend ( &
 
            dum = dumns(i,k)
 
-           call size_dist_param_basic(mg_snow_props, dums(i,k), dumns(i,k), &
+           call size_dist_param_basic_inline(mg_snow_props, dums(i,k), dumns(i,k), &
                 lams(i,k))
 
            if (dum /= dumns(i,k)) then

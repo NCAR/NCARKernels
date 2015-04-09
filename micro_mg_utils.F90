@@ -57,8 +57,10 @@ public read_extern_micro_mg_utils
 public :: &
      size_dist_param_liq, &
      size_dist_param_liq_vl, &
+     size_dist_param_liq_inline, &
      size_dist_param_basic, &
      size_dist_param_basic_vl, &
+     size_dist_param_basic_inline, &
      ice_autoconversion, &
      ice_autoconversion_vl, &
      avg_diameter, &
@@ -457,7 +459,7 @@ subroutine ice_deposition_sublimation_vl(t, qv, qi, ni, &
      !Compute linearized condensational heating correction
      ab=calc_ab_vl(t(i), qvi(i), xxls)
      !Get slope and intercept of gamma distn for ice.
-     call size_dist_param_basic(mg_ice_props, qiic, niic, lami, n0i)
+     call size_dist_param_basic_inline(mg_ice_props, qiic, niic, lami, n0i)
      !Get depletion timescale=1/eps
      epsi = 2._r8*pi*n0i*rho(i)*Dv(i)/(lami*lami)
 
@@ -1841,24 +1843,23 @@ elemental subroutine ice_autoconversion(t, qiic, lami, n0i, dcs, prci, nprci)
 
 end subroutine ice_autoconversion
 
-subroutine ice_autoconversion_vl(t, qiic, lami, n0i, dcs, prci, nprci, mgncol)
+subroutine ice_autoconversion_vl(t, qiic, lami, n0i, dcs, prci, nprci)
 
-  integer, intent(in) :: mgncol
-  real(r8), dimension(mgncol), intent(in) :: t
-  real(r8), dimension(mgncol),intent(in) :: qiic
-  real(r8), dimension(mgncol),intent(in) :: lami
-  real(r8), dimension(mgncol),intent(in) :: n0i
-  real(r8),                   intent(in) :: dcs
+  real(r8), intent(in) :: t(:)
+  real(r8), intent(in) :: qiic(:)
+  real(r8), intent(in) :: lami(:)
+  real(r8), intent(in) :: n0i(:)
+  real(r8), intent(in) :: dcs
 
-  real(r8), dimension(mgncol),intent(out) :: prci
-  real(r8), dimension(mgncol),intent(out) :: nprci
+  real(r8), intent(out) :: prci(:)
+  real(r8), intent(out) :: nprci(:)
 
   ! Assume autoconversion timescale of 180 seconds.
   real(r8), parameter :: ac_time = 180._r8
   integer :: i
 
 !dir$ vector aligned 
-  do i=1,mgncol
+  do i = 1,size(t)
   if (t(i) <= tmelt .and. qiic(i) >= qsmall) then
 
      nprci(i) = n0i(i)/(lami(i)*ac_time)*exp(-lami(i)*dcs)
@@ -1911,6 +1912,43 @@ elemental subroutine size_dist_param_basic(props, qic, nic, lam, n0)
   if (present(n0)) n0 = nic * lam
 
 end subroutine size_dist_param_basic
+!DIR$ ATTRIBUTES FORCEINLINE :: size_dist_param_basic_inline
+subroutine size_dist_param_basic_inline(props, qic, nic, lam, n0)
+  type(MGHydrometeorProps), intent(in) :: props
+  real(r8), intent(in) :: qic
+  real(r8), intent(inout) :: nic
+
+  real(r8), intent(out) :: lam
+  real(r8), intent(out), optional :: n0
+
+  if (qic > qsmall) then
+
+     ! add upper limit to in-cloud number concentration to prevent
+     ! numerical error
+     if (limiter_is_on(props%min_mean_mass)) then
+        nic = min(nic, qic / props%min_mean_mass)
+     end if
+
+     ! lambda = (c n/q)^(1/d)
+     lam = (props%shape_coef * nic/qic)**(1._r8/props%eff_dim)
+
+     ! check for slope
+     ! adjust vars
+     if (lam < props%lambda_bounds(1)) then
+        lam = props%lambda_bounds(1)
+        nic = lam**(props%eff_dim) * qic/props%shape_coef
+     else if (lam > props%lambda_bounds(2)) then
+        lam = props%lambda_bounds(2)
+        nic = lam**(props%eff_dim) * qic/props%shape_coef
+     end if
+
+  else
+     lam = 0._r8
+  end if
+
+  if (present(n0)) n0 = nic * lam
+
+end subroutine size_dist_param_basic_inline
 
 subroutine size_dist_param_basic_vl(props, qic, nic, lam, mgncol, n0)
   integer, intent(in) :: mgncol
@@ -2115,7 +2153,7 @@ subroutine size_dist_param_liq_vl(props, qcic, ncic, rho, pgam, lamc, mgncol)
      ! Limit to between 2 and 50 microns mean size.
      props_loc%lambda_bounds = (pgam(i)+1._r8)*1._r8/[50.e-6_r8, 2.e-6_r8]
 
-     call size_dist_param_basic(props_loc, qcic(i), ncic(i), lamc(i))
+     call size_dist_param_basic_inline(props_loc, qcic(i), ncic(i), lamc(i))
 
   endif
   enddo
@@ -2144,6 +2182,49 @@ end subroutine size_dist_param_liq_vl
   end function rising_factorial_vl
 
 ! get cloud droplet size distribution parameters
+!DIR$ ATTRIBUTES FORCEINLINE :: size_dist_param_liq_inline
+subroutine size_dist_param_liq_inline(props, qcic, ncic, rho, pgam, lamc)
+  type(MGHydrometeorProps), intent(in) :: props
+  real(r8), intent(in) :: qcic
+  real(r8), intent(inout) :: ncic
+  real(r8), intent(in) :: rho
+
+  real(r8), intent(out) :: pgam
+  real(r8), intent(out) :: lamc
+
+  type(MGHydrometeorProps) :: props_loc
+
+  if (qcic > qsmall) then
+
+     ! Local copy of properties that can be modified.
+     ! (Elemental routines that operate on arrays can't modify scalar arguments.)
+     props_loc = props
+
+     ! Get pgam from fit to observations of martin et al. 1994
+     pgam = 0.0005714_r8*(ncic/1.e6_r8*rho) + 0.2714_r8
+     pgam = 1._r8/(pgam**2) - 1._r8
+     pgam = max(pgam, 2._r8)
+     pgam = min(pgam, 15._r8)
+
+     ! Set coefficient for use in size_dist_param_basic.
+     props_loc%shape_coef = pi * props_loc%rho / 6._r8 * &
+          rising_factorial(pgam+1._r8, props_loc%eff_dim)
+
+     ! Limit to between 2 and 50 microns mean size.
+     props_loc%lambda_bounds = (pgam+1._r8)*1._r8/[50.e-6_r8, 2.e-6_r8]
+
+     call size_dist_param_basic_inline(props_loc, qcic, ncic, lamc)
+
+  else
+     ! pgam not calculated in this case, so set it to a value likely to
+     ! cause an error if it is accidentally used
+     ! (gamma function undefined for negative integers)
+     pgam = -100._r8
+     lamc = 0._r8
+  end if
+
+end subroutine size_dist_param_liq_inline
+
 elemental subroutine size_dist_param_liq(props, qcic, ncic, rho, pgam, lamc)
   type(MGHydrometeorProps), intent(in) :: props
   real(r8), intent(in) :: qcic
