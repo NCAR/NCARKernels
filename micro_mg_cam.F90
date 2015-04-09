@@ -552,6 +552,7 @@
  
     FMT = "(1X,A,A,4(E24.17))"
     write (*,FMT) TRIM(kname), ' Diagnostic: ',sum(packed_tlat),sum(packed_qvlat),sum(packed_qctend), sum(packed_rei)
+
 #if defined(_OPENMP) 
     !$OMP PARALLEL
     nThreads = omp_get_num_threads()
@@ -582,6 +583,7 @@
     !$OMP packed_nfice, packed_qcrat, errstring, packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,packed_frzimm,  packed_frzcnt,  packed_frzdep   )
 
     !$OMP DO
+!   call vprof_start()
     do it=1,itmax
     ! RUN KERNEL
     call micro_mg_tend2_0( &
@@ -636,6 +638,7 @@
          packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,&
          packed_frzimm,  packed_frzcnt,  packed_frzdep   )
     enddo 
+!  call vprof_stop()
     !$OMP END DO
     !$OMP END PARALLEL
     call system_clock(c2,cr,cm)

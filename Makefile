@@ -16,8 +16,8 @@
 #
 # Sandy Bridge/Ivy Bridge
 #
-# FFLAGS := -O3 -xAVX -ftz -g -I./     -fp-model precise -no-prec-div -no-prec-sqrt -override-limits -DCPRINTEL
-  FFLAGS := -O3 -xAVX -ftz -g -I./ -ip -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL -qopt-report=5
+# FFLAGS := -O3 -xAVX -ftz -g -I./  -ip                                      -no-prec-div -no-prec-sqrt -override-limits                    -DCPRINTEL -qopt-report=5 
+  FFLAGS := -O3 -xAVX -ftz -g -I./  -ip   -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL  -qopt-report=5
 #
 # PGI 
 # FC := pgf95
@@ -37,6 +37,8 @@ SRCS := shr_kind_mod.F90 kgen_utils.F90 shr_spfn_mod.F90 micro_mg_utils.F90 wv_s
 
 kernel.exe: $(SRCS)
 	$(FC) $(FFLAGS) -o $@ $^ -lm
+#${HOME}/bin/mpi_trace_linux_x86_64/lib/libmpitrace.a -lbfd
+#${HOME}/bin/amdlibm-3.1-lin64/lib/static/libamdlibm.a
 
 clean:
 	rm -f *.exe *.mod *.o *.optrpt *.lst
