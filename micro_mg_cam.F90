@@ -16,7 +16,7 @@
     use shr_kind_mod,   only: r8=>shr_kind_r8
     USE kgen_utils, only : read_var, verify_var, KGENinitcheck, KGENPrtCheck, KGENApplyPert, check_t
 
-    include 'mpif.h'
+!    include 'mpif.h'
 
     public :: micro_mg_cam_tend, read_extern_micro_mg_cam
 
@@ -188,7 +188,7 @@
 
     integer*8 c1,c2,cr,cm
     real*8 dt
-    integer :: itmax=50000
+    integer :: itmax=1000
     integer :: it, nThreads
     character(len=40) :: FMT,FMT2
    
@@ -199,8 +199,8 @@
     integer :: myrank, info
 
 
-    call mpi_init(info)
-    call mpi_comm_rank(mpi_comm_world, myrank, info)
+!    call mpi_init(info)
+!    call mpi_comm_rank(mpi_comm_world, myrank, info)
 
     tolerance = 6.0e-11
     call KGENinitcheck(vstatus,tolerance)
@@ -652,7 +652,7 @@
         write(*,FMT2) TRIM(kname), ' [NTHR := ',nThreads,'] [itmax:= ',itmax,'] time per call (usec): ',1.e6*dt/dble(itmax)
     endif
 
-    call mpi_finalize(info)
+!    call mpi_finalize(info)
 
     end subroutine micro_mg_cam_tend
 

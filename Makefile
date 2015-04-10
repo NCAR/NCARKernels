@@ -1,6 +1,6 @@
 #
 # Intel 
-  FC := mpif90
+  FC := ifort
 #
 # Knights Corner
 #
