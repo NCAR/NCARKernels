@@ -12,12 +12,12 @@
 # Haswell
 # 
 # FFLAGS := -O3 -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-# FFLAGS := -O3 -openmp -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
+  FFLAGS := -O3 -xCORE-AVX2 -no-opt-dynamic-align -ftz -g -I./  -ip   -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL  -qopt-report=5
 #
 # Sandy Bridge/Ivy Bridge
 #
 # FFLAGS := -O3 -xAVX -ftz -g -I./  -ip                                      -no-prec-div -no-prec-sqrt -override-limits                    -DCPRINTEL -qopt-report=5 
-  FFLAGS := -O3 -xAVX -ftz -g -I./  -ip   -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL  -qopt-report=5
+#  FFLAGS := -O3 -xAVX -ftz -g -I./  -ip   -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL  -qopt-report=5
 #
 # PGI 
 # FC := pgf95
