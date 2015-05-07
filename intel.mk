@@ -14,7 +14,8 @@ LD = ifort
 INCLUDE := $(MKLROOT)/include
 FPPFLAGS := -fpp -Wp,-w 
 
-FFLAGS += -O3 -xAVX -fp-model fast -i4 -r8 -I$(INCLUDE) -I./
+ FFLAGS += -O3 -xAVX -fp-model fast -i4 -r8 -I$(INCLUDE) -I./ -qopt-report=5 
+#FFLAGS += -O3 -xAVX -fp-model fast -i4 -r8 -I$(INCLUDE) -I./ -qopt-report=5 -ipo
 
 CFLAGS := -D__IFC 
 CFLAGS += -O3 $(CFLAGS)

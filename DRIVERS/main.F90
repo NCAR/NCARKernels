@@ -4,8 +4,8 @@ program random
 
 use random_number_mod, only : RanGen
 
-integer, parameter :: length = 100000
-integer            :: ntrials = 10000
+integer(KIND=8), parameter :: length =  30000 
+integer(KIND=8)            :: ntrials = 50000
 integer            :: i
 integer(KIND=8)    :: c1, c2, cr, cm
 real   (KIND=8)    :: dt
