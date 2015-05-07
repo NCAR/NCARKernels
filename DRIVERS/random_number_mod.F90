@@ -42,11 +42,9 @@ contains
   
 ! keep it simple stupid
   case("KISSVEC")
-    do i=1,length
-      seed1(i) = seed*1+i; seed2(i) = seed*2+i 
-      seed3(i) = seed*3+i; seed4(i) = seed*4+i
-    enddo
-    call kissvec( seed1, seed2, seed3, seed4, randvec)
+!   call kissvec_init( seed1, seed2, seed3, seed4, vseed )
+
+    call kissvec( seed1, seed2, seed3, seed4, vseed, randvec)
 
 ! fortran-95 implementation of merseene twister 19937
   case("MT19937")

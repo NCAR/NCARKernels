@@ -6,38 +6,60 @@ module kissvec_mod
 
 
 implicit none
-save
+
+INTEGER,parameter :: r8 = selected_real_kind(12)
+
 private
-public :: kissvec
+public :: kissvec, kissvec_init
 
 contains
-  subroutine kissvec(seed1,seed2,seed3,seed4,ran_arr)
+
+  subroutine kissvec( seed1, seed2, seed3, seed4, seed, ran_arr)
+
 ! The  KISS (Keep It Simple Stupid) random number generator. Combines:
 ! (1) The congruential generator x(n)=69069*x(n-1)+1327217885, period 2^32.
 ! (2) A 3-shift shift-register generator, period 2^32-1,
 ! (3) Two 16-bit multiply-with-carry generators, period 597273182964842497>2^59
 !  Overall period>2^123; 
 !
-    implicit none
-    integer,parameter :: r8 = selected_real_kind(12)
-    REAL(r8), DIMENSION (:), INTENT(INOUT)  :: ran_arr
-    INTEGER, DIMENSION(:), INTENT(INOUT) :: seed1,seed2,seed3,seed4
-    integer :: i,sz,kiss
-    integer :: m, k, n
+    REAL(r8), DIMENSION(:), INTENT(INOUT) :: ran_arr
+    INTEGER,  DIMENSION(:), INTENT(INOUT) :: seed1, seed2, seed3, seed4
+    INTEGER,                INTENT(IN)    :: seed
+    INTEGER :: i, sz, kiss
+    INTEGER :: m, k, n
 
-! inline function 
     m(k, n) = ieor (k, ishft (k, n) )
 
-    sz = SIZE(ran_arr)
-    DO i = 1, sz
-       seed1(i) = 69069 * seed1(i) + 1327217885
-       seed2(i) = m (m (m (seed2(i), 13), - 17), 5)
-       seed3(i) = 18000 * iand (seed3(i), 65535) + ishft (seed3(i), - 16)
-       seed4(i) = 30903 * iand (seed4(i), 65535) + ishft (seed4(i), - 16)
-       kiss = seed1(i) + seed2(i) + ishft (seed3(i), 16) + seed4(i)
-       ran_arr(i) = kiss*2.328306e-10_r8 + 0.5_r8
-    end do
+!   call kissvec_init( seed1, seed2, seed3, seed4, seed, length )
+
+    sz = SIZE(seed1)
+    do i=1,sz
+      seed1(i) = seed*1+i; seed2(i) = seed*2+i
+      seed3(i) = seed*3+i; seed4(i) = seed*4+i
+
+      seed1(i) = 69069 * seed1(i) + 1327217885
+      seed2(i) = m (m (m (seed2(i), 13), - 17), 5)
+      seed3(i) = 18000 * iand (seed3(i), 65535) + ishft (seed3(i), - 16)
+      seed4(i) = 30903 * iand (seed4(i), 65535) + ishft (seed4(i), - 16)
+      kiss       = seed1(i) + seed2(i) + ishft (seed3(i), 16) + seed4(i)
+      ran_arr(i) = kiss*2.328306e-10_r8 + 0.5_r8
+    enddo
     
   end subroutine kissvec
+
+  subroutine kissvec_init( seed1, seed2, seed3, seed4, seed)
+
+    INTEGER,  DIMENSION(:), INTENT(INOUT) :: seed1, seed2, seed3, seed4
+    INTEGER,                INTENT(IN)    :: seed
+
+    INTEGER :: i, sz
+
+    sz = SIZE(seed1)
+    do i=1,sz
+      seed1(i) = seed*1+i; seed2(i) = seed*2+i
+      seed3(i) = seed*3+i; seed4(i) = seed*4+i
+    enddo
+
+  end subroutine kissvec_init
 
 end module kissvec_mod

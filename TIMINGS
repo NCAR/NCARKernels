@@ -1,48 +1,54 @@
- Total time (SFMT_MKL):      2.23124800000000     
- MegaRNumbers (SFMT_MKL):    448.179673438363     
- Summation of Random Numbers:    49921.3150470832     
- --------
+-O3 -xAVX -fp-model fast -i4 -r8 -I$(INCLUDE) -I./ -ipo -no-prec-div -no-prec-sqrt -override-limits
  
- Total time (KISSVEC):      8.30931300000000     
- MegaRNumbers (KISSVEC):    120.346892697387     
- Summation of Random Numbers:    49998.9518797116     
- --------
- 
- Total time (MT19937):      14.6626240000000     
- MegaRNumbers (MT19937):    68.2006167518174     
- Summation of Random Numbers:    50018.8656195348     
- --------
- 
- Total time (F90_INTRINSIC):      5.16823300000000     
- MegaRNumbers (F90_INTRINSIC):    193.489728501018     
- Summation of Random Numbers:    50048.5017889289     
- --------
- 
- Total time (dSFMT_F03):      2.77500800000000     
- MegaRNumbers (dSFMT_F03):    360.359321486641     
- Summation of Random Numbers:    49999.7262548544     
- --------
-
-Total time (SFMT_MKL):      3.22766100000000     
- MegaRNumbers (SFMT_MKL):    464.732820454193     
+ Total time (SFMT_MKL):      3.22914400000000     
+ MegaRNumbers (SFMT_MKL):    464.519389658684     
  Summation of Random Numbers:    14997.2843774981     
  --------
  
- Total time (KISSVEC):      11.9410660000000     
- MegaRNumbers (KISSVEC):    125.616925658061     
- Summation of Random Numbers:    14997.4135646144     
+ Total time (KISSVEC):      4.85743200000000     
+ MegaRNumbers (KISSVEC):    308.805146423048     
+ Summation of Random Numbers:    15000.2329111966     
  --------
  
- Total time (MT19937):      21.3011410000000     
- MegaRNumbers (MT19937):    70.4187630136808     
+ Total time (MT19937):      16.8637870000000     
+ MegaRNumbers (MT19937):    88.9479925238619     
  Summation of Random Numbers:    15061.7691171751     
  --------
  
- Total time (F90_INTRINSIC):      7.55774000000000     
- MegaRNumbers (F90_INTRINSIC):    198.472029998386     
- Summation of Random Numbers:    14975.5646163504     
+ Total time (F90_INTRINSIC):      7.55237800000000     
+ MegaRNumbers (F90_INTRINSIC):    198.612940189170     
+ Summation of Random Numbers:    14981.6134762941     
  --------
  
- Total time (dSFMT_F03):      4.04373500000000     
- MegaRNumbers (dSFMT_F03):    370.944188973808     
- Summation of Random Numbers:    14985.8102641536    
+ Total time (dSFMT_F03):      4.04964400000000     
+ MegaRNumbers (dSFMT_F03):    370.402929245139     
+ Summation of Random Numbers:    14985.8102641536     
+ --------
+
+ifort -O3 -xAVX -fp-model fast -i4 -r8 -I$(INCLUDE) -I./ 
+
+ Total time (SFMT_MKL):      3.23096000000000     
+ MegaRNumbers (SFMT_MKL):    464.258300938421     
+ Summation of Random Numbers:    14997.2843774981     
+ --------
+ 
+ Total time (KISSVEC):      10.8020410000000     
+ MegaRNumbers (KISSVEC):    138.862646420246     
+ Summation of Random Numbers:    15000.2329111966     
+ --------
+ 
+ Total time (MT19937):      21.5696060000000     
+ MegaRNumbers (MT19937):    69.5422994745477     
+ Summation of Random Numbers:    15061.7691171751     
+ --------
+ 
+ Total time (F90_INTRINSIC):      7.54228400000000     
+ MegaRNumbers (F90_INTRINSIC):    198.878748135180     
+ Summation of Random Numbers:    15007.9798193254     
+ --------
+ 
+ Total time (dSFMT_F03):      4.06591200000000     
+ MegaRNumbers (dSFMT_F03):    368.920921062728     
+ Summation of Random Numbers:    14985.8102641536     
+ --------
+
