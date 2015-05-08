@@ -1,11 +1,11 @@
 # Makefile created by mkmf $Id: mkmf,v 18.0.18.4 2012/12/04 15:24:15 Seth.Underwood Exp $ 
 
-SRCROOT = ./
+SRCROOT = /glade/u/home/ck/tests/xeon/uniformRNG/
 
 CPPDEFS = -DDSFMT_MEXP=19937 -DHAVE_SSE2
 
 
-include ./intel.mk
+include /glade/u/home/ck/tests/xeon/uniformRNG/intel.mk
 
 
 .DEFAULT:

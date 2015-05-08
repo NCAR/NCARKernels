@@ -10,11 +10,11 @@ implicit none
 INTEGER,parameter :: r8 = selected_real_kind(12)
 
 private
-public :: kissvec, kissvec_init
+public :: kissvec
 
 contains
 
-  subroutine kissvec( seed1, seed2, seed3, seed4, seed, ran_arr)
+  subroutine kissvec( seed1, seed2, seed3, seed4, ran_arr)
 
 ! The  KISS (Keep It Simple Stupid) random number generator. Combines:
 ! (1) The congruential generator x(n)=69069*x(n-1)+1327217885, period 2^32.
@@ -24,19 +24,13 @@ contains
 !
     REAL(r8), DIMENSION(:), INTENT(INOUT) :: ran_arr
     INTEGER,  DIMENSION(:), INTENT(INOUT) :: seed1, seed2, seed3, seed4
-    INTEGER,                INTENT(IN)    :: seed
     INTEGER :: i, sz, kiss
     INTEGER :: m, k, n
 
     m(k, n) = ieor (k, ishft (k, n) )
 
-!   call kissvec_init( seed1, seed2, seed3, seed4, seed, length )
-
     sz = SIZE(seed1)
     do i=1,sz
-      seed1(i) = seed*1+i; seed2(i) = seed*2+i
-      seed3(i) = seed*3+i; seed4(i) = seed*4+i
-
       seed1(i) = 69069 * seed1(i) + 1327217885
       seed2(i) = m (m (m (seed2(i), 13), - 17), 5)
       seed3(i) = 18000 * iand (seed3(i), 65535) + ishft (seed3(i), - 16)
@@ -46,20 +40,5 @@ contains
     enddo
     
   end subroutine kissvec
-
-  subroutine kissvec_init( seed1, seed2, seed3, seed4, seed)
-
-    INTEGER,  DIMENSION(:), INTENT(INOUT) :: seed1, seed2, seed3, seed4
-    INTEGER,                INTENT(IN)    :: seed
-
-    INTEGER :: i, sz
-
-    sz = SIZE(seed1)
-    do i=1,sz
-      seed1(i) = seed*1+i; seed2(i) = seed*2+i
-      seed3(i) = seed*3+i; seed4(i) = seed*4+i
-    enddo
-
-  end subroutine kissvec_init
 
 end module kissvec_mod
