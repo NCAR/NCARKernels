@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_imp_sol.F90
-! Generated at: 2015-05-12 12:12:16
-! KGEN version: 0.4.9
+! Generated at: 2015-05-13 11:02:22
+! KGEN version: 0.4.10
 
 
 
@@ -22,83 +22,84 @@
         INTEGER, parameter :: itermax = 11
         INTEGER, parameter :: cut_limit = 5
         REAL(KIND=r8) :: small
+        REAL(KIND=r8) :: epsilon(clscnt4)
         LOGICAL :: factor(itermax)
         INTEGER :: ox_ndx
         INTEGER :: o1d_ndx = -1
         INTEGER :: h2o_ndx = -1
-        INTEGER :: po2_ndx
-        INTEGER :: ho2_ndx
         INTEGER :: ch3co3_ndx
+        INTEGER :: ho2_ndx
         INTEGER :: ch3o2_ndx
+        INTEGER :: po2_ndx
         INTEGER :: oh_ndx
+        INTEGER :: macro2_ndx
+        INTEGER :: mco3_ndx
+        INTEGER :: c2h5o2_ndx
         INTEGER :: c3h7o2_ndx
         INTEGER :: isopo2_ndx
-        INTEGER :: macro2_ndx
-        INTEGER :: c2h5o2_ndx
-        INTEGER :: mco3_ndx
         INTEGER :: xo2_ndx
         INTEGER :: ro2_ndx
-        INTEGER :: no3_ndx
-        INTEGER :: n2o5_ndx
         INTEGER :: no2_ndx
+        INTEGER :: n2o5_ndx
+        INTEGER :: no3_ndx
         INTEGER :: no_ndx
-        INTEGER :: c2h4_ndx
-        INTEGER :: c10h16_ndx
-        INTEGER :: isop_ndx
         INTEGER :: mvk_ndx
+        INTEGER :: c2h4_ndx
         INTEGER :: c3h6_ndx
-        INTEGER :: ox_p1_ndx
-        INTEGER :: ox_p4_ndx
+        INTEGER :: isop_ndx
+        INTEGER :: c10h16_ndx
         INTEGER :: ox_p2_ndx
         INTEGER :: ox_p5_ndx
+        INTEGER :: ox_p1_ndx
         INTEGER :: ox_p3_ndx
+        INTEGER :: ox_p4_ndx
         INTEGER :: ox_p7_ndx
-        INTEGER :: ox_p10_ndx
         INTEGER :: ox_p8_ndx
-        INTEGER :: ox_p6_ndx
         INTEGER :: ox_p9_ndx
+        INTEGER :: ox_p6_ndx
+        INTEGER :: ox_p10_ndx
         INTEGER :: ox_p11_ndx
         INTEGER :: ox_l1_ndx
-        INTEGER :: ox_l2_ndx
         INTEGER :: ox_l3_ndx
-        INTEGER :: ox_l5_ndx
         INTEGER :: ox_l4_ndx
+        INTEGER :: ox_l5_ndx
+        INTEGER :: ox_l2_ndx
         INTEGER :: ox_l7_ndx
-        INTEGER :: ox_l6_ndx
         INTEGER :: ox_l8_ndx
         INTEGER :: ox_l9_ndx
+        INTEGER :: ox_l6_ndx
         INTEGER :: usr4_ndx
         INTEGER :: c2o3_ndx
         INTEGER :: ole_ndx
         INTEGER :: usr16_ndx
         INTEGER :: usr17_ndx
-        INTEGER :: alko2_ndx
-        INTEGER :: meko2_ndx
         INTEGER :: eneo2_ndx
-        INTEGER :: terpo2_ndx
+        INTEGER :: meko2_ndx
         INTEGER :: eo2_ndx
+        INTEGER :: terpo2_ndx
+        INTEGER :: alko2_ndx
         INTEGER :: tolo2_ndx
         INTEGER :: ox_p17_ndx
-        INTEGER :: ox_p13_ndx
         INTEGER :: ox_p12_ndx
-        INTEGER :: ox_p15_ndx
-        INTEGER :: ox_p16_ndx
         INTEGER :: ox_p14_ndx
+        INTEGER :: ox_p13_ndx
+        INTEGER :: ox_p16_ndx
+        INTEGER :: ox_p15_ndx
         LOGICAL :: full_ozone_chem = .false.
         LOGICAL :: middle_atm_chem = .false.
         LOGICAL :: reduced_ozone_chem = .false.
         ! for xnox ozone chemistry diagnostics
         INTEGER :: o3a_ndx
         INTEGER :: o1da_ndx
+        INTEGER :: xno2no3_ndx
         INTEGER :: xno2_ndx
         INTEGER :: xno3_ndx
         INTEGER :: no2xno3_ndx
-        INTEGER :: xno2no3_ndx
         INTEGER :: xno_ndx
         INTEGER :: usr16b_ndx
         INTEGER :: usr4a_ndx
-        INTEGER :: usr17b_ndx
         INTEGER :: usr16a_ndx
+        INTEGER :: usr17b_ndx
             PUBLIC kgen_read_externs_mo_imp_sol
         CONTAINS
 
@@ -109,82 +110,83 @@
         SUBROUTINE kgen_read_externs_mo_imp_sol(kgen_unit)
             INTEGER, INTENT(IN) :: kgen_unit
             READ(UNIT=kgen_unit) small
+            READ(UNIT=kgen_unit) epsilon
             READ(UNIT=kgen_unit) factor
             READ(UNIT=kgen_unit) ox_ndx
             READ(UNIT=kgen_unit) o1d_ndx
             READ(UNIT=kgen_unit) h2o_ndx
-            READ(UNIT=kgen_unit) po2_ndx
-            READ(UNIT=kgen_unit) ho2_ndx
             READ(UNIT=kgen_unit) ch3co3_ndx
+            READ(UNIT=kgen_unit) ho2_ndx
             READ(UNIT=kgen_unit) ch3o2_ndx
+            READ(UNIT=kgen_unit) po2_ndx
             READ(UNIT=kgen_unit) oh_ndx
+            READ(UNIT=kgen_unit) macro2_ndx
+            READ(UNIT=kgen_unit) mco3_ndx
+            READ(UNIT=kgen_unit) c2h5o2_ndx
             READ(UNIT=kgen_unit) c3h7o2_ndx
             READ(UNIT=kgen_unit) isopo2_ndx
-            READ(UNIT=kgen_unit) macro2_ndx
-            READ(UNIT=kgen_unit) c2h5o2_ndx
-            READ(UNIT=kgen_unit) mco3_ndx
             READ(UNIT=kgen_unit) xo2_ndx
             READ(UNIT=kgen_unit) ro2_ndx
-            READ(UNIT=kgen_unit) no3_ndx
-            READ(UNIT=kgen_unit) n2o5_ndx
             READ(UNIT=kgen_unit) no2_ndx
+            READ(UNIT=kgen_unit) n2o5_ndx
+            READ(UNIT=kgen_unit) no3_ndx
             READ(UNIT=kgen_unit) no_ndx
-            READ(UNIT=kgen_unit) c2h4_ndx
-            READ(UNIT=kgen_unit) c10h16_ndx
-            READ(UNIT=kgen_unit) isop_ndx
             READ(UNIT=kgen_unit) mvk_ndx
+            READ(UNIT=kgen_unit) c2h4_ndx
             READ(UNIT=kgen_unit) c3h6_ndx
-            READ(UNIT=kgen_unit) ox_p1_ndx
-            READ(UNIT=kgen_unit) ox_p4_ndx
+            READ(UNIT=kgen_unit) isop_ndx
+            READ(UNIT=kgen_unit) c10h16_ndx
             READ(UNIT=kgen_unit) ox_p2_ndx
             READ(UNIT=kgen_unit) ox_p5_ndx
+            READ(UNIT=kgen_unit) ox_p1_ndx
             READ(UNIT=kgen_unit) ox_p3_ndx
+            READ(UNIT=kgen_unit) ox_p4_ndx
             READ(UNIT=kgen_unit) ox_p7_ndx
-            READ(UNIT=kgen_unit) ox_p10_ndx
             READ(UNIT=kgen_unit) ox_p8_ndx
-            READ(UNIT=kgen_unit) ox_p6_ndx
             READ(UNIT=kgen_unit) ox_p9_ndx
+            READ(UNIT=kgen_unit) ox_p6_ndx
+            READ(UNIT=kgen_unit) ox_p10_ndx
             READ(UNIT=kgen_unit) ox_p11_ndx
             READ(UNIT=kgen_unit) ox_l1_ndx
-            READ(UNIT=kgen_unit) ox_l2_ndx
             READ(UNIT=kgen_unit) ox_l3_ndx
-            READ(UNIT=kgen_unit) ox_l5_ndx
             READ(UNIT=kgen_unit) ox_l4_ndx
+            READ(UNIT=kgen_unit) ox_l5_ndx
+            READ(UNIT=kgen_unit) ox_l2_ndx
             READ(UNIT=kgen_unit) ox_l7_ndx
-            READ(UNIT=kgen_unit) ox_l6_ndx
             READ(UNIT=kgen_unit) ox_l8_ndx
             READ(UNIT=kgen_unit) ox_l9_ndx
+            READ(UNIT=kgen_unit) ox_l6_ndx
             READ(UNIT=kgen_unit) usr4_ndx
             READ(UNIT=kgen_unit) c2o3_ndx
             READ(UNIT=kgen_unit) ole_ndx
             READ(UNIT=kgen_unit) usr16_ndx
             READ(UNIT=kgen_unit) usr17_ndx
-            READ(UNIT=kgen_unit) alko2_ndx
-            READ(UNIT=kgen_unit) meko2_ndx
             READ(UNIT=kgen_unit) eneo2_ndx
-            READ(UNIT=kgen_unit) terpo2_ndx
+            READ(UNIT=kgen_unit) meko2_ndx
             READ(UNIT=kgen_unit) eo2_ndx
+            READ(UNIT=kgen_unit) terpo2_ndx
+            READ(UNIT=kgen_unit) alko2_ndx
             READ(UNIT=kgen_unit) tolo2_ndx
             READ(UNIT=kgen_unit) ox_p17_ndx
-            READ(UNIT=kgen_unit) ox_p13_ndx
             READ(UNIT=kgen_unit) ox_p12_ndx
-            READ(UNIT=kgen_unit) ox_p15_ndx
-            READ(UNIT=kgen_unit) ox_p16_ndx
             READ(UNIT=kgen_unit) ox_p14_ndx
+            READ(UNIT=kgen_unit) ox_p13_ndx
+            READ(UNIT=kgen_unit) ox_p16_ndx
+            READ(UNIT=kgen_unit) ox_p15_ndx
             READ(UNIT=kgen_unit) full_ozone_chem
             READ(UNIT=kgen_unit) middle_atm_chem
             READ(UNIT=kgen_unit) reduced_ozone_chem
             READ(UNIT=kgen_unit) o3a_ndx
             READ(UNIT=kgen_unit) o1da_ndx
+            READ(UNIT=kgen_unit) xno2no3_ndx
             READ(UNIT=kgen_unit) xno2_ndx
             READ(UNIT=kgen_unit) xno3_ndx
             READ(UNIT=kgen_unit) no2xno3_ndx
-            READ(UNIT=kgen_unit) xno2no3_ndx
             READ(UNIT=kgen_unit) xno_ndx
             READ(UNIT=kgen_unit) usr16b_ndx
             READ(UNIT=kgen_unit) usr4a_ndx
-            READ(UNIT=kgen_unit) usr17b_ndx
             READ(UNIT=kgen_unit) usr16a_ndx
+            READ(UNIT=kgen_unit) usr17b_ndx
         END SUBROUTINE kgen_read_externs_mo_imp_sol
 
 
@@ -396,8 +398,7 @@
                                     m = permute(k,4)
                                     frc_mask = abs(forcing(m)) > small
                                     IF (frc_mask) THEN
-                                        !converged(k) = abs(forcing(m)) <= epsilon(k)*abs(solution(m))
-                                        converged(k) = abs(forcing(m)) <= epsilon(real(k))*abs(solution(m))
+                                        converged(k) = abs(forcing(m)) <= epsilon(k)*abs(solution(m))
                                         ELSE
                                         converged(k) = .true.
                                     END IF 

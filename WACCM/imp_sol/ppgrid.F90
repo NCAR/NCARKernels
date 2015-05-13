@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : ppgrid.F90
-! Generated at: 2015-05-12 12:12:16
-! KGEN version: 0.4.9
+! Generated at: 2015-05-13 11:02:22
+! KGEN version: 0.4.10
 
 
 
@@ -27,6 +27,8 @@
         ! number of sub-columns (max)
         INTEGER :: pver ! number of vertical levels
         ! pver + 1
+        PARAMETER (pcols     = 16)
+        PARAMETER (pver      = 70)
         !
         ! start, end indices for chunks owned by a given MPI task
         ! (set in phys_grid_init).

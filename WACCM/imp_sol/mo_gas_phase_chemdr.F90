@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : mo_gas_phase_chemdr.F90
-! Generated at: 2015-05-12 12:12:15
-! KGEN version: 0.4.9
+! Generated at: 2015-05-13 11:02:21
+! KGEN version: 0.4.10
 
 
 
@@ -252,6 +252,8 @@
             READ(UNIT=kgen_unit) ref_vmr
             READ(UNIT=kgen_unit) ref_o3s_loss
 
+            !Uncomment following call(s) to generate perturbed input(s)
+            !CALL kgen_perturb_real_r8_dim3( vmr )
 
             ! call to kernel
             CALL imp_sol(vmr, reaction_rates, het_rates, extfrc, delt, invariants(1,1,indexm), ncol, lchnk, ltrop_sol(:ncol), &
@@ -474,5 +476,28 @@
                 END IF
             END SUBROUTINE kgen_verify_real_r8_dim2
 
+        subroutine kgen_perturb_real_r8_dim3( var )
+            real(kind=r8), intent(inout), dimension(:,:,:) :: var
+            integer, allocatable :: rndm_seed(:)
+            integer :: rndm_seed_sz
+            real(kind=r8) :: pertval
+            real(kind=r8) :: pertlim = 10e-15
+            integer :: idx1,idx2,idx3
+        
+            call random_seed(size=rndm_seed_sz)
+            allocate(rndm_seed(rndm_seed_sz))
+            rndm_seed = 121869
+            call random_seed(put=rndm_seed)
+            do idx1=1,size(var, dim=1)
+                do idx2=1,size(var, dim=2)
+                    do idx3=1,size(var, dim=3)
+                        call random_number(pertval)
+                        pertval = 2.0_r8*pertlim*(0.5_r8 - pertval)
+                        var(idx1,idx2,idx3) = var(idx1,idx2,idx3)*(1.0_r8 + pertval)
+                    end do
+                end do
+            end do
+            deallocate(rndm_seed)
+        end subroutine
         END SUBROUTINE gas_phase_chemdr
     END MODULE mo_gas_phase_chemdr

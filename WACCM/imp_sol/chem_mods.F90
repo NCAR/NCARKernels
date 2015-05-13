@@ -2,8 +2,8 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : chem_mods.F90
-! Generated at: 2015-05-12 12:12:15
-! KGEN version: 0.4.9
+! Generated at: 2015-05-13 11:02:22
+! KGEN version: 0.4.10
 
 
 
@@ -14,8 +14,8 @@
         !--------------------------------------------------------------
         IMPLICIT NONE
         INTEGER, parameter :: extcnt = 18
-        INTEGER, parameter :: rxntot = 449
         INTEGER, parameter :: gas_pcnst = 158
+        INTEGER, parameter :: rxntot = 449
         INTEGER, parameter :: clscnt4 = 135
         INTEGER, parameter :: nzcnt = 1509
         INTEGER, parameter :: nfs = 2
