@@ -66,6 +66,8 @@ subroutine RanGen_init( iseed, name, length )
   character(len=*),                intent(in)    :: name
   integer,                         intent(in)    :: length
 
+  integer :: i
+
   select case (name)
 
 ! intel math kernel library SIMD fast merseene twister 19937
@@ -73,7 +75,12 @@ subroutine RanGen_init( iseed, name, length )
 
     method  = VSL_RNG_METHOD_UNIFORM_STD
     brng    = VSL_BRNG_SFMT19937
-    errcode = vslnewstream( stream, brng,  seed=iseed )
+    errcode = vslnewstream  ( stream, brng, seed=iseed )
+
+!   do i=1,num_init
+!     params(i) = i*iseed
+!   enddo
+!   errcode = vslnewstreamex( stream, brng, num_init, params )
 
 ! keep it simple stupid
 ! case("KISSVEC")
