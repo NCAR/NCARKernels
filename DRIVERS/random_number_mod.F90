@@ -100,7 +100,7 @@ subroutine RanGen_init( iseed, name, length )
 ! SIMD-oriented fast merseene twister 19937
   case("dSFMT_F03")
 
-    call dSFMT_init(seed, length, rng )
+    call dSFMT_init(iseed, length, rng )
 
 end select
 
