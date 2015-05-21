@@ -6,9 +6,10 @@ module shr_RandNum_mod
 
 ! this module contains the driver for the available versions of random number generator
  
-use mersennetwister_mod
-use dSFMT_interface
-use kissvec_mod
+use mersennetwister_mod, only : new_RandomNumberSequence, getRandomReal, &
+                                randomNumberSequence
+use dSFMT_interface,     only : dSFMT_init, get_rand_arr_close_open, dSFMT_t
+use kissvec_mod,         only : kissvec
 
 #ifdef INTEL_MKL
 use mkl_vsl_type
