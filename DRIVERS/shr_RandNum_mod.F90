@@ -63,7 +63,7 @@ subroutine shr_genRandNum(randStream, array)
 ! keep it simple stupid
     case("KISSVEC")
     do i=1,length
-      call kissvec( randStream%iseed1, randStream%iseed2, randStream%iseed3, randStream%iseed4, array(:,i) )
+      call kissvec( randStream%iseed1, randStream%iseed2, randStream%iseed3, randStream%iseed4, array(:,i), nstream )
     enddo
 
 ! fortran-95 implementation of merseene twister 19937

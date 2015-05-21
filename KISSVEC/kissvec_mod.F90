@@ -15,7 +15,7 @@ public :: kissvec
 
 contains
 
-  subroutine kissvec( seed1, seed2, seed3, seed4, ran_arr)
+  subroutine kissvec( seed1, seed2, seed3, seed4, ran_arr, length)
 
 ! The  KISS (Keep It Simple Stupid) random number generator. Combines:
 ! (1) The congruential generator x(n)=69069*x(n-1)+1327217885, period 2^32.
@@ -23,8 +23,9 @@ contains
 ! (3) Two 16-bit multiply-with-carry generators, period 597273182964842497>2^59
 !  Overall period>2^123;
 !
-    REAL(r8), CONTIGUOUS, INTENT(INOUT) :: ran_arr(:)
-    INTEGER,  CONTIGUOUS, INTENT(INOUT) :: seed1(:), seed2(:), seed3(:), seed4(:)
+    INTEGER,                     INTENT(IN)    :: length
+    REAL(r8), DIMENSION(length), INTENT(INOUT) :: ran_arr
+    INTEGER,  DIMENSION(length), INTENT(INOUT) :: seed1, seed2, seed3, seed4
     INTEGER :: kiss
     INTEGER :: sz, k, n, i
 
