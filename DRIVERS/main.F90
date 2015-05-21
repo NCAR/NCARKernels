@@ -35,6 +35,8 @@ real   (r8) :: dt
     call shr_genRandNum  ( randStream, array )
   enddo
 
+  call shr_RandNum_term(randStream)
+
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 
   print *, 'Total time   (SFMT_MKL): ',dt
@@ -58,6 +60,8 @@ real   (r8) :: dt
     call shr_genRandNum  ( randStream, array )
   enddo
 
+  call shr_RandNum_term(randStream)
+
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 
   print *, 'Total time   (KISSVEC): ',dt
@@ -74,6 +78,8 @@ real   (r8) :: dt
 
     call shr_genRandNum  ( randStream, array )
   enddo
+
+  call shr_RandNum_term(randStream)
 
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 
@@ -92,6 +98,8 @@ real   (r8) :: dt
     call shr_genRandNum  ( randStream, array )
   enddo
 
+  call shr_RandNum_term(randStream)
+
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 
   print *, 'Total time   (F90_INTRINSIC): ',dt
@@ -108,6 +116,8 @@ real   (r8) :: dt
 
     call shr_genRandNum  ( randStream, array )
   enddo
+
+  call shr_RandNum_term(randStream)
 
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 

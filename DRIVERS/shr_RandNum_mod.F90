@@ -7,8 +7,8 @@ module shr_RandNum_mod
 ! this module contains the driver for the available versions of random number generator
  
 use mersennetwister_mod, only : new_RandomNumberSequence, getRandomReal, &
-                                randomNumberSequence
-use dSFMT_interface,     only : dSFMT_init, get_rand_arr_close_open, dSFMT_t
+                                randomNumberSequence, finalize_RandomNumberSequence
+use dSFMT_interface,     only : dSFMT_init, dSFMT_end, get_rand_arr_close_open, dSFMT_t
 use kissvec_mod,         only : kissvec
 
 #ifdef INTEL_MKL
@@ -165,7 +165,11 @@ subroutine shr_RandNum_term( randStream )
 
 type (shr_rand_t), intent(inout) :: randStream
 
-  select case ("SFMT_MKL")
+integer :: length
+
+  length  = randStream%length
+
+  select case (randStream%type)
 
 #ifdef INTEL_MKL
 ! intel math kernel library SIMD fast merseene twister 19937
@@ -182,6 +186,9 @@ type (shr_rand_t), intent(inout) :: randStream
 
 ! fortran-95 implementation of merseene twister 19937
     case("MT19937")
+    do i=1,length
+      call finalize_RandomNumberSequence(randStream%randomseq(i))
+    enddo
     if ( allocated(randStream%randomseq) ) deallocate (randStream%randomseq)
 
 ! fortran-90 intrinsic pseudorandom number generator
@@ -190,6 +197,9 @@ type (shr_rand_t), intent(inout) :: randStream
 
 ! SIMD-oriented fast merseene twister 19937
     case("dSFMT_F03")
+    do i=1,length
+      call dSFMT_end(randStream%rng(i))
+    enddo
     if ( allocated (randStream%rng) ) deallocate (randStream%rng)
 
   end select
