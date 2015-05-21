@@ -54,6 +54,7 @@ real   (r8) :: dt
       iseed1(n) = iseed(n)*1+n; iseed2(n) = iseed(n)*2+n
       iseed3(n) = iseed(n)*3+n; iseed4(n) = iseed(n)*4+n
     enddo
+
     call shr_RandNum_init( randStream, nstream, length, 'KISSVEC', &
          iseed1=iseed1, iseed2=iseed2, iseed3=iseed3, iseed4=iseed4 )
 
@@ -112,7 +113,7 @@ real   (r8) :: dt
   call system_clock(c1, cr, cm)
 
   do m = 1,ntrials
-    call shr_RandNum_init( randStream, nstream, length, 'dSFMT_F03', iseed=iseed )
+    call shr_RandNum_init( randStream, nstream, length, 'DSFMT_F03', iseed=iseed )
 
     call shr_genRandNum  ( randStream, array )
   enddo
@@ -121,8 +122,8 @@ real   (r8) :: dt
 
   call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
 
-  print *, 'Total time   (dSFMT_F03): ',dt
-  print *, 'MegaRNumbers (dSFMT_F03): ', 1.0e-6*dble(nstream*length*ntrials)/dt
+  print *, 'Total time   (DSFMT_F03): ',dt
+  print *, 'MegaRNumbers (DSFMT_F03): ', 1.0e-6*dble(nstream*length*ntrials)/dt
   print *, 'Summation of Random Numbers: ', SUM(array)
   print *, '--------'; print *, ''
 

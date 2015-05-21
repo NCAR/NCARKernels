@@ -24,7 +24,7 @@ real(r8) :: a=0.0_r8, b=1.0_r8
 integer  :: brng, method
 
 type shr_rand_t 
-  character(len=80) :: type
+  character(len=32) :: type
   integer           :: nstream
   integer           :: length 
   integer, allocatable, dimension(:) :: iseed1, iseed2, iseed3, iseed4
@@ -84,7 +84,7 @@ subroutine shr_genRandNum(randStream, array)
     enddo
 
 ! SIMD-oriented fast merseene twister 19937
-  case("dSFMT_F03")
+  case("DSFMT_F03")
   do i=1,length
     call get_rand_arr_close_open( randStream%rng(i), array(:,i), nstream )
   enddo
@@ -103,16 +103,13 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
   integer, dimension(nstream), optional, intent(in)    :: iseed1, iseed2, iseed3, iseed4
   integer, dimension(nstream), optional, intent(in)    :: iseed 
 
-  integer :: i, n
-
-! shr_rand_t%name    = TRIM( to_upper(name) ) 
-! shr_rand_t%nstream = nstream 
+  integer :: i
 
   randStream%nstream = nstream
   randStream%length  = length 
-  randStream%type    = type
+  randStream%type    = to_upper(type)
 
-  select case (type)
+  select case (randStream%type)
 
 #ifdef INTEL_MKL
 ! intel math kernel library SIMD fast merseene twister 19937
@@ -151,7 +148,7 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     enddo
 
 ! SIMD-oriented fast merseene twister 19937
-    case("dSFMT_F03")
+    case("DSFMT_F03")
     if( .NOT. allocated(randStream%rng) ) allocate(randStream%rng(length))
     do i=1,length 
       call dSFMT_init(iseed(i), nstream, randStream%rng(i) )
@@ -196,7 +193,7 @@ integer :: length
     if ( allocated(randStream%iseed) ) deallocate(randStream%iseed)
 
 ! SIMD-oriented fast merseene twister 19937
-    case("dSFMT_F03")
+    case("DSFMT_F03")
     do i=1,length
       call dSFMT_end(randStream%rng(i))
     enddo
