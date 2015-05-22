@@ -117,9 +117,6 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     case ("SFMT_MKL")
     method = VSL_RNG_METHOD_UNIFORM_STD
     brng   = VSL_BRNG_SFMT19937
-    ! brng   = VSL_BRNG_MT19937
-    !  brng = 0
-    ! print *,'brng: ',brng
   
     if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(nstream))
 
