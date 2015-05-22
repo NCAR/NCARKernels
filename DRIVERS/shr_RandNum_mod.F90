@@ -15,6 +15,7 @@ use kissvec_mod,         only : kissvec
 use mkl_vsl_type
 use mkl_vsl
 #endif
+ implicit none
 
 integer, parameter :: r8 = selected_real_kind(12)
 
@@ -116,6 +117,9 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     case ("SFMT_MKL")
     method = VSL_RNG_METHOD_UNIFORM_STD
     brng   = VSL_BRNG_SFMT19937
+    ! brng   = VSL_BRNG_MT19937
+    !  brng = 0
+    ! print *,'brng: ',brng
   
     if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(nstream))
 
@@ -151,7 +155,7 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     case("DSFMT_F03")
     if( .NOT. allocated(randStream%rng) ) allocate(randStream%rng(nstream))
     do n=1,nstream
-      call dSFMT_init(iseed(n), nstream, randStream%rng(n) )
+      call dSFMT_init(iseed(n), length, randStream%rng(n) )
     enddo
   
   end select
@@ -162,7 +166,7 @@ subroutine shr_RandNum_term( randStream )
 
 type (shr_rand_t), intent(inout) :: randStream
 
-integer :: n, nstream
+integer :: n, nstream,ierr
 
   nstream = randStream%nstream
 
@@ -171,7 +175,12 @@ integer :: n, nstream
 #ifdef INTEL_MKL
 ! intel math kernel library SIMD fast merseene twister 19937
     case ("SFMT_MKL")
-    if( allocated (randStream%vsl_stream) ) deallocate (randStream%vsl_stream)
+       if( allocated (randStream%vsl_stream) ) then 
+           do n=1,nstream
+             ierr = vslDeleteStream(randStream%vsl_stream(n))
+           enddo
+           deallocate (randStream%vsl_stream)
+       endif
 #endif
 
 ! keep it simple stupid

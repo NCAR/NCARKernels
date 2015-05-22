@@ -8,7 +8,7 @@ INTEGER,parameter :: r8 = selected_real_kind(12)
 
 type (shr_rand_t) :: randStream
 
-integer(r8), parameter :: nstream = 16   ! number of streams of random numbers
+integer(r8), parameter :: nstream = 16  ! number of streams of random numbers
 integer(r8), parameter :: length  = 1000 ! length of stream of random numbers
 integer(r8)            :: ntrials = 50000
 
@@ -22,7 +22,7 @@ real(r8), dimension(nstream,length) :: array
 
 integer     :: i, n, m
 integer(r8) :: c1, c2, cr, cm
-real   (r8) :: dt
+real   (r8) :: dt, dt1,dt2
 
 #ifdef INTEL_MKL
 ! intel math kernel library merseene twister
@@ -31,20 +31,21 @@ real   (r8) :: dt
   do m = 1,ntrials
     call shr_RandNum_init( randStream, nstream, length, 'SFMT_MKL', iseed=iseed )
   enddo
-  call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
+  call system_clock(c2, cr, cm); dt1 = dble(c2-c1)/dble(cr)
 
-  print *, 'Total time   (SFMT_MKL_INIT): ',dt
-  print *, 'MegaRNumbers (SFMT_MKL_INIT): ', 1.0e-6*dble(nstream*length*ntrials)/dt
-  print *, '--------'; print *, ''
+!  print *, 'MegaRNumbers (SFMT_MKL_INIT): ', 1.0e-6*dble(nstream*length*ntrials)/dt
+!  print *, '--------'; print *, ''
 
   call system_clock(c1, cr, cm)
   do m = 1,ntrials
     call shr_genRandNum( randStream, array )
   enddo
   call shr_RandNum_term(randStream)
-  call system_clock(c2, cr, cm); dt = dble(c2-c1)/dble(cr)
-
-  print *, 'Total time   (SFMT_MKL): ',dt
+  call system_clock(c2, cr, cm); dt2 = dble(c2-c1)/dble(cr)
+  dt = dt1+dt2
+  print *, 'Init time   (SFMT_MKL): ',dt1
+  print *, 'Gen  time   (SFMT_MKL): ',dt2
+  print *, 'Total time  (SFMT_MKL): ',dt
   print *, 'MegaRNumbers (SFMT_MKL): ', 1.0e-6*dble(nstream*length*ntrials)/dt
   print *, 'Summation of Random Numbers: ', SUM(array)
   print *, '--------'; print *, ''
