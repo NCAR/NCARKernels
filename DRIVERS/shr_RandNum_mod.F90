@@ -48,7 +48,7 @@ subroutine shr_genRandNum(randStream, array)
   integer :: i, n, nstream, length
   integer, dimension(1) :: seed
 
-  nstream = randStream%nstream
+  nstream = randStream%nstream 
   length  = randStream%length 
 
   select case (randStream%type)
@@ -56,8 +56,8 @@ subroutine shr_genRandNum(randStream, array)
 #ifdef INTEL_MKL
 ! intel math kernel library SIMD fast merseene twister 19937
     case ("SFMT_MKL")
-    do i=1,length 
-      errcode = vdrnguniform( method, randStream%vsl_stream(i), nstream, array(:,i), a, b)
+    do n=1,nstream
+      errcode = vdrnguniform( method, randStream%vsl_stream(n), length, array(n,:), a, b)
     enddo
 #endif
  
@@ -71,22 +71,22 @@ subroutine shr_genRandNum(randStream, array)
     case("MT19937")
     do i=1,length
       do n=1,nstream
-        array(n,i) = getRandomReal( randStream%randomseq(i) )
+        array(n,i) = getRandomReal( randStream%randomseq(n) )
       enddo
     enddo
 
 ! fortran-90 intrinsic pseudorandom number generator
     case("F90_INTRINSIC")
-    do i=1,length
-      seed(1) = randStream%iseed(i)
+    do n=1,nstream
+      seed(1) = randStream%iseed(n)
       call random_seed( put=seed )
-      call random_number( array(:,i) )
+      call random_number( array(n,:) )
     enddo
 
 ! SIMD-oriented fast merseene twister 19937
   case("DSFMT_F03")
-  do i=1,length
-    call get_rand_arr_close_open( randStream%rng(i), array(:,i), nstream )
+  do n=1,nstream
+    call get_rand_arr_close_open( randStream%rng(n), array(n,:), length )
   enddo
 
 end select
@@ -96,14 +96,14 @@ end subroutine shr_genRandNum
 subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, iseed3, &
                                                                           iseed4, iseed )
  
-  integer,                               intent(in)    :: nstream
   type (shr_rand_t),                     intent(inout) :: randStream 
-  integer,                               intent(in)    :: length 
+  integer, intent(in)                                  :: nstream  ! number of streams of random numbers
+  integer, intent(in)                                  :: length   ! length of stream of random numbers
   character(len=*),                      intent(in)    :: type
   integer, dimension(nstream), optional, intent(in)    :: iseed1, iseed2, iseed3, iseed4
   integer, dimension(nstream), optional, intent(in)    :: iseed 
 
-  integer :: i
+  integer :: i, n
 
   randStream%nstream = nstream
   randStream%length  = length 
@@ -117,10 +117,10 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     method = VSL_RNG_METHOD_UNIFORM_STD
     brng   = VSL_BRNG_SFMT19937
   
-    if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(length))
+    if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(nstream))
 
-    do i=1,length 
-      errcode = vslnewstream( randStream%vsl_stream(i), brng, seed=iseed(i) )
+    do n=1,nstream
+      errcode = vslnewstream( randStream%vsl_stream(n), brng, seed=iseed(n) )
     enddo
 #endif
 
@@ -133,25 +133,25 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
 
 ! fortran-95 implementation of merseene twister 19937
     case("MT19937")
-    if( .NOT. allocated(randStream%randomseq) ) allocate(randStream%randomseq(length))
+    if( .NOT. allocated(randStream%randomseq) ) allocate(randStream%randomseq(nstream))
 
-    do i=1,length
-      randStream%randomseq(i) = new_RandomNumberSequence( seed=iseed(i) )
+    do n=1,nstream
+      randStream%randomseq(n) = new_RandomNumberSequence( seed=iseed(n) )
     enddo
 
 ! fortran-90 intrinsic pseudorandom number generator
     case("F90_INTRINSIC")
-    if( .NOT. allocated(randStream%iseed) ) allocate(randStream%iseed(length))
+    if( .NOT. allocated(randStream%iseed) ) allocate(randStream%iseed(nstream))
     
-    do i=1,length 
-      randStream%iseed(i) = iseed(i) 
+    do n=1,nstream
+      randStream%iseed(n) = iseed(n) 
     enddo
 
 ! SIMD-oriented fast merseene twister 19937
     case("DSFMT_F03")
-    if( .NOT. allocated(randStream%rng) ) allocate(randStream%rng(length))
-    do i=1,length 
-      call dSFMT_init(iseed(i), nstream, randStream%rng(i) )
+    if( .NOT. allocated(randStream%rng) ) allocate(randStream%rng(nstream))
+    do n=1,nstream
+      call dSFMT_init(iseed(n), nstream, randStream%rng(n) )
     enddo
   
   end select
@@ -162,9 +162,9 @@ subroutine shr_RandNum_term( randStream )
 
 type (shr_rand_t), intent(inout) :: randStream
 
-integer :: length
+integer :: n, nstream
 
-  length  = randStream%length
+  nstream = randStream%nstream
 
   select case (randStream%type)
 
@@ -183,8 +183,8 @@ integer :: length
 
 ! fortran-95 implementation of merseene twister 19937
     case("MT19937")
-    do i=1,length
-      call finalize_RandomNumberSequence(randStream%randomseq(i))
+    do n=1,nstream
+      call finalize_RandomNumberSequence(randStream%randomseq(n))
     enddo
     if ( allocated(randStream%randomseq) ) deallocate (randStream%randomseq)
 
@@ -194,8 +194,8 @@ integer :: length
 
 ! SIMD-oriented fast merseene twister 19937
     case("DSFMT_F03")
-    do i=1,length
-      call dSFMT_end(randStream%rng(i))
+    do n=1,nstream
+      call dSFMT_end(randStream%rng(n))
     enddo
     if ( allocated (randStream%rng) ) deallocate (randStream%rng)
 
