@@ -884,11 +884,12 @@ subroutine micro_mg_tend ( &
   ! Get humidity and saturation vapor pressures
 
 
-  call qsat_water(t(:,k), p(:,k), esl(:,k), qvl(:,k), mgncol)
-  call qsat_ice  (t(:,k), p(:,k), esi(:,k), qvi(:,k), mgncol)
+  do k=1,nlev
+    call qsat_water(t(:,k), p(:,k), esl(:,k), qvl(:,k), mgncol)
+    call qsat_ice  (t(:,k), p(:,k), esi(:,k), qvi(:,k), mgncol)
+  enddo
 
   do k=1,nlev
-
      do i=1,mgncol
         ! make sure when above freezing that esi=esl, not active yet
         if (t(i,k) >= tmelt) then
