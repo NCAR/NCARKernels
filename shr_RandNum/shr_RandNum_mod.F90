@@ -18,6 +18,7 @@ use mkl_vsl
  implicit none
 
 integer, parameter :: r8 = selected_real_kind(12)
+integer, parameter :: i8 = selected_int_kind(12) 
 
 integer :: errcode
 
@@ -27,7 +28,7 @@ integer  :: brng, method
 type shr_rand_t 
   character(len=32) :: type
   integer           :: nstream
-  integer           :: length 
+  integer           :: nrandom 
   integer, allocatable, dimension(:) :: iseed1, iseed2, iseed3, iseed4
   integer, allocatable, dimension(:) :: iseed
 #ifdef INTEL_MKL
@@ -41,16 +42,17 @@ public shr_genRandNum, shr_RandNum_init, shr_RandNum_term, shr_rand_t
 
 contains 
 
-subroutine shr_genRandNum(randStream, array)
+subroutine shr_genRandNum(randStream, array, nrandom_reset)
 
   type (shr_rand_t),        intent(inout) :: randStream
   real(r8), dimension(:,:), intent(inout) :: array
+  integer, optional,         intent(in)   :: nrandom_reset
 
-  integer :: i, n, nstream, length
+  integer :: i, n, nstream, nrandom
   integer, dimension(1) :: seed
 
   nstream = randStream%nstream 
-  length  = randStream%length 
+  nrandom = randStream%nrandom 
 
   select case (randStream%type)
 
@@ -58,19 +60,22 @@ subroutine shr_genRandNum(randStream, array)
 ! intel math kernel library SIMD fast merseene twister 19937
     case ("SFMT_MKL")
     do n=1,nstream
-      errcode = vdrnguniform( method, randStream%vsl_stream(n), length, array(n,:), a, b)
+      errcode = vdrnguniform( method, randStream%vsl_stream(n), nrandom, array(n,:), a, b)
     enddo
 #endif
  
 ! keep it simple stupid
     case("KISSVEC")
-    do i=1,length
+    if (present(nrandom_reset)) then
+      nrandom = nrandom_reset 
+    endif
+    do i=1,nrandom
       call kissvec( randStream%iseed1, randStream%iseed2, randStream%iseed3, randStream%iseed4, array(:,i), nstream )
     enddo
 
 ! fortran-95 implementation of merseene twister 19937
     case("MT19937")
-    do i=1,length
+    do i=1,nrandom
       do n=1,nstream
         array(n,i) = getRandomReal( randStream%randomseq(n) )
       enddo
@@ -87,19 +92,19 @@ subroutine shr_genRandNum(randStream, array)
 ! SIMD-oriented fast merseene twister 19937
   case("DSFMT_F03")
   do n=1,nstream
-    call get_rand_arr_close_open( randStream%rng(n), array(n,:), length )
+    call get_rand_arr_close_open( randStream%rng(n), array(n,:), nrandom )
   enddo
 
 end select
 
 end subroutine shr_genRandNum
 
-subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, iseed3, &
+subroutine shr_RandNum_init( randStream, nstream, nrandom, type, iseed1, iseed2, iseed3, &
                                                                           iseed4, iseed )
  
   type (shr_rand_t),                     intent(inout) :: randStream 
   integer, intent(in)                                  :: nstream  ! number of streams of random numbers
-  integer, intent(in)                                  :: length   ! length of stream of random numbers
+  integer, intent(in)                                  :: nrandom  ! number of random numbers in streams
   character(len=*),                      intent(in)    :: type
   integer, dimension(nstream), optional, intent(in)    :: iseed1, iseed2, iseed3, iseed4
   integer, dimension(nstream), optional, intent(in)    :: iseed 
@@ -107,9 +112,10 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
   integer :: i, n
 
   randStream%nstream = nstream
-  randStream%length  = length 
+  randStream%nrandom  = nrandom 
   randStream%type    = to_upper(type)
 
+!$OMP CRITICAL
   select case (randStream%type)
 
 #ifdef INTEL_MKL
@@ -117,9 +123,8 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     case ("SFMT_MKL")
     method = VSL_RNG_METHOD_UNIFORM_STD
     brng   = VSL_BRNG_SFMT19937
-  
-    if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(nstream))
 
+    if( .NOT. allocated(randStream%vsl_stream) ) allocate(randStream%vsl_stream(nstream))
     do n=1,nstream
       errcode = vslnewstream( randStream%vsl_stream(n), brng, seed=iseed(n) )
     enddo
@@ -131,6 +136,11 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     if( .NOT. allocated(randStream%iseed2) ) allocate(randStream%iseed2(nstream))
     if( .NOT. allocated(randStream%iseed3) ) allocate(randStream%iseed3(nstream))
     if( .NOT. allocated(randStream%iseed4) ) allocate(randStream%iseed4(nstream))
+
+    randStream%iseed1 = iseed1
+    randStream%iseed2 = iseed2
+    randStream%iseed3 = iseed3
+    randStream%iseed4 = iseed4
 
 ! fortran-95 implementation of merseene twister 19937
     case("MT19937")
@@ -152,10 +162,11 @@ subroutine shr_RandNum_init( randStream, nstream, length, type, iseed1, iseed2, 
     case("DSFMT_F03")
     if( .NOT. allocated(randStream%rng) ) allocate(randStream%rng(nstream))
     do n=1,nstream
-      call dSFMT_init(iseed(n), length, randStream%rng(n) )
+      call dSFMT_init(iseed(n), nrandom, randStream%rng(n) )
     enddo
   
   end select
+!$OMP END CRITICAL
 
 end subroutine shr_RandNum_init
 
@@ -167,6 +178,7 @@ integer :: n, nstream,ierr
 
   nstream = randStream%nstream
 
+!$OMP CRITICAL
   select case (randStream%type)
 
 #ifdef INTEL_MKL
@@ -206,6 +218,7 @@ integer :: n, nstream,ierr
     if ( allocated (randStream%rng) ) deallocate (randStream%rng)
 
   end select
+!$OMP END CRITICAL
 
 end subroutine shr_RandNum_term
 
