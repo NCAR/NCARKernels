@@ -41,8 +41,8 @@ contains
         seed4(i) = 30903 * iand (seed4(i), 65535) + ishft (seed4(i), - 16)
         kiss = seed1(i) + seed2(i) + ishft (seed3(i), 16) + seed4(i)
         ran_arr(i) = low_byte(kiss)*2.328306e-10_r8 + 0.5_r8
-    enddo
-  else
+      enddo
+    else
       sz = SIZE(seed1)
       do i=1,sz
         kiss = 69069*seed1(i) + 1327217885   
