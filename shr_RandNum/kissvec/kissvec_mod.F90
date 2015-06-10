@@ -9,6 +9,7 @@ implicit none
 INTEGER,parameter :: r8 = selected_real_kind(12)
 INTEGER,parameter :: i8 = selected_int_kind(12)
 LOGICAL :: BIG_ENDIAN
+LOGICAL :: initialized = .false.
 
 private
 public :: kissvec
@@ -29,7 +30,10 @@ contains
     INTEGER :: kiss
     INTEGER :: sz, k, n, i
 
-    big_endian = (transfer(1_i8, 1) == 0)
+    if ( .NOT. initialized ) then
+      big_endian = (transfer(1_i8, 1) == 0)
+      initialized = .true.
+    endif
 
     if ( big_endian ) then
       sz = SIZE(seed1)
