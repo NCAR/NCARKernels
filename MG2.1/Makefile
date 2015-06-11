@@ -1,6 +1,6 @@
 #
 # Intel 
-FC := mpif90
+FC := ftn
 #
 # Knights Corner
 #
@@ -16,11 +16,14 @@ FC := mpif90
 #
 # Sandy Bridge/Ivy Bridge
 
-  FFLAGS := -O3 -xAVX  -g -I./     -no-prec-div -no-prec-sqrt -override-limits -DCPRINTEL -qopt-report=5
-# FFLAGS := -O3 -xAVX -ftz -I./ -ip -fimf-precision=low -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -qopt-report=5
+# FFLAGS := -O3 -xAVX -g -I./ -no-prec-div -no-prec-sqrt -override-limits -qopt-report=5 
+#-prof-use -prof-dir/global/u1/c/ckerr/tests/xeon/MG2.1_NCAR
+#-prof-gen
 
 # Use of these option below gives a 6-percent improvement in performance, but causes minor differences in answers
-# FFLAGS := -O3 -xAVX -ftz -g -I./ -ip -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -DCPRINTEL 
+# FFLAGS := -O3 -xAVX -ftz -g -I./     -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 \
+# -prof-use -prof-dir/global/u1/c/ckerr/tests/xeon/MG2.1_NCAR
+  FFLAGS := -O3 -xAVX -ftz -g -I./ -ipo4 -ipo-jobs4 -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 -no-inline-max-total-size -inline-factor=200 # -prof-gen
 #
 # PGI 
 # FC := pgf95
@@ -31,8 +34,8 @@ FC := mpif90
 # FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
 #
 # Cray 
-# FC := mpif90
-# FFLAGS := -O3 -N 255 -r kjjjm -V -I./
+# FC := ftn
+# FFLAGS := -O2 -N 255 -r mo -V  -h fp4  -G1
 #
 
 all: kernel.exe
@@ -40,7 +43,8 @@ SRCS := shr_kind_mod.F90 kgen_utils.F90 shr_spfn_mod.F90 micro_mg_utils.F90 wv_s
 
 kernel.exe: $(SRCS)
 	$(FC) $(FFLAGS) -o $@ $^ -lm 
+
 #${HOME}/bin/mpi_trace_linux_x86_64/lib/libmpitrace.a -lbfd
 
 clean:
-	rm -f *.exe *.mod *.o
+	rm -f *.exe *.mod *.o *.optrpt *.lst

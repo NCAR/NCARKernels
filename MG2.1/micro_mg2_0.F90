@@ -433,34 +433,34 @@ subroutine micro_mg_tend ( &
   integer,  intent(in) :: mgncol         ! number of microphysics columns
   integer,  intent(in) :: nlev           ! number of layers
   real(r8), intent(in) :: deltatin       ! time step (s)
-  real(r8), intent(in) :: t(:,:)        ! input temperature (K)
-  real(r8), intent(in) :: q(:,:)        ! input h20 vapor mixing ratio (kg/kg)
+  real(r8), intent(in) :: t(mgncol,nlev)        ! input temperature (K)
+  real(r8), intent(in) :: q(mgncol,nlev)        ! input h20 vapor mixing ratio (kg/kg)
 
   ! note: all input cloud variables are grid-averaged
-  real(r8), intent(in) :: qcn(:,:)       ! cloud water mixing ratio (kg/kg)
-  real(r8), intent(in) :: qin(:,:)       ! cloud ice mixing ratio (kg/kg)
-  real(r8), intent(in) :: ncn(:,:)       ! cloud water number conc (1/kg)
-  real(r8), intent(in) :: nin(:,:)       ! cloud ice number conc (1/kg)
+  real(r8), intent(in) :: qcn(mgncol,nlev)       ! cloud water mixing ratio (kg/kg)
+  real(r8), intent(in) :: qin(mgncol,nlev)       ! cloud ice mixing ratio (kg/kg)
+  real(r8), intent(in) :: ncn(mgncol,nlev)       ! cloud water number conc (1/kg)
+  real(r8), intent(in) :: nin(mgncol,nlev)       ! cloud ice number conc (1/kg)
 
-  real(r8), intent(in) :: qrn(:,:)       ! rain mixing ratio (kg/kg)
-  real(r8), intent(in) :: qsn(:,:)       ! snow mixing ratio (kg/kg)
-  real(r8), intent(in) :: nrn(:,:)       ! rain number conc (1/kg)
-  real(r8), intent(in) :: nsn(:,:)       ! snow number conc (1/kg)
+  real(r8), intent(in) :: qrn(mgncol,nlev)       ! rain mixing ratio (kg/kg)
+  real(r8), intent(in) :: qsn(mgncol,nlev)       ! snow mixing ratio (kg/kg)
+  real(r8), intent(in) :: nrn(mgncol,nlev)       ! rain number conc (1/kg)
+  real(r8), intent(in) :: nsn(mgncol,nlev)       ! snow number conc (1/kg)
 
-  real(r8), intent(in) :: relvar(:,:)   ! cloud water relative variance (-)
-  real(r8), intent(in) :: accre_enhan(:,:)  ! optional accretion
+  real(r8), intent(in) :: relvar(mgncol,nlev)   ! cloud water relative variance (-)
+  real(r8), intent(in) :: accre_enhan(mgncol,nlev)  ! optional accretion
                                              ! enhancement factor (-)
 
-  real(r8), intent(in) :: p(:,:)        ! air pressure (pa)
-  real(r8), intent(in) :: pdel(:,:)     ! pressure difference across level (pa)
+  real(r8), intent(in) :: p(mgncol,nlev)        ! air pressure (pa)
+  real(r8), intent(in) :: pdel(mgncol,nlev)     ! pressure difference across level (pa)
 
-  real(r8), intent(in) :: cldn(:,:)      ! cloud fraction (no units)
-  real(r8), intent(in) :: liqcldf(:,:)   ! liquid cloud fraction (no units)
-  real(r8), intent(in) :: icecldf(:,:)   ! ice cloud fraction (no units)
+  real(r8), intent(in) :: cldn(mgncol,nlev)      ! cloud fraction (no units)
+  real(r8), intent(in) :: liqcldf(mgncol,nlev)   ! liquid cloud fraction (no units)
+  real(r8), intent(in) :: icecldf(mgncol,nlev)   ! ice cloud fraction (no units)
   ! used for scavenging
   ! Inputs for aerosol activation
-  real(r8), intent(in) :: naai(:,:)     ! ice nucleation number (from microp_aero_ts) (1/kg)
-  real(r8), intent(in) :: npccn(:,:)   ! ccn activated number tendency (from microp_aero_ts) (1/kg*s)
+  real(r8), intent(in) :: naai(mgncol,nlev)     ! ice nucleation number (from microp_aero_ts) (1/kg)
+  real(r8), intent(in) :: npccn(mgncol,nlev)   ! ccn activated number tendency (from microp_aero_ts) (1/kg*s)
 
   ! Note that for these variables, the dust bin is assumed to be the last index.
   ! (For example, in CAM, the last dimension is always size 4.)
@@ -469,97 +469,97 @@ subroutine micro_mg_tend ( &
 
   ! output arguments
 
-  real(r8), intent(out) :: qcsinksum_rate1ord(:,:)    ! 1st order rate for
+  real(r8), intent(out) :: qcsinksum_rate1ord(mgncol,nlev)    ! 1st order rate for
   ! direct cw to precip conversion
-  real(r8), intent(out) :: tlat(:,:)         ! latent heating rate       (W/kg)
-  real(r8), intent(out) :: qvlat(:,:)        ! microphysical tendency qv (1/s)
-  real(r8), intent(out) :: qctend(:,:)       ! microphysical tendency qc (1/s)
-  real(r8), intent(out) :: qitend(:,:)       ! microphysical tendency qi (1/s)
-  real(r8), intent(out) :: nctend(:,:)       ! microphysical tendency nc (1/(kg*s))
-  real(r8), intent(out) :: nitend(:,:)       ! microphysical tendency ni (1/(kg*s))
+  real(r8), intent(out) :: tlat(mgncol,nlev)         ! latent heating rate       (W/kg)
+  real(r8), intent(out) :: qvlat(mgncol,nlev)        ! microphysical tendency qv (1/s)
+  real(r8), intent(out) :: qctend(mgncol,nlev)       ! microphysical tendency qc (1/s)
+  real(r8), intent(out) :: qitend(mgncol,nlev)       ! microphysical tendency qi (1/s)
+  real(r8), intent(out) :: nctend(mgncol,nlev)       ! microphysical tendency nc (1/(kg*s))
+  real(r8), intent(out) :: nitend(mgncol,nlev)       ! microphysical tendency ni (1/(kg*s))
 
-  real(r8), intent(out) :: qrtend(:,:)       ! microphysical tendency qr (1/s)
-  real(r8), intent(out) :: qstend(:,:)       ! microphysical tendency qs (1/s)
-  real(r8), intent(out) :: nrtend(:,:)       ! microphysical tendency nr (1/(kg*s))
-  real(r8), intent(out) :: nstend(:,:)       ! microphysical tendency ns (1/(kg*s))
+  real(r8), intent(out) :: qrtend(mgncol,nlev)       ! microphysical tendency qr (1/s)
+  real(r8), intent(out) :: qstend(mgncol,nlev)       ! microphysical tendency qs (1/s)
+  real(r8), intent(out) :: nrtend(mgncol,nlev)       ! microphysical tendency nr (1/(kg*s))
+  real(r8), intent(out) :: nstend(mgncol,nlev)       ! microphysical tendency ns (1/(kg*s))
 
-  real(r8), intent(out) :: effc(:,:)         ! droplet effective radius (micron)
-  real(r8), intent(out) :: effc_fn(:,:)      ! droplet effective radius, assuming nc = 1.e8 kg-1
-  real(r8), intent(out) :: effi(:,:)         ! cloud ice effective radius (micron)
-  real(r8), intent(out) :: prect(:)          ! surface precip rate (m/s)
-  real(r8), intent(out) :: preci(:)          ! cloud ice/snow precip rate (m/s)
-  real(r8), intent(out) :: nevapr(:,:)       ! evaporation rate of rain + snow (1/s)
-  real(r8), intent(out) :: evapsnow(:,:)     ! sublimation rate of snow (1/s)
-  real(r8), intent(out) :: prain(:,:)        ! production of rain + snow (1/s)
-  real(r8), intent(out) :: prodsnow(:,:)     ! production of snow (1/s)
-  real(r8), intent(out) :: cmeout(:,:)       ! evap/sub of cloud (1/s)
-  real(r8), intent(out) :: deffi(:,:)        ! ice effective diameter for optics (radiation) (micron)
-  real(r8), intent(out) :: pgamrad(:,:)      ! ice gamma parameter for optics (radiation) (no units)
-  real(r8), intent(out) :: lamcrad(:,:)      ! slope of droplet distribution for optics (radiation) (1/m)
-  real(r8), intent(out) :: qsout(:,:)        ! snow mixing ratio (kg/kg)
-  real(r8), intent(out) :: dsout(:,:)        ! snow diameter (m)
-  real(r8), intent(out) :: rflx(:,:)         ! grid-box average rain flux (kg m^-2 s^-1)
-  real(r8), intent(out) :: sflx(:,:)         ! grid-box average snow flux (kg m^-2 s^-1)
-  real(r8), intent(out) :: qrout(:,:)        ! grid-box average rain mixing ratio (kg/kg)
-  real(r8), intent(out) :: reff_rain(:,:)    ! rain effective radius (micron)
-  real(r8), intent(out) :: reff_snow(:,:)    ! snow effective radius (micron)
-  real(r8), intent(out) :: qcsevap(:,:)      ! cloud water evaporation due to sedimentation (1/s)
-  real(r8), intent(out) :: qisevap(:,:)      ! cloud ice sublimation due to sublimation (1/s)
-  real(r8), intent(out) :: qvres(:,:)        ! residual condensation term to ensure RH < 100% (1/s)
-  real(r8), intent(out) :: cmeitot(:,:)       ! grid-mean cloud ice sub/dep (1/s)
-  real(r8), intent(out) :: vtrmc(:,:)        ! mass-weighted cloud water fallspeed (m/s)
-  real(r8), intent(out) :: vtrmi(:,:)        ! mass-weighted cloud ice fallspeed (m/s)
-  real(r8), intent(out) :: umr(:,:)          ! mass weighted rain fallspeed (m/s)
-  real(r8), intent(out) :: ums(:,:)          ! mass weighted snow fallspeed (m/s)
-  real(r8), intent(out) :: qcsedten(:,:)     ! qc sedimentation tendency (1/s)
-  real(r8), intent(out) :: qisedten(:,:)     ! qi sedimentation tendency (1/s)
-! real(r8), intent(out) :: qrsedten(:,:)     ! qr sedimentation tendency (1/s)
-! real(r8), intent(out) :: qssedten(:,:)     ! qs sedimentation tendency (1/s)
+  real(r8), intent(out) :: effc(mgncol,nlev)         ! droplet effective radius (micron)
+  real(r8), intent(out) :: effc_fn(mgncol,nlev)      ! droplet effective radius, assuming nc = 1.e8 kg-1
+  real(r8), intent(out) :: effi(mgncol,nlev)         ! cloud ice effective radius (micron)
+  real(r8), intent(out) :: prect(mgncol)          ! surface precip rate (m/s)
+  real(r8), intent(out) :: preci(mgncol)          ! cloud ice/snow precip rate (m/s)
+  real(r8), intent(out) :: nevapr(mgncol,nlev)       ! evaporation rate of rain + snow (1/s)
+  real(r8), intent(out) :: evapsnow(mgncol,nlev)     ! sublimation rate of snow (1/s)
+  real(r8), intent(out) :: prain(mgncol,nlev)        ! production of rain + snow (1/s)
+  real(r8), intent(out) :: prodsnow(mgncol,nlev)     ! production of snow (1/s)
+  real(r8), intent(out) :: cmeout(mgncol,nlev)       ! evap/sub of cloud (1/s)
+  real(r8), intent(out) :: deffi(mgncol,nlev)        ! ice effective diameter for optics (radiation) (micron)
+  real(r8), intent(out) :: pgamrad(mgncol,nlev)      ! ice gamma parameter for optics (radiation) (no units)
+  real(r8), intent(out) :: lamcrad(mgncol,nlev)      ! slope of droplet distribution for optics (radiation) (1/m)
+  real(r8), intent(out) :: qsout(mgncol,nlev)        ! snow mixing ratio (kg/kg)
+  real(r8), intent(out) :: dsout(mgncol,nlev)        ! snow diameter (m)
+  real(r8), intent(out) :: rflx(mgncol,nlev)         ! grid-box average rain flux (kg m^-2 s^-1)
+  real(r8), intent(out) :: sflx(mgncol,nlev)         ! grid-box average snow flux (kg m^-2 s^-1)
+  real(r8), intent(out) :: qrout(mgncol,nlev)        ! grid-box average rain mixing ratio (kg/kg)
+  real(r8), intent(out) :: reff_rain(mgncol,nlev)    ! rain effective radius (micron)
+  real(r8), intent(out) :: reff_snow(mgncol,nlev)    ! snow effective radius (micron)
+  real(r8), intent(out) :: qcsevap(mgncol,nlev)      ! cloud water evaporation due to sedimentation (1/s)
+  real(r8), intent(out) :: qisevap(mgncol,nlev)      ! cloud ice sublimation due to sublimation (1/s)
+  real(r8), intent(out) :: qvres(mgncol,nlev)        ! residual condensation term to ensure RH < 100% (1/s)
+  real(r8), intent(out) :: cmeitot(mgncol,nlev)       ! grid-mean cloud ice sub/dep (1/s)
+  real(r8), intent(out) :: vtrmc(mgncol,nlev)        ! mass-weighted cloud water fallspeed (m/s)
+  real(r8), intent(out) :: vtrmi(mgncol,nlev)        ! mass-weighted cloud ice fallspeed (m/s)
+  real(r8), intent(out) :: umr(mgncol,nlev)          ! mass weighted rain fallspeed (m/s)
+  real(r8), intent(out) :: ums(mgncol,nlev)          ! mass weighted snow fallspeed (m/s)
+  real(r8), intent(out) :: qcsedten(mgncol,nlev)     ! qc sedimentation tendency (1/s)
+  real(r8), intent(out) :: qisedten(mgncol,nlev)     ! qi sedimentation tendency (1/s)
+! real(r8), intent(out) :: qrsedten(mgncol,nlev)     ! qr sedimentation tendency (1/s)
+! real(r8), intent(out) :: qssedten(mgncol,nlev)     ! qs sedimentation tendency (1/s)
 
   ! microphysical process rates for output (mixing ratio tendencies) (all have units of 1/s)
-  real(r8), intent(out) :: pratot(:,:)          ! accretion of cloud by rain
-  real(r8), intent(out) :: prctot(:,:)          ! autoconversion of cloud to rain
-  real(r8), intent(out) :: mnuccctot(:,:)       ! mixing ratio tend due to immersion freezing
-  real(r8), intent(out) :: mnuccttot(:,:)       ! mixing ratio tend due to contact freezing
-  real(r8), intent(out) :: msacwitot(:,:)       ! mixing ratio tend due to H-M splintering
-  real(r8), intent(out) :: psacwstot(:,:)       ! collection of cloud water by snow
-  real(r8), intent(out) :: bergstot(:,:)        ! bergeron process on snow
-  real(r8), intent(out) :: bergtot(:,:)         ! bergeron process on cloud ice
-  real(r8), intent(out) :: melttot(:,:)         ! melting of cloud ice
-  real(r8), intent(out) :: homotot(:,:)         ! homogeneous freezing cloud water
-  real(r8), intent(out) :: qcrestot(:,:)        ! residual cloud condensation due to removal of excess supersat
-  real(r8), intent(out) :: prcitot(:,:)         ! autoconversion of cloud ice to snow
-  real(r8), intent(out) :: praitot(:,:)         ! accretion of cloud ice by snow
-  real(r8), intent(out) :: qirestot(:,:)        ! residual ice deposition due to removal of excess supersat
-  real(r8), intent(out) :: mnuccrtot(:,:)       ! mixing ratio tendency due to heterogeneous freezing of rain to snow (1/s)
-  real(r8), intent(out) :: pracstot(:,:)        ! mixing ratio tendency due to accretion of rain by snow (1/s)
-  real(r8), intent(out) :: meltsdttot(:,:)      ! latent heating rate due to melting of snow  (W/kg)
-  real(r8), intent(out) :: frzrdttot(:,:)       ! latent heating rate due to homogeneous freezing of rain (W/kg)
-  real(r8), intent(out) :: mnuccdtot(:,:)       ! mass tendency from ice nucleation
-  real(r8), intent(out) :: nrout(:,:)        ! rain number concentration (1/m3)
-  real(r8), intent(out) :: nsout(:,:)        ! snow number concentration (1/m3)
-  real(r8), intent(out) :: refl(:,:)         ! analytic radar reflectivity
-  real(r8), intent(out) :: arefl(:,:)        ! average reflectivity will zero points outside valid range
-  real(r8), intent(out) :: areflz(:,:)       ! average reflectivity in z.
-  real(r8), intent(out) :: frefl(:,:)        ! fractional occurrence of radar reflectivity
-  real(r8), intent(out) :: csrfl(:,:)        ! cloudsat reflectivity
-  real(r8), intent(out) :: acsrfl(:,:)       ! cloudsat average
-  real(r8), intent(out) :: fcsrfl(:,:)       ! cloudsat fractional occurrence of radar reflectivity
-  real(r8), intent(out) :: rercld(:,:)       ! effective radius calculation for rain + cloud
-  real(r8), intent(out) :: ncai(:,:)         ! output number conc of ice nuclei available (1/m3)
-  real(r8), intent(out) :: ncal(:,:)         ! output number conc of CCN (1/m3)
-  real(r8), intent(out) :: qrout2(:,:)       ! copy of qrout as used to compute drout2
-  real(r8), intent(out) :: qsout2(:,:)       ! copy of qsout as used to compute dsout2
-  real(r8), intent(out) :: nrout2(:,:)       ! copy of nrout as used to compute drout2
-  real(r8), intent(out) :: nsout2(:,:)       ! copy of nsout as used to compute dsout2
-  real(r8), intent(out) :: drout2(:,:)       ! mean rain particle diameter (m)
-  real(r8), intent(out) :: dsout2(:,:)       ! mean snow particle diameter (m)
-  real(r8), intent(out) :: freqs(:,:)        ! fractional occurrence of snow
-  real(r8), intent(out) :: freqr(:,:)        ! fractional occurrence of rain
-  real(r8), intent(out) :: nfice(:,:)        ! fractional occurrence of ice
-  real(r8), intent(out) :: qcrat(:,:)        ! limiter for qc process rates (1=no limit --> 0. no qc)
+  real(r8), intent(out) :: pratot(mgncol,nlev)          ! accretion of cloud by rain
+  real(r8), intent(out) :: prctot(mgncol,nlev)          ! autoconversion of cloud to rain
+  real(r8), intent(out) :: mnuccctot(mgncol,nlev)       ! mixing ratio tend due to immersion freezing
+  real(r8), intent(out) :: mnuccttot(mgncol,nlev)       ! mixing ratio tend due to contact freezing
+  real(r8), intent(out) :: msacwitot(mgncol,nlev)       ! mixing ratio tend due to H-M splintering
+  real(r8), intent(out) :: psacwstot(mgncol,nlev)       ! collection of cloud water by snow
+  real(r8), intent(out) :: bergstot(mgncol,nlev)        ! bergeron process on snow
+  real(r8), intent(out) :: bergtot(mgncol,nlev)         ! bergeron process on cloud ice
+  real(r8), intent(out) :: melttot(mgncol,nlev)         ! melting of cloud ice
+  real(r8), intent(out) :: homotot(mgncol,nlev)         ! homogeneous freezing cloud water
+  real(r8), intent(out) :: qcrestot(mgncol,nlev)        ! residual cloud condensation due to removal of excess supersat
+  real(r8), intent(out) :: prcitot(mgncol,nlev)         ! autoconversion of cloud ice to snow
+  real(r8), intent(out) :: praitot(mgncol,nlev)         ! accretion of cloud ice by snow
+  real(r8), intent(out) :: qirestot(mgncol,nlev)        ! residual ice deposition due to removal of excess supersat
+  real(r8), intent(out) :: mnuccrtot(mgncol,nlev)       ! mixing ratio tendency due to heterogeneous freezing of rain to snow (1/s)
+  real(r8), intent(out) :: pracstot(mgncol,nlev)        ! mixing ratio tendency due to accretion of rain by snow (1/s)
+  real(r8), intent(out) :: meltsdttot(mgncol,nlev)      ! latent heating rate due to melting of snow  (W/kg)
+  real(r8), intent(out) :: frzrdttot(mgncol,nlev)       ! latent heating rate due to homogeneous freezing of rain (W/kg)
+  real(r8), intent(out) :: mnuccdtot(mgncol,nlev)       ! mass tendency from ice nucleation
+  real(r8), intent(out) :: nrout(mgncol,nlev)        ! rain number concentration (1/m3)
+  real(r8), intent(out) :: nsout(mgncol,nlev)        ! snow number concentration (1/m3)
+  real(r8), intent(out) :: refl(mgncol,nlev)         ! analytic radar reflectivity
+  real(r8), intent(out) :: arefl(mgncol,nlev)        ! average reflectivity will zero points outside valid range
+  real(r8), intent(out) :: areflz(mgncol,nlev)       ! average reflectivity in z.
+  real(r8), intent(out) :: frefl(mgncol,nlev)        ! fractional occurrence of radar reflectivity
+  real(r8), intent(out) :: csrfl(mgncol,nlev)        ! cloudsat reflectivity
+  real(r8), intent(out) :: acsrfl(mgncol,nlev)       ! cloudsat average
+  real(r8), intent(out) :: fcsrfl(mgncol,nlev)       ! cloudsat fractional occurrence of radar reflectivity
+  real(r8), intent(out) :: rercld(mgncol,nlev)       ! effective radius calculation for rain + cloud
+  real(r8), intent(out) :: ncai(mgncol,nlev)         ! output number conc of ice nuclei available (1/m3)
+  real(r8), intent(out) :: ncal(mgncol,nlev)         ! output number conc of CCN (1/m3)
+  real(r8), intent(out) :: qrout2(mgncol,nlev)       ! copy of qrout as used to compute drout2
+  real(r8), intent(out) :: qsout2(mgncol,nlev)       ! copy of qsout as used to compute dsout2
+  real(r8), intent(out) :: nrout2(mgncol,nlev)       ! copy of nrout as used to compute drout2
+  real(r8), intent(out) :: nsout2(mgncol,nlev)       ! copy of nsout as used to compute dsout2
+  real(r8), intent(out) :: drout2(mgncol,nlev)       ! mean rain particle diameter (m)
+  real(r8), intent(out) :: dsout2(mgncol,nlev)       ! mean snow particle diameter (m)
+  real(r8), intent(out) :: freqs(mgncol,nlev)        ! fractional occurrence of snow
+  real(r8), intent(out) :: freqr(mgncol,nlev)        ! fractional occurrence of rain
+  real(r8), intent(out) :: nfice(mgncol,nlev)        ! fractional occurrence of ice
+  real(r8), intent(out) :: qcrat(mgncol,nlev)        ! limiter for qc process rates (1=no limit --> 0. no qc)
 
-! real(r8), intent(out) :: prer_evap(:,:)
+! real(r8), intent(out) :: prer_evap(mgncol,nlev)
 
   character(128),   intent(out) :: errstring  ! output status (non-blank for error return)
 
@@ -789,6 +789,14 @@ subroutine micro_mg_tend ( &
   ! Array dummy variable
   real(r8) :: dum_2D(mgncol,nlev)
   real(r8) :: pdel_inv(mgncol,nlev)
+  real(r8) :: ttmpv(mgncol)
+  real(r8) :: qtmpv(mgncol)
+
+  real(r8) :: dum_2D_qs
+  real(r8) :: dum_2D_ns
+  real(r8) :: dum_2D_qr
+  real(r8) :: dum_2D_nr
+
 
   ! loop array variables
   ! "i" and "k" are column/level iterators for internal (MG) variables
@@ -821,14 +829,19 @@ subroutine micro_mg_tend ( &
   deltat = deltatin
 
   ! Copies of input concentrations that may be changed internally.
-  qc = qcn
-  nc = ncn
-  qi = qin
-  ni = nin
-  qr = qrn
-  nr = nrn
-  qs = qsn
-  ns = nsn
+  do k=1,nlev
+!dir$ vector aligned
+    do i=1,mgncol
+      qc(i,k) = qcn(i,k)
+      nc(i,k) = ncn(i,k)
+      qi(i,k) = qin(i,k)
+      ni(i,k) = nin(i,k)
+      qr(i,k) = qrn(i,k)
+      nr(i,k) = nrn(i,k)
+      qs(i,k) = qsn(i,k)
+      ns(i,k) = nsn(i,k)
+    enddo
+  enddo
 
   ! cldn: used to set cldm, unused for subcolumns
   ! liqcldf: used to set lcldm, unused for subcolumns
@@ -890,6 +903,7 @@ subroutine micro_mg_tend ( &
   enddo
 
   do k=1,nlev
+!dir$ vector aligned
      do i=1,mgncol
         ! make sure when above freezing that esi=esl, not active yet
         if (t(i,k) >= tmelt) then
@@ -918,6 +932,7 @@ subroutine micro_mg_tend ( &
 ! qrsedten =0._r8
 ! qssedten =0._r8
 
+#ifdef INIT
   pratot=0._r8
   prctot=0._r8
   mnuccctot=0._r8
@@ -934,53 +949,57 @@ subroutine micro_mg_tend ( &
   qirestot=0._r8
   mnuccrtot=0._r8
   pracstot=0._r8
-  meltsdttot=0._r8
-  frzrdttot=0._r8
   mnuccdtot=0._r8
-
-  rflx=0._r8
-  sflx=0._r8
+#endif
+      frzrdttot=0._r8
+      meltsdttot=0._r8
+    
+      rflx=0._r8
+      sflx=0._r8
 
   ! initialize precip output
 
+#ifdef INIT
   qrout=0._r8
   qsout=0._r8
   nrout=0._r8
   nsout=0._r8
+#endif
 
   ! for refl calc
   rainrt = 0._r8
 
   ! initialize rain size
-  rercld=0._r8
+      rercld=0._r8
 
-  qcsinksum_rate1ord = 0._r8
+      qcsinksum_rate1ord = 0._r8
 
   ! initialize variables for trop_mozart
-  nevapr = 0._r8
+      nevapr = 0._r8
 ! prer_evap = 0._r8
-  evapsnow = 0._r8
-  prain = 0._r8
-  prodsnow = 0._r8
-  cmeout = 0._r8
+      evapsnow = 0._r8
+      prain = 0._r8
+      prodsnow = 0._r8
+      cmeout = 0._r8
 
-  precip_frac = mincld
+      precip_frac = mincld
 
-  lamc=0._r8
+      lamc=0._r8
 
   ! initialize microphysical tendencies
 
-  tlat=0._r8
-  qvlat=0._r8
-  qctend=0._r8
-  qitend=0._r8
-  qstend = 0._r8
-  qrtend = 0._r8
-  nctend=0._r8
-  nitend=0._r8
-  nrtend = 0._r8
-  nstend = 0._r8
+      tlat=0._r8
+      qvlat=0._r8
+      qctend=0._r8
+      qitend=0._r8
+      qstend = 0._r8
+      qrtend = 0._r8
+      nctend=0._r8
+      nitend=0._r8
+      nrtend = 0._r8
+      nstend = 0._r8
 
+#ifdef INIT
   ! initialize in-cloud and in-precip quantities to zero
   qcic  = 0._r8
   qiic  = 0._r8
@@ -991,30 +1010,33 @@ subroutine micro_mg_tend ( &
   niic  = 0._r8
   nsic  = 0._r8
   nric  = 0._r8
+#endif
 
   ! initialize precip at surface
 
   prect = 0._r8
   preci = 0._r8
 
+#ifdef INIT
   ! initialize precip fallspeeds to zero
   ums = 0._r8
   uns = 0._r8
   umr = 0._r8
   unr = 0._r8
+#endif
 
   ! initialize limiter for output
-  qcrat = 1._r8
-
+      qcrat = 1._r8
   ! Many outputs have to be initialized here at the top to work around
   ! ifort problems, even if they are always overwritten later.
-  effc = 10._r8
-  lamcrad = 0._r8
-  pgamrad = 0._r8
-  effc_fn = 10._r8
-  effi = 25._r8
-  deffi = 50._r8
+      effc = 10._r8
+      lamcrad = 0._r8
+      pgamrad = 0._r8
+      effc_fn = 10._r8
+      effi = 25._r8
+      deffi = 50._r8
 
+#ifdef INIT
   qrout2 = 0._r8
   nrout2 = 0._r8
   drout2 = 0._r8
@@ -1025,22 +1047,20 @@ subroutine micro_mg_tend ( &
 
   freqr = 0._r8
   freqs = 0._r8
+#endif
 
-  reff_rain = 0._r8
-  reff_snow = 0._r8
-
-  refl = -9999._r8
-  arefl = 0._r8
-  areflz = 0._r8
-  frefl = 0._r8
-  csrfl = 0._r8
-  acsrfl = 0._r8
-  fcsrfl = 0._r8
-
-  ncal = 0._r8
-  ncai = 0._r8
-
-  nfice = 0._r8
+      reff_rain = 0._r8
+      reff_snow = 0._r8
+      refl = -9999._r8
+      arefl = 0._r8
+      areflz = 0._r8
+      frefl = 0._r8
+      csrfl = 0._r8
+      acsrfl = 0._r8
+      fcsrfl = 0._r8
+      ncal = 0._r8
+      ncai = 0._r8
+      nfice = 0._r8
 
   !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! droplet activation
@@ -1097,7 +1117,7 @@ subroutine micro_mg_tend ( &
 
   !=============================================================================
      do k=1,nlev
-!die$ vector alinded
+!dir$ vector aligned
      do i=1,mgncol
 
         ! calculate instantaneous precip processes (melting and homogeneous freezing)
@@ -1488,7 +1508,7 @@ subroutine micro_mg_tend ( &
      end if !do_cldice
      !---PMC 12/3/12
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! conservation to ensure no negative values of cloud water/precipitation
@@ -1529,7 +1549,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         !=================================================================
@@ -1558,7 +1578,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         !===================================================================
@@ -1595,7 +1615,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! conservation of rain mixing ratio
@@ -1616,7 +1636,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! conservation of rain number
@@ -1633,7 +1653,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         dum = ((-nsubr(i,k)+npracs(i,k)+nnuccr(i,k)+nnuccri(i,k)-nragg(i,k))*precip_frac(i,k)- &
@@ -1654,7 +1674,7 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
 
-
+!dir$ vector aligned
         do i=1,mgncol
 
            ! conservation of qi
@@ -1680,7 +1700,7 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
 
-
+!dir$ vector aligned
         do i=1,mgncol
 
            ! conservation of ni
@@ -1708,7 +1728,7 @@ subroutine micro_mg_tend ( &
 
      end if
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! conservation of snow mixing ratio
@@ -1725,7 +1745,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! conservation of snow number
@@ -1746,7 +1766,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! next limit ice and snow sublimation and rain evaporation
@@ -1756,36 +1776,36 @@ subroutine micro_mg_tend ( &
 
         if ((pre(i,k)+prds(i,k))*precip_frac(i,k)+ice_sublim(i,k) < -1.e-20_r8) then
 
-           qtmp=q(i,k)-(ice_sublim(i,k)+vap_dep(i,k)+mnuccd(i,k)+ &
+           qtmpv(i)=q(i,k)-(ice_sublim(i,k)+vap_dep(i,k)+mnuccd(i,k)+ &
                 (pre(i,k)+prds(i,k))*precip_frac(i,k))*deltat
-           ttmp=t(i,k)+((pre(i,k)*precip_frac(i,k))*xxlv+ &
+           ttmpv(i)=t(i,k)+((pre(i,k)*precip_frac(i,k))*xxlv+ &
                 (prds(i,k)*precip_frac(i,k)+vap_dep(i,k)+ice_sublim(i,k)+mnuccd(i,k))*xxls)*deltat/cpp
 
            ! use rhw to allow ice supersaturation
-           call qsat_water(ttmp, p(i,k), esn, qvn)
+           call qsat_water(ttmpv(i), p(i,k), esn, qvn)
 
            ! modify ice/precip evaporation rate if q > qsat
-           if (qtmp > qvn) then
+           if (qtmpv(i) > qvn) then
 
               dum1=pre(i,k)*precip_frac(i,k)/((pre(i,k)+prds(i,k))*precip_frac(i,k)+ice_sublim(i,k))
               dum2=prds(i,k)*precip_frac(i,k)/((pre(i,k)+prds(i,k))*precip_frac(i,k)+ice_sublim(i,k))
               ! recalculate q and t after vap_dep and mnuccd but without evap or sublim
-              qtmp=q(i,k)-(vap_dep(i,k)+mnuccd(i,k))*deltat
-              ttmp=t(i,k)+((vap_dep(i,k)+mnuccd(i,k))*xxls)*deltat/cpp
+              qtmpv(i)=q(i,k)-(vap_dep(i,k)+mnuccd(i,k))*deltat
+              ttmpv(i)=t(i,k)+((vap_dep(i,k)+mnuccd(i,k))*xxls)*deltat/cpp
 
               ! use rhw to allow ice supersaturation
-              call qsat_water(ttmp, p(i,k), esn, qvn)
+              call qsat_water(ttmpv(i), p(i,k), esn, qvn)
 
-              dum=(qtmp-qvn)/(1._r8 + xxlv_squared*qvn/(cpp*rv*ttmp**2))
+              dum=(qtmpv(i)-qvn)/(1._r8 + xxlv_squared*qvn/(cpp*rv*ttmpv(i)**2))
               dum=min(dum,0._r8)
 
               ! modify rates if needed, divide by precip_frac to get local (in-precip) value
               pre(i,k)=dum*dum1/deltat/precip_frac(i,k)
 
               ! do separately using RHI for prds and ice_sublim
-              call qsat_ice(ttmp, p(i,k), esn, qvn)
+              call qsat_ice(ttmpv(i), p(i,k), esn, qvn)
 
-              dum=(qtmp-qvn)/(1._r8 + xxls_squared*qvn/(cpp*rv*ttmp**2))
+              dum=(qtmpv(i)-qvn)/(1._r8 + xxls_squared*qvn/(cpp*rv*ttmpv(i)**2))
               dum=min(dum,0._r8)
 
               ! modify rates if needed, divide by precip_frac to get local (in-precip) value
@@ -1802,7 +1822,7 @@ subroutine micro_mg_tend ( &
      ! Big "administration" loop enforces conservation, updates variables
      ! that accumulate over substeps, and sets output variables.
 
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! get tendencies due to microphysical conversion processes
@@ -1933,10 +1953,15 @@ subroutine micro_mg_tend ( &
   ! convert rain/snow q and N for output to history, note,
   ! output is for gridbox average
 
-  qrout = qr
-  nrout = nr * rho
-  qsout = qs
-  nsout = ns * rho
+  do k=1,nlev
+!dir$ vector aligned
+    do i=1,mgncol
+      qrout(i,k) = qr(i,k)
+      nrout(i,k) = nr(i,k) * rho(i,k)
+      qsout(i,k) = qs(i,k)
+      nsout(i,k) = ns(i,k) * rho(i,k)
+    enddo
+  enddo
 
   ! calculate precip fluxes
   ! calculate the precip flux (kg/m2/s) as mixingratio(kg/kg)*airdensity(kg/m3)*massweightedfallspeed(m/s)
@@ -1971,26 +1996,33 @@ subroutine micro_mg_tend ( &
   !  - Instantaneous rain freezing (minstfr/ninstrf, impacts qr/qs/nr/ns)
   !================================================================================
 
-  ! Re-apply droplet activation tendency
-  nc = ncn
-  nctend = nctend + npccn
+! where is dum_2D-* defined?
+  dum_2D_qs = 0_r8; dum_2D_ns=0_r8; dum_2D_qr=0_r8; dum_2D_nr=0_r8
+  do k=1,nlev 
+!dir$ vector aligned
+    do i=1,mgncol
+      ! Re-apply droplet activation tendency
+      nc(i,k) = ncn(i,k)
+      nctend(i,k) = nctend(i,k) + npccn(i,k)
 
-  ! Re-apply rain freezing and snow melting.
-  dum_2D = qs
-  qs = qsn
-  qstend = qstend + (dum_2D-qs)/deltat
+      ! Re-apply rain freezing and snow melting.
+      dum_2D(i,k) = qs(i,k)
+      qs(i,k) = qsn(i,k)
+      qstend(i,k) = qstend(i,k) + (dum_2D_qs)/deltat
 
-  dum_2D = ns
-  ns = nsn
-  nstend = nstend + (dum_2D-ns)/deltat
+      dum_2D(i,k) = ns(i,k)
+      ns(i,k) = nsn(i,k)
+      nstend(i,k) = nstend(i,k) + (dum_2D_ns)/deltat
 
-  dum_2D = qr
-  qr = qrn
-  qrtend = qrtend + (dum_2D-qr)/deltat
+      dum_2D(i,k) = qr(i,k)
+      qr(i,k) = qrn(i,k)
+      qrtend(i,k) = qrtend(i,k) + (dum_2D_qr)/deltat
 
-  dum_2D = nr
-  nr = nrn
-  nrtend = nrtend + (dum_2D-nr)/deltat
+      dum_2D(i,k) = nr(i,k)
+      nr(i,k) = nrn(i,k)
+      nrtend(i,k) = nrtend(i,k) + (dum_2D_nr)/deltat
+    enddo
+  enddo
 
   !.............................................................................
 
@@ -2001,7 +2033,7 @@ subroutine micro_mg_tend ( &
   prain = prain + prodsnow
 
      do k=1,nlev
-
+!dir$ vector aligned
      do i=1,mgncol
 
         ! calculate sedimentation for cloud water and ice
@@ -2048,7 +2080,7 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-
+!dir$ vector aligned
      do i=1,mgncol
 
         if (dumc(i,k).ge.qsmall) then
@@ -2091,7 +2123,7 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-
+!dir$ vector aligned
      do i=1,mgncol
         if (lamr(i,k).ge.qsmall) then
 
@@ -2114,7 +2146,7 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-
+!dir$ vector aligned
      do i=1,mgncol
         call size_dist_param_basic(mg_snow_props, dums(i,k), dumns(i,k), &
              lams(i,k))
@@ -2123,7 +2155,7 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-
+!dir$ vector aligned
      do i=1,mgncol
         if (lams(i,k).ge.qsmall) then
 
@@ -2422,7 +2454,7 @@ subroutine micro_mg_tend ( &
      ! get new update for variables that includes sedimentation tendency
      ! note : here dum variables are grid-average, NOT in-cloud
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
 
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._r8)
@@ -2458,7 +2490,7 @@ subroutine micro_mg_tend ( &
         ! melting of snow at +2 C
 
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat > snowmelt) then
            if (dums(i,k) > 0._r8) then
@@ -2490,7 +2522,7 @@ subroutine micro_mg_tend ( &
         ! freezing of rain at -5 C
 
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat < rainfrze) then
 
@@ -2536,7 +2568,7 @@ subroutine micro_mg_tend ( &
 
         if (do_cldice) then
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat > tmelt) then
               if (dumi(i,k) > 0._r8) then
@@ -2576,7 +2608,7 @@ subroutine micro_mg_tend ( &
            !-----------------------------------------------------------------
 
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat < 233.15_r8) then
               if (dumc(i,k) > 0._r8) then
@@ -2614,7 +2646,7 @@ subroutine micro_mg_tend ( &
            ! follow code similar to old CAM scheme
 
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
            qtmp=q(i,k)+qvlat(i,k)*deltat
            ttmp=t(i,k)+tlat(i,k)/cpp*deltat
@@ -2663,7 +2695,7 @@ subroutine micro_mg_tend ( &
         ! variables are in-cloud to calculate size dist parameters
 
         do k=1,nlev
- 
+!dir$ vector aligned 
         do i=1,mgncol
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._r8)/lcldm(i,k)
         dumi(i,k) = max(qi(i,k)+qitend(i,k)*deltat,0._r8)/icldm(i,k)
@@ -2699,7 +2731,7 @@ subroutine micro_mg_tend ( &
 
         if (do_cldice) then
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
 
            if (dumi(i,k).ge.qsmall) then
@@ -2725,7 +2757,7 @@ subroutine micro_mg_tend ( &
         enddo
         else
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
            ! NOTE: If CARMA is doing the ice microphysics, then the ice effective
            ! radius has already been determined from the size distribution.
@@ -2738,7 +2770,7 @@ subroutine micro_mg_tend ( &
         ! cloud droplet effective radius
         !-----------------------------------------------------------------
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
         if (dumc(i,k).ge.qsmall) then
 
@@ -2797,7 +2829,7 @@ subroutine micro_mg_tend ( &
         ! to ensure that rain size is in bounds, adjust rain number if needed
 
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
         if (dumr(i,k).ge.qsmall) then
 
@@ -2819,7 +2851,7 @@ subroutine micro_mg_tend ( &
         ! to ensure that snow size is in bounds, adjust snow number if needed
 
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
         if (dums(i,k).ge.qsmall) then
 
@@ -2839,7 +2871,7 @@ subroutine micro_mg_tend ( &
         enddo
 
         do k=1,nlev
-
+!dir$ vector aligned
         do i=1,mgncol
         ! if updated q (after microphysics) is zero, then ensure updated n is also zero
         !=================================================================================
@@ -3023,7 +3055,7 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol)
   real(r8) :: Atmp
   integer :: i
 
-
+!dir$ vector aligned
   do i=1,mgncol
  ! Rain drops
   if (lamr(i) > 0._r8) then
