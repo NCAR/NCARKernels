@@ -61,7 +61,7 @@ shr_RandNum_mod.o: ../shr_RandNum_mod.F90 kissvec_mod.o mersennetwister_mod.o dS
 SRC = ./test_shr_RandNum.F90 ../kissvec/kissvec_mod.F90 ../mt19937/mersennetwister_mod.F90 ../dsfmt_f03/dSFMT.c ../dsfmt_f03/dSFMT_interface.F90 ../dsfmt_f03/dSFMT_utils.c ../shr_RandNum_mod.F90 ../dsfmt_f03/dSFMT.h
 OBJ = test_shr_RandNum.o kissvec_mod.o mersennetwister_mod.o dSFMT.o dSFMT_interface.o dSFMT_utils.o shr_RandNum_mod.o kissvec.o
 OFF = ../dsfmt_f03/dSFMT.h ../dsfmt_f03/dSFMT_utils.c ../mt19937/mersennetwister_mod.F90 ../dsfmt_f03/dSFMT.c ../shr_RandNum_mod.F90 ./test_shr_RandNum.F90 ../kissvec/kissvec_mod.F90 ../dsfmt_f03/dSFMT_interface.F90
-clean: neat
+clean: 
 	-rm -f .shr_RandNum.exe.cppdefs $(OBJ) *.mod ./shr_RandNum.exe
 shr_RandNum.exe: $(OBJ) 
 	$(LD) $(OBJ) -o shr_RandNum.exe  $(LDFLAGS)
