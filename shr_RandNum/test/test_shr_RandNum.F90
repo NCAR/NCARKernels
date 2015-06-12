@@ -10,9 +10,9 @@ INTEGER,parameter :: r8 = selected_real_kind(12)
 
 type (shr_rand_t) :: randStream
 
-integer(r8), parameter :: nstream = 16   ! number of streams of random numbers
-integer(r8), parameter :: length  = 1000 ! length of stream of random numbers
-integer(r8)            :: ntrials = 50000
+integer, parameter :: nstream = 16   ! number of streams of random numbers
+integer, parameter :: length  = 1000 ! length of stream of random numbers
+integer            :: ntrials = 50000
 
 integer, dimension(nstream) :: iseed = 7776578
 integer, dimension(nstream) :: iseed1
