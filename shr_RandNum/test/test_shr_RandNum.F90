@@ -7,6 +7,7 @@ program test
 use shr_RandNum_mod, only : shr_genRandNum, shr_RandNum_init, shr_RandNum_term, shr_rand_t
 
 INTEGER,parameter :: r8 = selected_real_kind(12)
+INTEGER,parameter :: i8 = selected_int_kind(12)
 
 type (shr_rand_t) :: randStream
 
@@ -23,7 +24,7 @@ integer, dimension(nstream) :: iseed4
 real(r8), dimension(nstream,length) :: array
 
 integer     :: i, n, m
-integer(r8) :: c1, c2, cr, cm
+integer(i8) :: c1, c2, cr, cm
 real   (r8) :: dt, dt1,dt2
 
 #ifdef INTEL_MKL
