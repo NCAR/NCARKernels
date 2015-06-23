@@ -22,8 +22,8 @@ FC := ftn
 
 # Use of these option below gives a 6-percent improvement in performance, but causes minor differences in answers
 # FFLAGS := -O3 -xAVX -ftz -g -I./     -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 \
-# -prof-use -prof-dir/global/u1/c/ckerr/tests/xeon/MG2.1_NCAR
-  FFLAGS := -O3 -xAVX -ftz -g -I./ -ipo4 -ipo-jobs4 -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 -no-inline-max-total-size -inline-factor=200 # -prof-gen
+
+  FFLAGS := -O3 -xAVX -ftz -g -I./ -ipo4 -ipo-jobs4 -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 -openmp 
 #
 # PGI 
 # FC := pgf95

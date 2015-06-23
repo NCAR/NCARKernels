@@ -468,7 +468,7 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
   type(MGHydrometeorProps) :: props_loc
   integer :: i
 
-
+!$OMP SIMD ALIGNED (qcic,ncic,pgam,rho)
   do i=1,mgncol
   if (qcic(i) > qsmall) then
 
@@ -483,7 +483,6 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
      pgam(i) = max(pgam(i), 2._r8)
   endif
   enddo
-
 
   do i=1,mgncol
   if (qcic(i) > qsmall) then
@@ -505,7 +504,7 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
   endif
   enddo
 
-
+!$OMP SIMD ALIGNED (qcic,pgam,lamc)
   do i=1,mgncol
   if (qcic(i) <= qsmall) then
      ! pgam not calculated in this case, so set it to a value likely to
@@ -532,7 +531,7 @@ subroutine size_dist_param_basic_vect(props, qic, nic, lam, mgncol, n0)
 
   integer :: i
 
- 
+!$OMP SIMD ALIGNED (qic,nic,lam,n0)
  do i=1,mgncol
 
   if (qic(i) > qsmall) then
@@ -679,7 +678,6 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
   real(r8) :: n0i
   integer :: I
 
-
   do i=1,mgncol
   if (qi(i)>=qsmall) then
 
@@ -753,7 +751,8 @@ subroutine kk2000_liq_autoconversion(microp_uniform, qcic, &
   integer  :: i
 
   ! Take variance into account, or use uniform value.
-
+  
+!$OMP SIMD ALIGNED (qcic,ncic,rho,relvar,prc,nprc,nprc1)
   do i=1,mgncol
   if (.not. microp_uniform) then
      prc_coef = var_coef(relvar(i), 2.47_r8)
@@ -809,7 +808,7 @@ subroutine ice_autoconversion(t, qiic, lami, n0i, dcs, prci, nprci, mgncol)
   real(r8) :: d_rat
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,qiic,lami,n0i,dcs,prci,nprci)
   do i=1,mgncol
   if (t(i) <= tmelt .and. qiic(i) >= qsmall) then
 
@@ -871,7 +870,7 @@ subroutine immersion_freezing(microp_uniform, t, pgam, lamc, &
      dum(:) = 1._r8
   end if
 
-
+!$OMP SIMD ALIGNED (t,pgam,lamc,qcic,ncic,relvar,mnuccc,nnuccc,dum)
   do i=1,mgncol
   if (qcic(i) >= qsmall .and. t(i) < 269.15_r8) then
 
@@ -937,7 +936,6 @@ subroutine contact_freezing(microp_uniform, t, p, rndst, nacon, &
 
   integer  :: i
 
-
   do i=1,mgncol 
 
      if (qcic(i) >= qsmall .and. t(i) < 269.15_r8) then
@@ -1000,7 +998,7 @@ subroutine snow_self_aggregation(t, rho, asn, rhosn, qsic, nsic, nsagg, mgncol)
 
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,rho,asn,rhosn,qsic,nsic,nsagg)
   do i=1,mgncol
   if (qsic(i) >= qsmall .and. t(i) <= tmelt) then
      nsagg(i) = -1108._r8*eii/(4._r8*720._r8*rhosn)*asn(i)*qsic(i)*nsic(i)*rho(i)*&
@@ -1056,7 +1054,7 @@ subroutine accrete_cloud_water_snow(t, rho, asn, uns, mu, qcic, ncic, qsic, &
   real(r8) :: accrete_rate
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,rho,asn,uns,mu,qcic,ncic,qsic,pgam,lamc,lams,n0s,psacws,npsacws)
   do i=1,mgncol
   ! ignore collision of snow with droplets above freezing
 
@@ -1103,8 +1101,8 @@ subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol)
   real(r8), dimension(mgncol), intent(out) :: msacwi ! MMR
   real(r8), dimension(mgncol), intent(out) :: nsacwi ! Number
   integer :: i
-
-
+  
+!$OMP SIMD ALIGNED (t,psacws,msacwi,nsacwi)
   do i=1,mgncol
   if((t(i) < 270.16_r8) .and. (t(i) >= 268.16_r8)) then
      nsacwi(i) = 3.5e8_r8*(270.16_r8-t(i))/2.0_r8*psacws(i)
@@ -1114,8 +1112,8 @@ subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol)
      nsacwi(i) = 0.0_r8
   endif
   enddo
-
-
+  
+!$OMP SIMD ALIGNED (psacws,msacwi,nsacwi)
   do i=1,mgncol
     msacwi(i) = min(nsacwi(i)*mi0, psacws(i))
     psacws(i) = psacws(i) - msacwi(i)
@@ -1167,7 +1165,7 @@ subroutine accrete_rain_snow(t, rho, umr, ums, unr, uns, qric, qsic, &
   real(r8) :: common_factor
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,rho,umr,ums,unr,uns,qric,qsic,lamr,n0r,lams,n0s,pracs,npracs)
   do i=1,mgncol
 
   if (qric(i) >= icsmall .and. qsic(i) >= icsmall .and. t(i) <= tmelt) then
@@ -1214,7 +1212,7 @@ subroutine heterogeneous_rain_freezing(t, qric, nric, lamr, &
 
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,qric,nric,lamr,mnuccr,nnuccr)
   do i=1,mgncol
   if (t(i) < 269.15_r8 .and. qric(i) >= qsmall) then
 
@@ -1267,7 +1265,7 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
      pra_coef(:) = 1._r8
   end if
 
-
+!$OMP SIMD ALIGNED (qric,qcic,ncic,relvar,accre_enhan,pra,npra)
   do i=1,mgncol
   if (qric(i) >= qsmall .and. qcic(i) >= qsmall) then
 
@@ -1301,7 +1299,7 @@ subroutine self_collection_rain(rho, qric, nric, nragg, mgncol)
   real(r8), dimension(mgncol), intent(out) :: nragg
   integer :: i
 
-
+!$OMP SIMD ALIGNED (rho,qric,nric,nragg)
   do i=1,mgncol
   if (qric(i) >= qsmall) then
      nragg(i) = -8._r8*nric(i)*qric(i)*rho(i)
@@ -1344,7 +1342,7 @@ subroutine accrete_cloud_ice_snow(t, rho, asn, qiic, niic, qsic, &
   real(r8) :: accrete_rate
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,rho,asn,qiic,niic,qsic,lams,n0s,prai,nprai)
   do i=1,mgncol
   if (qsic(i) >= qsmall .and. qiic(i) >= qsmall .and. t(i) <= tmelt) then
 
@@ -1363,7 +1361,7 @@ subroutine accrete_cloud_ice_snow(t, rho, asn, qiic, niic, qsic, &
 end subroutine accrete_cloud_ice_snow
 
 subroutine accrete_cloud_ice_snow_orig(t, rho, asn, qiic, niic, qsic, &
-                                   lams, n0s, prai, nprai, mgncol)
+                                       lams, n0s, prai, nprai, mgncol)
 
   integer,                     intent(in) :: mgncol
   real(r8), intent(in) :: t(:)    ! Temperature
@@ -1389,7 +1387,7 @@ subroutine accrete_cloud_ice_snow_orig(t, rho, asn, qiic, niic, qsic, &
   real(r8) :: accrete_rate
   integer :: i
 
-!!
+!$OMP SIMD ALIGNED (t,rho,asn,qiic,niic,qsic,lams,n0s,prai,nprai)
   do i=1,mgncol
   if (qsic(i) >= qsmall .and. qiic(i) >= qsmall .and. t(i) <= tmelt) then
 
@@ -1462,7 +1460,7 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   ! this will ensure that evaporation/sublimation of precip occurs over
   ! entire grid cell, since min cloud fraction is specified otherwise
 
-
+!$OMP SIMD ALIGNED( qcic,qiic,dum,lcldm)
   do i=1,mgncol
   if (qcic(i)+qiic(i) < 1.e-6_r8) then
      dum(i) = 0._r8
@@ -1470,7 +1468,6 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
      dum(i) = lcldm(i)
   end if
   enddo
-
 
   do i=1,mgncol
   ! only calculate if there is some precip fraction > cloud fraction
@@ -1558,7 +1555,7 @@ subroutine bergeron_process_snow(t, rho, dv, mu, sc, qvl, qvi, asn, &
   real(r8) :: eps    ! 1/ sat relaxation timescale
   integer :: i
 
-
+!$OMP SIMD ALIGNED (t,rho,dv,mu,sc,qvl,qvi,asn,qcic,qsic,lams,n0s,bergs)
   do i=1,mgncol
   if (qsic(i) >= qsmall.and. qcic(i) >= qsmall .and. t(i) < tmelt) then
      ab = calc_ab(t(i), qvi(i), xxls)

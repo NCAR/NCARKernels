@@ -830,7 +830,7 @@ subroutine micro_mg_tend ( &
 
   ! Copies of input concentrations that may be changed internally.
   do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (qc,qcn,nc,ncn,qi,qin,ni,nin,qr,qrn,nr,nrn,qs,qsn,ns,nsn)
     do i=1,mgncol
       qc(i,k) = qcn(i,k)
       nc(i,k) = ncn(i,k)
@@ -903,7 +903,7 @@ subroutine micro_mg_tend ( &
   enddo
 
   do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (t,esi,esl,qvi,qvl)
      do i=1,mgncol
         ! make sure when above freezing that esi=esl, not active yet
         if (t(i,k) >= tmelt) then
@@ -1117,7 +1117,8 @@ subroutine micro_mg_tend ( &
 
   !=============================================================================
      do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (frzrdttot,icldm,lcldm,meltsdttot,minstrf,minstsm,nc,ncic), &
+!$OMP&     ALIGNED (ni,niic,ninstrf,ninstsm,nr,ns,qc,qcic,qi,qiic,qr,qs,t,tlat)
      do i=1,mgncol
 
         ! calculate instantaneous precip processes (melting and homogeneous freezing)
@@ -1508,7 +1509,7 @@ subroutine micro_mg_tend ( &
      end if !do_cldice
      !---PMC 12/3/12
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (berg,bergs,lcldm,mnuccc,mnucct,msacwi,pra,prc,psacws,qc,qcrat,vap_dep)
      do i=1,mgncol
 
         ! conservation to ensure no negative values of cloud water/precipitation
@@ -1549,7 +1550,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (vap_dep,mnuccd,q,qvi,t)
      do i=1,mgncol
 
         !=================================================================
@@ -1578,7 +1579,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (nprc1,npra,nnuccc,nnucct,npsacws,nsubc,lcldm,mnuccri,nnuccri,lamr)
      do i=1,mgncol
 
         !===================================================================
@@ -1615,7 +1616,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (pre,pracs,mnuccr,mnuccri,precip_frac,pra,prc,lcldm,qr)
      do i=1,mgncol
 
         ! conservation of rain mixing ratio
@@ -1636,7 +1637,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (pre,qr,nr,nsubr)
      do i=1,mgncol
 
         ! conservation of rain number
@@ -1653,7 +1654,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (nsubr,npracs,nnuccr,nnuccri,nragg,precip_frac,nprc,lcldm,nr)
      do i=1,mgncol
 
         dum = ((-nsubr(i,k)+npracs(i,k)+nnuccr(i,k)+nnuccri(i,k)-nragg(i,k))*precip_frac(i,k)- &
@@ -1674,7 +1675,8 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (berg,ice_sublim,icldm,lcldm,mnuccc,mnuccd,mnuccri,mnucct,mnudep,msacwi),&
+!$OMP&     ALIGNED (prai,prci,precip_frac,qi,vap_dep)
         do i=1,mgncol
 
            ! conservation of qi
@@ -1700,7 +1702,8 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (icldm,lcldm,ni,nnuccc,nnuccd,nnuccri,nnucct,nnudep,nprai) ,&
+!$OMP&     ALIGNED (nprci,nsacwi,nsubi,precip_frac)
         do i=1,mgncol
 
            ! conservation of ni
@@ -1728,7 +1731,7 @@ subroutine micro_mg_tend ( &
 
      end if
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (bergs,icldm,lcldm,mnuccr,pracs,prai,prci,prds,precip_frac,psacws,qs)
      do i=1,mgncol
 
         ! conservation of snow mixing ratio
@@ -1745,7 +1748,7 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (icldm,nnuccr,nprci,ns,nsagg,nsubs,precip_frac)
      do i=1,mgncol
 
         ! conservation of snow number
@@ -1766,7 +1769,6 @@ subroutine micro_mg_tend ( &
 
      end do
 
-!dir$ vector aligned
      do i=1,mgncol
 
         ! next limit ice and snow sublimation and rain evaporation
@@ -1822,7 +1824,12 @@ subroutine micro_mg_tend ( &
      ! Big "administration" loop enforces conservation, updates variables
      ! that accumulate over substeps, and sets output variables.
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (berg,bergs,bergstot,bergtot,cmeitot,cmeout,evapsnow,ice_sublim,icldm,lcldm,mnuccc,mnuccctot),      &
+!$OMP&     ALIGNED (mnuccd,mnuccdtot,mnuccr,mnuccri,mnuccrtot,mnucct,mnuccttot,mnudep,msacwi,msacwitot,nctend,nevapr), &
+!$OMP&     ALIGNED (ni,nimax,nitend,nnuccc,nnuccd,nnuccr,nnuccri,nnucct,nnudep,npra,npracs,nprai,nprc,nprc1,nprci),    &
+!$OMP&     ALIGNED (npsacws,nragg,nrtend,nsacwi,nsagg,nstend,nsubc,nsubi,nsubr,nsubs,pra,pracs,pracstot,prai,prain),   &
+!$OMP&     ALIGNED (praitot,pratot,prc,prci,prcitot,prctot,prds,pre,precip_frac,prodsnow,psacws,psacwstot,qc),         &
+!$OMP&     ALIGNED (qcsinksum_rate1ord,qctend,qitend,qrtend,qstend,qvlat,tlat,vap_dep)
      do i=1,mgncol
 
         ! get tendencies due to microphysical conversion processes
@@ -1954,7 +1961,7 @@ subroutine micro_mg_tend ( &
   ! output is for gridbox average
 
   do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (qr,qrout,nr,rho,nrout,qs,qsout,ns,nsout)
     do i=1,mgncol
       qrout(i,k) = qr(i,k)
       nrout(i,k) = nr(i,k) * rho(i,k)
@@ -1999,7 +2006,7 @@ subroutine micro_mg_tend ( &
 ! where is dum_2D-* defined?
   dum_2D_qs = 0_r8; dum_2D_ns=0_r8; dum_2D_qr=0_r8; dum_2D_nr=0_r8
   do k=1,nlev 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (dum_2d,nc,ncn,nctend,npccn,nr,nrn,ns,nsn,qr,qrn,qs,qsn)
     do i=1,mgncol
       ! Re-apply droplet activation tendency
       nc(i,k) = ncn(i,k)
@@ -2033,7 +2040,9 @@ subroutine micro_mg_tend ( &
   prain = prain + prodsnow
 
      do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (dumc,dumi,dumnc,dumni,dumnr,dumns,dumr,dums,icldm,lcldm), &
+!$OMP&     ALIGNED (nc,nctend,ni,nitend,nr,nrtend,ns,nstend,precip_frac,qc),  &
+!$OMP&     ALIGNED (qctend,qi,qitend,qr,qrtend,qs,qstend)
      do i=1,mgncol
 
         ! calculate sedimentation for cloud water and ice
@@ -2080,7 +2089,6 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-!dir$ vector aligned
      do i=1,mgncol
 
         if (dumc(i,k).ge.qsmall) then
@@ -2123,7 +2131,7 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (arn,fnr,fr,lamr,rho,rhof,umr,unr)
      do i=1,mgncol
         if (lamr(i,k).ge.qsmall) then
 
@@ -2146,7 +2154,6 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-!dir$ vector aligned
      do i=1,mgncol
         call size_dist_param_basic(mg_snow_props, dums(i,k), dumns(i,k), &
              lams(i,k))
@@ -2155,7 +2162,9 @@ subroutine micro_mg_tend ( &
      enddo
 
      do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (asn,dumc,dumi,dumnc,dumni,dumnr,dumns,dumr,dums,fns,fs), &
+!$OMP&     ALIGNED (lams,nc,nctend,ni,nitend,nr,nrtend,ns,nstend,qc,qctend), &
+!$OMP&     ALIGNED (qi,qitend,qr,qrtend,qs,qstend,rho,rhof,ums,uns)
      do i=1,mgncol
         if (lams(i,k).ge.qsmall) then
 
@@ -2454,7 +2463,8 @@ subroutine micro_mg_tend ( &
      ! get new update for variables that includes sedimentation tendency
      ! note : here dum variables are grid-average, NOT in-cloud
         do k=1,nlev
-!dir$ vector aligned 
+!$OMP SIMD ALIGNED (dumc,dumi,dumnc,dumni,dumnr,dumns,dumr,dums,nc,nctend,ni), &
+!$OMP&     ALIGNED (nitend,nr,nrtend,ns,nstend,qc,qctend,qi,qitend,qr,qrtend,qs,qstend)
         do i=1,mgncol
 
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._r8)
@@ -2490,7 +2500,7 @@ subroutine micro_mg_tend ( &
         ! melting of snow at +2 C
 
         do k=1,nlev
-!dir$ vector aligned 
+!$OMP SIMD ALIGNED (dumns,dums,meltsdttot,nrtend,nstend,qrtend,qstend,t,tlat)
         do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat > snowmelt) then
            if (dums(i,k) > 0._r8) then
@@ -2522,7 +2532,6 @@ subroutine micro_mg_tend ( &
         ! freezing of rain at -5 C
 
         do k=1,nlev
-!dir$ vector aligned 
         do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat < rainfrze) then
 
@@ -2568,7 +2577,7 @@ subroutine micro_mg_tend ( &
 
         if (do_cldice) then
         do k=1,nlev
-!dir$ vector aligned 
+!$OMP SIMD ALIGNED (dumi,dumni,melttot,nctend,ni,nitend,qctend,qi,qitend,t,tlat)
         do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat > tmelt) then
               if (dumi(i,k) > 0._r8) then
@@ -2608,7 +2617,7 @@ subroutine micro_mg_tend ( &
            !-----------------------------------------------------------------
 
         do k=1,nlev
-!dir$ vector aligned 
+!$OMP SIMD ALIGNED (dumi,dumni,melttot,nctend,ni,nitend,qctend,qi,qitend,t,tlat)
         do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat < 233.15_r8) then
               if (dumc(i,k) > 0._r8) then
@@ -2646,7 +2655,6 @@ subroutine micro_mg_tend ( &
            ! follow code similar to old CAM scheme
 
         do k=1,nlev
-!dir$ vector aligned 
         do i=1,mgncol
            qtmp=q(i,k)+qvlat(i,k)*deltat
            ttmp=t(i,k)+tlat(i,k)/cpp*deltat
@@ -2695,7 +2703,9 @@ subroutine micro_mg_tend ( &
         ! variables are in-cloud to calculate size dist parameters
 
         do k=1,nlev
-!dir$ vector aligned 
+!$OMP SIMD ALIGNED (dumc,dumi,dumnc,dumni,dumnr,dumns,dumr,dums,icldm,lcldm,nc), &
+!$OMP&     ALIGNED (nctend,ni,nitend,nr,nrtend,ns,nstend,precip_frac,qc,qctend), &
+!$OMP&     ALIGNED (qi,qitend,qr,qrtend,qs,qstend)
         do i=1,mgncol
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._r8)/lcldm(i,k)
         dumi(i,k) = max(qi(i,k)+qitend(i,k)*deltat,0._r8)/icldm(i,k)
@@ -2731,7 +2741,6 @@ subroutine micro_mg_tend ( &
 
         if (do_cldice) then
         do k=1,nlev
-!dir$ vector aligned
         do i=1,mgncol
 
            if (dumi(i,k).ge.qsmall) then
@@ -2757,7 +2766,7 @@ subroutine micro_mg_tend ( &
         enddo
         else
         do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (effi,re_ice,deffi)
         do i=1,mgncol
            ! NOTE: If CARMA is doing the ice microphysics, then the ice effective
            ! radius has already been determined from the size distribution.
@@ -2770,7 +2779,6 @@ subroutine micro_mg_tend ( &
         ! cloud droplet effective radius
         !-----------------------------------------------------------------
         do k=1,nlev
-!dir$ vector aligned
         do i=1,mgncol
         if (dumc(i,k).ge.qsmall) then
 
@@ -2829,7 +2837,6 @@ subroutine micro_mg_tend ( &
         ! to ensure that rain size is in bounds, adjust rain number if needed
 
         do k=1,nlev
-!dir$ vector aligned
         do i=1,mgncol
         if (dumr(i,k).ge.qsmall) then
 
@@ -2851,7 +2858,6 @@ subroutine micro_mg_tend ( &
         ! to ensure that snow size is in bounds, adjust snow number if needed
 
         do k=1,nlev
-!dir$ vector aligned
         do i=1,mgncol
         if (dums(i,k).ge.qsmall) then
 
@@ -2871,7 +2877,7 @@ subroutine micro_mg_tend ( &
         enddo
 
         do k=1,nlev
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (qc,qctend,nctend,nc,qi,qitend,nitend,qr,qrtend,nrtend,nr,qs,qstend,nstend,ns)
         do i=1,mgncol
         ! if updated q (after microphysics) is zero, then ensure updated n is also zero
         !=================================================================================
@@ -3055,7 +3061,7 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol)
   real(r8) :: Atmp
   integer :: i
 
-!dir$ vector aligned
+!$OMP SIMD ALIGNED (lamr,n0r,lamc,pgam,qric,qcic,ncic,rercld)
   do i=1,mgncol
  ! Rain drops
   if (lamr(i) > 0._r8) then

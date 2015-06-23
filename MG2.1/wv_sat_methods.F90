@@ -226,7 +226,7 @@ function wv_sat_svp_to_qsat_vect(es, p, mgncol) result(qs)
   real(r8), dimension(mgncol) :: qs
   integer :: i
 
-
+!$OMP SIMD ALIGNED (es,p,qs)
   do i=1,mgncol
   ! If pressure is less than SVP, set qs to maximum of 1.
   if ( (p(i) - es(i)) <= 0._r8 ) then
@@ -412,7 +412,7 @@ function wv_sat_svp_water_vect(t, mgncol, idx) result(es)
      use_idx = default_idx
   end if
 
-
+!$OMP SIMD ALIGNED (t,idx,es)
   do i=1,mgncol
   select case (use_idx)
   case(GoffGratch_idx)
@@ -469,7 +469,7 @@ function wv_sat_svp_ice_vect(t, mgncol, idx) result(es)
      use_idx = default_idx
   end if
 
-
+!$OMP SIMD ALIGNED (t,idx,es)
   do i=1,mgncol
   select case (use_idx)
   case(GoffGratch_idx)
