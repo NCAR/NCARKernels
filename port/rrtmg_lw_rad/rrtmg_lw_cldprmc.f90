@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : rrtmg_lw_cldprmc.f90
-! Generated at: 2015-07-02 09:55:45
+! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
 
@@ -63,7 +63,7 @@
             REAL(KIND=r8), intent(inout) :: taucmc(:,:) ! cloud optical depth [mcica]
             !    Dimensions: (ngptlw,nlayers)
             ! ------- Local -------
-            INTEGER :: lay,index ! Layer index
+            INTEGER :: lay, index ! Layer index
             INTEGER :: ib ! spectral band index
             INTEGER :: ig ! g-point interval index
             REAL(KIND=r8) :: abscoice(ngptlw) ! ice absorption coefficients

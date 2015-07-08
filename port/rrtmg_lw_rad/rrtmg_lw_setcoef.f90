@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : rrtmg_lw_setcoef.f90
-! Generated at: 2015-07-02 09:55:45
+! Generated at: 2015-07-06 23:28:43
 ! KGEN version: 0.4.13
 
 
@@ -120,18 +120,18 @@
             REAL(KIND=r8), intent(out) :: fac10(:)
             REAL(KIND=r8), intent(out) :: fac11(:) !
             !    Dimensions: (nlayers)
+            REAL(KIND=r8), intent(out) :: rat_h2och4(:)
             REAL(KIND=r8), intent(out) :: rat_h2on2o(:)
             REAL(KIND=r8), intent(out) :: rat_h2on2o_1(:)
-            REAL(KIND=r8), intent(out) :: rat_o3co2(:)
-            REAL(KIND=r8), intent(out) :: rat_h2och4_1(:)
-            REAL(KIND=r8), intent(out) :: rat_h2och4(:)
-            REAL(KIND=r8), intent(out) :: rat_n2oco2_1(:)
             REAL(KIND=r8), intent(out) :: rat_o3co2_1(:)
+            REAL(KIND=r8), intent(out) :: rat_h2och4_1(:)
+            REAL(KIND=r8), intent(out) :: rat_n2oco2_1(:)
             REAL(KIND=r8), intent(out) :: rat_h2oo3_1(:)
             REAL(KIND=r8), intent(out) :: rat_n2oco2(:)
             REAL(KIND=r8), intent(out) :: rat_h2oco2(:)
             REAL(KIND=r8), intent(out) :: rat_h2oco2_1(:)
-            REAL(KIND=r8), intent(out) :: rat_h2oo3(:) !
+            REAL(KIND=r8), intent(out) :: rat_h2oo3(:)
+            REAL(KIND=r8), intent(out) :: rat_o3co2(:) !
             !    Dimensions: (nlayers)
             ! ----- Local -----
             INTEGER :: indbound

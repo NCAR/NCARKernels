@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : rrtmg_lw_rad.f90
-! Generated at: 2015-07-02 09:55:45
+! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
 
@@ -320,18 +320,18 @@
             REAL(KIND=r8) :: fac10(nlay)
             REAL(KIND=r8) :: fac11(nlay)
             REAL(KIND=r8) :: fac00(nlay) !
-            REAL(KIND=r8) :: rat_h2oco2_1(nlay)
-            REAL(KIND=r8) :: rat_h2on2o_1(nlay)
             REAL(KIND=r8) :: rat_o3co2_1(nlay)
             REAL(KIND=r8) :: rat_o3co2(nlay)
             REAL(KIND=r8) :: rat_h2och4(nlay)
             REAL(KIND=r8) :: rat_h2oo3(nlay)
-            REAL(KIND=r8) :: rat_n2oco2_1(nlay)
             REAL(KIND=r8) :: rat_h2och4_1(nlay)
+            REAL(KIND=r8) :: rat_h2oo3_1(nlay)
             REAL(KIND=r8) :: rat_h2oco2(nlay)
-            REAL(KIND=r8) :: rat_h2on2o(nlay)
             REAL(KIND=r8) :: rat_n2oco2(nlay)
-            REAL(KIND=r8) :: rat_h2oo3_1(nlay) !
+            REAL(KIND=r8) :: rat_h2on2o(nlay)
+            REAL(KIND=r8) :: rat_n2oco2_1(nlay)
+            REAL(KIND=r8) :: rat_h2oco2_1(nlay)
+            REAL(KIND=r8) :: rat_h2on2o_1(nlay) !
             ! Atmosphere/clouds - cldprop
             INTEGER :: ncbands ! number of cloud spectral bands
             INTEGER :: inflag ! flag for cloud property method

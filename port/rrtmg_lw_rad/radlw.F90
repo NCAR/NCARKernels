@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : radlw.F90
-! Generated at: 2015-07-02 09:55:45
+! Generated at: 2015-07-06 23:28:43
 ! KGEN version: 0.4.13
 
 
@@ -19,8 +19,8 @@
         USE shr_kind_mod, ONLY: r8 => shr_kind_r8
         USE ppgrid, ONLY: pcols
         USE ppgrid, ONLY: pverp
-        USE parrrtm, ONLY: nbndlw
         USE parrrtm, ONLY: ngptlw
+        USE parrrtm, ONLY: nbndlw
         USE rrtmg_lw_rad, ONLY: rrtmg_lw
         IMPLICIT NONE
         PRIVATE
@@ -172,7 +172,7 @@
             ! Set surface emissivity to 1.0 here, this is treated in land surface model;
             ! Set surface temperature
             ! Set aerosol optical depth to zero for now
-            tolerance = 1.E-12
+            tolerance = 1.E-14
             CALL kgen_init_check(check_status, tolerance)
             READ(UNIT=kgen_unit) inflglw
             READ(UNIT=kgen_unit) iceflglw

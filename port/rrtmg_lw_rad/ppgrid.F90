@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : ppgrid.F90
-! Generated at: 2015-07-02 09:55:46
+! Generated at: 2015-07-06 23:28:45
 ! KGEN version: 0.4.13
 
 
@@ -23,13 +23,12 @@
         PUBLIC pcols
         PUBLIC pverp
         ! Grid point resolution parameters
-        INTEGER  pcols ! number of columns (max)
+        INTEGER :: pcols ! number of columns (max)
         ! number of sub-columns (max)
-        Integer pver       ! number of vertical levels! number of vertical levels
-        INTEGER  pverp ! pver + 1
+        ! number of vertical levels
+        INTEGER :: pverp ! pver + 1
         PARAMETER (pcols     = 16)
-        PARAMETER (pver         = 30)
-        PARAMETER (pverp        = 31)
+        PARAMETER (pverp     = 30 + 1)
         !
         ! start, end indices for chunks owned by a given MPI task
         ! (set in phys_grid_init).

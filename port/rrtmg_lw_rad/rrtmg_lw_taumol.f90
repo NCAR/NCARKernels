@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : rrtmg_lw_taumol.f90
-! Generated at: 2015-07-02 09:55:46
+! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
 
@@ -237,13 +237,13 @@
             REAL(KIND=r8), intent(in) :: rat_h2oo3(:)
             REAL(KIND=r8), intent(in) :: rat_h2oo3_1(:)
             REAL(KIND=r8), intent(in) :: rat_h2on2o(:)
-            REAL(KIND=r8), intent(in) :: rat_h2on2o_1(:)
             REAL(KIND=r8), intent(in) :: rat_h2och4(:)
             REAL(KIND=r8), intent(in) :: rat_h2och4_1(:)
             REAL(KIND=r8), intent(in) :: rat_n2oco2(:)
             REAL(KIND=r8), intent(in) :: rat_n2oco2_1(:)
             REAL(KIND=r8), intent(in) :: rat_o3co2(:)
-            REAL(KIND=r8), intent(in) :: rat_o3co2_1(:) !
+            REAL(KIND=r8), intent(in) :: rat_o3co2_1(:)
+            REAL(KIND=r8), intent(in) :: rat_h2on2o_1(:) !
             !    Dimensions: (nlayers)
             ! ----- Output -----
             REAL(KIND=r8), intent(out) :: fracs(:,:) ! planck fractions
@@ -1354,8 +1354,8 @@
                 USE rrlw_kg06, ONLY: selfref
                 USE rrlw_kg06, ONLY: forref
                 USE rrlw_kg06, ONLY: ka_mco2
-                USE rrlw_kg06, ONLY: absa
                 USE rrlw_kg06, ONLY: cfc11adj
+                USE rrlw_kg06, ONLY: absa
                 USE rrlw_kg06, ONLY: cfc12
                 USE rrlw_kg06, ONLY: fracrefa
                 ! ------- Declarations -------

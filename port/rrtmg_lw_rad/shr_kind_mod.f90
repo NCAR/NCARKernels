@@ -2,7 +2,7 @@
 ! KGEN-generated Fortran source file
 !
 ! Filename    : shr_kind_mod.f90
-! Generated at: 2015-07-02 09:55:45
+! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
 
