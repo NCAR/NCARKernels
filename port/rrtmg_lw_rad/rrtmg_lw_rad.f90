@@ -392,18 +392,51 @@
             ! area, since this has to be called only once.
             !      call rrtmg_lw_ini
             !  This is the main longitude/column loop within RRTMG.
-      do iplon = 1, ncol
                 !  Prepare atmospheric profile from GCM for use in RRTMG, and define
                 !  other input parameters.
-         call inatm (iplon, nlay, icld, iaer, &
+         call inatm (istart,iend,ncol, nlay, icld, iaer, &
               play, plev, tlay, tlev, tsfc, h2ovmr, &
               o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
               cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
               cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
-              pavel(iplon,:), pz(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), coldry(iplon,:), &
-              wkl(iplon,:,:), wbrodl(iplon,:), wx(iplon,:,:), pwvcm(iplon), inflag(iplon), iceflag(iplon), liqflag(iplon), &
-              cldfmc(iplon,:,:), taucmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), taua(iplon,:,:))
-      end do       
+              pavel, pz, tavel, tz, tbound, semiss, coldry, &
+              wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
+              cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
+
+!       print *,'SUM(pavel): ',SUM(pavel)
+!       print *,'SUM(pz): ',SUM(pz)
+!       print *,'SUM(tavel): ',SUM(tavel)
+!       print *,'SUM(tz): ',SUM(tz)
+!       print *,'SUM(tbound): ',SUM(tbound)
+!       print *,'SUM(semiss): ',SUM(semiss)
+!       print *,'SUM(coldry): ',SUM(coldry)
+!       print *,'SUM(wkl): ',SUM(wkl)
+!       print *,'SUM(wbrodl): ',SUM(wbrodl)
+!       print *,'SUM(wx): ',SUM(wx)
+!       print *,'SUM(pwvcm): ',SUM(pwvcm)
+!       print *,'SUM(inflag): ',SUM(inflag)
+!       print *,'SUM(iceflag): ',SUM(iceflag)
+!       print *,'SUM(liqflag): ',SUM(liqflag)
+!       print *,'SUM(cldfmc): ',SUM(cldfmc)
+!       print *,'SUM(taucmc): ',SUM(taucmc)
+!       print *,'SUM(ciwpmc): ',SUM(ciwpmc)
+!       print *,'SUM(clwpmc): ',SUM(clwpmc)
+!       print *,'SUM(reicmc): ',SUM(reicmc)
+!       print *,'SUM(dgesmcmc): ',SUM(dgesmc)
+!       print *,'SUM(relqmcmc): ',SUM(relqmc)
+!       print *,'SUM(taua): ',SUM(taua)
+!      do iplon = 1, ncol
+!                !  Prepare atmospheric profile from GCM for use in RRTMG, and define
+!                !  other input parameters.
+!         call inatm (iplon, nlay, icld, iaer, &
+!              play, plev, tlay, tlev, tsfc, h2ovmr, &
+!              o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
+!              cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
+!              cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
+!              pavel(iplon,:), pz(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), coldry(iplon,:), &
+!              wkl(iplon,:,:), wbrodl(iplon,:), wx(iplon,:,:), pwvcm(iplon), inflag(iplon), iceflag(iplon), liqflag(iplon), &
+!              cldfmc(iplon,:,:), taucmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), taua(iplon,:,:))
+!      end do       
       do iplon = 1, ncol
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
@@ -444,20 +477,24 @@
                      fracs(iplon,:,:), taug(iplon,:,:))
                 ! Combine gaseous and aerosol optical depths, if aerosol active
       end do       
-      do iplon = 1, ncol
          if (iaer .eq. 0) then
-            do k = 1, nlay
-               do ig = 1, ngptlw 
-                  taut(iplon,k,ig) = taug(iplon,k,ig)
+            do ig = 1, ngptlw 
+               do k = 1, nlay
+                  do iplon = 1, ncol
+                     taut(iplon,k,ig) = taug(iplon,k,ig)
+                  enddo
                enddo
             enddo
          elseif (iaer .eq. 10) then
-            do k = 1, nlay
-               do ig = 1, ngptlw 
-                  taut(iplon,k,ig) = taug(iplon,k,ig) + taua(iplon,k,ngb(ig))
+            do ig = 1, ngptlw 
+               do k = 1, nlay
+                  do iplon = 1, ncol
+                     taut(iplon,k,ig) = taug(iplon,k,ig) + taua(iplon,k,ngb(ig))
+                  enddo
                enddo
             enddo
          endif
+      do iplon = 1, ncol
                 ! Call the radiative transfer routine.
                 ! Either routine can be called to do clear sky calculation.  If clouds
                 ! are present, then select routine based on cloud overlap assumption
@@ -486,7 +523,7 @@
         END SUBROUTINE rrtmg_lw
         !***************************************************************************
 
-        SUBROUTINE inatm(iplon, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
+        SUBROUTINE inatm(istart,iend,ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
         cfc11vmr, cfc12vmr, cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, &
         relqmcl, tauaer, pavel, pz, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, cldfmc, &
         taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
@@ -506,7 +543,9 @@
             USE rrlw_wvn, ONLY: ixindx
             ! ------- Declarations -------
             ! ----- Input -----
-            INTEGER, intent(in) :: iplon ! column loop index
+            INTEGER, intent(in) :: istart ! starting column index
+            INTEGER, intent(in) :: iend   ! ending column index
+            INTEGER, intent(in) :: ncol ! total number of columns
             INTEGER, intent(in) :: nlay ! Number of model layers
             INTEGER, intent(in) :: icld ! clear/cloud and cloud overlap flag
             INTEGER, intent(in) :: iaer ! aerosol option flag
@@ -561,46 +600,51 @@
             !    Dimensions: (ncol,nlay,nbndlw)
             ! ----- Output -----
             ! Atmosphere
-            REAL(KIND=r8), intent(out) :: pavel(:) ! layer pressures (mb)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: tavel(:) ! layer temperatures (K)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: pz(0:) ! level (interface) pressures (hPa, mb)
-            !    Dimensions: (0:nlay)
-            REAL(KIND=r8), intent(out) :: tz(0:) ! level (interface) temperatures (K)
-            !    Dimensions: (0:nlay)
-            REAL(KIND=r8), intent(out) :: tbound ! surface temperature (K)
-            REAL(KIND=r8), intent(out) :: coldry(:) ! dry air column density (mol/cm2)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: wbrodl(:) ! broadening gas column density (mol/cm2)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: wkl(:,:) ! molecular amounts (mol/cm-2)
-            !    Dimensions: (mxmol,nlay)
-            REAL(KIND=r8), intent(out) :: wx(:,:) ! cross-section amounts (mol/cm-2)
-            !    Dimensions: (maxxsec,nlay)
-            REAL(KIND=r8), intent(out) :: pwvcm ! precipitable water vapor (cm)
-            REAL(KIND=r8), intent(out) :: semiss(:) ! lw surface emissivity
-            !    Dimensions: (nbndlw)
+            REAL(KIND=r8), intent(out) :: pavel(:,:) ! layer pressures (mb)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: tavel(:,:) ! layer temperatures (K)
+            !    Dimensions: (ncol, nlay)
+            REAL(KIND=r8), intent(out) :: pz(:,0:) ! level (interface) pressures (hPa, mb)
+            !    Dimensions: (ncol,0:nlay)
+            REAL(KIND=r8), intent(out) :: tz(:,0:) ! level (interface) temperatures (K)
+            !    Dimensions: (ncol,0:nlay)
+            REAL(KIND=r8), intent(out) :: tbound(:) ! surface temperature (K)
+            !    Dimensions: (ncol)
+            REAL(KIND=r8), intent(out) :: coldry(:,:) ! dry air column density (mol/cm2)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: wbrodl(:,:) ! broadening gas column density (mol/cm2)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: wkl(:,:,:) ! molecular amounts (mol/cm-2)
+            !    Dimensions: (ncol,mxmol,nlay)
+            REAL(KIND=r8), intent(out) :: wx(:,:,:) ! cross-section amounts (mol/cm-2)
+            !    Dimensions: (ncol,maxxsec,nlay)
+            REAL(KIND=r8), intent(out) :: pwvcm(:) ! precipitable water vapor (cm)
+            !    Dimensions: (ncol)
+            REAL(KIND=r8), intent(out) :: semiss(:,:) ! lw surface emissivity
+            !    Dimensions: (ncol,nbndlw)
             ! Atmosphere/clouds - cldprop
-            INTEGER, intent(out) :: inflag ! flag for cloud property method
-            INTEGER, intent(out) :: iceflag ! flag for ice cloud properties
-            INTEGER, intent(out) :: liqflag ! flag for liquid cloud properties
-            REAL(KIND=r8), intent(out) :: cldfmc(:,:) ! cloud fraction [mcica]
-            !    Dimensions: (ngptlw,nlay)
-            REAL(KIND=r8), intent(out) :: ciwpmc(:,:) ! cloud ice water path [mcica]
-            !    Dimensions: (ngptlw,nlay)
-            REAL(KIND=r8), intent(out) :: clwpmc(:,:) ! cloud liquid water path [mcica]
-            !    Dimensions: (ngptlw,nlay)
-            REAL(KIND=r8), intent(out) :: relqmc(:) ! liquid particle effective radius (microns)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: reicmc(:) ! ice particle effective radius (microns)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: dgesmc(:) ! ice particle generalized effective size (microns)
-            !    Dimensions: (nlay)
-            REAL(KIND=r8), intent(out) :: taucmc(:,:) ! cloud optical depth [mcica]
-            !    Dimensions: (ngptlw,nlay)
-            REAL(KIND=r8), intent(out) :: taua(:,:) ! Aerosol optical depth
-            ! Dimensions: (nlay,nbndlw)
+            INTEGER, intent(out) :: inflag(:) ! flag for cloud property method
+            !    Dimensions: (ncol)
+            INTEGER, intent(out) :: iceflag(:) ! flag for ice cloud properties
+            !    Dimensions: (ncol)
+            INTEGER, intent(out) :: liqflag(:) ! flag for liquid cloud properties
+            !    Dimensions: (ncol)
+            REAL(KIND=r8), intent(out) :: cldfmc(:,:,:) ! cloud fraction [mcica]
+            !    Dimensions: (ncol,ngptlw,nlay)
+            REAL(KIND=r8), intent(out) :: ciwpmc(:,:,:) ! cloud ice water path [mcica]
+            !    Dimensions: (ncol,ngptlw,nlay)
+            REAL(KIND=r8), intent(out) :: clwpmc(:,:,:) ! cloud liquid water path [mcica]
+            !    Dimensions: (ncol,ngptlw,nlay)
+            REAL(KIND=r8), intent(out) :: relqmc(:,:) ! liquid particle effective radius (microns)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: reicmc(:,:) ! ice particle effective radius (microns)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: dgesmc(:,:) ! ice particle generalized effective size (microns)
+            !    Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: taucmc(:,:,:) ! cloud optical depth [mcica]
+            !    Dimensions: (ncol,ngptlw,nlay)
+            REAL(KIND=r8), intent(out) :: taua(:,:,:) ! Aerosol optical depth
+            ! Dimensions: (ncol,nlay,nbndlw)
             ! ----- Local -----
             REAL(KIND=r8), parameter :: amd = 28.9660_r8 ! Effective molecular weight of dry air (g/mol)
             REAL(KIND=r8), parameter :: amw = 18.0160_r8 ! Molecular weight of water vapor (g/mol)
@@ -623,7 +667,7 @@
             ! Molecular weight of dry air / CFC11
             ! Molecular weight of dry air / CFC12
             ! Stefan-Boltzmann constant (W/m2K4)
-            INTEGER :: l
+            INTEGER :: l,iplon
             INTEGER :: imol
             INTEGER :: ix
             INTEGER :: n
@@ -631,25 +675,24 @@
             INTEGER :: ig ! Loop indices
             REAL(KIND=r8) :: amttl
             REAL(KIND=r8) :: wvttl
-            REAL(KIND=r8) :: amm
             REAL(KIND=r8) :: summol
             REAL(KIND=r8) :: wvsh
+            ! promote temporary scalars to vectors
+            REAL(KIND=r8) :: amm(ncol)  ! pr
             !  Initialize all molecular amounts and cloud properties to zero here, then pass input amounts
             !  into RRTM arrays below.
-      wkl(:,:) = 0.0_r8
-      wx(:,:) = 0.0_r8
-      cldfmc(:,:) = 0.0_r8
-      taucmc(:,:) = 0.0_r8
-      ciwpmc(:,:) = 0.0_r8
-      clwpmc(:,:) = 0.0_r8
-      reicmc(:) = 0.0_r8
-      dgesmc(:) = 0.0_r8
-      relqmc(:) = 0.0_r8
-      taua(:,:) = 0.0_r8
-      amttl = 0.0_r8
-      wvttl = 0.0_r8
+!JMD      wkl(iplon,:,:) = 0.0_r8
+!JMD      wx(iplon,:,:) = 0.0_r8
+!JMD      cldfmc(iplon,:,:) = 0.0_r8
+!JMD      taucmc(iplon,:,:) = 0.0_r8
+!JMD      ciwpmc(iplon,:,:) = 0.0_r8
+!JMD      clwpmc(iplon,:,:) = 0.0_r8
+!JMD      reicmc(iplon,:) = 0.0_r8
+!JMD      dgesmc(iplon,:) = 0.0_r8
+!JMD      relqmc(iplon,:) = 0.0_r8
+!JMD      taua(iplon,:,:) = 0.0_r8
             !  Set surface temperature.
-      tbound = tsfc(iplon)
+      tbound = tsfc
             !  Install input GCM arrays into RRTMG_LW arrays for pressure, temperature,
             !  and molecular amounts.
             !  Pressures are input in mb, or are converted to mb here.
@@ -663,60 +706,65 @@
             !  Note: In RRTMG, layer indexing goes from bottom to top, and coding below
             !  assumes GCM input fields are also bottom to top. Input layer indexing
             !  from GCM fields should be reversed here if necessary.
-      pz(0) = plev(iplon,nlay+1)
-      tz(0) = tlev(iplon,nlay+1)
+      pz(:,0) = plev(:,nlay+1)
+      tz(:,0) = tlev(:,nlay+1)
       do l = 1, nlay
-         pavel(l) = play(iplon,nlay-l+1)
-         tavel(l) = tlay(iplon,nlay-l+1)
-         pz(l) = plev(iplon,nlay-l+1)
-         tz(l) = tlev(iplon,nlay-l+1)
+    do iplon=istart,iend
+         pavel(iplon,l) = play(iplon,nlay-l+1)
+         tavel(iplon,l) = tlay(iplon,nlay-l+1)
+         pz(iplon,l) = plev(iplon,nlay-l+1)
+         tz(iplon,l) = tlev(iplon,nlay-l+1)
                 ! For h2o input in vmr:
-         wkl(1,l) = h2ovmr(iplon,nlay-l+1)
+         wkl(iplon,1,l) = h2ovmr(iplon,nlay-l+1)
                 ! For h2o input in mmr:
                 !         wkl(1,l) = h2o(iplon,nlay-l)*amdw
                 ! For h2o input in specific humidity;
                 !         wkl(1,l) = (h2o(iplon,nlay-l)/(1._r8 - h2o(iplon,nlay-l)))*amdw
-         wkl(2,l) = co2vmr(iplon,nlay-l+1)
-         wkl(3,l) = o3vmr(iplon,nlay-l+1)
-         wkl(4,l) = n2ovmr(iplon,nlay-l+1)
-         wkl(6,l) = ch4vmr(iplon,nlay-l+1)
-         wkl(7,l) = o2vmr(iplon,nlay-l+1)
-         amm = (1._r8 - wkl(1,l)) * amd + wkl(1,l) * amw            
-         coldry(l) = (pz(l-1)-pz(l)) * 1.e3_r8 * avogad / &
-                     (1.e2_r8 * grav * amm * (1._r8 + wkl(1,l)))
+         wkl(iplon,2,l) = co2vmr(iplon,nlay-l+1)
+         wkl(iplon,3,l) = o3vmr(iplon,nlay-l+1)
+         wkl(iplon,4,l) = n2ovmr(iplon,nlay-l+1)
+         wkl(iplon,6,l) = ch4vmr(iplon,nlay-l+1)
+         wkl(iplon,7,l) = o2vmr(iplon,nlay-l+1)
+         amm(iplon) = (1._r8 - wkl(iplon,1,l)) * amd + wkl(iplon,1,l) * amw            
+         coldry(iplon,l) = (pz(iplon,l-1)-pz(iplon,l)) * 1.e3_r8 * avogad / &
+                     (1.e2_r8 * grav * amm(iplon) * (1._r8 + wkl(iplon,1,l)))
                 ! Set cross section molecule amounts from input; convert to vmr if necessary
-         wx(1,l) = ccl4vmr(iplon,nlay-l+1)
-         wx(2,l) = cfc11vmr(iplon,nlay-l+1)
-         wx(3,l) = cfc12vmr(iplon,nlay-l+1)
-         wx(4,l) = cfc22vmr(iplon,nlay-l+1)
-      enddo
-      coldry(nlay) = (pz(nlay-1)) * 1.e3_r8 * avogad / &
-                        (1.e2_r8 * grav * amm * (1._r8 + wkl(1,nlay-1)))
+         wx(iplon,1,l) = ccl4vmr(iplon,nlay-l+1)
+         wx(iplon,2,l) = cfc11vmr(iplon,nlay-l+1)
+         wx(iplon,3,l) = cfc12vmr(iplon,nlay-l+1)
+         wx(iplon,4,l) = cfc22vmr(iplon,nlay-l+1)
+   enddo
+        enddo
+      coldry(:,nlay) = (pz(:,nlay-1)) * 1.e3_r8 * avogad / &
+                        (1.e2_r8 * grav * amm(:) * (1._r8 + wkl(:,1,nlay-1)))
             ! At this point all molecular amounts in wkl and wx are in volume mixing ratio;
             ! convert to molec/cm2 based on coldry for use in rrtm.  also, compute precipitable
             ! water vapor for diffusivity angle adjustments in rtrn and rtrnmr.
+    do iplon = 1,ncol
+      amttl = 0.0_r8
+      wvttl = 0.0_r8
       do l = 1, nlay
          summol = 0.0_r8
          do imol = 2, nmol
-            summol = summol + wkl(imol,l)
+            summol = summol + wkl(iplon,imol,l)
          enddo
-         wbrodl(l) = coldry(l) * (1._r8 - summol)
+         wbrodl(iplon,l) = coldry(iplon,l) * (1._r8 - summol)
          do imol = 1, nmol
-            wkl(imol,l) = coldry(l) * wkl(imol,l)
+            wkl(iplon,imol,l) = coldry(iplon,l) * wkl(iplon,imol,l)
          enddo
-         amttl = amttl + coldry(l)+wkl(1,l)
-         wvttl = wvttl + wkl(1,l)
+         amttl = amttl + coldry(iplon,l)+wkl(iplon,1,l)
+         wvttl = wvttl + wkl(iplon,1,l)
          do ix = 1,maxxsec
             if (ixindx(ix) .ne. 0) then
-               wx(ixindx(ix),l) = coldry(l) * wx(ix,l) * 1.e-20_r8
+               wx(iplon,ixindx(ix),l) = coldry(iplon,l) * wx(iplon,ix,l) * 1.e-20_r8
             endif
          enddo
       enddo
       wvsh = (amw * wvttl) / (amd * amttl)
-      pwvcm = wvsh * (1.e3_r8 * pz(0)) / (1.e2_r8 * grav)
+      pwvcm(iplon) = wvsh * (1.e3_r8 * pz(iplon,0)) / (1.e2_r8 * grav)
             ! Set spectral surface emissivity for each longwave band.
       do n=1,nbndlw
-         semiss(n) = emis(iplon,n)
+         semiss(iplon,n) = emis(iplon,n)
                 !          semiss(n) = 1.0_r8
       enddo
             ! Transfer aerosol optical properties to RRTM variable;
@@ -724,41 +772,42 @@
       if (iaer .ge. 1) then 
          do l = 1, nlay-1
             do ib = 1, nbndlw
-               taua(l,ib) = tauaer(iplon,nlay-l,ib)
+               taua(iplon,l,ib) = tauaer(iplon,nlay-l,ib)
             enddo
          enddo
       endif
             ! Transfer cloud fraction and cloud optical properties to RRTM variables,
             ! modify to reverse layer indexing here if necessary.
       if (icld .ge. 1) then 
-         inflag = inflglw
-         iceflag = iceflglw
-         liqflag = liqflglw
+         inflag(iplon) = inflglw
+         iceflag(iplon) = iceflglw
+         liqflag(iplon) = liqflglw
                 ! Move incoming GCM cloud arrays to RRTMG cloud arrays.
                 ! For GCM input, incoming reice is in effective radius; for Fu parameterization (iceflag = 3)
                 ! convert effective radius to generalized effective size using method of Mitchell, JAS, 2002:
          do l = 1, nlay-1
             do ig = 1, ngptlw
-               cldfmc(ig,l) = cldfmcl(ig,iplon,nlay-l)
-               taucmc(ig,l) = taucmcl(ig,iplon,nlay-l)
-               ciwpmc(ig,l) = ciwpmcl(ig,iplon,nlay-l)
-               clwpmc(ig,l) = clwpmcl(ig,iplon,nlay-l)
+               cldfmc(iplon,ig,l) = cldfmcl(ig,iplon,nlay-l)
+               taucmc(iplon,ig,l) = taucmcl(ig,iplon,nlay-l)
+               ciwpmc(iplon,ig,l) = ciwpmcl(ig,iplon,nlay-l)
+               clwpmc(iplon,ig,l) = clwpmcl(ig,iplon,nlay-l)
             enddo
-            reicmc(l) = reicmcl(iplon,nlay-l)
-            if (iceflag .eq. 3) then
-               dgesmc(l) = 1.5396_r8 * reicmcl(iplon,nlay-l)
+            reicmc(iplon,l) = reicmcl(iplon,nlay-l)
+            if (iceflag(iplon) .eq. 3) then
+               dgesmc(iplon,l) = 1.5396_r8 * reicmcl(iplon,nlay-l)
             endif
-            relqmc(l) = relqmcl(iplon,nlay-l)
+            relqmc(iplon,l) = relqmcl(iplon,nlay-l)
          enddo
                 ! If an extra layer is being used in RRTMG, set all cloud properties to zero in the extra layer.
-         cldfmc(:,nlay) = 0.0_r8
-         taucmc(:,nlay) = 0.0_r8
-         ciwpmc(:,nlay) = 0.0_r8
-         clwpmc(:,nlay) = 0.0_r8
-         reicmc(nlay) = 0.0_r8
-         dgesmc(nlay) = 0.0_r8
-         relqmc(nlay) = 0.0_r8
-         taua(nlay,:) = 0.0_r8
+         cldfmc(iplon,:,nlay) = 0.0_r8
+         taucmc(iplon,:,nlay) = 0.0_r8
+         ciwpmc(iplon,:,nlay) = 0.0_r8
+         clwpmc(iplon,:,nlay) = 0.0_r8
+         reicmc(iplon,nlay) = 0.0_r8
+         dgesmc(iplon,nlay) = 0.0_r8
+         relqmc(iplon,nlay) = 0.0_r8
+         taua(iplon,nlay,:) = 0.0_r8
       endif
+    enddo 
         END SUBROUTINE inatm
     END MODULE rrtmg_lw_rad
