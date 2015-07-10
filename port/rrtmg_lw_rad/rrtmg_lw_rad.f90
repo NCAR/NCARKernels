@@ -269,21 +269,21 @@
             INTEGER :: k ! layer loop index
             INTEGER :: ig ! g-point loop index
             ! Atmosphere
-            REAL(KIND=r8) :: pavel(nlay) ! layer pressures (mb)
-            REAL(KIND=r8) :: tavel(nlay) ! layer temperatures (K)
-            REAL(KIND=r8) :: pz(0:nlay) ! level (interface) pressures (hPa, mb)
-            REAL(KIND=r8) :: tz(0:nlay) ! level (interface) temperatures (K)
-            REAL(KIND=r8) :: tbound ! surface temperature (K)
-            REAL(KIND=r8) :: coldry(nlay) ! dry air column density (mol/cm2)
-            REAL(KIND=r8) :: wbrodl(nlay) ! broadening gas column density (mol/cm2)
-            REAL(KIND=r8) :: wkl(mxmol,nlay) ! molecular amounts (mol/cm-2)
-            REAL(KIND=r8) :: wx(maxxsec,nlay) ! cross-section amounts (mol/cm-2)
-            REAL(KIND=r8) :: pwvcm ! precipitable water vapor (cm)
-            REAL(KIND=r8) :: semiss(nbndlw) ! lw surface emissivity
-            REAL(KIND=r8) :: fracs(nlay,ngptlw) !
-            REAL(KIND=r8) :: taug(nlay,ngptlw) ! gaseous optical depths
-            REAL(KIND=r8) :: taut(nlay,ngptlw) ! gaseous + aerosol optical depths
-            REAL(KIND=r8) :: taua(nlay,nbndlw) ! aerosol optical depth
+            REAL(KIND=r8) :: pavel(ncol,nlay) ! layer pressures (mb)
+            REAL(KIND=r8) :: tavel(ncol,nlay) ! layer temperatures (K)
+            REAL(KIND=r8) :: pz(ncol,0:nlay) ! level (interface) pressures (hPa, mb)
+            REAL(KIND=r8) :: tz(ncol,0:nlay) ! level (interface) temperatures (K)
+            REAL(KIND=r8) :: tbound(ncol) ! surface temperature (K)
+            REAL(KIND=r8) :: coldry(ncol,nlay) ! dry air column density (mol/cm2)
+            REAL(KIND=r8) :: wbrodl(ncol,nlay) ! broadening gas column density (mol/cm2)
+            REAL(KIND=r8) :: wkl(ncol,mxmol,nlay) ! molecular amounts (mol/cm-2)
+            REAL(KIND=r8) :: wx(ncol,maxxsec,nlay) ! cross-section amounts (mol/cm-2)
+            REAL(KIND=r8) :: pwvcm(ncol) ! precipitable water vapor (cm)
+            REAL(KIND=r8) :: semiss(ncol,nbndlw) ! lw surface emissivity
+            REAL(KIND=r8) :: fracs(ncol,nlay,ngptlw) !
+            REAL(KIND=r8) :: taug(ncol,nlay,ngptlw) ! gaseous optical depths
+            REAL(KIND=r8) :: taut(ncol,nlay,ngptlw) ! gaseous + aerosol optical depths
+            REAL(KIND=r8) :: taua(ncol,nlay,nbndlw) ! aerosol optical depth
             !      real(kind=r8) :: ssaa(nlay,nbndlw)        ! aerosol single scattering albedo
             !   for future expansion
             !   (lw aerosols/scattering not yet available)
@@ -291,60 +291,60 @@
             !   for future expansion
             !   (lw aerosols/scattering not yet available)
             ! Atmosphere - setcoef
-            INTEGER :: laytrop ! tropopause layer index
-            INTEGER :: jp(nlay) ! lookup table index
-            INTEGER :: jt(nlay) ! lookup table index
-            INTEGER :: jt1(nlay) ! lookup table index
-            REAL(KIND=r8) :: planklay(nlay,nbndlw) !
-            REAL(KIND=r8) :: planklev(0:nlay,nbndlw) !
-            REAL(KIND=r8) :: plankbnd(nbndlw) !
-            REAL(KIND=r8) :: colh2o(nlay) ! column amount (h2o)
-            REAL(KIND=r8) :: colco2(nlay) ! column amount (co2)
-            REAL(KIND=r8) :: colo3(nlay) ! column amount (o3)
-            REAL(KIND=r8) :: coln2o(nlay) ! column amount (n2o)
-            REAL(KIND=r8) :: colco(nlay) ! column amount (co)
-            REAL(KIND=r8) :: colch4(nlay) ! column amount (ch4)
-            REAL(KIND=r8) :: colo2(nlay) ! column amount (o2)
-            REAL(KIND=r8) :: colbrd(nlay) ! column amount (broadening gases)
-            INTEGER :: indself(nlay)
-            INTEGER :: indfor(nlay)
-            REAL(KIND=r8) :: selffac(nlay)
-            REAL(KIND=r8) :: selffrac(nlay)
-            REAL(KIND=r8) :: forfac(nlay)
-            REAL(KIND=r8) :: forfrac(nlay)
-            INTEGER :: indminor(nlay)
-            REAL(KIND=r8) :: minorfrac(nlay)
-            REAL(KIND=r8) :: scaleminor(nlay)
-            REAL(KIND=r8) :: scaleminorn2(nlay)
-            REAL(KIND=r8) :: fac01(nlay)
-            REAL(KIND=r8) :: fac10(nlay)
-            REAL(KIND=r8) :: fac11(nlay)
-            REAL(KIND=r8) :: fac00(nlay) !
-            REAL(KIND=r8) :: rat_o3co2_1(nlay)
-            REAL(KIND=r8) :: rat_o3co2(nlay)
-            REAL(KIND=r8) :: rat_h2och4(nlay)
-            REAL(KIND=r8) :: rat_h2oo3(nlay)
-            REAL(KIND=r8) :: rat_h2och4_1(nlay)
-            REAL(KIND=r8) :: rat_h2oo3_1(nlay)
-            REAL(KIND=r8) :: rat_h2oco2(nlay)
-            REAL(KIND=r8) :: rat_n2oco2(nlay)
-            REAL(KIND=r8) :: rat_h2on2o(nlay)
-            REAL(KIND=r8) :: rat_n2oco2_1(nlay)
-            REAL(KIND=r8) :: rat_h2oco2_1(nlay)
-            REAL(KIND=r8) :: rat_h2on2o_1(nlay) !
+            INTEGER :: laytrop(ncol) ! tropopause layer index
+            INTEGER :: jp(ncol,nlay) ! lookup table index
+            INTEGER :: jt(ncol,nlay) ! lookup table index
+            INTEGER :: jt1(ncol,nlay) ! lookup table index
+            REAL(KIND=r8) :: planklay(ncol,nlay,nbndlw) !
+            REAL(KIND=r8) :: planklev(ncol,0:nlay,nbndlw) !
+            REAL(KIND=r8) :: plankbnd(ncol,nbndlw) !
+            REAL(KIND=r8) :: colh2o(ncol,nlay) ! column amount (h2o)
+            REAL(KIND=r8) :: colco2(ncol,nlay) ! column amount (co2)
+            REAL(KIND=r8) :: colo3(ncol,nlay) ! column amount (o3)
+            REAL(KIND=r8) :: coln2o(ncol,nlay) ! column amount (n2o)
+            REAL(KIND=r8) :: colco(ncol,nlay) ! column amount (co)
+            REAL(KIND=r8) :: colch4(ncol,nlay) ! column amount (ch4)
+            REAL(KIND=r8) :: colo2(ncol,nlay) ! column amount (o2)
+            REAL(KIND=r8) :: colbrd(ncol,nlay) ! column amount (broadening gases)
+            INTEGER :: indself(ncol,nlay)
+            INTEGER :: indfor(ncol,nlay)
+            REAL(KIND=r8) :: selffac(ncol,nlay)
+            REAL(KIND=r8) :: selffrac(ncol,nlay)
+            REAL(KIND=r8) :: forfac(ncol,nlay)
+            REAL(KIND=r8) :: forfrac(ncol,nlay)
+            INTEGER :: indminor(ncol,nlay)
+            REAL(KIND=r8) :: minorfrac(ncol,nlay)
+            REAL(KIND=r8) :: scaleminor(ncol,nlay)
+            REAL(KIND=r8) :: scaleminorn2(ncol,nlay)
+            REAL(KIND=r8) :: fac01(ncol,nlay)
+            REAL(KIND=r8) :: fac10(ncol,nlay)
+            REAL(KIND=r8) :: fac11(ncol,nlay)
+            REAL(KIND=r8) :: fac00(ncol,nlay) !
+            REAL(KIND=r8) :: rat_o3co2_1(ncol,nlay)
+            REAL(KIND=r8) :: rat_o3co2(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2och4(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2oo3(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2och4_1(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2oo3_1(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2oco2(ncol,nlay)
+            REAL(KIND=r8) :: rat_n2oco2(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2on2o(ncol,nlay)
+            REAL(KIND=r8) :: rat_n2oco2_1(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2oco2_1(ncol,nlay)
+            REAL(KIND=r8) :: rat_h2on2o_1(ncol,nlay) !
             ! Atmosphere/clouds - cldprop
-            INTEGER :: ncbands ! number of cloud spectral bands
-            INTEGER :: inflag ! flag for cloud property method
-            INTEGER :: iceflag ! flag for ice cloud properties
-            INTEGER :: liqflag ! flag for liquid cloud properties
+            INTEGER :: ncbands(ncol) ! number of cloud spectral bands
+            INTEGER :: inflag(ncol) ! flag for cloud property method
+            INTEGER :: iceflag(ncol) ! flag for ice cloud properties
+            INTEGER :: liqflag(ncol) ! flag for liquid cloud properties
             ! Atmosphere/clouds - cldprmc [mcica]
-            REAL(KIND=r8) :: cldfmc(ngptlw,nlay) ! cloud fraction [mcica]
-            REAL(KIND=r8) :: ciwpmc(ngptlw,nlay) ! cloud ice water path [mcica]
-            REAL(KIND=r8) :: clwpmc(ngptlw,nlay) ! cloud liquid water path [mcica]
-            REAL(KIND=r8) :: relqmc(nlay) ! liquid particle size (microns)
-            REAL(KIND=r8) :: reicmc(nlay) ! ice particle effective radius (microns)
-            REAL(KIND=r8) :: dgesmc(nlay) ! ice particle generalized effective size (microns)
-            REAL(KIND=r8) :: taucmc(ngptlw,nlay) ! cloud optical depth [mcica]
+            REAL(KIND=r8) :: cldfmc(ncol,ngptlw,nlay) ! cloud fraction [mcica]
+            REAL(KIND=r8) :: ciwpmc(ncol,ngptlw,nlay) ! cloud ice water path [mcica]
+            REAL(KIND=r8) :: clwpmc(ncol,ngptlw,nlay) ! cloud liquid water path [mcica]
+            REAL(KIND=r8) :: relqmc(ncol,nlay) ! liquid particle size (microns)
+            REAL(KIND=r8) :: reicmc(ncol,nlay) ! ice particle effective radius (microns)
+            REAL(KIND=r8) :: dgesmc(ncol,nlay) ! ice particle generalized effective size (microns)
+            REAL(KIND=r8) :: taucmc(ncol,ngptlw,nlay) ! cloud optical depth [mcica]
             !      real(kind=r8) :: ssacmc(ngptlw,nlay)     ! cloud single scattering albedo [mcica]
             !   for future expansion
             !   (lw scattering not yet available)
@@ -352,16 +352,16 @@
             !   for future expansion
             !   (lw scattering not yet available)
             ! Output
-            REAL(KIND=r8) :: totuflux(0:nlay) ! upward longwave flux (w/m2)
-            REAL(KIND=r8) :: totdflux(0:nlay) ! downward longwave flux (w/m2)
-            REAL(KIND=r8) :: totufluxs(nbndlw,0:nlay) ! upward longwave flux spectral (w/m2)
-            REAL(KIND=r8) :: totdfluxs(nbndlw,0:nlay) ! downward longwave flux spectral (w/m2)
-            REAL(KIND=r8) :: fnet(0:nlay) ! net longwave flux (w/m2)
-            REAL(KIND=r8) :: htr(0:nlay) ! longwave heating rate (k/day)
-            REAL(KIND=r8) :: totuclfl(0:nlay) ! clear sky upward longwave flux (w/m2)
-            REAL(KIND=r8) :: totdclfl(0:nlay) ! clear sky downward longwave flux (w/m2)
-            REAL(KIND=r8) :: fnetc(0:nlay) ! clear sky net longwave flux (w/m2)
-            REAL(KIND=r8) :: htrc(0:nlay) ! clear sky longwave heating rate (k/day)
+            REAL(KIND=r8) :: totuflux(ncol,0:nlay) ! upward longwave flux (w/m2)
+            REAL(KIND=r8) :: totdflux(ncol,0:nlay) ! downward longwave flux (w/m2)
+            REAL(KIND=r8) :: totufluxs(ncol,nbndlw,0:nlay) ! upward longwave flux spectral (w/m2)
+            REAL(KIND=r8) :: totdfluxs(ncol,nbndlw,0:nlay) ! downward longwave flux spectral (w/m2)
+            REAL(KIND=r8) :: fnet(ncol,0:nlay) ! net longwave flux (w/m2)
+            REAL(KIND=r8) :: htr(ncol,0:nlay) ! longwave heating rate (k/day)
+            REAL(KIND=r8) :: totuclfl(ncol,0:nlay) ! clear sky upward longwave flux (w/m2)
+            REAL(KIND=r8) :: totdclfl(ncol,0:nlay) ! clear sky downward longwave flux (w/m2)
+            REAL(KIND=r8) :: fnetc(ncol,0:nlay) ! clear sky net longwave flux (w/m2)
+            REAL(KIND=r8) :: htrc(ncol,0:nlay) ! clear sky longwave heating rate (k/day)
             ! Initializations
       oneminus = 1._r8 - 1.e-6_r8
       pi = 2._r8 * asin(1._r8)
@@ -384,7 +384,7 @@
             ! iaer = 0, no aerosols
             ! iaer = 10, input total aerosol optical depth (tauaer) directly
       iaer = 10
-            ! Call model and data initialization, compute lookup tables, perform
+            !Call model and data initialization, compute lookup tables, perform
             ! reduction of g-points from 256 to 140 for input absorption coefficient
             ! data and other arrays.
             !
@@ -400,53 +400,61 @@
               o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
               cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
               cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
-              pavel, pz, tavel, tz, tbound, semiss, coldry, &
-              wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
-              cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
+              pavel(iplon,:), pz(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), coldry(iplon,:), &
+              wkl(iplon,:,:), wbrodl(iplon,:), wx(iplon,:,:), pwvcm(iplon), inflag(iplon), iceflag(iplon), liqflag(iplon), &
+              cldfmc(iplon,:,:), taucmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), taua(iplon,:,:))
+      end do       
+      do iplon = 1, ncol
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
                 !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
                 !  effective radius must be passed into cldprop.  Cloud fraction and cloud
                 !  optical depth are transferred to rrtmg_lw arrays in cldprop.
-         call cldprmc(nlay, inflag, iceflag, liqflag, cldfmc, ciwpmc, &
-                      clwpmc, reicmc, dgesmc, relqmc, ncbands, taucmc)
+         call cldprmc(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), ciwpmc(iplon,:,:), &
+                      clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), ncbands(iplon), taucmc(iplon,:,:))
                 ! Calculate information needed by the radiative transfer routine
                 ! that is specific to this atmosphere, especially some of the
                 ! coefficients and indices needed to compute the optical depths
                 ! by interpolating data from stored reference atmospheres.
-         call setcoef(nlay, istart, pavel, tavel, tz, tbound, semiss, &
-                      coldry, wkl, wbrodl, &
-                      laytrop, jp, jt, jt1, planklay, planklev, plankbnd, &
-                      colh2o, colco2, colo3, coln2o, colco, colch4, colo2, &
-                      colbrd, fac00, fac01, fac10, fac11, &
-                      rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, &
-                      rat_h2on2o, rat_h2on2o_1, rat_h2och4, rat_h2och4_1, &
-                      rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, &
-                      selffac, selffrac, indself, forfac, forfrac, indfor, &
-                      minorfrac, scaleminor, scaleminorn2, indminor)
+      end do       
+      do iplon = 1, ncol
+         call setcoef(nlay, istart, pavel(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), &
+                      coldry(iplon,:), wkl(iplon,:,:), wbrodl(iplon,:), &
+                      laytrop(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
+                      colh2o(iplon,:), colco2(iplon,:), colo3(iplon,:), coln2o(iplon,:), colco(iplon,:), colch4(iplon,:), colo2(iplon,:), &
+                      colbrd(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+                      rat_h2oco2(iplon,:), rat_h2oco2_1(iplon,:), rat_h2oo3(iplon,:), rat_h2oo3_1(iplon,:), &
+                      rat_h2on2o(iplon,:), rat_h2on2o_1(iplon,:), rat_h2och4(iplon,:), rat_h2och4_1(iplon,:), &
+                      rat_n2oco2(iplon,:), rat_n2oco2_1(iplon,:), rat_o3co2(iplon,:), rat_o3co2_1(iplon,:), &
+                      selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:), &
+                      minorfrac(iplon,:), scaleminor(iplon,:), scaleminorn2(iplon,:), indminor(iplon,:))
                 !  Calculate the gaseous optical depths and Planck fractions for
                 !  each longwave spectral band.
-         call taumol(nlay, pavel, wx, coldry, &
-                     laytrop, jp, jt, jt1, planklay, planklev, plankbnd, &
-                     colh2o, colco2, colo3, coln2o, colco, colch4, colo2, &
-                     colbrd, fac00, fac01, fac10, fac11, &
-                     rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, &
-                     rat_h2on2o, rat_h2on2o_1, rat_h2och4, rat_h2och4_1, &
-                     rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, &
-                     selffac, selffrac, indself, forfac, forfrac, indfor, &
-                     minorfrac, scaleminor, scaleminorn2, indminor, &
-                     fracs, taug)
+      end do       
+      do iplon = 1, ncol
+         call taumol(nlay, pavel(iplon,:), wx(iplon,:,:), coldry(iplon,:), &
+                     laytrop(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
+                     colh2o(iplon,:), colco2(iplon,:), colo3(iplon,:), coln2o(iplon,:), colco(iplon,:), colch4(iplon,:), colo2(iplon,:), &
+                     colbrd(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+                     rat_h2oco2(iplon,:), rat_h2oco2_1(iplon,:), rat_h2oo3(iplon,:), rat_h2oo3_1(iplon,:), &
+                     rat_h2on2o(iplon,:), rat_h2on2o_1(iplon,:), rat_h2och4(iplon,:), rat_h2och4_1(iplon,:), &
+                     rat_n2oco2(iplon,:), rat_n2oco2_1(iplon,:), rat_o3co2(iplon,:), rat_o3co2_1(iplon,:), &
+                     selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:), &
+                     minorfrac(iplon,:), scaleminor(iplon,:), scaleminorn2(iplon,:), indminor(iplon,:), &
+                     fracs(iplon,:,:), taug(iplon,:,:))
                 ! Combine gaseous and aerosol optical depths, if aerosol active
+      end do       
+      do iplon = 1, ncol
          if (iaer .eq. 0) then
             do k = 1, nlay
                do ig = 1, ngptlw 
-                  taut(k,ig) = taug(k,ig)
+                  taut(iplon,k,ig) = taug(iplon,k,ig)
                enddo
             enddo
          elseif (iaer .eq. 10) then
             do k = 1, nlay
                do ig = 1, ngptlw 
-                  taut(k,ig) = taug(k,ig) + taua(k,ngb(ig))
+                  taut(iplon,k,ig) = taug(iplon,k,ig) + taua(iplon,k,ngb(ig))
                enddo
             enddo
          endif
@@ -455,24 +463,24 @@
                 ! are present, then select routine based on cloud overlap assumption
                 ! to be used.  Clear sky calculation is done simultaneously.
                 ! For McICA, RTRNMC is called for clear and cloudy calculations.
-         call rtrnmc(nlay, istart, iend, iout, pz, semiss, ncbands, &
-                     cldfmc, taucmc, planklay, planklev, plankbnd, &
-                     pwvcm, fracs, taut, &
-                     totuflux, totdflux, fnet, htr, &
-                     totuclfl, totdclfl, fnetc, htrc, totufluxs, totdfluxs )
+         call rtrnmc(nlay, istart, iend, iout, pz(iplon,:), semiss(iplon,:), ncbands(iplon), &
+                     cldfmc(iplon,:,:), taucmc(iplon,:,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
+                     pwvcm(iplon), fracs(iplon,:,:), taut(iplon,:,:), &
+                     totuflux(iplon,:), totdflux(iplon,:), fnet(iplon,:), htr(iplon,:), &
+                     totuclfl(iplon,:), totdclfl(iplon,:), fnetc(iplon,:), htrc(iplon,:), totufluxs(iplon,:,:), totdfluxs(iplon,:,:) )
                 !  Transfer up and down fluxes and heating rate to output arrays.
                 !  Vertical indexing goes from bottom to top
          do k = 0, nlay
-            uflx(iplon,k+1) = totuflux(k)
-            dflx(iplon,k+1) = totdflux(k)
-            uflxc(iplon,k+1) = totuclfl(k)
-            dflxc(iplon,k+1) = totdclfl(k)
-            uflxs(:,iplon,k+1) = totufluxs(:,k)
-            dflxs(:,iplon,k+1) = totdfluxs(:,k)
+            uflx(iplon,k+1) = totuflux(iplon,k)
+            dflx(iplon,k+1) = totdflux(iplon,k)
+            uflxc(iplon,k+1) = totuclfl(iplon,k)
+            dflxc(iplon,k+1) = totdclfl(iplon,k)
+            uflxs(:,iplon,k+1) = totufluxs(iplon,:,k)
+            dflxs(:,iplon,k+1) = totdfluxs(iplon,:,k)
          enddo
          do k = 0, nlay-1
-            hr(iplon,k+1) = htr(k)
-            hrc(iplon,k+1) = htrc(k)
+            hr(iplon,k+1) = htr(iplon,k)
+            hrc(iplon,k+1) = htrc(iplon,k)
          enddo
       enddo
         END SUBROUTINE rrtmg_lw
