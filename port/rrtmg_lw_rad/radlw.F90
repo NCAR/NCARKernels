@@ -25,6 +25,8 @@
         IMPLICIT NONE
         PRIVATE
         PUBLIC rad_rrtmg_lw
+        integer, parameter :: maxiter = 100
+        character(len=80), parameter :: kname = "rrtmg_lw"
         ! Public methods
         ! initialize constants
         ! driver for longwave radiation code
@@ -172,7 +174,7 @@
             ! Set surface emissivity to 1.0 here, this is treated in land surface model;
             ! Set surface temperature
             ! Set aerosol optical depth to zero for now
-            tolerance = 1.E-14
+            tolerance = 5.E-13
             CALL kgen_init_check(check_status, tolerance)
             READ(UNIT=kgen_unit) inflglw
             READ(UNIT=kgen_unit) iceflglw
@@ -208,6 +210,8 @@
 
 
             ! call to kernel
+   print *,'lchnk: ',lchnk
+   print *,'ncol: ',ncol
    call rrtmg_lw(lchnk  ,ncol ,rrtmg_levs    ,icld    ,                 &
         r_state%pmidmb  ,r_state%pintmb  ,r_state%tlay    ,r_state%tlev    ,tsfc    ,r_state%h2ovmr, &
         r_state%o3vmr   ,r_state%co2vmr  ,r_state%ch4vmr  ,r_state%o2vmr   ,r_state%n2ovmr  ,r_state%cfc11vmr,r_state%cfc12vmr, &
@@ -228,12 +232,13 @@
             CALL kgen_verify_real_r8_dim3( "lwdflxs", check_status, lwdflxs, ref_lwdflxs)
             CALL kgen_print_check("rrtmg_lw", check_status)
             CALL system_clock(start_clock, rate_clock)
-            DO kgen_intvar=1,10
+            DO kgen_intvar=1,maxiter
                 CALL rrtmg_lw(lchnk, ncol, rrtmg_levs, icld, r_state % pmidmb, r_state % pintmb, r_state % tlay, r_state % tlev, tsfc, r_state % h2ovmr, r_state % o3vmr, r_state % co2vmr, r_state % ch4vmr, r_state % o2vmr, r_state % n2ovmr, r_state % cfc11vmr, r_state % cfc12vmr, r_state % cfc22vmr, r_state % ccl4vmr, emis, inflglw, iceflglw, liqflglw, cld_stolw, tauc_stolw, cicewp_stolw, cliqwp_stolw, rei, rel, taua_lw, uflx, dflx, hr, uflxc, dflxc, hrc, lwuflxs, lwdflxs)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            PRINT *, TRIM(kname), ": Total time (secs): ", (stop_clock - start_clock)/REAL(rate_clock)
+            PRINT *, TRIM(kname), ": Elapsed time (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
             !
             !----------------------------------------------------------------------
             ! All longitudes: store history tape quantities
