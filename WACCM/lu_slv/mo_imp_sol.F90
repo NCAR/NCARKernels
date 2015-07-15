@@ -35,12 +35,14 @@
             USE chem_mods, ONLY: nzcnt
             USE chem_mods, only : clscnt4
             USE mo_lu_solve, ONLY: lu_slv
+            USE mo_lu_solve_vec, ONLY: lu_slv_vec
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100
+            integer*4, parameter :: veclen=12
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             ! columns in chunck
@@ -55,8 +57,12 @@
             ! ... local variables
             !-----------------------------------------------------------------------
             REAL(KIND=r8) :: sys_jac(max(1,nzcnt))
+            REAL(KIND=r8) :: sys_jac_vec(veclen,max(1,nzcnt))
             REAL(KIND=r8), dimension(max(1,clscnt4)) :: forcing
+            REAL(KIND=r8), dimension(veclen,max(1,clscnt4)) :: forcing_vec
+!dir$ attributes align : 64 :: forcing_vec
             REAL(KIND=r8) :: ref_forcing(max(1,clscnt4))
+            integer :: i
             !-----------------------------------------------------------------------
             ! ... class independent forcing
             !-----------------------------------------------------------------------
@@ -69,18 +75,34 @@
 
 
                             ! call to kernel
-                call lu_slv( sys_jac, forcing )
+                            call lu_slv( sys_jac, forcing )
+
                             ! kernel verification for output variables
                             CALL kgen_verify_real_r8_dim1( "forcing", check_status, forcing, ref_forcing)
                             CALL kgen_print_check("lu_slv", check_status)
+
                             CALL system_clock(start_clock, rate_clock)
                             DO kgen_intvar=1,maxiter
                                 CALL lu_slv(sys_jac, forcing)
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
+
                             WRITE(*,*)
                             PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
-                            PRINT *, "Time per lu_slv call (usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+                            PRINT *, "veclen: 1 Time per lu_slv call (usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+
+                            do i=1,veclen
+                               sys_jac_vec(i,:)=sys_jac(:)
+                               forcing_vec(i,:)=forcing(:)
+                            enddo
+                            CALL system_clock(start_clock, rate_clock)
+                            DO kgen_intvar=1,maxiter
+                                CALL lu_slv_vec(veclen,sys_jac_vec, forcing_vec)
+                            END DO
+                            CALL system_clock(stop_clock, rate_clock)
+
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv call (usec): ', (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv per linear system (usec): ', (stop_clock - start_clock)*1e6/REAL(veclen*rate_clock*maxiter)
             !
             !
         CONTAINS
