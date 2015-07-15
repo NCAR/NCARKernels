@@ -17,6 +17,7 @@
         ! No subroutines
         ! No module extern variables
 
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv01_vec
         SUBROUTINE lu_slv01_vec(ncol,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -26,8 +27,6 @@
             integer :: ncol
             REAL(KIND=r8), intent(in) :: lu(:,:)
             REAL(KIND=r8), intent(inout) :: b(:,:)
-!DIR ASSUME_ALIGNED lu:64
-!DIR ASSUME_ALIGNED b:64
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -35,7 +34,10 @@
             !-----------------------------------------------------------------------
             ! ... solve L * y = b
             !-----------------------------------------------------------------------
-!dir$ vector aligned
+!DIR$ ASSUME_ALIGNED lu:64
+!DIR$ ASSUME_ALIGNED b:64
+!JMD !dir$ vector aligned
+!DIR$ noprefetch b, lu
        do i=1,ncol
          b(i,125) = b(i,125) - lu(i,18) * b(i,17)
          b(i,131) = b(i,131) - lu(i,19) * b(i,17)
@@ -247,6 +249,7 @@
         enddo
         END SUBROUTINE lu_slv01_vec
 
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv02_vec
         SUBROUTINE lu_slv02_vec(ncol,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -263,14 +266,21 @@
             !-----------------------------------------------------------------------
             ! ... solve L * y = b
             !-----------------------------------------------------------------------
+!DIR$ ASSUME_ALIGNED lu:64
+!DIR$ ASSUME_ALIGNED b:64
+!dir$ vector aligned
+!DIR$ noprefetch b, lu
        do i=1,ncol
-         b(i,84) = b(i,84) - lu(i,281) * b(i,70)
+         b(i,84) =   b(i,84) - lu(i,281) * b(i,70)
          b(i,118) = b(i,118) - lu(i,282) * b(i,70)
          b(i,121) = b(i,121) - lu(i,283) * b(i,70)
          b(i,128) = b(i,128) - lu(i,284) * b(i,70)
          b(i,130) = b(i,130) - lu(i,285) * b(i,70)
          b(i,132) = b(i,132) - lu(i,286) * b(i,70)
          b(i,133) = b(i,133) - lu(i,287) * b(i,70)
+       enddo
+!dir$ vector aligned
+       do i=1,ncol
          b(i,105) = b(i,105) - lu(i,289) * b(i,71)
          b(i,114) = b(i,114) - lu(i,290) * b(i,71)
          b(i,125) = b(i,125) - lu(i,291) * b(i,71)

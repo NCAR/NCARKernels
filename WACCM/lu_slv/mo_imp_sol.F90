@@ -41,7 +41,7 @@
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
-            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=500
             integer*4, parameter :: veclen=12
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
