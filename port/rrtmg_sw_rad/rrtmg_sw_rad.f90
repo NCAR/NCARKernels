@@ -502,21 +502,21 @@
          icpr = 1
                 ! Calculate coefficients for the temperature and pressure dependence of the
                 ! molecular absorption coefficients by interpolating data from stored
-         !call setcoef_sw(ncol,nlay, pavel, tavel, pz, tz, tbound, coldry, wkl, &
-         !                laytrop, layswtch, laylow, jp, jt, jt1, &
-         !                co2mult, colch4, colco2, colh2o, colmol, coln2o, &
-         !                colo2, colo3, fac00, fac01, fac10, fac11, &
-         !                selffac, selffrac, indself, forfac, forfrac, indfor)
-       do iplon = 1, ncol         ! reference atmospheres.
-         call setcoef_sw(nlay, pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(iplon,:,:), &
-                         laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
-                         co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), &
-                         colo2(iplon,:), colo3(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
-                         selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:))
+         call setcoef_sw(ncol,nlay, pavel, tavel, pz, tz, tbound, coldry, wkl, &
+                         laytrop, layswtch, laylow, jp, jt, jt1, &
+                         co2mult, colch4, colco2, colh2o, colmol, coln2o, &
+                         colo2, colo3, fac00, fac01, fac10, fac11, &
+                         selffac, selffrac, indself, forfac, forfrac, indfor)
+       !do iplon = 1, ncol         ! reference atmospheres.
+        ! call setcoef_sw(nlay, pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(iplon,:,:), &
+         !                laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
+         !                co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), &
+         !                colo2(iplon,:), colo3(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+         !                selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:))
+        !end do
                 ! Cosine of the solar zenith angle
                 !  Prevent using value of zero; ideally, SW model is not called from host model when sun
                 !  is below horizon
-        end do
        do iplon = 1, ncol
          cossza = coszen(iplon)
          if (cossza .lt. zepzen) cossza = zepzen
