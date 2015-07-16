@@ -41,8 +41,8 @@
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
-            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=500
-            integer*4, parameter :: veclen=12
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100000
+            integer*4, parameter :: veclen=8
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             ! columns in chunck
@@ -97,7 +97,7 @@
                             enddo
                             CALL system_clock(start_clock, rate_clock)
                             DO kgen_intvar=1,maxiter
-                                CALL lu_slv_vec(veclen,sys_jac_vec, forcing_vec)
+                                CALL lu_slv_vec(veclen,max(1,clscnt4),max(1,nzcnt),sys_jac_vec, forcing_vec)
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
 
