@@ -304,54 +304,54 @@
             REAL(KIND=r8) :: zepzen ! epsilon
             REAL(KIND=r8) :: zdpgcp ! flux to heating conversion ratio
             ! Atmosphere
-            REAL(KIND=r8) :: pavel(nlay) ! layer pressures (mb)
-            REAL(KIND=r8) :: tavel(nlay) ! layer temperatures (K)
-            REAL(KIND=r8) :: pz(0:nlay) ! level (interface) pressures (hPa, mb)
-            REAL(KIND=r8) :: tz(0:nlay) ! level (interface) temperatures (K)
-            REAL(KIND=r8) :: tbound ! surface temperature (K)
-            REAL(KIND=r8) :: pdp(nlay) ! layer pressure thickness (hPa, mb)
-            REAL(KIND=r8) :: coldry(nlay) ! dry air column amount
-            REAL(KIND=r8) :: wkl(mxmol,nlay) ! molecular amounts (mol/cm-2)
+            REAL(KIND=r8) :: pavel(ncol,nlay) ! layer pressures (mb)
+            REAL(KIND=r8) :: tavel(ncol,nlay) ! layer temperatures (K)
+            REAL(KIND=r8) :: pz(ncol,0:nlay) ! level (interface) pressures (hPa, mb)
+            REAL(KIND=r8) :: tz(ncol,0:nlay) ! level (interface) temperatures (K)
+            REAL(KIND=r8) :: tbound(ncol) ! surface temperature (K)
+            REAL(KIND=r8) :: pdp(ncol,nlay) ! layer pressure thickness (hPa, mb)
+            REAL(KIND=r8) :: coldry(ncol,nlay) ! dry air column amount
+            REAL(KIND=r8) :: wkl(ncol,mxmol,nlay) ! molecular amounts (mol/cm-2)
             !      real(kind=r8) :: earth_sun               ! function for Earth/Sun distance factor
             REAL(KIND=r8) :: cossza ! Cosine of solar zenith angle
-            REAL(KIND=r8) :: adjflux(jpband) ! adjustment for current Earth/Sun distance
+            REAL(KIND=r8) :: adjflux(ncol,jpband) ! adjustment for current Earth/Sun distance
             !      real(kind=r8) :: solvar(jpband)           ! solar constant scaling factor from rrtmg_sw
             !  default value of 1368.22 Wm-2 at 1 AU
             REAL(KIND=r8) :: albdir(nbndsw) ! surface albedo, direct          ! zalbp
             REAL(KIND=r8) :: albdif(nbndsw) ! surface albedo, diffuse         ! zalbd
-            REAL(KIND=r8) :: taua(nlay,nbndsw) ! Aerosol optical depth
-            REAL(KIND=r8) :: ssaa(nlay,nbndsw) ! Aerosol single scattering albedo
-            REAL(KIND=r8) :: asma(nlay,nbndsw) ! Aerosol asymmetry parameter
+            REAL(KIND=r8) :: taua(ncol,nlay,nbndsw) ! Aerosol optical depth
+            REAL(KIND=r8) :: ssaa(ncol,nlay,nbndsw) ! Aerosol single scattering albedo
+            REAL(KIND=r8) :: asma(ncol,nlay,nbndsw) ! Aerosol asymmetry parameter
             ! Atmosphere - setcoef
-            INTEGER :: laytrop ! tropopause layer index
-            INTEGER :: layswtch !
-            INTEGER :: laylow !
-            INTEGER :: jp(nlay) !
-            INTEGER :: jt(nlay) !
-            INTEGER :: jt1(nlay) !
-            REAL(KIND=r8) :: colh2o(nlay) ! column amount (h2o)
-            REAL(KIND=r8) :: colco2(nlay) ! column amount (co2)
-            REAL(KIND=r8) :: colo3(nlay) ! column amount (o3)
-            REAL(KIND=r8) :: coln2o(nlay) ! column amount (n2o)
-            REAL(KIND=r8) :: colch4(nlay) ! column amount (ch4)
-            REAL(KIND=r8) :: colo2(nlay) ! column amount (o2)
-            REAL(KIND=r8) :: colmol(nlay) ! column amount
-            REAL(KIND=r8) :: co2mult(nlay) ! column amount
-            INTEGER :: indself(nlay)
-            INTEGER :: indfor(nlay)
-            REAL(KIND=r8) :: selffac(nlay)
-            REAL(KIND=r8) :: selffrac(nlay)
-            REAL(KIND=r8) :: forfac(nlay)
-            REAL(KIND=r8) :: forfrac(nlay)
-            REAL(KIND=r8) :: fac00(nlay)
-            REAL(KIND=r8) :: fac01(nlay)
-            REAL(KIND=r8) :: fac11(nlay)
-            REAL(KIND=r8) :: fac10(nlay) !
+            INTEGER :: laytrop(ncol) ! tropopause layer index
+            INTEGER :: layswtch(ncol) !
+            INTEGER :: laylow(ncol) !
+            INTEGER :: jp(ncol,nlay) !
+            INTEGER :: jt(ncol,nlay) !
+            INTEGER :: jt1(ncol,nlay) !
+            REAL(KIND=r8) :: colh2o(ncol,nlay) ! column amount (h2o)
+            REAL(KIND=r8) :: colco2(ncol,nlay) ! column amount (co2)
+            REAL(KIND=r8) :: colo3(ncol,nlay) ! column amount (o3)
+            REAL(KIND=r8) :: coln2o(ncol,nlay) ! column amount (n2o)
+            REAL(KIND=r8) :: colch4(ncol,nlay) ! column amount (ch4)
+            REAL(KIND=r8) :: colo2(ncol,nlay) ! column amount (o2)
+            REAL(KIND=r8) :: colmol(ncol,nlay) ! column amount
+            REAL(KIND=r8) :: co2mult(ncol,nlay) ! column amount
+            INTEGER :: indself(ncol,nlay)
+            INTEGER :: indfor(ncol,nlay)
+            REAL(KIND=r8) :: selffac(ncol,nlay)
+            REAL(KIND=r8) :: selffrac(ncol,nlay)
+            REAL(KIND=r8) :: forfac(ncol,nlay)
+            REAL(KIND=r8) :: forfrac(ncol,nlay)
+            REAL(KIND=r8) :: fac00(ncol,nlay)
+            REAL(KIND=r8) :: fac01(ncol,nlay)
+            REAL(KIND=r8) :: fac11(ncol,nlay)
+            REAL(KIND=r8) :: fac10(ncol,nlay) !
             ! Atmosphere/clouds - cldprop
             ! number of cloud spectral bands
-            INTEGER :: inflag ! flag for cloud property method
-            INTEGER :: iceflag ! flag for ice cloud properties
-            INTEGER :: liqflag ! flag for liquid cloud properties
+            INTEGER :: inflag(ncol) ! flag for cloud property method
+            INTEGER :: iceflag(ncol) ! flag for ice cloud properties
+            INTEGER :: liqflag(ncol) ! flag for liquid cloud properties
             !      real(kind=r8) :: cldfrac(nlay)            ! layer cloud fraction
             !      real(kind=r8) :: tauc(nlay)               ! cloud optical depth (non-delta scaled)
             !      real(kind=r8) :: ssac(nlay)               ! cloud single scattering albedo (non-delta scaled)
@@ -365,17 +365,17 @@
             !      real(kind=r8) :: ssacloud(nlay,jpband)    ! cloud single scattering albedo
             !      real(kind=r8) :: asmcloud(nlay,jpband)    ! cloud asymmetry parameter
             ! Atmosphere/clouds - cldprmc [mcica]
-            REAL(KIND=r8) :: cldfmc(ngptsw,nlay) ! cloud fraction [mcica]
-            REAL(KIND=r8) :: ciwpmc(ngptsw,nlay) ! cloud ice water path [mcica]
-            REAL(KIND=r8) :: clwpmc(ngptsw,nlay) ! cloud liquid water path [mcica]
-            REAL(KIND=r8) :: relqmc(nlay) ! liquid particle size (microns)
-            REAL(KIND=r8) :: reicmc(nlay) ! ice particle effective radius (microns)
-            REAL(KIND=r8) :: dgesmc(nlay) ! ice particle generalized effective size (microns)
-            REAL(KIND=r8) :: taucmc(ngptsw,nlay) ! cloud optical depth [mcica]
+            REAL(KIND=r8) :: cldfmc(ncol,ngptsw,nlay) ! cloud fraction [mcica]
+            REAL(KIND=r8) :: ciwpmc(ncol,ngptsw,nlay) ! cloud ice water path [mcica]
+            REAL(KIND=r8) :: clwpmc(ncol,ngptsw,nlay) ! cloud liquid water path [mcica]
+            REAL(KIND=r8) :: relqmc(ncol,nlay) ! liquid particle size (microns)
+            REAL(KIND=r8) :: reicmc(ncol,nlay) ! ice particle effective radius (microns)
+            REAL(KIND=r8) :: dgesmc(ncol,nlay) ! ice particle generalized effective size (microns)
+            REAL(KIND=r8) :: taucmc(ncol,ngptsw,nlay) ! cloud optical depth [mcica]
             REAL(KIND=r8) :: taormc(ngptsw,nlay) ! unscaled cloud optical depth [mcica]
-            REAL(KIND=r8) :: ssacmc(ngptsw,nlay) ! cloud single scattering albedo [mcica]
-            REAL(KIND=r8) :: asmcmc(ngptsw,nlay) ! cloud asymmetry parameter [mcica]
-            REAL(KIND=r8) :: fsfcmc(ngptsw,nlay) ! cloud forward scattering fraction [mcica]
+            REAL(KIND=r8) :: ssacmc(ncol,ngptsw,nlay) ! cloud single scattering albedo [mcica]
+            REAL(KIND=r8) :: asmcmc(ncol,ngptsw,nlay) ! cloud asymmetry parameter [mcica]
+            REAL(KIND=r8) :: fsfcmc(ncol,ngptsw,nlay) ! cloud forward scattering fraction [mcica]
             ! Atmosphere/clouds/aerosol - spcvrt,spcvmc
             ! cloud optical depth
             ! unscaled cloud optical depth
@@ -484,30 +484,40 @@
               inflgsw, iceflgsw, liqflgsw, &
               cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, &
               reicmcl, relqmcl, tauaer, ssaaer, asmaer, &
-              pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, &
-              adjflux, inflag, iceflag, liqflag, cldfmc, taucmc, &
-              ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, &
-              taua, ssaa, asma)
+              pavel(iplon,:), pz(iplon,:), pdp(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(iplon,:,:), &
+              adjflux(iplon,:), inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), taucmc(iplon,:,:), &
+              ssacmc(iplon,:,:), asmcmc(iplon,:,:), fsfcmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), &
+              taua(iplon,:,:), ssaa(iplon,:,:), asma(iplon,:,:))
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
                 !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
                 !  effective radius must be passed in cldprop.  Cloud fraction and cloud
                 !  optical properties are transferred to rrtmg_sw arrays in cldprop.
-         call cldprmc_sw(nlay, inflag, iceflag, liqflag, cldfmc, &
-                         ciwpmc, clwpmc, reicmc, dgesmc, relqmc, &
-                         taormc, taucmc, ssacmc, asmcmc, fsfcmc)
+       end do
+       do iplon = 1, ncol
+         call cldprmc_sw(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), &
+                         ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), &
+                         taormc, taucmc(iplon,:,:), ssacmc(iplon,:,:), asmcmc(iplon,:,:), fsfcmc(iplon,:,:))
+       end do
          icpr = 1
                 ! Calculate coefficients for the temperature and pressure dependence of the
                 ! molecular absorption coefficients by interpolating data from stored
-                ! reference atmospheres.
-         call setcoef_sw(nlay, pavel, tavel, pz, tz, tbound, coldry, wkl, &
-                         laytrop, layswtch, laylow, jp, jt, jt1, &
-                         co2mult, colch4, colco2, colh2o, colmol, coln2o, &
-                         colo2, colo3, fac00, fac01, fac10, fac11, &
-                         selffac, selffrac, indself, forfac, forfrac, indfor)
+         !call setcoef_sw(ncol,nlay, pavel, tavel, pz, tz, tbound, coldry, wkl, &
+         !                laytrop, layswtch, laylow, jp, jt, jt1, &
+         !                co2mult, colch4, colco2, colh2o, colmol, coln2o, &
+         !                colo2, colo3, fac00, fac01, fac10, fac11, &
+         !                selffac, selffrac, indself, forfac, forfrac, indfor)
+       do iplon = 1, ncol         ! reference atmospheres.
+         call setcoef_sw(nlay, pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(iplon,:,:), &
+                         laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
+                         co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), &
+                         colo2(iplon,:), colo3(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+                         selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:))
                 ! Cosine of the solar zenith angle
                 !  Prevent using value of zero; ideally, SW model is not called from host model when sun
                 !  is below horizon
+        end do
+       do iplon = 1, ncol
          cossza = coszen(iplon)
          if (cossza .lt. zepzen) cossza = zepzen
                 ! Transfer albedo, cloud and aerosol properties into arrays for 2-stream radiative transfer
@@ -539,11 +549,11 @@
          elseif (icld.ge.1) then
             do i=1,nlay
                do ig=1,ngptsw
-                  zcldfmc(i,ig) = cldfmc(ig,i)
-                  ztaucmc(i,ig) = taucmc(ig,i)
+                  zcldfmc(i,ig) = cldfmc(iplon,ig,i)
+                  ztaucmc(i,ig) = taucmc(iplon,ig,i)
                   ztaormc(i,ig) = taormc(ig,i)
-                  zasycmc(i,ig) = asmcmc(ig,i)
-                  zomgcmc(i,ig) = ssacmc(ig,i)
+                  zasycmc(i,ig) = asmcmc(iplon,ig,i)
+                  zomgcmc(i,ig) = ssacmc(iplon,ig,i)
                enddo
             enddo
          endif   
@@ -586,9 +596,9 @@
          elseif (iaer.eq.10) then
             do i = 1 ,nlay
                do ib = 1 ,nbndsw
-                  ztaua(i,ib) = taua(i,ib)
-                  zasya(i,ib) = asma(i,ib)
-                  zomga(i,ib) = ssaa(i,ib)
+                  ztaua(i,ib) = taua(iplon,i,ib)
+                  zasya(i,ib) = asma(iplon,i,ib)
+                  zomga(i,ib) = ssaa(iplon,i,ib)
                enddo
             enddo
          endif
@@ -615,13 +625,13 @@
          enddo
          call spcvmc_sw &
              (lchnk, iplon, nlay, istart, iend, icpr, idelm, iout, &
-              pavel, tavel, pz, tz, tbound, albdif, albdir, &
+              pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), albdif, albdir, &
               zcldfmc, ztaucmc, zasycmc, zomgcmc, ztaormc, &
-              ztaua, zasya, zomga, cossza, coldry, wkl, adjflux, &	 
-              laytrop, layswtch, laylow, jp, jt, jt1, &
-              co2mult, colch4, colco2, colh2o, colmol, coln2o, colo2, colo3, &
-              fac00, fac01, fac10, fac11, &
-              selffac, selffrac, indself, forfac, forfrac, indfor, &
+              ztaua, zasya, zomga, cossza, coldry(iplon,:), wkl(iplon,:,:), adjflux(iplon,:), &	 
+              laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
+              co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), colo2(iplon,:), colo3(iplon,:), &
+              fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+              selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:), &
               zbbfd, zbbfu, zbbcd, zbbcu, zuvfd, zuvcd, znifd, znicd, znifu, znicu, &
               zbbfddir, zbbcddir, zuvfddir, zuvcddir, znifddir, znicddir, zbbfsu, zbbfsd)
                 ! Transfer up and down, clear and total sky fluxes to output arrays.
@@ -656,7 +666,7 @@
                 !  Total and clear sky heating rates
                 !  Heating units are in K/d. Flux units are in W/m2.
          do i = 1, nlay
-            zdpgcp = heatfac / pdp(i)
+            zdpgcp = heatfac / pdp(iplon,i)
             swhrc(iplon,i) = (swnflxc(i+1) - swnflxc(i)) * zdpgcp
             swhr(iplon,i) = (swnflx(i+1) - swnflx(i)) * zdpgcp
          enddo
