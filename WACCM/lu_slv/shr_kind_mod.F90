@@ -14,6 +14,7 @@
         !----------------------------------------------------------------------------
         PUBLIC
         INTEGER, parameter :: shr_kind_r8 = selected_real_kind(12) ! 8 byte real
+        integer,parameter :: SHR_KIND_R4 = selected_real_kind( 6) ! 4 byte real
         ! 4 byte real
         ! native real
         ! 8 byte integer

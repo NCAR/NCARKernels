@@ -9,10 +9,10 @@
 #undef DOINLINE
 
 
-    MODULE mo_lu_solve_vec
+    MODULE mo_lu_solve_vecr4
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
         PRIVATE
-        PUBLIC lu_slv_vec
+        PUBLIC lu_slv_vecr4
         CONTAINS
 
         ! write subroutines
@@ -25,15 +25,15 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv01_vec
 #endif
         SUBROUTINE lu_slv01_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol
             integer :: nz, nb
-            REAL(KIND=r8), intent(in)    :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in)    :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -270,14 +270,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv02_vec
 #endif
         SUBROUTINE lu_slv02_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -508,14 +508,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv03_vec
 #endif
         SUBROUTINE lu_slv03_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer*4 :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -739,14 +739,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv04_vec
 #endif
         SUBROUTINE lu_slv04_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -897,14 +897,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv05_vec
 #endif
         SUBROUTINE lu_slv05_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -1132,14 +1132,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv06_vec
 #endif
         SUBROUTINE lu_slv06_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -1370,14 +1370,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv07_vec
 #endif
         SUBROUTINE lu_slv07_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -1598,14 +1598,14 @@
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv08_vec
 #endif
         SUBROUTINE lu_slv08_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
             !-----------------------------------------------------------------------
             ! ... Local variables
             !-----------------------------------------------------------------------
@@ -1762,15 +1762,15 @@
       enddo
         END SUBROUTINE lu_slv08_vec
 
-        SUBROUTINE lu_slv_vec(ncol,nb,nz,lu, b)
-            USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+        SUBROUTINE lu_slv_vecr4(ncol,nb,nz,lu, b)
+            USE shr_kind_mod, ONLY: r4 => shr_kind_r4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... Dummy args
             !-----------------------------------------------------------------------
             integer :: ncol,nb,nz
-            REAL(KIND=r8), intent(in) :: lu(ncol,nz)
-            REAL(KIND=r8), intent(inout) :: b(ncol,nb)
+            REAL(KIND=r4), intent(in) :: lu(ncol,nz)
+            REAL(KIND=r4), intent(inout) :: b(ncol,nb)
       call lu_slv01_vec( ncol,nb,nz,lu, b )
       call lu_slv02_vec( ncol,nb,nz,lu, b )
       call lu_slv03_vec( ncol,nb,nz,lu, b )
@@ -1779,5 +1779,5 @@
       call lu_slv06_vec( ncol,nb,nz,lu, b )
       call lu_slv07_vec( ncol,nb,nz,lu, b )
       call lu_slv08_vec( ncol,nb,nz,lu, b )
-        END SUBROUTINE lu_slv_vec
-    END MODULE mo_lu_solve_vec
+        END SUBROUTINE lu_slv_vecr4
+    END MODULE mo_lu_solve_vecr4

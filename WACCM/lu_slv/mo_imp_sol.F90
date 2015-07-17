@@ -9,7 +9,7 @@
 
     MODULE mo_imp_sol
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
-        USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+        USE shr_kind_mod, ONLY: r8 => shr_kind_r8, r4 =>  shr_kind_r4
         IMPLICIT NONE
         PRIVATE
         PUBLIC imp_sol
@@ -35,13 +35,15 @@
             USE chem_mods, ONLY: nzcnt
             USE chem_mods, only : clscnt4
             USE mo_lu_solve, ONLY: lu_slv
+            USE mo_lu_solve_r4, ONLY: lu_slv_r4
             USE mo_lu_solve_vec, ONLY: lu_slv_vec
+            USE mo_lu_solve_vecr4, ONLY: lu_slv_vecr4
             IMPLICIT NONE
             !-----------------------------------------------------------------------
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
-            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100000
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=1000
             integer*4, parameter :: veclen=8
 
             TYPE(check_t):: check_status
@@ -58,9 +60,15 @@
             ! ... local variables
             !-----------------------------------------------------------------------
             REAL(KIND=r8) :: sys_jac(max(1,nzcnt))
+            REAL(KIND=r4) :: sys_jac_r4(max(1,nzcnt))
             REAL(KIND=r8) :: sys_jac_vec(veclen,max(1,nzcnt))
+            REAL(KIND=r4) :: sys_jac_vecr4(veclen,max(1,nzcnt))
+
             REAL(KIND=r8), dimension(max(1,clscnt4)) :: forcing
+            REAL(KIND=r4), dimension(max(1,clscnt4)) :: forcing_r4
             REAL(KIND=r8), dimension(veclen,max(1,clscnt4)) :: forcing_vec
+            REAL(KIND=r4), dimension(veclen,max(1,clscnt4)) :: forcing_vecr4
+        
 !dir$ attributes align : 64 :: forcing_vec
             REAL(KIND=r8) :: ref_forcing(max(1,clscnt4))
             integer :: i
@@ -89,21 +97,45 @@
                             CALL system_clock(stop_clock, rate_clock)
 
                             WRITE(*,*)
-                            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
-                            PRINT *, "veclen: 1 Time per lu_slv call (usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+                            PRINT *, "Elapsed time [R8](sec): ", (stop_clock - start_clock)/REAL(rate_clock)
+                            PRINT *, "veclen: 1 Time per lu_slv call [R8](usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+
+                            forcing_r4 = forcing
+                            sys_jac_r4 = sys_jac
+                            CALL system_clock(start_clock, rate_clock)
+                            DO kgen_intvar=1,maxiter
+                                CALL lu_slv_r4(sys_jac_r4, forcing_r4)
+                            END DO
+                            CALL system_clock(stop_clock, rate_clock)
+
+                            WRITE(*,*)
+                            PRINT *, "Elapsed time [R4] (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
+                            PRINT *, "veclen: 1 Time per lu_slv call [R4] (usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
 
                             do i=1,veclen
-                               sys_jac_vec(i,:)=sys_jac(:)
-                               forcing_vec(i,:)=forcing(:)
+                               sys_jac_vec(i,:)   = sys_jac(:)
+                               sys_jac_vecr4(i,:) = sys_jac(:)
+                               forcing_vec(i,:)   = forcing(:)
+                               forcing_vecr4(i,:) = forcing(:)
                             enddo
+
                             CALL system_clock(start_clock, rate_clock)
                             DO kgen_intvar=1,maxiter
                                 CALL lu_slv_vec(veclen,max(1,clscnt4),max(1,nzcnt),sys_jac_vec, forcing_vec)
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
 
-                            PRINT *, 'veclen: ',veclen,' Time per lu_slv call (usec): ', (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
-                            PRINT *, 'veclen: ',veclen,' Time per lu_slv per linear system (usec): ', (stop_clock - start_clock)*1e6/REAL(veclen*rate_clock*maxiter)
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv call [R8](usec): ', (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv per system [R8](usec): ', (stop_clock - start_clock)*1e6/REAL(veclen*rate_clock*maxiter)
+
+                            CALL system_clock(start_clock, rate_clock)
+                            DO kgen_intvar=1,maxiter
+                                CALL lu_slv_vecr4(veclen,max(1,clscnt4),max(1,nzcnt),sys_jac_vecr4, forcing_vecr4)
+                            END DO
+                            CALL system_clock(stop_clock, rate_clock)
+
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv call [R4](usec): ', (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
+                            PRINT *, 'veclen: ',veclen,' Time per lu_slv per system [R4](usec): ', (stop_clock - start_clock)*1e6/REAL(veclen*rate_clock*maxiter)
             !
             !
         CONTAINS
