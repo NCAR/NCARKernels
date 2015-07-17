@@ -9,7 +9,7 @@ FC_FLAGS := -qopt-report=5 -no-opt-dynamic-align -convert big_endian -assume byt
 ALL_OBJS := kernel_driver.o mo_imp_sol.o kgen_utils.o chem_mods.o mo_lu_solve.o mo_lu_solve_vec.o shr_kind_mod.o
 
 run: build
-	./kernel.exe
+	qsub haswell2.pbs
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

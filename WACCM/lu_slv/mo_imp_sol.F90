@@ -43,6 +43,7 @@
             integer, intent(in) :: kgen_unit
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100000
             integer*4, parameter :: veclen=8
+
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             ! columns in chunck

@@ -5,6 +5,8 @@
 ! Generated at: 2015-07-14 19:56:41
 ! KGEN version: 0.4.13
 
+#define FASTER  1
+#undef DOINLINE
 
 
     MODULE mo_lu_solve_vec
@@ -17,7 +19,11 @@
         ! No subroutines
         ! No module extern variables
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv01_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv01_vec
+#endif
         SUBROUTINE lu_slv01_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -37,11 +43,21 @@
             !-----------------------------------------------------------------------
 !DIR$ ASSUME_ALIGNED lu:64
 !DIR$ ASSUME_ALIGNED b:64
+#ifdef FASTER
          b(:,125) = b(:,125) - lu(:,18) * b(:,17)
          b(:,131) = b(:,131) - lu(:,19) * b(:,17)
-         b(:,124) = b(:,124) - lu(:,21) * b(i,18)
+!DIR$ NOFUSION
+         b(:,124) = b(:,124) - lu(:,21) * b(:,18)
          b(:,126) = b(:,126) - lu(:,22) * b(:,18)
+!DIR$ NOFUSION
        do i=1,ncol
+#else
+         b(:,125) = b(:,125) - lu(:,18) * b(:,17)
+         b(:,131) = b(:,131) - lu(:,19) * b(:,17)
+       do i=1,ncol
+         b(i,124) = b(i,124) - lu(i,21) * b(i,18)
+         b(i,126) = b(i,126) - lu(i,22) * b(i,18)
+#endif
          b(i,79) = b(i,79) - lu(i,24) * b(i,19)
          b(i,131) = b(i,131) - lu(i,25) * b(i,19)
          b(i,41) = b(i,41) - lu(i,27) * b(i,20)
@@ -248,7 +264,11 @@
         enddo
         END SUBROUTINE lu_slv01_vec
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv02_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv02_vec
+#endif
         SUBROUTINE lu_slv02_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -482,7 +502,11 @@
       enddo
         END SUBROUTINE lu_slv02_vec
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv03_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv03_vec
+#endif
         SUBROUTINE lu_slv03_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -709,7 +733,11 @@
       enddo
         END SUBROUTINE lu_slv03_vec
 
+#ifdef DOINLINE 
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv04_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv04_vec
+#endif
         SUBROUTINE lu_slv04_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -863,7 +891,11 @@
       enddo
         END SUBROUTINE lu_slv04_vec
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv05_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv05_vec
+#endif
         SUBROUTINE lu_slv05_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -1094,7 +1126,11 @@
       enddo
         END SUBROUTINE lu_slv05_vec
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv06_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv06_vec
+#endif
         SUBROUTINE lu_slv06_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -1328,7 +1364,11 @@
        enddo
         END SUBROUTINE lu_slv06_vec
 
+#ifdef DOINLINE 
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv07_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv07_vec
+#endif
         SUBROUTINE lu_slv07_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
@@ -1552,7 +1592,11 @@
        enddo
         END SUBROUTINE lu_slv07_vec
 
+#ifdef DOINLINE
+!DIR$ ATTRIBUTES FORCEINLINE :: lu_slv08_vec
+#else
 !DIR$ ATTRIBUTES NOINLINE :: lu_slv08_vec
+#endif
         SUBROUTINE lu_slv08_vec(ncol,nb,nz,lu, b)
             USE shr_kind_mod, ONLY: r8 => shr_kind_r8
             IMPLICIT NONE
