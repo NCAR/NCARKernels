@@ -56,7 +56,7 @@ rrtmg_lw_cldprmc.o: rrtmg_lw_cldprmc.f90 kgen_utils.o shr_kind_mod.o parrrtm.o r
 shr_kind_mod.o: shr_kind_mod.f90 kgen_utils.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
-rrtmg_lw_rad.o: rrtmg_lw_rad.f90 kgen_utils.o shr_kind_mod.o parrrtm.o rrlw_con.o rrlw_wvn.o rrtmg_lw_cldprmc.o rrtmg_lw_setcoef.o rrtmg_lw_taumol.o rrtmg_lw_rtrnmc.o
+rrtmg_lw_rad.o: rrtmg_lw_rad.F90 kgen_utils.o shr_kind_mod.o parrrtm.o rrlw_con.o rrlw_wvn.o rrtmg_lw_cldprmc.o rrtmg_lw_setcoef.o rrtmg_lw_taumol.o rrtmg_lw_rtrnmc.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 rrtmg_lw_taumol.o: rrtmg_lw_taumol.f90 kgen_utils.o shr_kind_mod.o rrlw_vsn.o rrlw_wvn.o parrrtm.o rrlw_kg01.o rrlw_kg02.o rrlw_ref.o rrlw_con.o rrlw_kg03.o rrlw_kg04.o rrlw_kg05.o rrlw_kg06.o rrlw_kg07.o rrlw_kg08.o rrlw_kg09.o rrlw_kg10.o rrlw_kg11.o rrlw_kg12.o rrlw_kg13.o rrlw_kg14.o rrlw_kg15.o rrlw_kg16.o

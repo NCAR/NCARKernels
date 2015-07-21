@@ -394,14 +394,14 @@
             !  This is the main longitude/column loop within RRTMG.
                 !  Prepare atmospheric profile from GCM for use in RRTMG, and define
                 !  other input parameters.
-         call inatm (istart,iend,ncol, nlay, icld, iaer, &
-              play, plev, tlay, tlev, tsfc, h2ovmr, &
-              o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
-              cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
-              cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
-              pavel, pz, tavel, tz, tbound, semiss, coldry, &
-              wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
-              cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
+      call inatm (ncol, nlay, icld, iaer, &
+           play, plev, tlay, tlev, tsfc, h2ovmr, &
+           o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
+           cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
+           cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
+           pavel, pz, tavel, tz, tbound, semiss, coldry, &
+           wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
+           cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
 
 !       print *,'SUM(pavel): ',SUM(pavel)
 !       print *,'SUM(pz): ',SUM(pz)
@@ -523,7 +523,7 @@
         END SUBROUTINE rrtmg_lw
         !***************************************************************************
 
-        SUBROUTINE inatm(istart,iend,ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
+        SUBROUTINE inatm(ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
         cfc11vmr, cfc12vmr, cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, &
         relqmcl, tauaer, pavel, pz, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, cldfmc, &
         taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
@@ -543,8 +543,6 @@
             USE rrlw_wvn, ONLY: ixindx
             ! ------- Declarations -------
             ! ----- Input -----
-            INTEGER, intent(in) :: istart ! starting column index
-            INTEGER, intent(in) :: iend   ! ending column index
             INTEGER, intent(in) :: ncol ! total number of columns
             INTEGER, intent(in) :: nlay ! Number of model layers
             INTEGER, intent(in) :: icld ! clear/cloud and cloud overlap flag
@@ -678,19 +676,21 @@
             REAL(KIND=r8) :: summol
             REAL(KIND=r8) :: wvsh
             ! promote temporary scalars to vectors
-            REAL(KIND=r8) :: amm(ncol)  ! pr
+            REAL(KIND=r8) :: amm(ncol,nlay)  ! pr
             !  Initialize all molecular amounts and cloud properties to zero here, then pass input amounts
             !  into RRTM arrays below.
-!JMD      wkl(iplon,:,:) = 0.0_r8
-!JMD      wx(iplon,:,:) = 0.0_r8
-!JMD      cldfmc(iplon,:,:) = 0.0_r8
-!JMD      taucmc(iplon,:,:) = 0.0_r8
-!JMD      ciwpmc(iplon,:,:) = 0.0_r8
-!JMD      clwpmc(iplon,:,:) = 0.0_r8
-!JMD      reicmc(iplon,:) = 0.0_r8
-!JMD      dgesmc(iplon,:) = 0.0_r8
-!JMD      relqmc(iplon,:) = 0.0_r8
-!JMD      taua(iplon,:,:) = 0.0_r8
+#if 0
+      wkl(iplon,:,:) = 0.0_r8
+      wx(iplon,:,:) = 0.0_r8
+      cldfmc(iplon,:,:) = 0.0_r8
+      taucmc(iplon,:,:) = 0.0_r8
+      ciwpmc(iplon,:,:) = 0.0_r8
+      clwpmc(iplon,:,:) = 0.0_r8
+      reicmc(iplon,:) = 0.0_r8
+      dgesmc(iplon,:) = 0.0_r8
+      relqmc(iplon,:) = 0.0_r8
+      taua(iplon,:,:) = 0.0_r8
+#endif
             !  Set surface temperature.
       tbound = tsfc
             !  Install input GCM arrays into RRTMG_LW arrays for pressure, temperature,
@@ -709,7 +709,7 @@
       pz(:,0) = plev(:,nlay+1)
       tz(:,0) = tlev(:,nlay+1)
       do l = 1, nlay
-    do iplon=istart,iend
+    do iplon=1,ncol
          pavel(iplon,l) = play(iplon,nlay-l+1)
          tavel(iplon,l) = tlay(iplon,nlay-l+1)
          pz(iplon,l) = plev(iplon,nlay-l+1)
@@ -723,11 +723,12 @@
          wkl(iplon,2,l) = co2vmr(iplon,nlay-l+1)
          wkl(iplon,3,l) = o3vmr(iplon,nlay-l+1)
          wkl(iplon,4,l) = n2ovmr(iplon,nlay-l+1)
+         wkl(iplon,5,l) = 0._r8
          wkl(iplon,6,l) = ch4vmr(iplon,nlay-l+1)
          wkl(iplon,7,l) = o2vmr(iplon,nlay-l+1)
-         amm(iplon) = (1._r8 - wkl(iplon,1,l)) * amd + wkl(iplon,1,l) * amw            
+         amm(iplon,l) = (1._r8 - wkl(iplon,1,l)) * amd + wkl(iplon,1,l) * amw            
          coldry(iplon,l) = (pz(iplon,l-1)-pz(iplon,l)) * 1.e3_r8 * avogad / &
-                     (1.e2_r8 * grav * amm(iplon) * (1._r8 + wkl(iplon,1,l)))
+                     (1.e2_r8 * grav * amm(iplon,l) * (1._r8 + wkl(iplon,1,l)))
                 ! Set cross section molecule amounts from input; convert to vmr if necessary
          wx(iplon,1,l) = ccl4vmr(iplon,nlay-l+1)
          wx(iplon,2,l) = cfc11vmr(iplon,nlay-l+1)
@@ -736,7 +737,7 @@
    enddo
         enddo
       coldry(:,nlay) = (pz(:,nlay-1)) * 1.e3_r8 * avogad / &
-                        (1.e2_r8 * grav * amm(:) * (1._r8 + wkl(:,1,nlay-1)))
+                        (1.e2_r8 * grav * amm(:,nlay) * (1._r8 + wkl(:,1,nlay-1)))
             ! At this point all molecular amounts in wkl and wx are in volume mixing ratio;
             ! convert to molec/cm2 based on coldry for use in rrtm.  also, compute precipitable
             ! water vapor for diffusivity angle adjustments in rtrn and rtrnmr.
