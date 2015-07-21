@@ -475,6 +475,8 @@
             !      call rrtmg_sw_ini
             ! This is the main longitude/column loop in RRTMG.
             ! Modify to loop over all columns (nlon) or over daylight columns
+!JMD #define OLD_INATM_SW 1
+#ifdef OLD_INATM_SW
       do iplon = 1, ncol
                 ! Prepare atmosphere profile from GCM for use in RRTMG, and define
                 ! other input parameters
@@ -488,12 +490,24 @@
               adjflux(iplon,:), inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), taucmc(iplon,:,:), &
               ssacmc(iplon,:,:), asmcmc(iplon,:,:), fsfcmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), &
               taua(iplon,:,:), ssaa(iplon,:,:), asma(iplon,:,:))
+       end do
+#else
+         call inatm_sw_new (1,ncol,nlay, icld, iaer, &
+              play, plev, tlay, tlev, tsfc, &
+              h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, adjes, dyofyr, solvar, &
+              inflgsw, iceflgsw, liqflgsw, &
+              cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, &
+              reicmcl, relqmcl, tauaer, ssaaer, asmaer, &
+              pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, &
+              adjflux, inflag, iceflag, liqflag, cldfmc, taucmc, &
+              ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, &
+              taua, ssaa, asma)
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
                 !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
                 !  effective radius must be passed in cldprop.  Cloud fraction and cloud
                 !  optical properties are transferred to rrtmg_sw arrays in cldprop.
-       end do
+#endif
        do iplon = 1, ncol
          call cldprmc_sw(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), &
                          ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), &
@@ -694,7 +708,7 @@
                    .000719_r8 * cos(2._r8*gamma) + .000077_r8 * sin(2._r8*gamma)
         END FUNCTION earth_sun
         !***************************************************************************
-
+!DIR$ ATTRIBUTES FORCEINLINE :: inatm_sw
         SUBROUTINE inatm_sw(iplon, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
         adjes, dyofyr, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, &
         reicmcl, relqmcl, tauaer, ssaaer, asmaer, pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, adjflux, inflag, iceflag, &
@@ -980,4 +994,301 @@
          asma(nlay,:) = 0.0_r8
       endif
         END SUBROUTINE inatm_sw
+!DIR$ ATTRIBUTES NOINLINE :: inatm_sw_new
+        SUBROUTINE inatm_sw_new(istart, iend, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, &
+        adjes, dyofyr, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, &
+        reicmcl, relqmcl, tauaer, ssaaer, asmaer, pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, adjflux, inflag, iceflag, &
+        liqflag, cldfmc, taucmc, ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua, ssaa, asma)
+            !***************************************************************************
+            !
+            !  Input atmospheric profile from GCM, and prepare it for use in RRTMG_SW.
+            !  Set other RRTMG_SW input parameters.
+            !
+            !***************************************************************************
+            ! --------- Modules ----------
+            USE parrrsw, ONLY: jpb1
+            USE parrrsw, ONLY: jpb2
+            USE parrrsw, ONLY: nmol
+            USE parrrsw, ONLY: nbndsw
+            USE parrrsw, ONLY: ngptsw
+            USE rrsw_con, ONLY: avogad
+            USE rrsw_con, ONLY: grav
+            ! ------- Declarations -------
+            ! ----- Input -----
+            INTEGER, intent(in) :: istart! column start index
+            INTEGER, intent(in) :: iend  ! column end index
+            INTEGER, intent(in) :: nlay ! number of model layers
+            INTEGER, intent(in) :: icld ! clear/cloud and cloud overlap flag
+            INTEGER, intent(in) :: iaer ! aerosol option flag
+            REAL(KIND=r8), intent(in) :: play(:,:) ! Layer pressures (hPa, mb)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: plev(:,:) ! Interface pressures (hPa, mb)
+            ! Dimensions: (ncol,nlay+1)
+            REAL(KIND=r8), intent(in) :: tlay(:,:) ! Layer temperatures (K)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: tlev(:,:) ! Interface temperatures (K)
+            ! Dimensions: (ncol,nlay+1)
+            REAL(KIND=r8), intent(in) :: tsfc(:) ! Surface temperature (K)
+            ! Dimensions: (ncol)
+            REAL(KIND=r8), intent(in) :: h2ovmr(:,:) ! H2O volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: o3vmr(:,:) ! O3 volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: co2vmr(:,:) ! CO2 volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: ch4vmr(:,:) ! Methane volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: o2vmr(:,:) ! O2 volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: n2ovmr(:,:) ! Nitrous oxide volume mixing ratio
+            ! Dimensions: (ncol,nlay)
+            INTEGER, intent(in) :: dyofyr ! Day of the year (used to get Earth/Sun
+            !  distance if adjflx not provided)
+            REAL(KIND=r8), intent(in) :: adjes ! Flux adjustment for Earth/Sun distance
+            REAL(KIND=r8), intent(in) :: solvar(jpb1:jpb2) ! Solar constant (Wm-2) scaling per band
+            INTEGER, intent(in) :: inflgsw ! Flag for cloud optical properties
+            INTEGER, intent(in) :: iceflgsw ! Flag for ice particle specification
+            INTEGER, intent(in) :: liqflgsw ! Flag for liquid droplet specification
+            REAL(KIND=r8), intent(in) :: cldfmcl(:,:,:) ! Cloud fraction
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: taucmcl(:,:,:) ! Cloud optical depth (optional)
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: ssacmcl(:,:,:) ! Cloud single scattering albedo
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: asmcmcl(:,:,:) ! Cloud asymmetry parameter
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: fsfcmcl(:,:,:) ! Cloud forward scattering fraction
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: ciwpmcl(:,:,:) ! Cloud ice water path (g/m2)
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: clwpmcl(:,:,:) ! Cloud liquid water path (g/m2)
+            ! Dimensions: (ngptsw,ncol,nlay)
+            REAL(KIND=r8), intent(in) :: reicmcl(:,:) ! Cloud ice effective radius (microns)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: relqmcl(:,:) ! Cloud water drop effective radius (microns)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(in) :: tauaer(:,:,:) ! Aerosol optical depth
+            ! Dimensions: (ncol,nlay,nbndsw)
+            REAL(KIND=r8), intent(in) :: ssaaer(:,:,:) ! Aerosol single scattering albedo
+            ! Dimensions: (ncol,nlay,nbndsw)
+            REAL(KIND=r8), intent(in) :: asmaer(:,:,:) ! Aerosol asymmetry parameter
+            ! Dimensions: (ncol,nlay,nbndsw)
+            ! Atmosphere
+            REAL(KIND=r8), intent(out) :: pavel(:,:) ! layer pressures (mb)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: tavel(:,:) ! layer temperatures (K)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: pz(:,0:) ! level (interface) pressures (hPa, mb)
+            ! Dimensions: (ncol,0:nlay)
+            REAL(KIND=r8), intent(out) :: tz(:,0:) ! level (interface) temperatures (K)
+            ! Dimensions: (ncol,0:nlay)
+            REAL(KIND=r8), intent(out) :: tbound(:) ! surface temperature (K)
+            ! Dimensions: (ncol)
+            REAL(KIND=r8), intent(out) :: pdp(:,:) ! layer pressure thickness (hPa, mb)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: coldry(:,:) ! dry air column density (mol/cm2)
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: wkl(:,:,:) ! molecular amounts (mol/cm-2)
+            ! Dimensions: (ncol,mxmol,nlay)
+            REAL(KIND=r8), intent(out) :: adjflux(:,:) ! adjustment for current Earth/Sun distance
+            ! Dimensions: (ncol,jpband)
+            !      real(kind=r8), intent(out) :: solvar(:)           ! solar constant scaling factor from rrtmg_sw
+            ! Dimensions: (jpband)
+            !  default value of 1368.22 Wm-2 at 1 AU
+            REAL(KIND=r8), intent(out) :: taua(:,:,:) ! Aerosol optical depth
+            ! Dimensions: (ncol,nlay,nbndsw)
+            REAL(KIND=r8), intent(out) :: ssaa(:,:,:) ! Aerosol single scattering albedo
+            ! Dimensions: (ncol,nlay,nbndsw)
+            REAL(KIND=r8), intent(out) :: asma(:,:,:) ! Aerosol asymmetry parameter
+            ! Dimensions: (ncol,nlay,nbndsw)
+            ! Atmosphere/clouds - cldprop
+            INTEGER, intent(out) :: inflag(:) ! flag for cloud property method
+            ! Dimensions: (ncol)
+            INTEGER, intent(out) :: iceflag(:) ! flag for ice cloud properties
+            ! Dimensions: (ncol)
+            INTEGER, intent(out) :: liqflag(:) ! flag for liquid cloud properties
+            ! Dimensions: (ncol)
+            REAL(KIND=r8), intent(out) :: cldfmc(:,:,:) ! layer cloud fraction
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: taucmc(:,:,:) ! cloud optical depth (non-delta scaled)
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: ssacmc(:,:,:) ! cloud single scattering albedo (non-delta-scaled)
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: asmcmc(:,:,:) ! cloud asymmetry parameter (non-delta scaled)
+            REAL(KIND=r8), intent(out) :: fsfcmc(:,:,:) ! cloud forward scattering fraction (non-delta scaled)
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: ciwpmc(:,:,:) ! cloud ice water path
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: clwpmc(:,:,:) ! cloud liquid water path
+            ! Dimensions: (ncol,ngptsw,nlay)
+            REAL(KIND=r8), intent(out) :: reicmc(:,:) ! cloud ice particle effective radius
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: dgesmc(:,:) ! cloud ice particle effective radius
+            ! Dimensions: (ncol,nlay)
+            REAL(KIND=r8), intent(out) :: relqmc(:,:) ! cloud liquid particle size
+            ! Dimensions: (ncol,nlay)
+            ! ----- Local -----
+            REAL(KIND=r8), parameter :: amd = 28.9660_r8 ! Effective molecular weight of dry air (g/mol)
+            REAL(KIND=r8), parameter :: amw = 18.0160_r8 ! Molecular weight of water vapor (g/mol)
+            !      real(kind=r8), parameter :: amc = 44.0098_r8      ! Molecular weight of carbon dioxide (g/mol)
+            !      real(kind=r8), parameter :: amo = 47.9998_r8      ! Molecular weight of ozone (g/mol)
+            !      real(kind=r8), parameter :: amo2 = 31.9999_r8     ! Molecular weight of oxygen (g/mol)
+            !      real(kind=r8), parameter :: amch4 = 16.0430_r8    ! Molecular weight of methane (g/mol)
+            !      real(kind=r8), parameter :: amn2o = 44.0128_r8    ! Molecular weight of nitrous oxide (g/mol)
+            ! Set molecular weight ratios (for converting mmr to vmr)
+            !  e.g. h2ovmr = h2ommr * amdw)
+            ! Molecular weight of dry air / water vapor
+            ! Molecular weight of dry air / carbon dioxide
+            ! Molecular weight of dry air / ozone
+            ! Molecular weight of dry air / methane
+            ! Molecular weight of dry air / nitrous oxide
+            ! Stefan-Boltzmann constant (W/m2K4)
+            INTEGER :: ib
+            INTEGER :: l
+            INTEGER :: imol
+            INTEGER :: iplon
+            INTEGER :: ig ! Loop indices
+            REAL(KIND=r8) :: amm !
+            REAL(KIND=r8) :: adjflx ! flux adjustment for Earth/Sun distance
+            !      real(kind=r8) :: earth_sun                        ! function for Earth/Sun distance adjustment
+            !      real(kind=r8) :: solar_band_irrad(jpb1:jpb2) ! rrtmg assumed-solar irradiance in each sw band
+            !  Initialize all molecular amounts to zero here, then pass input amounts
+            !  into RRTM array WKL below.
+#if 0
+       wkl(:,:,:) = 0.0_r8
+       cldfmc(:,:,:) = 0.0_r8
+       taucmc(:,:,:) = 0.0_r8
+       ssacmc(:,:,:) = 1.0_r8
+       asmcmc(:,:,:) = 0.0_r8
+       fsfcmc(:,:,:) = 0.0_r8
+       ciwpmc(:,:,:) = 0.0_r8
+       clwpmc(:,:,:) = 0.0_r8
+       reicmc(:,:) = 0.0_r8
+       dgesmc(:,:) = 0.0_r8
+       relqmc(:,:) = 0.0_r8
+       taua(:,:,:) = 0.0_r8
+       ssaa(:,:,:) = 1.0_r8
+       asma(:,:,:) = 0.0_r8
+#endif
+            ! Set flux adjustment for current Earth/Sun distance (two options).
+            ! 1) Use Earth/Sun distance flux adjustment provided by GCM (input as adjes);
+      adjflx = adjes
+            !
+            ! 2) Calculate Earth/Sun distance from DYOFYR, the cumulative day of the year.
+            !    (Set adjflx to 1. to use constant Earth/Sun distance of 1 AU).
+      if (dyofyr .gt. 0) then
+         adjflx = earth_sun(dyofyr)
+      endif
+            ! Set incoming solar flux adjustment to include adjustment for
+            ! current Earth/Sun distance (ADJFLX) and scaling of default internal
+            ! solar constant (rrsw_scon = 1368.22 Wm-2) by band (SOLVAR).  SOLVAR can be set
+            ! to a single scaling factor as needed, or to a different value in each
+            ! band, which may be necessary for paleoclimate simulations.
+            !
+   do iplon=istart,iend
+      adjflux(iplon,:) = 0._r8
+      do ib = jpb1,jpb2
+         adjflux(iplon,ib) = adjflx * solvar(ib)
+      enddo
+            !  Set surface temperature.
+      tbound(iplon) = tsfc(iplon)
+            !  Install input GCM arrays into RRTMG_SW arrays for pressure, temperature,
+            !  and molecular amounts.
+            !  Pressures are input in mb, or are converted to mb here.
+            !  Molecular amounts are input in volume mixing ratio, or are converted from
+            !  mass mixing ratio (or specific humidity for h2o) to volume mixing ratio
+            !  here. These are then converted to molecular amount (molec/cm2) below.
+            !  The dry air column COLDRY (in molec/cm2) is calculated from the level
+            !  pressures, pz (in mb), based on the hydrostatic equation and includes a
+            !  correction to account for h2o in the layer.  The molecular weight of moist
+            !  air (amm) is calculated for each layer.
+            !  Note: In RRTMG, layer indexing goes from bottom to top, and coding below
+            !  assumes GCM input fields are also bottom to top. Input layer indexing
+            !  from GCM fields should be reversed here if necessary.
+      pz(iplon,0) = plev(iplon,nlay+1)
+      tz(iplon,0) = tlev(iplon,nlay+1)
+      do l = 1, nlay
+         pavel(iplon,l) = play(iplon,nlay-l+1)
+         tavel(iplon,l) = tlay(iplon,nlay-l+1)
+         pz(iplon,l) = plev(iplon,nlay-l+1)
+         tz(iplon,l) = tlev(iplon,nlay-l+1)
+         pdp(iplon,l) = pz(iplon,l-1) - pz(iplon,l)
+                ! For h2o input in vmr:
+         wkl(iplon,1,l) = h2ovmr(iplon,nlay-l+1)
+                ! For h2o input in mmr:
+                !         wkl(1,l) = h2o(iplon,nlayers-l)*amdw
+                ! For h2o input in specific humidity;
+                !         wkl(1,l) = (h2o(iplon,nlayers-l)/(1._r8 - h2o(iplon,nlayers-l)))*amdw
+         wkl(iplon,2,l) = co2vmr(iplon,nlay-l+1)
+         wkl(iplon,3,l) = o3vmr(iplon,nlay-l+1)
+         wkl(iplon,4,l) = n2ovmr(iplon,nlay-l+1)
+         wkl(iplon,5,l) = 0._r8
+         wkl(iplon,6,l) = ch4vmr(iplon,nlay-l+1)
+         wkl(iplon,7,l) = o2vmr(iplon,nlay-l+1) 
+         amm = (1._r8 - wkl(iplon,1,l)) * amd + wkl(iplon,1,l) * amw            
+         coldry(iplon,l) = (pz(iplon,l-1)-pz(iplon,l)) * 1.e3_r8 * avogad / &
+                     (1.e2_r8 * grav * amm * (1._r8 + wkl(iplon,1,l)))
+      enddo
+      coldry(iplon,nlay) = (pz(iplon,nlay-1)) * 1.e3_r8 * avogad / &
+                        (1.e2_r8 * grav * amm * (1._r8 + wkl(iplon,1,nlay-1)))
+            ! At this point all molecular amounts in wkl are in volume mixing ratio;
+            ! convert to molec/cm2 based on coldry for use in rrtm.
+      do l = 1, nlay
+         do imol = 1, nmol
+            wkl(iplon,imol,l) = coldry(iplon,l) * wkl(iplon,imol,l)
+         enddo
+      enddo
+            ! Transfer aerosol optical properties to RRTM variables;
+            ! modify to reverse layer indexing here if necessary.
+      if (iaer .ge. 1) then 
+         do l = 1, nlay-1
+            do ib = 1, nbndsw
+               taua(iplon,l,ib) = tauaer(iplon,nlay-l,ib)
+               ssaa(iplon,l,ib) = ssaaer(iplon,nlay-l,ib)
+               asma(iplon,l,ib) = asmaer(iplon,nlay-l,ib)
+            enddo
+         enddo
+      endif
+            ! Transfer cloud fraction and cloud optical properties to RRTM variables;
+            ! modify to reverse layer indexing here if necessary.
+      if (icld .ge. 1) then 
+         inflag(iplon) = inflgsw
+         iceflag(iplon) = iceflgsw
+         liqflag(iplon) = liqflgsw
+                ! Move incoming GCM cloud arrays to RRTMG cloud arrays.
+                ! For GCM input, incoming reice is in effective radius; for Fu parameterization (iceflag = 3)
+                ! convert effective radius to generalized effective size using method of Mitchell, JAS, 2002:
+         do l = 1, nlay-1
+            do ig = 1, ngptsw
+               cldfmc(iplon,ig,l) = cldfmcl(ig,iplon,nlay-l)
+               taucmc(iplon,ig,l) = taucmcl(ig,iplon,nlay-l)
+               ssacmc(iplon,ig,l) = ssacmcl(ig,iplon,nlay-l)
+               asmcmc(iplon,ig,l) = asmcmcl(ig,iplon,nlay-l)
+               fsfcmc(iplon,ig,l) = fsfcmcl(ig,iplon,nlay-l)
+               ciwpmc(iplon,ig,l) = ciwpmcl(ig,iplon,nlay-l)
+               clwpmc(iplon,ig,l) = clwpmcl(ig,iplon,nlay-l)
+            enddo
+            reicmc(iplon,l) = reicmcl(iplon,nlay-l)
+            if (iceflag(iplon) .eq. 3) then
+               dgesmc(iplon,l) = 1.5396_r8 * reicmcl(iplon,nlay-l)
+            endif
+            relqmc(iplon,l) = relqmcl(iplon,nlay-l)
+         enddo
+                ! If an extra layer is being used in RRTMG, set all cloud properties to zero in the extra layer.
+         cldfmc(iplon,:,nlay) = 0.0_r8
+         taucmc(iplon,:,nlay) = 0.0_r8
+         ssacmc(iplon,:,nlay) = 1.0_r8
+         asmcmc(iplon,:,nlay) = 0.0_r8
+         fsfcmc(iplon,:,nlay) = 0.0_r8
+         ciwpmc(iplon,:,nlay) = 0.0_r8
+         clwpmc(iplon,:,nlay) = 0.0_r8
+         reicmc(iplon,nlay) = 0.0_r8
+         dgesmc(iplon,nlay) = 0.0_r8
+         relqmc(iplon,nlay) = 0.0_r8
+         taua(iplon,nlay,:) = 0.0_r8
+         ssaa(iplon,nlay,:) = 1.0_r8
+         asma(iplon,nlay,:) = 0.0_r8
+      endif
+     enddo
+        END SUBROUTINE inatm_sw_new
     END MODULE rrtmg_sw_rad

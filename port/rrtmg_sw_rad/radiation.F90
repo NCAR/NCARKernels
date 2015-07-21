@@ -31,6 +31,8 @@
         USE radconstants, ONLY: nswbands
         IMPLICIT NONE
         PRIVATE
+        integer, parameter :: maxiter = 1000
+        character(len=80), parameter :: kname = "rad_rrtmg_sw"
         PUBLIC radiation_tend
         ! registers radiation physics buffer fields
         ! set default values of namelist variables in runtime_opts
@@ -285,7 +287,7 @@
             ! Gather night/day column indices.
             ! do shortwave heating calc this timestep?
             ! do longwave heating calc this timestep?
-                            tolerance = 1.E-14
+                            tolerance = 8.E-13
                             CALL kgen_init_check(check_status, tolerance)
                             READ(UNIT=kgen_unit) c_cld_tau
                             READ(UNIT=kgen_unit) c_cld_tau_w
@@ -383,12 +385,15 @@
                             CALL kgen_verify_real_r8_dim3_ptr( "sd", check_status, sd, ref_sd)
                             CALL kgen_print_check("rad_rrtmg_sw", check_status)
                             CALL system_clock(start_clock, rate_clock)
-                            DO kgen_intvar=1,10
+                            print *,'ncol: ',ncol  
+                            print *,'num_rrtmg_levs: ',num_rrtmg_levs
+                            DO kgen_intvar=1,maxiter
                                 CALL rad_rrtmg_sw(lchnk, ncol, num_rrtmg_levs, r_state, state % pmid, cldfprime, aer_tau, aer_tau_w, aer_tau_w_g, aer_tau_w_f, eccf, coszrs, solin, sfac, cam_in % asdir, cam_in % asdif, cam_in % aldir, cam_in % aldif, qrs, qrsc, fsnt, fsntc, fsntoa, fsutoa, fsntoac, fsnirt, fsnrtc, fsnirtsq, fsns, fsnsc, fsdsc, fsds, cam_out % sols, cam_out % soll, cam_out % solsd, cam_out % solld, fns, fcns, nday, nnite, idxday, idxnite, su, sd, e_cld_tau = c_cld_tau, e_cld_tau_w = c_cld_tau_w, e_cld_tau_w_g = c_cld_tau_w_g, e_cld_tau_w_f = c_cld_tau_w_f, old_convert = .FALSE.)
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
                             WRITE(*,*)
-                            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                            PRINT *, TRIM(kname), ": Total time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
+                            PRINT *, TRIM(kname), ": Elapsed time (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
             !  if (dosw .or. dolw) then
             ! output rad inputs and resulting heating rates
             ! Compute net radiative heating tendency
