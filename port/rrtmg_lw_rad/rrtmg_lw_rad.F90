@@ -5,9 +5,6 @@
 ! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
-#undef OLD_RTRNMC
-
-
     MODULE rrtmg_lw_rad
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
         !  --------------------------------------------------------------------------
@@ -58,7 +55,11 @@
         ! -------- Modules --------
         USE shr_kind_mod, ONLY: r8 => shr_kind_r8
         !      use parkind, only : jpim, jprb
+#ifdef OLD_CLDPRMC
+        USE rrtmg_lw_cldprmc, ONLY: cldprmc_old
+#else
         USE rrtmg_lw_cldprmc, ONLY: cldprmc
+#endif
         ! Move call to rrtmg_lw_ini and following use association to
         ! GCM initialization area
         !      use rrtmg_lw_init, only: rrtmg_lw_ini
@@ -409,19 +410,34 @@
            wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
            cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
 
+#ifdef OLD_CLDPRMC
       do iplon = 1, ncol
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
                 !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
                 !  effective radius must be passed into cldprop.  Cloud fraction and cloud
                 !  optical depth are transferred to rrtmg_lw arrays in cldprop.
-         call cldprmc(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), ciwpmc(iplon,:,:), &
+         call cldprmc_old(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), ciwpmc(iplon,:,:), &
                       clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), ncbands(iplon), taucmc(iplon,:,:))
                 ! Calculate information needed by the radiative transfer routine
                 ! that is specific to this atmosphere, especially some of the
                 ! coefficients and indices needed to compute the optical depths
                 ! by interpolating data from stored reference atmospheres.
       end do       
+#else
+                !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
+                !  input cloud physical properties.  Select method based on choices described
+                !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
+                !  effective radius must be passed into cldprop.  Cloud fraction and cloud
+                !  optical depth are transferred to rrtmg_lw arrays in cldprop.
+         call cldprmc(ncol,nlay, inflag, iceflag, liqflag, cldfmc, ciwpmc, &
+                      clwpmc, reicmc, dgesmc, relqmc, ncbands, taucmc)
+                ! Calculate information needed by the radiative transfer routine
+                ! that is specific to this atmosphere, especially some of the
+                ! coefficients and indices needed to compute the optical depths
+                ! by interpolating data from stored reference atmospheres.
+
+#endif
       do iplon = 1, ncol
          call setcoef(nlay, istart, pavel(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), &
                       coldry(iplon,:), wkl(iplon,:,:), wbrodl(iplon,:), &

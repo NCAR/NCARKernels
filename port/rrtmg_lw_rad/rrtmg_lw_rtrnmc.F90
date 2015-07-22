@@ -5,8 +5,6 @@
 ! Generated at: 2015-07-06 23:28:45
 ! KGEN version: 0.4.13
 
-#undef OLD_RTRNMC
-
     MODULE rrtmg_lw_rtrnmc
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
         !  --------------------------------------------------------------------------
