@@ -5,6 +5,7 @@
 ! Generated at: 2015-07-06 23:28:44
 ! KGEN version: 0.4.13
 
+#undef OLD_RTRNMC
 
 
     MODULE rrtmg_lw_rad
@@ -61,7 +62,11 @@
         ! Move call to rrtmg_lw_ini and following use association to
         ! GCM initialization area
         !      use rrtmg_lw_init, only: rrtmg_lw_ini
+#ifdef OLD_RTRNMC
+        USE rrtmg_lw_rtrnmc, ONLY: rtrnmc_old
+#else
         USE rrtmg_lw_rtrnmc, ONLY: rtrnmc
+#endif
         USE rrtmg_lw_setcoef, ONLY: setcoef
         USE rrtmg_lw_taumol, ONLY: taumol
         IMPLICIT NONE
@@ -362,6 +367,7 @@
             REAL(KIND=r8) :: totdclfl(ncol,0:nlay) ! clear sky downward longwave flux (w/m2)
             REAL(KIND=r8) :: fnetc(ncol,0:nlay) ! clear sky net longwave flux (w/m2)
             REAL(KIND=r8) :: htrc(ncol,0:nlay) ! clear sky longwave heating rate (k/day)
+!DIR$ ATTRIBUTES ALIGN : 64 ::  pz 
             ! Initializations
       oneminus = 1._r8 - 1.e-6_r8
       pi = 2._r8 * asin(1._r8)
@@ -403,40 +409,6 @@
            wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
            cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
 
-!       print *,'SUM(pavel): ',SUM(pavel)
-!       print *,'SUM(pz): ',SUM(pz)
-!       print *,'SUM(tavel): ',SUM(tavel)
-!       print *,'SUM(tz): ',SUM(tz)
-!       print *,'SUM(tbound): ',SUM(tbound)
-!       print *,'SUM(semiss): ',SUM(semiss)
-!       print *,'SUM(coldry): ',SUM(coldry)
-!       print *,'SUM(wkl): ',SUM(wkl)
-!       print *,'SUM(wbrodl): ',SUM(wbrodl)
-!       print *,'SUM(wx): ',SUM(wx)
-!       print *,'SUM(pwvcm): ',SUM(pwvcm)
-!       print *,'SUM(inflag): ',SUM(inflag)
-!       print *,'SUM(iceflag): ',SUM(iceflag)
-!       print *,'SUM(liqflag): ',SUM(liqflag)
-!       print *,'SUM(cldfmc): ',SUM(cldfmc)
-!       print *,'SUM(taucmc): ',SUM(taucmc)
-!       print *,'SUM(ciwpmc): ',SUM(ciwpmc)
-!       print *,'SUM(clwpmc): ',SUM(clwpmc)
-!       print *,'SUM(reicmc): ',SUM(reicmc)
-!       print *,'SUM(dgesmcmc): ',SUM(dgesmc)
-!       print *,'SUM(relqmcmc): ',SUM(relqmc)
-!       print *,'SUM(taua): ',SUM(taua)
-!      do iplon = 1, ncol
-!                !  Prepare atmospheric profile from GCM for use in RRTMG, and define
-!                !  other input parameters.
-!         call inatm (iplon, nlay, icld, iaer, &
-!              play, plev, tlay, tlev, tsfc, h2ovmr, &
-!              o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, &
-!              cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, &
-!              cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, &
-!              pavel(iplon,:), pz(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), coldry(iplon,:), &
-!              wkl(iplon,:,:), wbrodl(iplon,:), wx(iplon,:,:), pwvcm(iplon), inflag(iplon), iceflag(iplon), liqflag(iplon), &
-!              cldfmc(iplon,:,:), taucmc(iplon,:,:), ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), taua(iplon,:,:))
-!      end do       
       do iplon = 1, ncol
                 !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
                 !  input cloud physical properties.  Select method based on choices described
@@ -494,19 +466,35 @@
                enddo
             enddo
          endif
+#ifdef OLD_RTRNMC
       do iplon = 1, ncol
                 ! Call the radiative transfer routine.
                 ! Either routine can be called to do clear sky calculation.  If clouds
                 ! are present, then select routine based on cloud overlap assumption
                 ! to be used.  Clear sky calculation is done simultaneously.
                 ! For McICA, RTRNMC is called for clear and cloudy calculations.
-         call rtrnmc(nlay, istart, iend, iout, pz(iplon,:), semiss(iplon,:), ncbands(iplon), &
+         call rtrnmc_old(nlay, istart, iend, iout, pz(iplon,:), semiss(iplon,:), ncbands(iplon), &
                      cldfmc(iplon,:,:), taucmc(iplon,:,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
                      pwvcm(iplon), fracs(iplon,:,:), taut(iplon,:,:), &
                      totuflux(iplon,:), totdflux(iplon,:), fnet(iplon,:), htr(iplon,:), &
                      totuclfl(iplon,:), totdclfl(iplon,:), fnetc(iplon,:), htrc(iplon,:), totufluxs(iplon,:,:), totdfluxs(iplon,:,:) )
                 !  Transfer up and down fluxes and heating rate to output arrays.
                 !  Vertical indexing goes from bottom to top
+#else
+                ! Call the radiative transfer routine.
+                ! Either routine can be called to do clear sky calculation.  If clouds
+                ! are present, then select routine based on cloud overlap assumption
+                ! to be used.  Clear sky calculation is done simultaneously.
+                ! For McICA, RTRNMC is called for clear and cloudy calculations.
+      call rtrnmc(ncol, nlay, istart, iend, iout, pz, semiss, ncbands, &
+           cldfmc, taucmc, planklay, planklev, plankbnd, &
+           pwvcm, fracs, taut, &
+           totuflux, totdflux, fnet, htr, &
+           totuclfl, totdclfl, fnetc, htrc, totufluxs, totdfluxs )
+                !  Transfer up and down fluxes and heating rate to output arrays.
+                !  Vertical indexing goes from bottom to top
+      do iplon = 1, ncol
+#endif
          do k = 0, nlay
             uflx(iplon,k+1) = totuflux(iplon,k)
             dflx(iplon,k+1) = totdflux(iplon,k)
@@ -602,13 +590,13 @@
             !    Dimensions: (ncol,nlay)
             REAL(KIND=r8), intent(out) :: tavel(:,:) ! layer temperatures (K)
             !    Dimensions: (ncol, nlay)
-            REAL(KIND=r8), intent(out) :: pz(:,0:) ! level (interface) pressures (hPa, mb)
+            REAL(KIND=r8), intent(out) :: pz(ncol,0:nlay) ! level (interface) pressures (hPa, mb)
             !    Dimensions: (ncol,0:nlay)
-            REAL(KIND=r8), intent(out) :: tz(:,0:) ! level (interface) temperatures (K)
+            REAL(KIND=r8), intent(out) :: tz(ncol,0:nlay) ! level (interface) temperatures (K)
             !    Dimensions: (ncol,0:nlay)
             REAL(KIND=r8), intent(out) :: tbound(:) ! surface temperature (K)
             !    Dimensions: (ncol)
-            REAL(KIND=r8), intent(out) :: coldry(:,:) ! dry air column density (mol/cm2)
+            REAL(KIND=r8), intent(out) :: coldry(ncol,nlay) ! dry air column density (mol/cm2)
             !    Dimensions: (ncol,nlay)
             REAL(KIND=r8), intent(out) :: wbrodl(:,:) ! broadening gas column density (mol/cm2)
             !    Dimensions: (ncol,nlay)
@@ -679,6 +667,7 @@
             REAL(KIND=r8) :: amm(ncol,nlay)  ! pr
             !  Initialize all molecular amounts and cloud properties to zero here, then pass input amounts
             !  into RRTM arrays below.
+!DIR$ ASSUME_ALIGNED pz:64 
 #if 0
       wkl(iplon,:,:) = 0.0_r8
       wx(iplon,:,:) = 0.0_r8

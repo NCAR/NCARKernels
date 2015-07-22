@@ -1,7 +1,7 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := 
+FC_FLAGS := -qopt-report=5 -no-opt-dynamic-align -O3 -fp-model fast=2 
 
 ALL_OBJS := kernel_driver.o radlw.o kgen_utils.o rrlw_kg08.o rrlw_kg15.o parrrtm.o rrlw_kg01.o rrlw_kg10.o rrlw_ref.o rrtmg_state.o rrlw_wvn.o rrtmg_lw_setcoef.o rrlw_kg16.o rrlw_kg02.o rrtmg_lw_cldprmc.o shr_kind_mod.o rrtmg_lw_rad.o rrtmg_lw_taumol.o rrlw_vsn.o rrlw_tbl.o rrlw_kg03.o ppgrid.o rrlw_kg07.o rrlw_kg14.o rrlw_kg04.o rrlw_kg12.o rrlw_kg13.o rrtmg_lw_rtrnmc.o rrlw_kg06.o rrlw_kg05.o rrlw_kg11.o rrlw_con.o rrlw_cld.o rrlw_kg09.o
 
@@ -89,7 +89,7 @@ rrlw_kg12.o: rrlw_kg12.f90 kgen_utils.o shr_kind_mod.o
 rrlw_kg13.o: rrlw_kg13.f90 kgen_utils.o shr_kind_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
-rrtmg_lw_rtrnmc.o: rrtmg_lw_rtrnmc.f90 kgen_utils.o shr_kind_mod.o parrrtm.o rrlw_vsn.o rrlw_wvn.o rrlw_tbl.o rrlw_con.o
+rrtmg_lw_rtrnmc.o: rrtmg_lw_rtrnmc.F90 kgen_utils.o shr_kind_mod.o parrrtm.o rrlw_vsn.o rrlw_wvn.o rrlw_tbl.o rrlw_con.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 rrlw_kg06.o: rrlw_kg06.f90 kgen_utils.o shr_kind_mod.o
