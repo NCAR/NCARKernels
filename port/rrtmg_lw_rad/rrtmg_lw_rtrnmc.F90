@@ -921,6 +921,8 @@
          enddo
                 ! End spectral band loop
       enddo
+    enddo
+    do iplon=1,ncol
             ! Calculate fluxes at surface
       totuflux(iplon,0) = totuflux(iplon,0) * fluxfac
       totdflux(iplon,0) = totdflux(iplon,0) * fluxfac
@@ -930,8 +932,10 @@
       totuclfl(iplon,0) = totuclfl(iplon,0) * fluxfac
       totdclfl(iplon,0) = totdclfl(iplon,0) * fluxfac
       fnetc(iplon,0) = totuclfl(iplon,0) - totdclfl(iplon,0)
+    enddo
             ! Calculate fluxes at model levels
       do lev = 1, nlayers
+      do iplon=1,ncol
          totuflux(iplon,lev) = totuflux(iplon,lev) * fluxfac
          totdflux(iplon,lev) = totdflux(iplon,lev) * fluxfac
          totufluxs(iplon,:,lev) = totufluxs(iplon,:,lev) * fluxfac
@@ -945,9 +949,11 @@
          htr(iplon,l)=heatfac*(fnet(iplon,l)-fnet(iplon,lev))/(pz(iplon,l)-pz(iplon,lev)) 
          htrc(iplon,l)=heatfac*(fnetc(iplon,l)-fnetc(iplon,lev))/(pz(iplon,l)-pz(iplon,lev)) 
       enddo
+      enddo
             ! Set heating rate to zero in top layer
-      htr(iplon,nlayers) = 0.0_r8
-      htrc(iplon,nlayers) = 0.0_r8
+      do iplon=1,ncol
+        htr(iplon,nlayers) = 0.0_r8
+        htrc(iplon,nlayers) = 0.0_r8
     enddo
         END SUBROUTINE rtrnmc
 #endif

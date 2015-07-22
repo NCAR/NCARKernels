@@ -212,6 +212,9 @@
             ! call to kernel
    print *,'lchnk: ',lchnk
    print *,'ncol: ',ncol
+   print *,'nbndlw: ',nbndlw
+   print *,'ngptw: ',ngptlw
+   print *,'rrtmg_levs: ',rrtmg_levs
    call rrtmg_lw(lchnk  ,ncol ,rrtmg_levs    ,icld    ,                 &
         r_state%pmidmb  ,r_state%pintmb  ,r_state%tlay    ,r_state%tlev    ,tsfc    ,r_state%h2ovmr, &
         r_state%o3vmr   ,r_state%co2vmr  ,r_state%ch4vmr  ,r_state%o2vmr   ,r_state%n2ovmr  ,r_state%cfc11vmr,r_state%cfc12vmr, &

@@ -340,9 +340,9 @@
             REAL(KIND=r8) :: rat_h2on2o_1(ncol,nlay) !
             ! Atmosphere/clouds - cldprop
             INTEGER :: ncbands(ncol) ! number of cloud spectral bands
-            INTEGER :: inflag(ncol) ! flag for cloud property method
-            INTEGER :: iceflag(ncol) ! flag for ice cloud properties
-            INTEGER :: liqflag(ncol) ! flag for liquid cloud properties
+            INTEGER :: inflag  ! flag for cloud property method
+            INTEGER :: iceflag ! flag for ice cloud properties
+            INTEGER :: liqflag ! flag for liquid cloud properties
             ! Atmosphere/clouds - cldprmc [mcica]
             REAL(KIND=r8) :: cldfmc(ncol,ngptlw,nlay) ! cloud fraction [mcica]
             REAL(KIND=r8) :: ciwpmc(ncol,ngptlw,nlay) ! cloud ice water path [mcica]
@@ -417,7 +417,7 @@
                 !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
                 !  effective radius must be passed into cldprop.  Cloud fraction and cloud
                 !  optical depth are transferred to rrtmg_lw arrays in cldprop.
-         call cldprmc_old(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), ciwpmc(iplon,:,:), &
+         call cldprmc_old(nlay, inflag, iceflag, liqflag, cldfmc(iplon,:,:), ciwpmc(iplon,:,:), &
                       clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), ncbands(iplon), taucmc(iplon,:,:))
                 ! Calculate information needed by the radiative transfer routine
                 ! that is specific to this atmosphere, especially some of the
@@ -625,12 +625,9 @@
             REAL(KIND=r8), intent(out) :: semiss(:,:) ! lw surface emissivity
             !    Dimensions: (ncol,nbndlw)
             ! Atmosphere/clouds - cldprop
-            INTEGER, intent(out) :: inflag(:) ! flag for cloud property method
-            !    Dimensions: (ncol)
-            INTEGER, intent(out) :: iceflag(:) ! flag for ice cloud properties
-            !    Dimensions: (ncol)
-            INTEGER, intent(out) :: liqflag(:) ! flag for liquid cloud properties
-            !    Dimensions: (ncol)
+            INTEGER, intent(out) :: inflag ! flag for cloud property method
+            INTEGER, intent(out) :: iceflag ! flag for ice cloud properties
+            INTEGER, intent(out) :: liqflag ! flag for liquid cloud properties
             REAL(KIND=r8), intent(out) :: cldfmc(:,:,:) ! cloud fraction [mcica]
             !    Dimensions: (ncol,ngptlw,nlay)
             REAL(KIND=r8), intent(out) :: ciwpmc(:,:,:) ! cloud ice water path [mcica]
@@ -685,16 +682,16 @@
             !  into RRTM arrays below.
 !DIR$ ASSUME_ALIGNED pz:64 
 #if 0
-      wkl(iplon,:,:) = 0.0_r8
-      wx(iplon,:,:) = 0.0_r8
-      cldfmc(iplon,:,:) = 0.0_r8
-      taucmc(iplon,:,:) = 0.0_r8
-      ciwpmc(iplon,:,:) = 0.0_r8
-      clwpmc(iplon,:,:) = 0.0_r8
-      reicmc(iplon,:) = 0.0_r8
-      dgesmc(iplon,:) = 0.0_r8
-      relqmc(iplon,:) = 0.0_r8
-      taua(iplon,:,:) = 0.0_r8
+      wkl(:,:,:) = 0.0_r8
+      wx(:,:,:) = 0.0_r8
+      cldfmc(:,:,:) = 0.0_r8
+      taucmc(:,:,:) = 0.0_r8
+      ciwpmc(:,:,:) = 0.0_r8
+      clwpmc(:,:,:) = 0.0_r8
+      reicmc(:,:) = 0.0_r8
+      dgesmc(:,:) = 0.0_r8
+      relqmc(:,:) = 0.0_r8
+      taua(:,:,:) = 0.0_r8
 #endif
             !  Set surface temperature.
       tbound = tsfc
@@ -773,38 +770,48 @@
          semiss(iplon,n) = emis(iplon,n)
                 !          semiss(n) = 1.0_r8
       enddo
+    enddo 
             ! Transfer aerosol optical properties to RRTM variable;
             ! modify to reverse layer indexing here if necessary.
       if (iaer .ge. 1) then 
-         do l = 1, nlay-1
-            do ib = 1, nbndlw
-               taua(iplon,l,ib) = tauaer(iplon,nlay-l,ib)
+         do ib = 1, nbndlw
+            do l = 1, nlay-1
+               do iplon=1,ncol
+                  taua(iplon,l,ib) = tauaer(iplon,nlay-l,ib)
+               enddo
             enddo
          enddo
       endif
             ! Transfer cloud fraction and cloud optical properties to RRTM variables,
             ! modify to reverse layer indexing here if necessary.
       if (icld .ge. 1) then 
-         inflag(iplon) = inflglw
-         iceflag(iplon) = iceflglw
-         liqflag(iplon) = liqflglw
+         inflag = inflglw
+         iceflag = iceflglw
+         liqflag = liqflglw
                 ! Move incoming GCM cloud arrays to RRTMG cloud arrays.
                 ! For GCM input, incoming reice is in effective radius; for Fu parameterization (iceflag = 3)
                 ! convert effective radius to generalized effective size using method of Mitchell, JAS, 2002:
          do l = 1, nlay-1
             do ig = 1, ngptlw
+            do iplon=1,ncol
                cldfmc(iplon,ig,l) = cldfmcl(ig,iplon,nlay-l)
                taucmc(iplon,ig,l) = taucmcl(ig,iplon,nlay-l)
                ciwpmc(iplon,ig,l) = ciwpmcl(ig,iplon,nlay-l)
                clwpmc(iplon,ig,l) = clwpmcl(ig,iplon,nlay-l)
             enddo
-            reicmc(iplon,l) = reicmcl(iplon,nlay-l)
-            if (iceflag(iplon) .eq. 3) then
-               dgesmc(iplon,l) = 1.5396_r8 * reicmcl(iplon,nlay-l)
+            enddo
+            do iplon=1,ncol
+               reicmc(iplon,l) = reicmcl(iplon,nlay-l)
+               relqmc(iplon,l) = relqmcl(iplon,nlay-l)
+            enddo
+            if (iceflag .eq. 3) then
+               do iplon=1,ncol
+                  dgesmc(iplon,l) = 1.5396_r8 * reicmcl(iplon,nlay-l)
+               enddo
             endif
-            relqmc(iplon,l) = relqmcl(iplon,nlay-l)
          enddo
                 ! If an extra layer is being used in RRTMG, set all cloud properties to zero in the extra layer.
+       do iplon=1,ncol
          cldfmc(iplon,:,nlay) = 0.0_r8
          taucmc(iplon,:,nlay) = 0.0_r8
          ciwpmc(iplon,:,nlay) = 0.0_r8
@@ -813,7 +820,7 @@
          dgesmc(iplon,nlay) = 0.0_r8
          relqmc(iplon,nlay) = 0.0_r8
          taua(iplon,nlay,:) = 0.0_r8
+       enddo 
       endif
-    enddo 
         END SUBROUTINE inatm
     END MODULE rrtmg_lw_rad

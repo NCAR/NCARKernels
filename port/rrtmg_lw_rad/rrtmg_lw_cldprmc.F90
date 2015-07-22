@@ -242,9 +242,9 @@
             ! ------- Input -------
             INTEGER, intent(in) :: ncol    ! total number of columns
             INTEGER, intent(in) :: nlayers ! total number of layers
-            INTEGER, intent(in) :: inflag(:) ! see definitions
-            INTEGER, intent(in) :: iceflag(:) ! see definitions
-            INTEGER, intent(in) :: liqflag(:) ! see definitions
+            INTEGER, intent(in) :: inflag ! see definitions
+            INTEGER, intent(in) :: iceflag ! see definitions
+            INTEGER, intent(in) :: liqflag ! see definitions
             !    Dimensions: (ncol)
             REAL(KIND=r8), intent(in) :: cldfmc(:,:,:) ! cloud fraction [mcica]
             !    Dimensions: (ncol,ngptlw,nlayers)
@@ -347,23 +347,23 @@
           if (cldfmc(iplon,ig,lay) .ge. cldmin .and. &
              (cwp .ge. cldmin .or. taucmc(iplon,ig,lay) .ge. cldmin)) then
                         ! Ice clouds and water clouds combined.
-            if (inflag(iplon) .eq. 0) then
+            if (inflag .eq. 0) then
                             ! Cloud optical depth already defined in taucmc, return to main program
                return
-            elseif(inflag(iplon) .eq. 1) then 
+            elseif(inflag .eq. 1) then 
                 stop 'INFLAG = 1 OPTION NOT AVAILABLE WITH MCICA'
                             !               cwp = ciwpmc(ig,lay) + clwpmc(ig,lay)
                             !               taucmc(ig,lay) = abscld1 * cwp
                             ! Separate treatement of ice clouds and water clouds.
-            elseif(inflag(iplon) .eq. 2) then
+            elseif(inflag .eq. 2) then
                radice = reicmc(iplon,lay)
                             ! Calculation of absorption coefficients due to ice clouds.
                if (ciwpmc(iplon,ig,lay) .eq. 0.0_r8) then
                   abscoice(ig) = 0.0_r8
-               elseif (iceflag(iplon) .eq. 0) then
+               elseif (iceflag .eq. 0) then
                   if (radice .lt. 10.0_r8) stop 'ICE RADIUS TOO SMALL'
                   abscoice(ig) = absice0(1) + absice0(2)/radice
-               elseif (iceflag(iplon) .eq. 1) then
+               elseif (iceflag .eq. 1) then
                                 ! mji - turn off limits to mimic CAM3
                                 !                  if (radice .lt. 13.0_r8 .or. radice .gt. 130._r8) stop &
                                 !                      'ICE RADIUS OUT OF BOUNDS'
@@ -375,7 +375,7 @@
                                 ! Use iceflag=2 option for ice particle effective radii from 5.0 and 131.0 microns
                                 ! and use iceflag=0 option for ice particles greater than 131.0 microns.
                                 ! *** NOTE: Transition between two methods has not been smoothed.
-               elseif (iceflag(iplon) .eq. 2) then
+               elseif (iceflag .eq. 2) then
                   if (radice .lt. 5.0_r8) stop 'ICE RADIUS OUT OF BOUNDS'
                   if (radice .ge. 5.0_r8 .and. radice .le. 131._r8) then
                      ncbands(iplon) = 16
@@ -396,7 +396,7 @@
                                 ! for ice particle effective radii greater than 91.0 microns (dge = 140 microns).
                                 ! *** NOTE: Fu parameterization requires particle size in generalized effective size.
                                 ! *** NOTE: Transition between two methods has not been smoothed.
-               elseif (iceflag(iplon) .eq. 3) then
+               elseif (iceflag .eq. 3) then
                   dgeice = dgesmc(iplon,lay)
                   if (dgeice .lt. 5.0_r8) stop 'ICE GENERALIZED EFFECTIVE SIZE OUT OF BOUNDS'
                   if (dgeice .ge. 5.0_r8 .and. dgeice .le. 140._r8) then
@@ -416,9 +416,9 @@
                             ! Calculation of absorption coefficients due to water clouds.
                if (clwpmc(iplon,ig,lay) .eq. 0.0_r8) then
                   abscoliq(ig) = 0.0_r8
-               elseif (liqflag(iplon) .eq. 0) then
+               elseif (liqflag .eq. 0) then
                    abscoliq(ig) = absliq0
-               elseif (liqflag(iplon) .eq. 1) then
+               elseif (liqflag .eq. 1) then
                   radliq = relqmc(iplon,lay)
                   if (radliq .lt. 1.5_r8 .or. radliq .gt. 60._r8) stop &
                        'LIQUID EFFECTIVE RADIUS OUT OF BOUNDS'
