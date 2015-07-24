@@ -68,7 +68,11 @@
 #else
         USE rrtmg_lw_rtrnmc, ONLY: rtrnmc
 #endif
+#ifdef OLD_SETCOEF
+        USE rrtmg_lw_setcoef, ONLY: setcoef_old
+#else
         USE rrtmg_lw_setcoef, ONLY: setcoef
+#endif
         USE rrtmg_lw_taumol, ONLY: taumol
         IMPLICIT NONE
         ! public interfaces/functions/subroutines
@@ -438,8 +442,9 @@
                 ! by interpolating data from stored reference atmospheres.
 
 #endif
+#ifdef OLD_SETCOEF
       do iplon = 1, ncol
-         call setcoef(nlay, istart, pavel(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), &
+         call setcoef_old(nlay, istart, pavel(iplon,:), tavel(iplon,:), tz(iplon,:), tbound(iplon), semiss(iplon,:), &
                       coldry(iplon,:), wkl(iplon,:,:), wbrodl(iplon,:), &
                       laytrop(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
                       colh2o(iplon,:), colco2(iplon,:), colo3(iplon,:), coln2o(iplon,:), colco(iplon,:), colch4(iplon,:), colo2(iplon,:), &
@@ -452,6 +457,18 @@
                 !  Calculate the gaseous optical depths and Planck fractions for
                 !  each longwave spectral band.
       end do       
+#else
+      call setcoef(ncol,nlay, istart, pavel, tavel, tz, tbound, semiss, &
+           coldry, wkl, wbrodl, &
+           laytrop, jp, jt, jt1, planklay, planklev, plankbnd, &
+           colh2o, colco2, colo3, coln2o, colco, colch4, colo2, &
+           colbrd, fac00, fac01, fac10, fac11, &
+           rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, &
+           rat_h2on2o, rat_h2on2o_1, rat_h2och4, rat_h2och4_1, &
+           rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, &
+           selffac, selffrac, indself, forfac, forfrac, indfor, &
+           minorfrac, scaleminor, scaleminorn2, indminor)
+#endif
       do iplon = 1, ncol
          call taumol(nlay, pavel(iplon,:), wx(iplon,:,:), coldry(iplon,:), &
                      laytrop(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), planklay(iplon,:,:), planklev(iplon,:,:), plankbnd(iplon,:), &
@@ -680,7 +697,7 @@
             REAL(KIND=r8) :: amm(ncol,nlay)  ! pr
             !  Initialize all molecular amounts and cloud properties to zero here, then pass input amounts
             !  into RRTM arrays below.
-!DIR$ ASSUME_ALIGNED pz:64 
+!JMD !DIR$ ASSUME_ALIGNED pz:64 
 #if 0
       wkl(:,:,:) = 0.0_r8
       wx(:,:,:) = 0.0_r8
