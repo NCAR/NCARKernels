@@ -508,11 +508,19 @@
                 !  effective radius must be passed in cldprop.  Cloud fraction and cloud
                 !  optical properties are transferred to rrtmg_sw arrays in cldprop.
 #endif
+
+#ifdef OLD_CLDPRMC_SW
        do iplon = 1, ncol
          call cldprmc_sw(nlay, inflag(iplon), iceflag(iplon), liqflag(iplon), cldfmc(iplon,:,:), &
                          ciwpmc(iplon,:,:), clwpmc(iplon,:,:), reicmc(iplon,:), dgesmc(iplon,:), relqmc(iplon,:), &
                          taormc, taucmc(iplon,:,:), ssacmc(iplon,:,:), asmcmc(iplon,:,:), fsfcmc(iplon,:,:))
        end do
+#else
+        
+         call cldprmc_sw(ncol,nlay, inflag, iceflag, liqflag, cldfmc, &
+                         ciwpmc, clwpmc, reicmc, dgesmc, relqmc, &
+                         taormc, taucmc, ssacmc, asmcmc, fsfcmc)
+#endif
          icpr = 1
                 ! Calculate coefficients for the temperature and pressure dependence of the
                 ! molecular absorption coefficients by interpolating data from stored
