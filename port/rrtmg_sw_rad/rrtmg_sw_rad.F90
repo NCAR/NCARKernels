@@ -313,12 +313,12 @@
             REAL(KIND=r8) :: coldry(ncol,nlay) ! dry air column amount
             REAL(KIND=r8) :: wkl(ncol,mxmol,nlay) ! molecular amounts (mol/cm-2)
             !      real(kind=r8) :: earth_sun               ! function for Earth/Sun distance factor
-            REAL(KIND=r8) :: cossza ! Cosine of solar zenith angle
+            REAL(KIND=r8) :: cossza(ncol) ! Cosine of solar zenith angle
             REAL(KIND=r8) :: adjflux(ncol,jpband) ! adjustment for current Earth/Sun distance
             !      real(kind=r8) :: solvar(jpband)           ! solar constant scaling factor from rrtmg_sw
             !  default value of 1368.22 Wm-2 at 1 AU
-            REAL(KIND=r8) :: albdir(nbndsw) ! surface albedo, direct          ! zalbp
-            REAL(KIND=r8) :: albdif(nbndsw) ! surface albedo, diffuse         ! zalbd
+            REAL(KIND=r8) :: albdir(ncol,nbndsw) ! surface albedo, direct          ! zalbp
+            REAL(KIND=r8) :: albdif(ncol,nbndsw) ! surface albedo, diffuse         ! zalbd
             REAL(KIND=r8) :: taua(ncol,nlay,nbndsw) ! Aerosol optical depth
             REAL(KIND=r8) :: ssaa(ncol,nlay,nbndsw) ! Aerosol single scattering albedo
             REAL(KIND=r8) :: asma(ncol,nlay,nbndsw) ! Aerosol asymmetry parameter
@@ -382,31 +382,31 @@
             ! cloud asymmetry parameter
             !  (first moment of phase function)
             ! cloud single scattering albedo
-            REAL(KIND=r8) :: ztaua(nlay,nbndsw) ! total aerosol optical depth
-            REAL(KIND=r8) :: zasya(nlay,nbndsw) ! total aerosol asymmetry parameter
-            REAL(KIND=r8) :: zomga(nlay,nbndsw) ! total aerosol single scattering albedo
-            REAL(KIND=r8) :: zcldfmc(nlay,ngptsw) ! cloud fraction [mcica]
-            REAL(KIND=r8) :: ztaucmc(nlay,ngptsw) ! cloud optical depth [mcica]
-            REAL(KIND=r8) :: ztaormc(nlay,ngptsw) ! unscaled cloud optical depth [mcica]
-            REAL(KIND=r8) :: zasycmc(nlay,ngptsw) ! cloud asymmetry parameter [mcica]
-            REAL(KIND=r8) :: zomgcmc(nlay,ngptsw) ! cloud single scattering albedo [mcica]
-            REAL(KIND=r8) :: zbbfu(nlay+2) ! temporary upward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zbbfd(nlay+2) ! temporary downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zbbcu(nlay+2) ! temporary clear sky upward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zbbcd(nlay+2) ! temporary clear sky downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zbbfddir(nlay+2) ! temporary downward direct shortwave flux (w/m2)
-            REAL(KIND=r8) :: zbbcddir(nlay+2) ! temporary clear sky downward direct shortwave flux (w/m2)
-            REAL(KIND=r8) :: zuvfd(nlay+2) ! temporary UV downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zuvcd(nlay+2) ! temporary clear sky UV downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: zuvfddir(nlay+2) ! temporary UV downward direct shortwave flux (w/m2)
-            REAL(KIND=r8) :: zuvcddir(nlay+2) ! temporary clear sky UV downward direct shortwave flux (w/m2)
-            REAL(KIND=r8) :: znifd(nlay+2) ! temporary near-IR downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: znicd(nlay+2) ! temporary clear sky near-IR downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: znifddir(nlay+2) ! temporary near-IR downward direct shortwave flux (w/m2)
-            REAL(KIND=r8) :: znicddir(nlay+2) ! temporary clear sky near-IR downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: ztaua(ncol,nlay,nbndsw) ! total aerosol optical depth
+            REAL(KIND=r8) :: zasya(ncol,nlay,nbndsw) ! total aerosol asymmetry parameter
+            REAL(KIND=r8) :: zomga(ncol,nlay,nbndsw) ! total aerosol single scattering albedo
+            REAL(KIND=r8) :: zcldfmc(ncol,nlay,ngptsw) ! cloud fraction [mcica]
+            REAL(KIND=r8) :: ztaucmc(ncol,nlay,ngptsw) ! cloud optical depth [mcica]
+            REAL(KIND=r8) :: ztaormc(ncol,nlay,ngptsw) ! unscaled cloud optical depth [mcica]
+            REAL(KIND=r8) :: zasycmc(ncol,nlay,ngptsw) ! cloud asymmetry parameter [mcica]
+            REAL(KIND=r8) :: zomgcmc(ncol,nlay,ngptsw) ! cloud single scattering albedo [mcica]
+            REAL(KIND=r8) :: zbbfu(ncol,nlay+2) ! temporary upward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zbbfd(ncol,nlay+2) ! temporary downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zbbcu(ncol,nlay+2) ! temporary clear sky upward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zbbcd(ncol,nlay+2) ! temporary clear sky downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zbbfddir(ncol,nlay+2) ! temporary downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: zbbcddir(ncol,nlay+2) ! temporary clear sky downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: zuvfd(ncol,nlay+2) ! temporary UV downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zuvcd(ncol,nlay+2) ! temporary clear sky UV downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: zuvfddir(ncol,nlay+2) ! temporary UV downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: zuvcddir(ncol,nlay+2) ! temporary clear sky UV downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: znifd(ncol,nlay+2) ! temporary near-IR downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: znicd(ncol,nlay+2) ! temporary clear sky near-IR downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: znifddir(ncol,nlay+2) ! temporary near-IR downward direct shortwave flux (w/m2)
+            REAL(KIND=r8) :: znicddir(ncol,nlay+2) ! temporary clear sky near-IR downward direct shortwave flux (w/m2)
             ! Added for near-IR flux diagnostic
-            REAL(KIND=r8) :: znifu(nlay+2) ! temporary near-IR downward shortwave flux (w/m2)
-            REAL(KIND=r8) :: znicu(nlay+2) ! temporary clear sky near-IR downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: znifu(ncol,nlay+2) ! temporary near-IR downward shortwave flux (w/m2)
+            REAL(KIND=r8) :: znicu(ncol,nlay+2) ! temporary clear sky near-IR downward shortwave flux (w/m2)
             ! Optional output fields
             REAL(KIND=r8) :: swnflx(nlay+2) ! Total sky shortwave net flux (W/m2)
             REAL(KIND=r8) :: swnflxc(nlay+2) ! Clear sky shortwave net flux (W/m2)
@@ -414,8 +414,8 @@
             REAL(KIND=r8) :: difdflux(nlay+2) ! Diffuse downward shortwave surface flux
             REAL(KIND=r8) :: uvdflx(nlay+2) ! Total sky downward shortwave flux, UV/vis
             REAL(KIND=r8) :: nidflx(nlay+2) ! Total sky downward shortwave flux, near-IR
-            REAL(KIND=r8) :: zbbfsu(nbndsw,nlay+2) ! temporary upward shortwave flux spectral (w/m2)
-            REAL(KIND=r8) :: zbbfsd(nbndsw,nlay+2) ! temporary downward shortwave flux spectral (w/m2)
+            REAL(KIND=r8) :: zbbfsu(ncol,nbndsw,nlay+2) ! temporary upward shortwave flux spectral (w/m2)
+            REAL(KIND=r8) :: zbbfsd(ncol,nbndsw,nlay+2) ! temporary downward shortwave flux spectral (w/m2)
             ! Output - inactive
             !      real(kind=r8) :: zuvfu(nlay+2)         ! temporary upward UV shortwave flux (w/m2)
             !      real(kind=r8) :: zuvfd(nlay+2)         ! temporary downward UV shortwave flux (w/m2)
@@ -529,156 +529,141 @@
                          co2mult, colch4, colco2, colh2o, colmol, coln2o, &
                          colo2, colo3, fac00, fac01, fac10, fac11, &
                          selffac, selffrac, indself, forfac, forfrac, indfor)
-       !do iplon = 1, ncol         ! reference atmospheres.
-        ! call setcoef_sw(nlay, pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(iplon,:,:), &
-         !                laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
-         !                co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), &
-         !                colo2(iplon,:), colo3(iplon,:), fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
-         !                selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:))
-        !end do
                 ! Cosine of the solar zenith angle
                 !  Prevent using value of zero; ideally, SW model is not called from host model when sun
                 !  is below horizon
        do iplon = 1, ncol
-         cossza = coszen(iplon)
-         if (cossza .lt. zepzen) cossza = zepzen
+         cossza(iplon) = coszen(iplon)
+         if (cossza(iplon) .lt. zepzen) cossza(iplon) = zepzen
                 ! Transfer albedo, cloud and aerosol properties into arrays for 2-stream radiative transfer
                 ! Surface albedo
                 !  Near-IR bands 16-24 and 29 (1-9 and 14), 820-16000 cm-1, 0.625-12.195 microns
                 !         do ib=1,9
          do ib=1,8
-            albdir(ib) = aldir(iplon)
-            albdif(ib) = aldif(iplon)
+            albdir(iplon,ib) = aldir(iplon)
+            albdif(iplon,ib) = aldif(iplon)
          enddo
-         albdir(nbndsw) = aldir(iplon)
-         albdif(nbndsw) = aldif(iplon)
+         albdir(iplon,nbndsw) = aldir(iplon)
+         albdif(iplon,nbndsw) = aldif(iplon)
                 !  Set band 24 (or, band 9 counting from 1) to use linear average of UV/visible
                 !  and near-IR values, since this band straddles 0.7 microns:
-         albdir(9) = 0.5*(aldir(iplon) + asdir(iplon))
-         albdif(9) = 0.5*(aldif(iplon) + asdif(iplon))
+         albdir(iplon,9) = 0.5*(aldir(iplon) + asdir(iplon))
+         albdif(iplon,9) = 0.5*(aldif(iplon) + asdif(iplon))
                 !  UV/visible bands 25-28 (10-13), 16000-50000 cm-1, 0.200-0.625 micron
          do ib=10,13
-            albdir(ib) = asdir(iplon)
-            albdif(ib) = asdif(iplon)
+            albdir(iplon,ib) = asdir(iplon)
+            albdif(iplon,ib) = asdif(iplon)
          enddo
                 ! Clouds
          if (icld.eq.0) then
-            zcldfmc(:,:) = 0._r8
-            ztaucmc(:,:) = 0._r8
-            ztaormc(:,:) = 0._r8
-            zasycmc(:,:) = 0._r8
-            zomgcmc(:,:) = 1._r8
+            zcldfmc(iplon,:,:) = 0._r8
+            ztaucmc(iplon,:,:) = 0._r8
+            ztaormc(iplon,:,:) = 0._r8
+            zasycmc(iplon,:,:) = 0._r8
+            zomgcmc(iplon,:,:) = 1._r8
          elseif (icld.ge.1) then
             do i=1,nlay
                do ig=1,ngptsw
-                  zcldfmc(i,ig) = cldfmc(iplon,ig,i)
-                  ztaucmc(i,ig) = taucmc(iplon,ig,i)
-                  ztaormc(i,ig) = taormc(ig,i)
-                  zasycmc(i,ig) = asmcmc(iplon,ig,i)
-                  zomgcmc(i,ig) = ssacmc(iplon,ig,i)
+                  zcldfmc(iplon,i,ig) = cldfmc(iplon,ig,i)
+                  ztaucmc(iplon,i,ig) = taucmc(iplon,ig,i)
+                  ztaormc(iplon,i,ig) = taormc(ig,i)
+                  zasycmc(iplon,i,ig) = asmcmc(iplon,ig,i)
+                  zomgcmc(iplon,i,ig) = ssacmc(iplon,ig,i)
                enddo
             enddo
          endif   
                 ! Aerosol
                 ! IAER = 0: no aerosols
          if (iaer.eq.0) then
-            ztaua(:,:) = 0._r8
-            zasya(:,:) = 0._r8
-            zomga(:,:) = 1._r8
+            ztaua(iplon,:,:) = 0._r8
+            zasya(iplon,:,:) = 0._r8
+            zomga(iplon,:,:) = 1._r8
                     ! IAER = 6: Use ECMWF six aerosol types. See rrsw_aer.f90 for details.
                     ! Input aerosol optical thickness at 0.55 micron for each aerosol type (ecaer),
                     ! or set manually here for each aerosol and layer.
          elseif (iaer.eq.6) then
-                    !            do i = 1, nlay
-                    !               do ia = 1, naerec
-                    !                  ecaer(iplon,i,ia) = 1.0e-15_r8
-                    !               enddo
-                    !            enddo
-                    !            do i = 1, nlay
-                    !               do ib = 1, nbndsw
-                    !                  ztaua(i,ib) = 0._r8
-                    !                  zasya(i,ib) = 0._r8
-                    !                  zomga(i,ib) = 1._r8
-                    !                  do ia = 1, naerec
-                    !                     ztaua(i,ib) = ztaua(i,ib) + rsrtaua(ib,ia) * ecaer(iplon,i,ia)
-                    !                     zomga(i,ib) = zomga(i,ib) + rsrtaua(ib,ia) * ecaer(iplon,i,ia) * &
-                    !                                   rsrpiza(ib,ia)
-                    !                     zasya(i,ib) = zasya(i,ib) + rsrtaua(ib,ia) * ecaer(iplon,i,ia) * &
-                    !                                   rsrpiza(ib,ia) * rsrasya(ib,ia)
-                    !                  enddo
-                    !                  if (zomga(i,ib) /= 0._r8) then
-                    !                     zasya(i,ib) = zasya(i,ib) / zomga(i,ib)
-                    !                  endif
-                    !                  if (ztaua(i,ib) /= 0._r8) then
-                    !                     zomga(i,ib) = zomga(i,ib) / ztaua(i,ib)
-                    !                  endif
-                    !               enddo
-                    !            enddo
-                    ! IAER=10: Direct specification of aerosol optical properties from GCM
+                    !            do nothing
          elseif (iaer.eq.10) then
             do i = 1 ,nlay
                do ib = 1 ,nbndsw
-                  ztaua(i,ib) = taua(iplon,i,ib)
-                  zasya(i,ib) = asma(iplon,i,ib)
-                  zomga(i,ib) = ssaa(iplon,i,ib)
+                  ztaua(iplon,i,ib) = taua(iplon,i,ib)
+                  zasya(iplon,i,ib) = asma(iplon,i,ib)
+                  zomga(iplon,i,ib) = ssaa(iplon,i,ib)
                enddo
             enddo
          endif
                 ! Call the 2-stream radiation transfer model
          do i=1,nlay+1
-            zbbcu(i) = 0._r8
-            zbbcd(i) = 0._r8
-            zbbfu(i) = 0._r8
-            zbbfd(i) = 0._r8
-            zbbcddir(i) = 0._r8
-            zbbfddir(i) = 0._r8
-            zuvcd(i) = 0._r8
-            zuvfd(i) = 0._r8
-            zuvcddir(i) = 0._r8
-            zuvfddir(i) = 0._r8
-            znicd(i) = 0._r8
-            znifd(i) = 0._r8
-            znicddir(i) = 0._r8
-            znifddir(i) = 0._r8
-            znicu(i) = 0._r8
-            znifu(i) = 0._r8
-            zbbfsu(:,i) = 0._r8
-            zbbfsd(:,i) = 0._r8
+            zbbcu(iplon,i) = 0._r8
+            zbbcd(iplon,i) = 0._r8
+            zbbfu(iplon,i) = 0._r8
+            zbbfd(iplon,i) = 0._r8
+            zbbcddir(iplon,i) = 0._r8
+            zbbfddir(iplon,i) = 0._r8
+            zuvcd(iplon,i) = 0._r8
+            zuvfd(iplon,i) = 0._r8
+            zuvcddir(iplon,i) = 0._r8
+            zuvfddir(iplon,i) = 0._r8
+            znicd(iplon,i) = 0._r8
+            znifd(iplon,i) = 0._r8
+            znicddir(iplon,i) = 0._r8
+            znifddir(iplon,i) = 0._r8
+            znicu(iplon,i) = 0._r8
+            znifu(iplon,i) = 0._r8
+            zbbfsu(iplon,:,i) = 0._r8
+            zbbfsd(iplon,:,i) = 0._r8
          enddo
+      end do
+      !do iplon=1,ncol
+      !  call spcvmc_sw &
+      !     (lchnk, iplon, nlay, istart, iend, icpr, idelm, iout, &
+      !        pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), albdif(iplon,:), albdir(iplon,:), &
+      !        zcldfmc(iplon,:,:), ztaucmc(iplon,:,:), zasycmc(iplon,:,:), zomgcmc(iplon,:,:), ztaormc(iplon,:,:), &
+      !        ztaua(iplon,:,:), zasya(iplon,:,:), zomga(iplon,:,:), cossza(iplon), coldry(iplon,:), wkl(iplon,:,:), adjflux(iplon,:), &	 
+      !        laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
+      !        co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), colo2(iplon,:), colo3(iplon,:), &
+      !        fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+      !        selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:), &
+      !        zbbfd(iplon,:), zbbfu(iplon,:), zbbcd(iplon,:), zbbcu(iplon,:), zuvfd(iplon,:), zuvcd(iplon,:), znifd(iplon,:), znicd(iplon,:), znifu(iplon,:), znicu(iplon,:), &
+      !        zbbfddir(iplon,:), zbbcddir(iplon,:), zuvfddir(iplon,:), zuvcddir(iplon,:), znifddir(iplon,:), znicddir(iplon,:), zbbfsu(iplon,:,:), zbbfsd(iplon,:,:))
+      !          ! Transfer up and down, clear and total sky fluxes to output arrays.
+      !          ! Vertical indexing goes from bottom to top
+      !end do
          call spcvmc_sw &
-             (lchnk, iplon, nlay, istart, iend, icpr, idelm, iout, &
-              pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), albdif, albdir, &
+             (lchnk, ncol, nlay, istart, iend, icpr, idelm, iout, &
+              pavel, tavel, pz, tz, tbound, albdif, albdir, &
               zcldfmc, ztaucmc, zasycmc, zomgcmc, ztaormc, &
-              ztaua, zasya, zomga, cossza, coldry(iplon,:), wkl(iplon,:,:), adjflux(iplon,:), &	 
-              laytrop(iplon), layswtch(iplon), laylow(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
-              co2mult(iplon,:), colch4(iplon,:), colco2(iplon,:), colh2o(iplon,:), colmol(iplon,:), coln2o(iplon,:), colo2(iplon,:), colo3(iplon,:), &
-              fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
-              selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:), indfor(iplon,:), &
+              ztaua, zasya, zomga, cossza, coldry, wkl, adjflux, &	 
+              laytrop, layswtch, laylow, jp, jt, jt1, &
+              co2mult, colch4, colco2, colh2o, colmol, coln2o, colo2, colo3, &
+              fac00, fac01, fac10, fac11, &
+              selffac, selffrac, indself, forfac, forfrac, indfor, &
               zbbfd, zbbfu, zbbcd, zbbcu, zuvfd, zuvcd, znifd, znicd, znifu, znicu, &
               zbbfddir, zbbcddir, zuvfddir, zuvcddir, znifddir, znicddir, zbbfsu, zbbfsd)
                 ! Transfer up and down, clear and total sky fluxes to output arrays.
                 ! Vertical indexing goes from bottom to top
+      do iplon=1,ncol
          do i = 1, nlay+1
-            swuflxc(iplon,i) = zbbcu(i)
-            swdflxc(iplon,i) = zbbcd(i)
-            swuflx(iplon,i) = zbbfu(i)
-            swdflx(iplon,i) = zbbfd(i)
-            swuflxs(:,iplon,i) = zbbfsu(:,i)
-            swdflxs(:,iplon,i) = zbbfsd(:,i)
-            uvdflx(i) = zuvfd(i)
-            nidflx(i) = znifd(i)
+            swuflxc(iplon,i) = zbbcu(iplon,i)
+            swdflxc(iplon,i) = zbbcd(iplon,i)
+            swuflx(iplon,i) = zbbfu(iplon,i)
+            swdflx(iplon,i) = zbbfd(iplon,i)
+            swuflxs(:,iplon,i) = zbbfsu(iplon,:,i)
+            swdflxs(:,iplon,i) = zbbfsd(iplon,:,i)
+            uvdflx(i) = zuvfd(iplon,i)
+            nidflx(i) = znifd(iplon,i)
                     !  Direct/diffuse fluxes
-            dirdflux(i) = zbbfddir(i)
+            dirdflux(i) = zbbfddir(iplon,i)
             difdflux(i) = swdflx(iplon,i) - dirdflux(i)
                     !  UV/visible direct/diffuse fluxes
-            dirdnuv(iplon,i) = zuvfddir(i)
-            difdnuv(iplon,i) = zuvfd(i) - dirdnuv(iplon,i)
+            dirdnuv(iplon,i) = zuvfddir(iplon,i)
+            difdnuv(iplon,i) = zuvfd(iplon,i) - dirdnuv(iplon,i)
                     !  Near-IR direct/diffuse fluxes
-            dirdnir(iplon,i) = znifddir(i)
-            difdnir(iplon,i) = znifd(i) - dirdnir(iplon,i)
+            dirdnir(iplon,i) = znifddir(iplon,i)
+            difdnir(iplon,i) = znifd(iplon,i) - dirdnir(iplon,i)
                     !  Added for net near-IR diagnostic
-            ninflx(iplon,i) = znifd(i) - znifu(i)
-            ninflxc(iplon,i) = znicd(i) - znicu(i)
+            ninflx(iplon,i) = znifd(iplon,i) - znifu(iplon,i)
+            ninflxc(iplon,i) = znicd(iplon,i) - znicu(iplon,i)
          enddo
                 !  Total and clear sky net fluxes
          do i = 1, nlay+1

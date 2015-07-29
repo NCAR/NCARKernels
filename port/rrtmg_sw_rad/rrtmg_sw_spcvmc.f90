@@ -39,7 +39,7 @@
         ! No module extern variables
         ! ---------------------------------------------------------------------------
 
-        SUBROUTINE spcvmc_sw(lchnk, iplon, nlayers, istart, iend, icpr, idelm, iout, pavel, tavel, pz, tz, tbound, palbd, palbp, &
+        SUBROUTINE spcvmc_sw(lchnk, ncol, nlayers, istart, iend, icpr, idelm, iout, pavel, tavel, pz, tz, tbound, palbd, palbp, &
         pcldfmc, ptaucmc, pasycmc, pomgcmc, ptaormc, ptaua, pasya, pomga, prmu0, coldry, wkl, adjflux, laytrop, layswtch, laylow, &
         jp, jt, jt1, co2mult, colch4, colco2, colh2o, colmol, coln2o, colo2, colo3, fac00, fac01, fac10, fac11, selffac, selffrac,&
          indself, forfac, forfrac, indfor, pbbfd, pbbfu, pbbcd, pbbcu, puvfd, puvcd, pnifd, pnicd, pnifu, pnicu, pbbfddir, &
@@ -86,107 +86,107 @@
             ! [0 = direct and diffuse fluxes are unscaled]
             ! [1 = direct and diffuse fluxes are scaled]
             INTEGER, intent(in) :: iout
-            INTEGER, intent(in) :: iplon ! column loop index
-            INTEGER, intent(in) :: laytrop
-            INTEGER, intent(in) :: layswtch
-            INTEGER, intent(in) :: laylow
-            INTEGER, intent(in) :: indfor(:)
-            !   Dimensions: (nlayers)
-            INTEGER, intent(in) :: indself(:)
-            !   Dimensions: (nlayers)
-            INTEGER, intent(in) :: jp(:)
-            !   Dimensions: (nlayers)
-            INTEGER, intent(in) :: jt(:)
-            !   Dimensions: (nlayers)
-            INTEGER, intent(in) :: jt1(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: pavel(:) ! layer pressure (hPa, mb)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: tavel(:) ! layer temperature (K)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: pz(0:) ! level (interface) pressure (hPa, mb)
-            !   Dimensions: (0:nlayers)
-            REAL(KIND=r8), intent(in) :: tz(0:) ! level temperatures (hPa, mb)
-            !   Dimensions: (0:nlayers)
-            REAL(KIND=r8), intent(in) :: tbound ! surface temperature (K)
-            REAL(KIND=r8), intent(in) :: wkl(:,:) ! molecular amounts (mol/cm2)
-            !   Dimensions: (mxmol,nlayers)
-            REAL(KIND=r8), intent(in) :: coldry(:) ! dry air column density (mol/cm2)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: colmol(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: adjflux(:) ! Earth/Sun distance adjustment
-            !   Dimensions: (jpband)
-            REAL(KIND=r8), intent(in) :: palbd(:) ! surface albedo (diffuse)
-            !   Dimensions: (nbndsw)
-            REAL(KIND=r8), intent(in) :: palbp(:) ! surface albedo (direct)
-            !   Dimensions: (nbndsw)
-            REAL(KIND=r8), intent(in) :: prmu0 ! cosine of solar zenith angle
-            REAL(KIND=r8), intent(in) :: pcldfmc(:,:) ! cloud fraction [mcica]
-            !   Dimensions: (nlayers,ngptsw)
-            REAL(KIND=r8), intent(in) :: ptaucmc(:,:) ! cloud optical depth [mcica]
-            !   Dimensions: (nlayers,ngptsw)
-            REAL(KIND=r8), intent(in) :: pasycmc(:,:) ! cloud asymmetry parameter [mcica]
-            !   Dimensions: (nlayers,ngptsw)
-            REAL(KIND=r8), intent(in) :: pomgcmc(:,:) ! cloud single scattering albedo [mcica]
-            !   Dimensions: (nlayers,ngptsw)
-            REAL(KIND=r8), intent(in) :: ptaormc(:,:) ! cloud optical depth, non-delta scaled [mcica]
-            !   Dimensions: (nlayers,ngptsw)
-            REAL(KIND=r8), intent(in) :: ptaua(:,:) ! aerosol optical depth
-            !   Dimensions: (nlayers,nbndsw)
-            REAL(KIND=r8), intent(in) :: pasya(:,:) ! aerosol asymmetry parameter
-            !   Dimensions: (nlayers,nbndsw)
-            REAL(KIND=r8), intent(in) :: pomga(:,:) ! aerosol single scattering albedo
-            !   Dimensions: (nlayers,nbndsw)
-            REAL(KIND=r8), intent(in) :: colh2o(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: colco2(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: colch4(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: co2mult(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: colo3(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: colo2(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: coln2o(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: forfac(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: forfrac(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: selffac(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: selffrac(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: fac00(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: fac01(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: fac10(:)
-            !   Dimensions: (nlayers)
-            REAL(KIND=r8), intent(in) :: fac11(:)
-            !   Dimensions: (nlayers)
+            INTEGER, intent(in) :: ncol ! column loop index
+            INTEGER, intent(in) :: laytrop(ncol)
+            INTEGER, intent(in) :: layswtch(ncol)
+            INTEGER, intent(in) :: laylow(ncol)
+            INTEGER, intent(in) :: indfor(:,:)
+            !   Dimensions: (ncol,nlayers)
+            INTEGER, intent(in) :: indself(:,:)
+            !   Dimensions: (ncol,nlayers)
+            INTEGER, intent(in) :: jp(:,:)
+            !   Dimensions: (ncol,nlayers)
+            INTEGER, intent(in) :: jt(:,:)
+            !   Dimensions: (ncol,nlayers)
+            INTEGER, intent(in) :: jt1(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: pavel(:,:) ! layer pressure (hPa, mb)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: tavel(:,:) ! layer temperature (K)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: pz(:,0:) ! level (interface) pressure (hPa, mb)
+            !   Dimensions: (ncol,0:nlayers)
+            REAL(KIND=r8), intent(in) :: tz(:,0:) ! level temperatures (hPa, mb)
+            !   Dimensions: (ncol,0:nlayers)
+            REAL(KIND=r8), intent(in) :: tbound(ncol) ! surface temperature (K)
+            REAL(KIND=r8), intent(in) :: wkl(:,:,:) ! molecular amounts (mol/cm2)
+            !   Dimensions: (ncol,mxmol,nlayers)
+            REAL(KIND=r8), intent(in) :: coldry(:,:) ! dry air column density (mol/cm2)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: colmol(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: adjflux(:,:) ! Earth/Sun distance adjustment
+            !   Dimensions: (ncol,jpband)
+            REAL(KIND=r8), intent(in) :: palbd(:,:) ! surface albedo (diffuse)
+            !   Dimensions: (ncol,nbndsw)
+            REAL(KIND=r8), intent(in) :: palbp(:,:) ! surface albedo (direct)
+            !   Dimensions: (ncol, nbndsw)
+            REAL(KIND=r8), intent(in) :: prmu0(ncol) ! cosine of solar zenith angle
+            REAL(KIND=r8), intent(in) :: pcldfmc(:,:,:) ! cloud fraction [mcica]
+            !   Dimensions: (ncol,nlayers,ngptsw)
+            REAL(KIND=r8), intent(in) :: ptaucmc(:,:,:) ! cloud optical depth [mcica]
+            !   Dimensions: (ncol,nlayers,ngptsw)
+            REAL(KIND=r8), intent(in) :: pasycmc(:,:,:) ! cloud asymmetry parameter [mcica]
+            !   Dimensions: (ncol,nlayers,ngptsw)
+            REAL(KIND=r8), intent(in) :: pomgcmc(:,:,:) ! cloud single scattering albedo [mcica]
+            !   Dimensions: (ncol,nlayers,ngptsw)
+            REAL(KIND=r8), intent(in) :: ptaormc(:,:,:) ! cloud optical depth, non-delta scaled [mcica]
+            !   Dimensions: (ncol,nlayers,ngptsw)
+            REAL(KIND=r8), intent(in) :: ptaua(:,:,:) ! aerosol optical depth
+            !   Dimensions: (ncol,nlayers,nbndsw)
+            REAL(KIND=r8), intent(in) :: pasya(:,:,:) ! aerosol asymmetry parameter
+            !   Dimensions: (ncol,nlayers,nbndsw)
+            REAL(KIND=r8), intent(in) :: pomga(:,:,:) ! aerosol single scattering albedo
+            !   Dimensions: (ncol,nlayers,nbndsw)
+            REAL(KIND=r8), intent(in) :: colh2o(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: colco2(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: colch4(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: co2mult(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: colo3(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: colo2(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: coln2o(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: forfac(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: forfrac(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: selffac(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: selffrac(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: fac00(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: fac01(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: fac10(:,:)
+            !   Dimensions: (ncol,nlayers)
+            REAL(KIND=r8), intent(in) :: fac11(:,:)
+            !   Dimensions: (ncol,nlayers)
             ! ------- Output -------
             !   All Dimensions: (nlayers+1)
-            REAL(KIND=r8), intent(out) :: pbbcd(:)
-            REAL(KIND=r8), intent(out) :: pbbcu(:)
-            REAL(KIND=r8), intent(out) :: pbbfd(:)
-            REAL(KIND=r8), intent(out) :: pbbfu(:)
-            REAL(KIND=r8), intent(out) :: pbbfddir(:)
-            REAL(KIND=r8), intent(out) :: pbbcddir(:)
-            REAL(KIND=r8), intent(out) :: puvcd(:)
-            REAL(KIND=r8), intent(out) :: puvfd(:)
-            REAL(KIND=r8), intent(out) :: puvcddir(:)
-            REAL(KIND=r8), intent(out) :: puvfddir(:)
-            REAL(KIND=r8), intent(out) :: pnicd(:)
-            REAL(KIND=r8), intent(out) :: pnifd(:)
-            REAL(KIND=r8), intent(out) :: pnicddir(:)
-            REAL(KIND=r8), intent(out) :: pnifddir(:)
+            REAL(KIND=r8), intent(out) :: pbbcd(:,:)
+            REAL(KIND=r8), intent(out) :: pbbcu(:,:)
+            REAL(KIND=r8), intent(out) :: pbbfd(:,:)
+            REAL(KIND=r8), intent(out) :: pbbfu(:,:)
+            REAL(KIND=r8), intent(out) :: pbbfddir(:,:)
+            REAL(KIND=r8), intent(out) :: pbbcddir(:,:)
+            REAL(KIND=r8), intent(out) :: puvcd(:,:)
+            REAL(KIND=r8), intent(out) :: puvfd(:,:)
+            REAL(KIND=r8), intent(out) :: puvcddir(:,:)
+            REAL(KIND=r8), intent(out) :: puvfddir(:,:)
+            REAL(KIND=r8), intent(out) :: pnicd(:,:)
+            REAL(KIND=r8), intent(out) :: pnifd(:,:)
+            REAL(KIND=r8), intent(out) :: pnicddir(:,:)
+            REAL(KIND=r8), intent(out) :: pnifddir(:,:)
             ! Added for net near-IR flux diagnostic
-            REAL(KIND=r8), intent(out) :: pnicu(:)
-            REAL(KIND=r8), intent(out) :: pnifu(:)
+            REAL(KIND=r8), intent(out) :: pnicu(:,:)
+            REAL(KIND=r8), intent(out) :: pnifu(:,:)
             ! Output - inactive                                              !   All Dimensions: (nlayers+1)
             !      real(kind=r8), intent(out) :: puvcu(:)
             !      real(kind=r8), intent(out) :: puvfu(:)
@@ -194,8 +194,8 @@
             !      real(kind=r8), intent(out) :: pvscu(:)
             !      real(kind=r8), intent(out) :: pvsfd(:)
             !      real(kind=r8), intent(out) :: pvsfu(:)
-            REAL(KIND=r8), intent(out) :: pbbfsu(:,:) ! shortwave spectral flux up (nswbands,nlayers+1)
-            REAL(KIND=r8), intent(out) :: pbbfsd(:,:) ! shortwave spectral flux down (nswbands,nlayers+1)
+            REAL(KIND=r8), intent(out) :: pbbfsu(:,:,:) ! shortwave spectral flux up (nswbands,nlayers+1)
+            REAL(KIND=r8), intent(out) :: pbbfsd(:,:,:) ! shortwave spectral flux down (nswbands,nlayers+1)
             ! ------- Local -------
             LOGICAL :: lrtchkclr(nlayers)
             LOGICAL :: lrtchkcld(nlayers)
@@ -208,7 +208,7 @@
             INTEGER :: iw
             INTEGER :: jk
             INTEGER :: jb
-            INTEGER :: jg
+            INTEGER :: jg, iplon
             !      integer, parameter :: nuv = ??
             !      integer, parameter :: nvs = ??
             INTEGER :: itind
@@ -259,9 +259,9 @@
             ! Arrays from rrtmg_sw_taumoln routines
             !      real(kind=r8) :: ztaug(nlayers,16), ztaur(nlayers,16)
             !      real(kind=r8) :: zsflxzen(16)
-            REAL(KIND=r8) :: ztaug(nlayers,ngptsw)
-            REAL(KIND=r8) :: ztaur(nlayers,ngptsw)
-            REAL(KIND=r8) :: zsflxzen(ngptsw)
+            REAL(KIND=r8) :: ztaug(ncol,nlayers,ngptsw)
+            REAL(KIND=r8) :: ztaur(ncol,nlayers,ngptsw)
+            REAL(KIND=r8) :: zsflxzen(ncol,ngptsw)
             ! Arrays from rrtmg_sw_vrtqdr routine
             REAL(KIND=r8) :: zcd(nlayers+1,ngptsw)
             REAL(KIND=r8) :: zcu(nlayers+1,ngptsw)
@@ -276,41 +276,46 @@
       ib1 = istart
       ib2 = iend
       klev = nlayers
-      iw = 0
       repclc = 1.e-12_r8
             !      zincflux = 0.0_r8
+        do iplon=1,ncol
       do jk=1,klev+1
-         pbbcd(jk)=0._r8
-         pbbcu(jk)=0._r8
-         pbbfd(jk)=0._r8
-         pbbfu(jk)=0._r8
-         pbbcddir(jk)=0._r8
-         pbbfddir(jk)=0._r8
-         puvcd(jk)=0._r8
-         puvfd(jk)=0._r8
-         puvcddir(jk)=0._r8
-         puvfddir(jk)=0._r8
-         pnicd(jk)=0._r8
-         pnifd(jk)=0._r8
-         pnicddir(jk)=0._r8
-         pnifddir(jk)=0._r8
-         pnicu(jk)=0._r8
-         pnifu(jk)=0._r8
+         pbbcd(iplon,jk)=0._r8
+         pbbcu(iplon,jk)=0._r8
+         pbbfd(iplon,jk)=0._r8
+         pbbfu(iplon,jk)=0._r8
+         pbbcddir(iplon,jk)=0._r8
+         pbbfddir(iplon,jk)=0._r8
+         puvcd(iplon,jk)=0._r8
+         puvfd(iplon,jk)=0._r8
+         puvcddir(iplon,jk)=0._r8
+         puvfddir(iplon,jk)=0._r8
+         pnicd(iplon,jk)=0._r8
+         pnifd(iplon,jk)=0._r8
+         pnicddir(iplon,jk)=0._r8
+         pnifddir(iplon,jk)=0._r8
+         pnicu(iplon,jk)=0._r8
+         pnifu(iplon,jk)=0._r8
       enddo
+        end do
+        do iplon=1,ncol
             ! Calculate the optical depths for gaseous absorption and Rayleigh scattering
       call taumol_sw(klev, &
-                     colh2o, colco2, colch4, colo2, colo3, colmol, &
-                     laytrop, jp, jt, jt1, &
-                     fac00, fac01, fac10, fac11, &
-                     selffac, selffrac, indself, forfac, forfrac, indfor, &
-                     zsflxzen, ztaug, ztaur)
+                     colh2o(iplon,:), colco2(iplon,:), colch4(iplon,:), colo2(iplon,:), colo3(iplon,:), colmol(iplon,:), &
+                     laytrop(iplon), jp(iplon,:), jt(iplon,:), jt1(iplon,:), &
+                     fac00(iplon,:), fac01(iplon,:), fac10(iplon,:), fac11(iplon,:), &
+                     selffac(iplon,:), selffrac(iplon,:), indself(iplon,:), forfac(iplon,:), forfrac(iplon,:),indfor(iplon,:), &
+                     zsflxzen(iplon,:), ztaug(iplon,:,:), ztaur(iplon,:,:))
             ! Top of shortwave spectral band loop, jb = 16 -> 29; ibm = 1 -> 14
+        end do
+        do iplon=1,ncol
+      iw = 0
       jb = ib1-1                  ! ??? ! ???
       do jb = ib1, ib2
          ibm = jb-15
          igt = ngc(ibm)
                 ! Reinitialize g-point counter for each band if output for each band is requested.
-         if (iout.gt.0.and.ibm.ge.2) iw = ngs(ibm-1)
+         if (iout.gt.0.and.ibm.ge.2) iw= ngs(ibm-1)
                 !        do jk=1,klev+1
                 !           zbbcd(jk)=0.0_r8
                 !           zbbcu(jk)=0.0_r8
@@ -321,7 +326,7 @@
          do jg = 1,igt
             iw = iw+1
                     ! Apply adjustment for correct Earth/Sun distance and zenith angle to incoming solar flux
-            zincflx(iw) = adjflux(jb) * zsflxzen(iw) * prmu0
+            zincflx(iw) = adjflux(iplon,jb) * zsflxzen(iplon,iw) * prmu0(iplon)
                     !             zincflux = zincflux + adjflux(jb) * zsflxzen(iw) * prmu0           ! inactive
                     ! Compute layer reflectances and transmittances for direct and diffuse sources,
                     ! first clear then cloudy
@@ -351,16 +356,16 @@
             zdbtc(klev+1) =0.0_r8
             ztrac(klev+1) =0.0_r8
             ztradc(klev+1)=0.0_r8
-            zrefc(klev+1) =palbp(ibm)
-            zrefdc(klev+1)=palbd(ibm)
-            zrupc(klev+1) =palbp(ibm)
-            zrupdc(klev+1)=palbd(ibm)
+            zrefc(klev+1) =palbp(iplon,ibm)
+            zrefdc(klev+1)=palbd(iplon,ibm)
+            zrupc(klev+1) =palbp(iplon,ibm)
+            zrupdc(klev+1)=palbd(iplon,ibm)
                     ! Cloudy-sky
                     !   Surface values
             ztrao(klev+1) =0.0_r8
             ztrado(klev+1)=0.0_r8
-            zrefo(klev+1) =palbp(ibm)
-            zrefdo(klev+1)=palbd(ibm)
+            zrefo(klev+1) =palbp(iplon,ibm)
+            zrefdo(klev+1)=palbd(iplon,ibm)
                     ! Total sky
                     !   TOA direct beam
             ztdbt(1)=1.0_r8
@@ -369,10 +374,10 @@
             zdbt(klev+1) =0.0_r8
             ztra(klev+1) =0.0_r8
             ztrad(klev+1)=0.0_r8
-            zref(klev+1) =palbp(ibm)
-            zrefd(klev+1)=palbd(ibm)
-            zrup(klev+1) =palbp(ibm)
-            zrupd(klev+1)=palbd(ibm)
+            zref(klev+1) =palbp(iplon,ibm)
+            zrefd(klev+1)=palbd(iplon,ibm)
+            zrup(klev+1) =palbp(iplon,ibm)
+            zrupd(klev+1)=palbd(iplon,ibm)
                     ! Top of layer loop
             do jk=1,klev
                         ! Note: two-stream calculations proceed from top to bottom;
@@ -383,7 +388,7 @@
                lrtchkclr(jk)=.true.
                         !   Do REFTRA only for cloudy layers in profile, since already done for clear layers
                lrtchkcld(jk)=.false.
-               lrtchkcld(jk)=(pcldfmc(ikl,iw) > repclc)
+               lrtchkcld(jk)=(pcldfmc(iplon,ikl,iw) > repclc)
                         ! Clear-sky optical parameters - this section inactive
                         !   Original
                         !               ztauc(jk) = ztaur(ikl,iw) + ztaug(ikl,iw)
@@ -396,20 +401,20 @@
                         !                           ztaur(ikl,iw) * 0.0001_r8) / zomco(jk)
                         !               zomco(jk) = zomco(jk) / ztauo(jk)
                         ! Clear-sky optical parameters including aerosols
-               ztauc(jk) = ztaur(ikl,iw) + ztaug(ikl,iw) + ptaua(ikl,ibm)
-               zomcc(jk) = ztaur(ikl,iw) * 1.0_r8 + ptaua(ikl,ibm) * pomga(ikl,ibm)
-               zgcc(jk) = pasya(ikl,ibm) * pomga(ikl,ibm) * ptaua(ikl,ibm) / zomcc(jk)
+               ztauc(jk) = ztaur(iplon,ikl,iw) + ztaug(iplon,ikl,iw) + ptaua(iplon,ikl,ibm)
+               zomcc(jk) = ztaur(iplon,ikl,iw) * 1.0_r8 + ptaua(iplon,ikl,ibm) * pomga(iplon,ikl,ibm)
+               zgcc(jk) = pasya(iplon,ikl,ibm) * pomga(iplon,ikl,ibm) * ptaua(iplon,ikl,ibm) / zomcc(jk)
                zomcc(jk) = zomcc(jk) / ztauc(jk)
                         ! Pre-delta-scaling clear and cloudy direct beam transmittance (must use 'orig', unscaled cloud OD)
                         !   \/\/\/ This block of code is only needed for unscaled direct beam calculation
                if (idelm .eq. 0) then
                             !
-                  zclear = 1.0_r8 - pcldfmc(ikl,iw)
-                  zcloud = pcldfmc(ikl,iw)
+                  zclear = 1.0_r8 - pcldfmc(iplon,ikl,iw)
+                  zcloud = pcldfmc(iplon,ikl,iw)
                             ! Clear
                             !                   zdbtmc = exp(-ztauc(jk) / prmu0)
                             ! Use exponential lookup table for transmittance, or expansion of exponential for low tau
-                  ze1 = ztauc(jk) / prmu0
+                  ze1 = ztauc(jk) / prmu0(iplon)
                   if (ze1 .le. od_lo) then
                      zdbtmc = 1._r8 - ze1 + 0.5_r8 * ze1 * ze1
                   else 
@@ -420,10 +425,10 @@
                   zdbtc_nodel(jk) = zdbtmc
                   ztdbtc_nodel(jk+1) = zdbtc_nodel(jk) * ztdbtc_nodel(jk)
                             ! Clear + Cloud
-                  tauorig = ztauc(jk) + ptaormc(ikl,iw)
+                  tauorig = ztauc(jk) + ptaormc(iplon,ikl,iw)
                             !                   zdbtmo = exp(-tauorig / prmu0)
                             ! Use exponential lookup table for transmittance, or expansion of exponential for low tau
-                  ze1 = tauorig / prmu0
+                  ze1 = tauorig / prmu0(iplon)
                   if (ze1 .le. od_lo) then
                      zdbtmo = 1._r8 - ze1 + 0.5_r8 * ze1 * ze1
                   else
@@ -444,19 +449,19 @@
                         ! Total sky optical parameters (cloud properties already delta-scaled)
                         !   Use this code if cloud properties are derived in rrtmg_sw_cldprop
                if (icpr .ge. 1) then
-                  ztauo(jk) = ztauc(jk) + ptaucmc(ikl,iw)
-                  zomco(jk) = ztauc(jk) * zomcc(jk) + ptaucmc(ikl,iw) * pomgcmc(ikl,iw) 
-                  zgco (jk) = (ptaucmc(ikl,iw) * pomgcmc(ikl,iw) * pasycmc(ikl,iw) + &
+                  ztauo(jk) = ztauc(jk) + ptaucmc(iplon,ikl,iw)
+                  zomco(jk) = ztauc(jk) * zomcc(jk) + ptaucmc(iplon,ikl,iw) * pomgcmc(iplon,ikl,iw) 
+                  zgco (jk) = (ptaucmc(iplon,ikl,iw) * pomgcmc(iplon,ikl,iw) * pasycmc(iplon,ikl,iw) + &
                               ztauc(jk) * zomcc(jk) * zgcc(jk)) / zomco(jk)
                   zomco(jk) = zomco(jk) / ztauo(jk)
                             ! Total sky optical parameters (if cloud properties not delta scaled)
                             !   Use this code if cloud properties are not derived in rrtmg_sw_cldprop
                elseif (icpr .eq. 0) then
-                  ztauo(jk) = ztaur(ikl,iw) + ztaug(ikl,iw) + ptaua(ikl,ibm) + ptaucmc(ikl,iw)
-                  zomco(jk) = ptaua(ikl,ibm) * pomga(ikl,ibm) + ptaucmc(ikl,iw) * pomgcmc(ikl,iw) + &
-                              ztaur(ikl,iw) * 1.0_r8
-                  zgco (jk) = (ptaucmc(ikl,iw) * pomgcmc(ikl,iw) * pasycmc(ikl,iw) + &
-                              ptaua(ikl,ibm)*pomga(ikl,ibm)*pasya(ikl,ibm)) / zomco(jk)
+                  ztauo(jk) = ztaur(iplon,ikl,iw) + ztaug(iplon,ikl,iw) + ptaua(iplon,ikl,ibm) + ptaucmc(iplon,ikl,iw)
+                  zomco(jk) = ptaua(iplon,ikl,ibm) * pomga(iplon,ikl,ibm) + ptaucmc(iplon,ikl,iw) * pomgcmc(iplon,ikl,iw) + &
+                              ztaur(iplon,ikl,iw) * 1.0_r8
+                  zgco (jk) = (ptaucmc(iplon,ikl,iw) * pomgcmc(iplon,ikl,iw) * pasycmc(iplon,ikl,iw) + &
+                              ptaua(iplon,ikl,ibm)*pomga(iplon,ikl,ibm)*pasya(iplon,ikl,ibm)) / zomco(jk)
                   zomco(jk) = zomco(jk) / ztauo(jk)
                             ! Delta scaling - clouds
                             !   Use only if subroutine rrtmg_sw_cldprop is not used to get cloud properties and to apply delta scaling
@@ -470,17 +475,17 @@
             enddo    
                     ! Clear sky reflectivities
             call reftra_sw (klev, &
-                            lrtchkclr, zgcc, prmu0, ztauc, zomcc, &
+                            lrtchkclr, zgcc, prmu0(iplon), ztauc, zomcc, &
                             zrefc, zrefdc, ztrac, ztradc)
                     ! Total sky reflectivities
             call reftra_sw (klev, &
-                            lrtchkcld, zgco, prmu0, ztauo, zomco, &
+                            lrtchkcld, zgco, prmu0(iplon), ztauo, zomco, &
                             zrefo, zrefdo, ztrao, ztrado)
             do jk=1,klev
                         ! Combine clear and cloudy contributions for total sky
                ikl = klev+1-jk 
-               zclear = 1.0_r8 - pcldfmc(ikl,iw)
-               zcloud = pcldfmc(ikl,iw)
+               zclear = 1.0_r8 - pcldfmc(iplon,ikl,iw)
+               zcloud = pcldfmc(iplon,ikl,iw)
                zref(jk) = zclear*zrefc(jk) + zcloud*zrefo(jk)
                zrefd(jk)= zclear*zrefdc(jk) + zcloud*zrefdo(jk)
                ztra(jk) = zclear*ztrac(jk) + zcloud*ztrao(jk)
@@ -490,7 +495,7 @@
                         !                zdbtmc = exp(-ztauc(jk) / prmu0)
                         ! Use exponential lookup table for transmittance, or expansion of
                         ! exponential for low tau
-               ze1 = ztauc(jk) / prmu0
+               ze1 = ztauc(jk) / prmu0(iplon)
                if (ze1 .le. od_lo) then
                   zdbtmc = 1._r8 - ze1 + 0.5_r8 * ze1 * ze1
                else
@@ -504,7 +509,7 @@
                         !                zdbtmo = exp(-ztauo(jk) / prmu0)
                         ! Use exponential lookup table for transmittance, or expansion of
                         ! exponential for low tau
-               ze1 = ztauo(jk) / prmu0
+               ze1 = ztauo(jk) / prmu0(iplon)
                if (ze1 .le. od_lo) then
                   zdbtmo = 1._r8 - ze1 + 0.5_r8 * ze1 * ze1
                else
@@ -537,69 +542,70 @@
                         !               zbbcd(ikl) = zbbcd(ikl) + zincflx(iw)*zcd(jk,iw)
                         !               zbbfddir(ikl) = zbbfddir(ikl) + zincflx(iw)*ztdbt_nodel(jk)
                         !               zbbcddir(ikl) = zbbcddir(ikl) + zincflx(iw)*ztdbtc_nodel(jk)
-               pbbfsu(ibm,ikl) = pbbfsu(ibm,ikl) + zincflx(iw)*zfu(jk,iw)
-               pbbfsd(ibm,ikl) = pbbfsd(ibm,ikl) + zincflx(iw)*zfd(jk,iw)
+               pbbfsu(iplon,ibm,ikl) = pbbfsu(iplon,ibm,ikl) + zincflx(iw)*zfu(jk,iw)
+               pbbfsd(iplon,ibm,ikl) = pbbfsd(iplon,ibm,ikl) + zincflx(iw)*zfd(jk,iw)
                         ! Accumulate spectral fluxes over whole spectrum
-               pbbfu(ikl) = pbbfu(ikl) + zincflx(iw)*zfu(jk,iw)
-               pbbfd(ikl) = pbbfd(ikl) + zincflx(iw)*zfd(jk,iw)
-               pbbcu(ikl) = pbbcu(ikl) + zincflx(iw)*zcu(jk,iw)
-               pbbcd(ikl) = pbbcd(ikl) + zincflx(iw)*zcd(jk,iw)
+               pbbfu(iplon,ikl) = pbbfu(iplon,ikl) + zincflx(iw)*zfu(jk,iw)
+               pbbfd(iplon,ikl) = pbbfd(iplon,ikl) +zincflx(iw)*zfd(jk,iw)
+               pbbcu(iplon,ikl) = pbbcu(iplon,ikl) + zincflx(iw)*zcu(jk,iw)
+               pbbcd(iplon,ikl) = pbbcd(iplon,ikl) + zincflx(iw)*zcd(jk,iw)
                if (idelm .eq. 0) then
-                  pbbfddir(ikl) = pbbfddir(ikl) + zincflx(iw)*ztdbt_nodel(jk)
-                  pbbcddir(ikl) = pbbcddir(ikl) + zincflx(iw)*ztdbtc_nodel(jk)
+                  pbbfddir(iplon,ikl) = pbbfddir(iplon,ikl) + zincflx(iw)*ztdbt_nodel(jk)
+                  pbbcddir(iplon,ikl) = pbbcddir(iplon,ikl) + zincflx(iw)*ztdbtc_nodel(jk)
                elseif (idelm .eq. 1) then
-                  pbbfddir(ikl) = pbbfddir(ikl) + zincflx(iw)*ztdbt(jk)
-                  pbbcddir(ikl) = pbbcddir(ikl) + zincflx(iw)*ztdbtc(jk)
+                  pbbfddir(iplon,ikl) = pbbfddir(iplon,ikl) + zincflx(iw)*ztdbt(jk)
+                  pbbcddir(iplon,ikl) = pbbcddir(iplon,ikl) + zincflx(iw)*ztdbtc(jk)
                endif
                         ! Accumulate direct fluxes for UV/visible bands
                if (ibm >= 10 .and. ibm <= 13) then
-                  puvcd(ikl) = puvcd(ikl) + zincflx(iw)*zcd(jk,iw)
-                  puvfd(ikl) = puvfd(ikl) + zincflx(iw)*zfd(jk,iw)
+                  puvcd(iplon,ikl) = puvcd(iplon,ikl) + zincflx(iw)*zcd(jk,iw)
+                  puvfd(iplon,ikl) = puvfd(iplon,ikl) + zincflx(iw)*zfd(jk,iw)
                   if (idelm .eq. 0) then
-                     puvfddir(ikl) = puvfddir(ikl) + zincflx(iw)*ztdbt_nodel(jk)
-                     puvcddir(ikl) = puvcddir(ikl) + zincflx(iw)*ztdbtc_nodel(jk)
+                     puvfddir(iplon,ikl) = puvfddir(iplon,ikl) + zincflx(iw)*ztdbt_nodel(jk)
+                     puvcddir(iplon,ikl) = puvcddir(iplon,ikl) + zincflx(iw)*ztdbtc_nodel(jk)
                   elseif (idelm .eq. 1) then
-                     puvfddir(ikl) = puvfddir(ikl) + zincflx(iw)*ztdbt(jk)
-                     puvcddir(ikl) = puvcddir(ikl) + zincflx(iw)*ztdbtc(jk)
+                     puvfddir(iplon,ikl) = puvfddir(iplon,ikl) + zincflx(iw)*ztdbt(jk)
+                     puvcddir(iplon,ikl) = puvcddir(iplon,ikl) + zincflx(iw)*ztdbtc(jk)
                   endif
                             ! band 9 is half-NearIR and half-Visible
                else if (ibm == 9) then  
-                  puvcd(ikl) = puvcd(ikl) + 0.5_r8*zincflx(iw)*zcd(jk,iw)
-                  puvfd(ikl) = puvfd(ikl) + 0.5_r8*zincflx(iw)*zfd(jk,iw)
-                  pnicd(ikl) = pnicd(ikl) + 0.5_r8*zincflx(iw)*zcd(jk,iw)
-                  pnifd(ikl) = pnifd(ikl) + 0.5_r8*zincflx(iw)*zfd(jk,iw)
+                  puvcd(iplon,ikl) = puvcd(iplon,ikl) + 0.5_r8*zincflx(iw)*zcd(jk,iw)
+                  puvfd(iplon,ikl) = puvfd(iplon,ikl) + 0.5_r8*zincflx(iw)*zfd(jk,iw)
+                  pnicd(iplon,ikl) = pnicd(iplon,ikl) + 0.5_r8*zincflx(iw)*zcd(jk,iw)
+                  pnifd(iplon,ikl) = pnifd(iplon,ikl) + 0.5_r8*zincflx(iw)*zfd(jk,iw)
                   if (idelm .eq. 0) then
-                     puvfddir(ikl) = puvfddir(ikl) + 0.5_r8*zincflx(iw)*ztdbt_nodel(jk)
-                     puvcddir(ikl) = puvcddir(ikl) + 0.5_r8*zincflx(iw)*ztdbtc_nodel(jk)
-                     pnifddir(ikl) = pnifddir(ikl) + 0.5_r8*zincflx(iw)*ztdbt_nodel(jk)
-                     pnicddir(ikl) = pnicddir(ikl) + 0.5_r8*zincflx(iw)*ztdbtc_nodel(jk)
+                     puvfddir(iplon,ikl) = puvfddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbt_nodel(jk)
+                     puvcddir(iplon,ikl) = puvcddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbtc_nodel(jk)
+                     pnifddir(iplon,ikl) = pnifddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbt_nodel(jk)
+                     pnicddir(iplon,ikl) = pnicddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbtc_nodel(jk)
                   elseif (idelm .eq. 1) then
-                     puvfddir(ikl) = puvfddir(ikl) + 0.5_r8*zincflx(iw)*ztdbt(jk)
-                     puvcddir(ikl) = puvcddir(ikl) + 0.5_r8*zincflx(iw)*ztdbtc(jk)
-                     pnifddir(ikl) = pnifddir(ikl) + 0.5_r8*zincflx(iw)*ztdbt(jk)
-                     pnicddir(ikl) = pnicddir(ikl) + 0.5_r8*zincflx(iw)*ztdbtc(jk)
+                     puvfddir(iplon,ikl) = puvfddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbt(jk)
+                     puvcddir(iplon,ikl) = puvcddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbtc(jk)
+                     pnifddir(iplon,ikl) = pnifddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbt(jk)
+                     pnicddir(iplon,ikl) = pnicddir(iplon,ikl) + 0.5_r8*zincflx(iw)*ztdbtc(jk)
                   endif
-                  pnicu(ikl) = pnicu(ikl) + 0.5_r8*zincflx(iw)*zcu(jk,iw)
-                  pnifu(ikl) = pnifu(ikl) + 0.5_r8*zincflx(iw)*zfu(jk,iw)
+                  pnicu(iplon,ikl) = pnicu(iplon,ikl) + 0.5_r8*zincflx(iw)*zcu(jk,iw)
+                  pnifu(iplon,ikl) = pnifu(iplon,ikl) + 0.5_r8*zincflx(iw)*zfu(jk,iw)
                             ! Accumulate direct fluxes for near-IR bands
                else if (ibm == 14 .or. ibm <= 8) then  
-                  pnicd(ikl) = pnicd(ikl) + zincflx(iw)*zcd(jk,iw)
-                  pnifd(ikl) = pnifd(ikl) + zincflx(iw)*zfd(jk,iw)
+                  pnicd(iplon,ikl) = pnicd(iplon,ikl) + zincflx(iw)*zcd(jk,iw)
+                  pnifd(iplon,ikl) = pnifd(iplon,ikl) + zincflx(iw)*zfd(jk,iw)
                   if (idelm .eq. 0) then
-                     pnifddir(ikl) = pnifddir(ikl) + zincflx(iw)*ztdbt_nodel(jk)
-                     pnicddir(ikl) = pnicddir(ikl) + zincflx(iw)*ztdbtc_nodel(jk)
+                     pnifddir(iplon,ikl) = pnifddir(iplon,ikl) + zincflx(iw)*ztdbt_nodel(jk)
+                     pnicddir(iplon,ikl) = pnicddir(iplon,ikl) + zincflx(iw)*ztdbtc_nodel(jk)
                   elseif (idelm .eq. 1) then
-                     pnifddir(ikl) = pnifddir(ikl) + zincflx(iw)*ztdbt(jk)
-                     pnicddir(ikl) = pnicddir(ikl) + zincflx(iw)*ztdbtc(jk)
+                     pnifddir(iplon,ikl) = pnifddir(iplon,ikl) + zincflx(iw)*ztdbt(jk)
+                     pnicddir(iplon,ikl) = pnicddir(iplon,ikl) + zincflx(iw)*ztdbtc(jk)
                   endif
                             ! Added for net near-IR flux diagnostic
-                  pnicu(ikl) = pnicu(ikl) + zincflx(iw)*zcu(jk,iw)
-                  pnifu(ikl) = pnifu(ikl) + zincflx(iw)*zfu(jk,iw)
+                  pnicu(iplon,ikl) = pnicu(iplon,ikl) + zincflx(iw)*zcu(jk,iw)
+                  pnifu(iplon,ikl) = pnifu(iplon,ikl) + zincflx(iw)*zfu(jk,iw)
                endif
             enddo
                     ! End loop on jg, g-point interval
          enddo             
                 ! End loop on jb, spectral band
-      enddo                    
+      enddo                   
+        end do 
         END SUBROUTINE spcvmc_sw
     END MODULE rrtmg_sw_spcvmc

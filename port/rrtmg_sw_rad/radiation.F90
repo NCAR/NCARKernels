@@ -31,7 +31,7 @@
         USE radconstants, ONLY: nswbands
         IMPLICIT NONE
         PRIVATE
-        integer, parameter :: maxiter = 1000
+        integer, parameter :: maxiter = 1
         character(len=80), parameter :: kname = "rad_rrtmg_sw"
         PUBLIC radiation_tend
         ! registers radiation physics buffer fields

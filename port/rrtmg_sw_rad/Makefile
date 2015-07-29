@@ -2,7 +2,7 @@
 
 FC := ifort
 #FC_FLAGS := 
-FC_FLAGS := -g -pg -O3 -fp-model fast=2 -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
+FC_FLAGS := 
 
 ALL_OBJS := kernel_driver.o radiation.o kgen_utils.o radsw.o rrsw_kg28.o rrtmg_state.o rrsw_kg25.o rrsw_kg19.o rrtmg_sw_reftra.o rrsw_cld.o parrrsw.o physics_types.o rrsw_tbl.o rrtmg_sw_rad.o rrsw_kg23.o cmparray_mod.o rrsw_con.o rrsw_wvn.o rrsw_kg27.o rrsw_ref.o rrsw_kg24.o rrsw_kg16.o rrsw_vsn.o scamMod.o constituents.o shr_const_mod.o shr_kind_mod.o rrtmg_sw_cldprmc.o rrsw_kg17.o radconstants.o rrsw_kg20.o rrsw_kg29.o rrsw_kg22.o mcica_subcol_gen_sw.o rrtmg_sw_taumol.o camsrfexch.o ppgrid.o rrtmg_sw_vrtqdr.o rrsw_kg26.o rrsw_kg18.o rrsw_kg21.o rrtmg_sw_spcvmc.o physconst.o mcica_random_numbers.o rrtmg_sw_setcoef.o
 
