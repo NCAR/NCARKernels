@@ -215,39 +215,21 @@
             !   Dimensions: (nlayers,ngptsw)
             !      real(kind=r8), intent(out) :: ssa(:,:)             ! single scattering albedo (inactive)
             !   Dimensions: (nlayers,ngptsw)
-     do icol=1,ncol
       hvrtau = '$Revision: 1.2 $'
-                !print*,"ncol :::",ncol
-                ! Calculate gaseous optical depth and planck fractions for each spectral band.
       call taumol16()
-                !print *,'end of taumol 16'
       call taumol17
-                !print *,'end of taumol 17'
       call taumol18
-                !print *,'end of taumol 18'
       call taumol19
-                !print *,'end of taumol 19'
       call taumol20
-                !print *,'end of taumol 20'
       call taumol21
-                !print *,'end of taumol 21'
       call taumol22
-                !print *,'end of taumol 22'
       call taumol23
-                !print *,'end of taumol 23'
       call taumol24
-                !print *,'end of taumol 24'
       call taumol25
-                !print *,'end of taumol 25'
       call taumol26
-                !print *,'end of taumol 26'
       call taumol27
-                !print *,'end of taumol 27'
       call taumol28
-                !print *,'end of taumol 28'
       call taumol29
-                !print *,'end of taumol 29'
-     end do
             !-------------
             CONTAINS
             !-------------
@@ -298,9 +280,7 @@
                 ! vapor self-continuum is interpolated (in temperature) separately.
                 ! Lower atmosphere loop
                 !print*,"taumol 16 :: before lay loop"
-                ! do icol=1,ncol
-                !print*,"icol ::",icol,ncol
-                !print*,"laytrop",laytrop
+     do icol=1,ncol
       do lay = 1, laytrop(icol)
                     !print*,'inside lay loop'
          speccomb = colh2o(icol,lay) + strrat1*colch4(icol,lay)
@@ -362,7 +342,7 @@
             taur(icol,lay,ig) = tauray  
          enddo
       enddo
-                !end do
+     end do
             END SUBROUTINE taumol16
             !----------------------------------------------------------------------------
 
@@ -410,6 +390,7 @@
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
                 ! Lower atmosphere loop
+     do icol=1,ncol 
       do lay = 1, laytrop(icol)
          speccomb = colh2o(icol,lay) + strrat*colco2(icol,lay)
          specparm = colh2o(icol,lay)/speccomb 
@@ -494,6 +475,7 @@
             taur(icol,lay,ngs16+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol17
             !----------------------------------------------------------------------------
 
@@ -540,6 +522,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+     do icol=1,ncol 
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -602,6 +585,7 @@
            taur(icol,lay,ngs17+ig) = tauray
          enddo
        enddo
+      enddo
             END SUBROUTINE taumol18
             !----------------------------------------------------------------------------
 
@@ -648,7 +632,8 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
-      laysolfr = laytrop(icol)
+     do icol=1,ncol 
+     laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
          if (jp(icol,lay) .lt. layreffr .and. jp(icol,lay+1) .ge. layreffr) &
@@ -710,6 +695,7 @@
             taur(icol,lay,ngs18+ig) = tauray   
          enddo
       enddo
+    enddo
             END SUBROUTINE taumol19
             !----------------------------------------------------------------------------
 
@@ -744,6 +730,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+     do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -792,6 +779,7 @@
             taur(icol,lay,ngs19+ig) = tauray 
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol20
             !----------------------------------------------------------------------------
 
@@ -838,6 +826,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+     do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -923,6 +912,7 @@
             taur(icol,lay,ngs20+ig) = tauray
          enddo
       enddo
+    enddo
             END SUBROUTINE taumol21
             !----------------------------------------------------------------------------
 
@@ -975,6 +965,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+     do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -1042,6 +1033,7 @@
             taur(icol,lay,ngs21+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol22
             !----------------------------------------------------------------------------
 
@@ -1074,6 +1066,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+    do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -1110,6 +1103,7 @@
             taur(icol,lay,ngs22+ig) = colmol(icol,lay) * rayl(ig) 
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol23
             !----------------------------------------------------------------------------
 
@@ -1159,6 +1153,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+    do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -1224,6 +1219,7 @@
             taur(icol,lay,ngs23+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol24
             !----------------------------------------------------------------------------
 
@@ -1253,6 +1249,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+    do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -1282,6 +1279,7 @@
             taur(icol,lay,ngs24+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol25
             !----------------------------------------------------------------------------
 
@@ -1304,6 +1302,7 @@
                 ! Compute the optical depth by interpolating in ln(pressure),
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
+     do icol=1,ncol
       laysolfr = laytrop(icol)
                 ! Lower atmosphere loop
       do lay = 1, laytrop(icol)
@@ -1324,6 +1323,7 @@
             taur(icol,lay,ngs25+ig) = colmol(icol,lay) * rayl(ig) 
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol26
             !----------------------------------------------------------------------------
 
@@ -1354,7 +1354,8 @@
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
                 ! Lower atmosphere loop
-      do lay = 1, laytrop(icol)
+      do icol=1,ncol
+       do lay = 1, laytrop(icol)
          ind0 = ((jp(icol,lay)-1)*5+(jt(icol,lay)-1))*nspa(27) + 1
          ind1 = (jp(icol,lay)*5+(jt1(icol,lay)-1))*nspa(27) + 1
          do ig = 1, ng27
@@ -1387,6 +1388,7 @@
             taur(icol,lay,ngs26+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol27
             !----------------------------------------------------------------------------
 
@@ -1430,7 +1432,8 @@
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
                 ! Lower atmosphere loop
-      do lay = 1, laytrop(icol)
+      do icol=1,ncol
+        do lay = 1, laytrop(icol)
          speccomb = colo3(icol,lay) + strrat*colo2(icol,lay)
          specparm = colo3(icol,lay)/speccomb 
          if (specparm .ge. oneminus) specparm = oneminus
@@ -1500,6 +1503,7 @@
             taur(icol,lay,ngs27+ig) = tauray
          enddo
       enddo
+    enddo
             END SUBROUTINE taumol28
             !----------------------------------------------------------------------------
 
@@ -1535,7 +1539,8 @@
                 ! temperature, and appropriate species.  Below LAYTROP, the water
                 ! vapor self-continuum is interpolated (in temperature) separately.
                 ! Lower atmosphere loop
-      do lay = 1, laytrop(icol)
+      do icol=1,ncol
+       do lay = 1, laytrop(icol)
          ind0 = ((jp(icol,lay)-1)*5+(jt(icol,lay)-1))*nspa(29) + 1
          ind1 = (jp(icol,lay)*5+(jt1(icol,lay)-1))*nspa(29) + 1
          inds = indself(icol,lay)
@@ -1578,6 +1583,7 @@
             taur(icol,lay,ngs28+ig) = tauray
          enddo
       enddo
+     enddo
             END SUBROUTINE taumol29
         END SUBROUTINE taumol_sw
     END MODULE rrtmg_sw_taumol

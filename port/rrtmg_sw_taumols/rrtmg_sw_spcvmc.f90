@@ -167,7 +167,7 @@
             ! shortwave spectral flux up (nswbands,nlayers+1)
             ! shortwave spectral flux down (nswbands,nlayers+1)
             ! ------- Local -------
-            INTEGER :: klev
+            INTEGER :: klev,maxiter=100
             !      integer, parameter :: nuv = ??
             !      integer, parameter :: nvs = ??
             !     real(kind=r8) :: zincflux                                   ! inactive
@@ -213,12 +213,12 @@
             CALL kgen_verify_real_r8_dim2( "zsflxzen", check_status, zsflxzen, ref_zsflxzen)
             CALL kgen_print_check("taumol_sw", check_status)
             CALL system_clock(start_clock, rate_clock)
-            DO kgen_intvar=1,10
+            DO kgen_intvar=1,maxiter
                 CALL taumol_sw(ncol, klev, colh2o, colco2, colch4, colo2, colo3, colmol, laytrop, jp, jt, jt1, fac00, fac01, fac10, fac11, selffac, selffrac, indself, forfac, forfrac, indfor, zsflxzen, ztaug, ztaur)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*maxiter)
             ! ??? ! ???
         CONTAINS
 
