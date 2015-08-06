@@ -63,6 +63,7 @@
         IMPLICIT NONE
         ! public interfaces/functions/subroutines
         !      public :: rrtmg_sw, inatm_sw, earth_sun
+
         PUBLIC rrtmg_sw
         !------------------------------------------------------------------
         CONTAINS
@@ -179,6 +180,9 @@
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
+            character(len=1024), parameter :: kname ='rrtmg_sw_inatm'
+            integer, parameter :: maxiter = 100
+
             ! chunk identifier
             INTEGER, intent(in) :: ncol ! Number of horizontal columns
             INTEGER, intent(in) :: nlay ! Number of model layers
@@ -571,12 +575,13 @@
             CALL kgen_verify_real_r8_dim3( "fsfcmc", check_status, fsfcmc, ref_fsfcmc)
             CALL kgen_print_check("inatm_sw", check_status)
             CALL system_clock(start_clock, rate_clock)
-            DO kgen_intvar=1,10
+            DO kgen_intvar=1,maxiter
                 CALL inatm_sw(1, ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, adjes, dyofyr, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, ssaaer, asmaer, pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, adjflux, inflag, iceflag, liqflag, cldfmc, taucmc, ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua, ssaa, asma)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            PRINT *, TRIM(kname), ": Total Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
+            PRINT *, TRIM(kname), ": Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*real(maxiter,kind=r8))
             !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
             !  input cloud physical properties.  Select method based on choices described
             !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle
