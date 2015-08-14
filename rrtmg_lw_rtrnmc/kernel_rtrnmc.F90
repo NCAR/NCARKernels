@@ -1,0 +1,845 @@
+    MODULE resolvers
+
+
+    ! RESOLVER SPECS
+    INTEGER, PARAMETER :: r8 = selected_real_kind(12)
+    INTEGER, PARAMETER :: ngptlw = 140
+    INTEGER, PARAMETER :: nbndlw = 16
+    REAL(KIND = r8), PARAMETER :: tblint = 10000.0_r8
+    INTEGER, PARAMETER :: ntbl = 10000
+
+    END MODULE
+
+    PROGRAM kernel_rtrnmc
+    USE resolvers
+
+    IMPLICIT NONE
+
+
+    INTEGER :: kgen_mpi_rank
+    CHARACTER(LEN=16) ::kgen_mpi_rank_conv
+    INTEGER, DIMENSION(2), PARAMETER :: kgen_mpi_rank_at = (/ 0,1 /)
+    INTEGER :: kgen_ierr, kgen_unit, kgen_get_newunit
+    INTEGER :: kgen_repeat_counter
+    INTEGER :: kgen_counter
+    CHARACTER(LEN=16) :: kgen_counter_conv
+    INTEGER, DIMENSION(1), PARAMETER :: kgen_counter_at = (/ 10 /)
+    CHARACTER(LEN=1024) :: kgen_filepath
+    INTEGER, DIMENSION(2,10) :: kgen_bound
+
+
+    ! DRIVER SPECS
+    INTEGER :: nlay
+
+    DO kgen_repeat_counter = 1, 2
+        kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 1)+1)
+        WRITE( kgen_counter_conv, * ) kgen_counter
+        kgen_mpi_rank = kgen_mpi_rank_at(mod(kgen_repeat_counter, 2)+1)
+        WRITE( kgen_mpi_rank_conv, * ) kgen_mpi_rank
+
+        kgen_filepath = "./rtrnmc." // trim(adjustl(kgen_counter_conv)) // "." // trim(adjustl(kgen_mpi_rank_conv))
+        kgen_unit = kgen_get_newunit(kgen_mpi_rank+kgen_counter)
+        OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
+        WRITE (*,*) "Kernel output is being verified against " // trim(adjustl(kgen_filepath))
+        IF ( kgen_ierr /= 0 ) THEN
+            CALL kgen_error_stop( "FILE OPEN ERROR: " // trim(adjustl(kgen_filepath)) )
+        END IF
+        ! READ DRIVER INSTATE
+
+        READ(UNIT = kgen_unit) nlay
+        print *, "nlay = ", nlay
+
+        ! KERNEL DRIVER RUN
+        CALL kernel_driver(nlay, kgen_unit)
+        CLOSE (UNIT=kgen_unit)
+
+        WRITE (*,*)
+    END DO
+    END PROGRAM kernel_rtrnmc
+
+    ! KERNEL DRIVER SUBROUTINE
+    SUBROUTINE kernel_driver(nlay, kgen_unit)
+    USE resolvers
+
+    IMPLICIT NONE
+    INTEGER, INTENT(IN) :: kgen_unit
+    INTEGER, DIMENSION(2,10) :: kgen_bound
+    INTEGER, PARAMETER :: ncols = 8
+
+    ! STATE SPECS
+    CHARACTER*18 :: hvrrtc
+    INTEGER, INTENT(IN) :: nlay
+    REAL(KIND = r8) :: pwvcm
+    REAL(KIND = r8) :: bpade
+    INTEGER :: ncbands
+    REAL(KIND = r8), DIMENSION(0 : ntbl) :: exp_tbl
+    REAL(KIND = r8) :: totdflux(0 : nlay)
+    REAL(KIND = r8) :: fnetc(0 : nlay)
+    REAL(KIND = r8) :: htr(0 : nlay)
+    REAL(KIND = r8) :: plankbnd(nbndlw)
+    INTEGER :: istart
+    INTEGER :: ngb(ngptlw)
+    REAL(KIND = r8) :: pz(0 : nlay)
+    REAL(KIND = r8) :: totdclfl(0 : nlay)
+    REAL(KIND = r8) :: fracs(nlay, ngptlw)
+    INTEGER :: ngs(nbndlw)
+
+
+    integer :: itmax=5000
+    integer :: it, iplon
+
+    integer*8 c1,c2,cr,cm
+    real(kind=8) :: dt
+
+    real(kind=r8), allocatable  :: planklay_(:,:,:)
+    real(kind=r8), allocatable  :: planklev_(:,:,:)
+
+    real(kind=r8)  :: fracs_(ncols,nlay,ngptlw)
+    real(kind=r8)  ::  taut_(ncols,nlay,ngptlw)
+
+    real(kind=r8)  :: cldfmc_(ncols,ngptlw,nlay)
+    real(kind=r8)  :: taucmc_(ncols,ngptlw,nlay)
+
+    real(kind=r8)  ::       pz_(ncols,0:nlay)
+    real(kind=r8)  :: totuflux_(ncols,0:nlay)
+    real(kind=r8)  :: totdflux_(ncols,0:nlay)
+    real(kind=r8)  ::     fnet_(ncols,0:nlay)
+    real(kind=r8)  ::      htr_(ncols,0:nlay)
+    real(kind=r8)  :: totuclfl_(ncols,0:nlay)
+    real(kind=r8)  :: totdclfl_(ncols,0:nlay)
+    real(kind=r8)  ::    fnetc_(ncols,0:nlay)
+    real(kind=r8)  ::     htrc_(ncols,0:nlay)
+
+    real(kind=r8), allocatable  :: totufluxs_(:,:,:)
+    real(kind=r8), allocatable  :: totdfluxs_(:,:,:)
+
+
+    REAL(KIND = r8) :: totdfluxs(nbndlw, 0 : nlay)
+    REAL(KIND = r8) :: fluxfac
+    REAL(KIND = r8) :: heatfac
+    REAL(KIND = r8) :: taut(nlay, ngptlw)
+    REAL(KIND = r8) :: semiss(nbndlw)
+    REAL(KIND = r8) :: totufluxs(nbndlw, 0 : nlay)
+    REAL(KIND = r8) :: taucmc(ngptlw, nlay)
+    REAL(KIND = r8) :: planklay(nlay, nbndlw)
+    REAL(KIND = r8) :: totuclfl(0 : nlay)
+    REAL(KIND = r8) :: htrc(0 : nlay)
+    REAL(KIND = r8), DIMENSION(0 : ntbl) :: tfn_tbl
+    REAL(KIND = r8) :: fnet(0 : nlay)
+    REAL(KIND = r8) :: planklev(0 : nlay, nbndlw)
+    INTEGER :: iout
+    REAL(KIND = r8) :: cldfmc(ngptlw, nlay)
+    REAL(KIND = r8) :: totuflux(0 : nlay)
+    REAL(KIND = r8), DIMENSION(0 : ntbl) :: tau_tbl
+    REAL(KIND = r8) :: delwave(nbndlw)
+    INTEGER :: iend
+    INTEGER :: outstate_ncbands
+    REAL(KIND = r8) :: outstate_totdflux(0 : nlay)
+    REAL(KIND = r8) :: outstate_fnetc(0 : nlay)
+    REAL(KIND = r8) :: outstate_htr(0 : nlay)
+    REAL(KIND = r8) :: outstate_totdclfl(0 : nlay)
+    REAL(KIND = r8) :: outstate_totdfluxs(nbndlw, 0 : nlay)
+    REAL(KIND = r8) :: outstate_totufluxs(nbndlw, 0 : nlay)
+    REAL(KIND = r8) :: outstate_totuclfl(0 : nlay)
+    REAL(KIND = r8) :: outstate_htrc(0 : nlay)
+    REAL(KIND = r8) :: outstate_fnet(0 : nlay)
+    REAL(KIND = r8) :: outstate_totuflux(0 : nlay)
+    ! READ CALLER INSTATE
+
+    READ(UNIT = kgen_unit) pwvcm
+    READ(UNIT = kgen_unit) ncbands
+    READ(UNIT = kgen_unit) plankbnd
+    READ(UNIT = kgen_unit) istart
+    READ(UNIT = kgen_unit) pz
+    READ(UNIT = kgen_unit) fracs
+    READ(UNIT = kgen_unit) taut
+    READ(UNIT = kgen_unit) semiss
+    READ(UNIT = kgen_unit) taucmc
+    READ(UNIT = kgen_unit) planklay
+    READ(UNIT = kgen_unit) planklev
+    READ(UNIT = kgen_unit) iout
+    READ(UNIT = kgen_unit) cldfmc
+    READ(UNIT = kgen_unit) iend
+    print *, "istart, iend =", istart, iend
+    ! READ CALLEE INSTATE
+
+    READ(UNIT = kgen_unit) hvrrtc
+    READ(UNIT = kgen_unit) bpade
+    READ(UNIT = kgen_unit) exp_tbl
+    READ(UNIT = kgen_unit) ngb
+    READ(UNIT = kgen_unit) ngs
+    READ(UNIT = kgen_unit) fluxfac
+    READ(UNIT = kgen_unit) heatfac
+    READ(UNIT = kgen_unit) tfn_tbl
+    READ(UNIT = kgen_unit) tau_tbl
+    READ(UNIT = kgen_unit) delwave
+    ! READ CALLEE OUTSTATE
+
+    ! READ CALLER OUTSTATE
+
+    READ(UNIT = kgen_unit) outstate_ncbands
+    READ(UNIT = kgen_unit) outstate_totdflux
+    READ(UNIT = kgen_unit) outstate_fnetc
+    READ(UNIT = kgen_unit) outstate_htr
+    READ(UNIT = kgen_unit) outstate_totdclfl
+    READ(UNIT = kgen_unit) outstate_totdfluxs
+    READ(UNIT = kgen_unit) outstate_totufluxs
+    READ(UNIT = kgen_unit) outstate_totuclfl
+    READ(UNIT = kgen_unit) outstate_htrc
+    READ(UNIT = kgen_unit) outstate_fnet
+    READ(UNIT = kgen_unit) outstate_totuflux
+
+    allocate ( planklay_( ncols,nlay,istart:iend) )
+    allocate ( planklev_( ncols,0:nlay,istart:iend) )
+    allocate ( totufluxs_( ncols,istart:iend,0:nlay) )
+    allocate ( totdfluxs_( ncols,istart:iend,0:nlay) )
+
+    ! KERNEL RUN
+    call system_clock(c1,cr,cm)
+    DO iplon=1,ncols
+      pz_(iplon,:)         = pz(:)
+      cldfmc_(iplon,:,:)   = cldfmc(:,:)
+      taucmc_(iplon,:,:)   = taucmc(:,:)
+      planklay_(iplon,:,:) = planklay(:,:)
+      planklev_(iplon,:,:) = planklev(:,:)
+      fracs_(iplon,:,:)    = fracs(:,:)
+      taut_(iplon,:,:)     = taut(:,:)
+    ENDDO
+
+    do it=1,itmax
+      call rtrnmc(ncols, nlay, istart, iend, iout, ngptlw, pz_, semiss, ncbands, cldfmc_, taucmc_, planklay_, planklev_, plankbnd, pwvcm, &
+                         fracs_, taut_, totuflux_, totdflux_, fnet_, htr_, totuclfl_, totdclfl_, fnetc_, htrc_, totufluxs_, totdfluxs_)
+    enddo
+
+    call system_clock(c2,cr,cm)
+    dt = dble(c2-c1)/dble(cr)
+    print *, ' time per call with ncols (usec): ',1.e6*dt/dble(itmax*ncols)
+
+#ifdef DIAGNOSTICS
+    ! STATE VERIFICATION
+    IF ( outstate_ncbands == ncbands ) THEN
+        WRITE(*,*) "ncbands is IDENTICAL( ", outstate_ncbands, " )."
+    ELSE
+        WRITE(*,*) "ncbands is NOT IDENTICAL."
+        WRITE(*,*) "STATE : ", outstate_ncbands
+        WRITE(*,*) "KERNEL: ", ncbands
+    END IF
+    IF ( ALL( outstate_totdflux == totdflux ) ) THEN
+        WRITE(*,*) "All elements of totdflux are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totdflux
+        !WRITE(*,*) "KERNEL: ", totdflux
+        IF ( ALL( outstate_totdflux == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totdflux is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totdflux /= totdflux), " of ", size( totdflux ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totdflux - totdflux)**2)/real(size(outstate_totdflux)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totdflux - totdflux))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totdflux - totdflux))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totdflux is ", sum(totdflux)/real(size(totdflux))
+        WRITE(*,*) "Mean value of original outstate_totdflux is ", sum(outstate_totdflux)/real(size(outstate_totdflux))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_fnetc == fnetc ) ) THEN
+        WRITE(*,*) "All elements of fnetc are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_fnetc
+        !WRITE(*,*) "KERNEL: ", fnetc
+        IF ( ALL( outstate_fnetc == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "fnetc is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_fnetc /= fnetc), " of ", size( fnetc ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_fnetc - fnetc)**2)/real(size(outstate_fnetc)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_fnetc - fnetc))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_fnetc - fnetc))
+        WRITE(*,*) "Mean value of kernel-generated outstate_fnetc is ", sum(fnetc)/real(size(fnetc))
+        WRITE(*,*) "Mean value of original outstate_fnetc is ", sum(outstate_fnetc)/real(size(outstate_fnetc))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_htr == htr ) ) THEN
+        WRITE(*,*) "All elements of htr are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_htr
+        !WRITE(*,*) "KERNEL: ", htr
+        IF ( ALL( outstate_htr == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "htr is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_htr /= htr), " of ", size( htr ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_htr - htr)**2)/real(size(outstate_htr)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_htr - htr))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_htr - htr))
+        WRITE(*,*) "Mean value of kernel-generated outstate_htr is ", sum(htr)/real(size(htr))
+        WRITE(*,*) "Mean value of original outstate_htr is ", sum(outstate_htr)/real(size(outstate_htr))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_totdclfl == totdclfl ) ) THEN
+        WRITE(*,*) "All elements of totdclfl are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totdclfl
+        !WRITE(*,*) "KERNEL: ", totdclfl
+        IF ( ALL( outstate_totdclfl == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totdclfl is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totdclfl /= totdclfl), " of ", size( totdclfl ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totdclfl - totdclfl)**2)/real(size(outstate_totdclfl)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totdclfl - totdclfl))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totdclfl - totdclfl))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totdclfl is ", sum(totdclfl)/real(size(totdclfl))
+        WRITE(*,*) "Mean value of original outstate_totdclfl is ", sum(outstate_totdclfl)/real(size(outstate_totdclfl))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_totdfluxs == totdfluxs ) ) THEN
+        WRITE(*,*) "All elements of totdfluxs are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totdfluxs
+        !WRITE(*,*) "KERNEL: ", totdfluxs
+        IF ( ALL( outstate_totdfluxs == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totdfluxs is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totdfluxs /= totdfluxs), " of ", size( totdfluxs ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totdfluxs - totdfluxs)**2)/real(size(outstate_totdfluxs)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totdfluxs - totdfluxs))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totdfluxs - totdfluxs))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totdfluxs is ", sum(totdfluxs)/real(size(totdfluxs))
+        WRITE(*,*) "Mean value of original outstate_totdfluxs is ", sum(outstate_totdfluxs)/real(size(outstate_totdfluxs))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_totufluxs == totufluxs ) ) THEN
+        WRITE(*,*) "All elements of totufluxs are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totufluxs
+        !WRITE(*,*) "KERNEL: ", totufluxs
+        IF ( ALL( outstate_totufluxs == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totufluxs is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totufluxs /= totufluxs), " of ", size( totufluxs ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totufluxs - totufluxs)**2)/real(size(outstate_totufluxs)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totufluxs - totufluxs))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totufluxs - totufluxs))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totufluxs is ", sum(totufluxs)/real(size(totufluxs))
+        WRITE(*,*) "Mean value of original outstate_totufluxs is ", sum(outstate_totufluxs)/real(size(outstate_totufluxs))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_totuclfl == totuclfl ) ) THEN
+        WRITE(*,*) "All elements of totuclfl are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totuclfl
+        !WRITE(*,*) "KERNEL: ", totuclfl
+        IF ( ALL( outstate_totuclfl == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totuclfl is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totuclfl /= totuclfl), " of ", size( totuclfl ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totuclfl - totuclfl)**2)/real(size(outstate_totuclfl)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totuclfl - totuclfl))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totuclfl - totuclfl))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totuclfl is ", sum(totuclfl)/real(size(totuclfl))
+        WRITE(*,*) "Mean value of original outstate_totuclfl is ", sum(outstate_totuclfl)/real(size(outstate_totuclfl))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_htrc == htrc ) ) THEN
+        WRITE(*,*) "All elements of htrc are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_htrc
+        !WRITE(*,*) "KERNEL: ", htrc
+        IF ( ALL( outstate_htrc == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "htrc is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_htrc /= htrc), " of ", size( htrc ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_htrc - htrc)**2)/real(size(outstate_htrc)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_htrc - htrc))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_htrc - htrc))
+        WRITE(*,*) "Mean value of kernel-generated outstate_htrc is ", sum(htrc)/real(size(htrc))
+        WRITE(*,*) "Mean value of original outstate_htrc is ", sum(outstate_htrc)/real(size(outstate_htrc))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_fnet == fnet ) ) THEN
+        WRITE(*,*) "All elements of fnet are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_fnet
+        !WRITE(*,*) "KERNEL: ", fnet
+        IF ( ALL( outstate_fnet == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "fnet is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_fnet /= fnet), " of ", size( fnet ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_fnet - fnet)**2)/real(size(outstate_fnet)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_fnet - fnet))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_fnet - fnet))
+        WRITE(*,*) "Mean value of kernel-generated outstate_fnet is ", sum(fnet)/real(size(fnet))
+        WRITE(*,*) "Mean value of original outstate_fnet is ", sum(outstate_fnet)/real(size(outstate_fnet))
+        WRITE(*,*) ""
+    END IF
+    IF ( ALL( outstate_totuflux == totuflux ) ) THEN
+        WRITE(*,*) "All elements of totuflux are IDENTICAL."
+        !WRITE(*,*) "STATE : ", outstate_totuflux
+        !WRITE(*,*) "KERNEL: ", totuflux
+        IF ( ALL( outstate_totuflux == 0 ) ) THEN
+            WRITE(*,*) "All values are zero."
+        END IF
+    ELSE
+        WRITE(*,*) "totuflux is NOT IDENTICAL."
+        WRITE(*,*) count( outstate_totuflux /= totuflux), " of ", size( totuflux ), " elements are different."
+        WRITE(*,*) "RMS of difference is ", sqrt(sum((outstate_totuflux - totuflux)**2)/real(size(outstate_totuflux)))
+        WRITE(*,*) "Minimum difference is ", minval(abs(outstate_totuflux - totuflux))
+        WRITE(*,*) "Maximum difference is ", maxval(abs(outstate_totuflux - totuflux))
+        WRITE(*,*) "Mean value of kernel-generated outstate_totuflux is ", sum(totuflux)/real(size(totuflux))
+        WRITE(*,*) "Mean value of original outstate_totuflux is ", sum(outstate_totuflux)/real(size(outstate_totuflux))
+        WRITE(*,*) ""
+    END IF
+#endif
+
+    ! DEALLOCATE INSTATE
+
+    ! DEALLOCATE OUTSTATE
+    ! DEALLOCATE CALLEE INSTATE
+
+    ! DEALLOCATE INSTATE
+    ! DEALLOCATE CALEE OUTSTATE
+
+    ! DEALLOCATE OUTSTATE
+
+    CONTAINS
+
+
+    ! KERNEL SUBPROGRAM
+   subroutine rtrnmc(ncols, nlayers, istart, iend, iout, ngptlw, pz, semiss, ncbands, cldfmc, taucmc, planklay, planklev, plankbnd, &
+                     pwvcm, fracs, taut, totuflux, totdflux, fnet, htr, totuclfl, totdclfl, fnetc, htrc, totufluxs, totdfluxs )
+
+#define ncols_ ncols
+#define nlayers_ nlayers
+#define ngptlw_ ngptlw
+#define istart_ istart
+#define iend_   iend
+
+        integer, intent(in) :: ncols
+        integer, intent(in) :: nlayers
+        integer, intent(in) :: istart
+        integer, intent(in) :: iend
+        integer, intent(in) :: iout
+        integer, intent(in) :: ncbands
+        integer, intent(in) :: ngptlw
+
+        real(kind=r8), intent(in) :: pz(ncols_,0:nlayers_)
+        real(kind=r8), intent(in) :: pwvcm
+
+        real(kind=r8), intent(in)  ::   planklay(ncols_,nlayers_,istart_:iend_)
+        real(kind=r8), intent(in)  :: planklev(ncols_,0:nlayers_,istart_:iend_)
+
+        real(kind=r8), intent(in)  ::   semiss(istart_:iend_)
+        real(kind=r8), intent(in)  :: plankbnd(istart_:iend_)
+
+        real(kind=r8), intent(in)  :: fracs(ncols_,nlayers_,ngptlw_)
+        real(kind=r8), intent(in)  ::  taut(ncols_,nlayers_,ngptlw_)
+
+        real(kind=r8), intent(in)  :: cldfmc(ncols_,ngptlw_,nlayers_)
+        real(kind=r8), intent(in)  :: taucmc(ncols_,ngptlw_,nlayers_)
+        real(kind=r8), intent(out) :: totuflux(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) :: totdflux(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) ::     fnet(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) ::      htr(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) :: totuclfl(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) :: totdclfl(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) ::    fnetc(ncols_,0:nlayers_)
+        real(kind=r8), intent(out) ::     htrc(ncols_,0:nlayers_)
+
+        real(kind=r8), intent(out) :: totufluxs(ncols_,istart_:iend_,0:nlayers_)
+        real(kind=r8), intent(out) :: totdfluxs(ncols_,istart_:iend_,0:nlayers_)
+
+        real(kind=r8) ::   abscld(ncols_,nlayers_,ngptlw_)
+        real(kind=r8) :: efclfrac(ncols_,nlayers_,ngptlw_)
+        real(kind=r8) ::    odcld(ncols_,nlayers_,ngptlw_)
+
+        real(kind=r8) ::   atot(ncols_,nlayers_)
+        real(kind=r8) :: atrans(ncols_,nlayers_)
+        real(kind=r8) :: bbugas(ncols_,nlayers_)
+        real(kind=r8) :: bbutot(ncols_,nlayers_)
+
+        logical       :: lcldlyr(ncols_,nlayers_)
+
+        real(kind=r8) :: clrurad(ncols_,0:nlayers_)
+        real(kind=r8) :: clrdrad(ncols_,0:nlayers_)
+        real(kind=r8) ::   uflux(ncols_,0:nlayers_)
+        real(kind=r8) ::   dflux(ncols_,0:nlayers_)
+        real(kind=r8) ::    urad(ncols_,0:nlayers_)
+        real(kind=r8) ::    drad(ncols_,0:nlayers_)
+        real(kind=r8) ::   uclfl(ncols_,0:nlayers_)
+        real(kind=r8) ::   dclfl(ncols_,0:nlayers_)
+
+        real(kind=r8) ::     blay(ncols_)
+        real(kind=r8) ::   plfrac(ncols_)
+        real(kind=r8) :: dplankup(ncols_)
+        real(kind=r8) :: dplankdn(ncols_)
+        real(kind=r8) ::   odepth(ncols_)
+        real(kind=r8) ::  radclru(ncols_)
+        real(kind=r8) ::    radlu(ncols_)
+        real(kind=r8) ::      bbd(ncols_)
+        real(kind=r8) ::  radclrd(ncols_)
+        real(kind=r8) ::    radld(ncols_)
+
+        logical       ::   lclddn(ncols_)
+        logical       ::    path1(ncols_)
+        logical       ::    path2(ncols_)
+        logical       ::    path3(ncols_)
+
+        real(kind=r8) :: secdiff(nbndlw)
+        real(kind=r8) ::      a0(nbndlw)
+        real(kind=r8) ::      a1(nbndlw)
+        real(kind=r8) ::      a2(nbndlw)
+
+        real(kind=r8) :: wtdiff, rec_6, transcld, odtot, odepth_rec, odtot_rec, gassrc
+        real(kind=r8) ::  tblind, tfactot, bbdtot, tfacgas, transc, tausfac, rad0, reflect
+        
+        integer :: ibnd, ib, iband, lay, lev, l, ig, iplon, igc, ittot, itgas, itr
+
+        data wtdiff /0.5_r8/
+        data rec_6 /0.166667_r8/
+
+        data a0 / 1.66_r8,  1.55_r8,  1.58_r8,  1.66_r8,  1.54_r8,  1.454_r8,  1.89_r8,  1.33_r8,  1.668_r8,  1.66_r8,  &
+                  1.66_r8,  1.66_r8,  1.66_r8,  1.66_r8,  1.66_r8,  1.66_r8 /
+        data a1 / 0.00_r8,  0.25_r8,  0.22_r8,  0.00_r8,  0.13_r8,  0.446_r8, -0.10_r8,  0.40_r8, -0.006_r8,  0.00_r8,  &
+                  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8 /
+        data a2 / 0.00_r8, -12.0_r8, -11.7_r8,  0.00_r8, -0.72_r8, -0.243_r8,  0.19_r8,-0.062_r8,  0.414_r8,  0.00_r8,  &
+                  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8,  0.00_r8 /
+
+        hvrrtc = '$Revision: 1 $'
+        do ibnd = 1,nbndlw
+            if (ibnd.eq.1 .or. ibnd.eq.4 .or. ibnd.ge.10) then
+                secdiff(ibnd) = 1.66_r8
+                else
+                secdiff(ibnd) = a0(ibnd) + a1(ibnd)*exp(a2(ibnd)*pwvcm)
+            endif
+        enddo
+        if (pwvcm.lt.1.0) secdiff(6) = 1.80_r8
+        if (pwvcm.gt.7.1) secdiff(7) = 1.50_r8
+
+        do lay=1,nlayers_
+!DIR$ VECTOR ALIGNED
+          do iplon=0,ncols_
+                urad(iplon,lay) = 0.0_r8
+                drad(iplon,lay) = 0.0_r8
+            totuflux(iplon,lay) = 0.0_r8
+            totdflux(iplon,lay) = 0.0_r8
+             clrurad(iplon,lay) = 0.0_r8
+             clrdrad(iplon,lay) = 0.0_r8
+            totuclfl(iplon,lay) = 0.0_r8
+            totdclfl(iplon,lay) = 0.0_r8
+          enddo
+        enddo
+
+        do lay=1,nlayers_
+!DIR$ VECTOR ALIGNED
+          do iplon=1,ncols_
+                urad(iplon,lay) = 0.0_r8
+                drad(iplon,lay) = 0.0_r8
+            totuflux(iplon,lay) = 0.0_r8
+            totdflux(iplon,lay) = 0.0_r8
+             clrurad(iplon,lay) = 0.0_r8
+             clrdrad(iplon,lay) = 0.0_r8
+            totuclfl(iplon,lay) = 0.0_r8
+            totdclfl(iplon,lay) = 0.0_r8
+             lcldlyr(iplon,lay) = .false.
+           enddo
+
+           do ig=1,ngptlw_
+!DIR$ VECTOR ALIGNED
+             do iplon=1,ncols_
+               if (cldfmc(iplon,ig,lay) .ne. 1._r8) then
+                    odcld(iplon,lay,ig) = 0.0_r8
+                   abscld(iplon,lay,ig) = 0.0_r8
+                 efclfrac(iplon,lay,ig) = 0.0_r8
+               endif
+             enddo
+           enddo
+
+           do ig=1,ngptlw_
+!DIR$ VECTOR ALIGNED
+             do iplon=1,ncols_
+               if (cldfmc(iplon,ig,lay) .eq. 1._r8) then
+                 ib                     = ngb(ig)
+                 odcld(iplon,lay,ig)    = secdiff(ib) * taucmc(iplon,ig,lay)
+                 transcld               = exp(-odcld(iplon,lay,ig))
+                   abscld(iplon,lay,ig) = 1._r8 - exp(-odcld(iplon,lay,ig))
+                 efclfrac(iplon,lay,ig) = abscld(iplon,lay,ig) * cldfmc(iplon,ig,lay)
+                  lcldlyr(iplon,lay)    = .true.
+               endif
+             enddo
+           enddo
+         enddo
+
+         igc = 1
+         do iband=istart_,iend_
+           if (iout.gt.0.and.iband.ge.2) then
+             igc = ngs(iband-1)+1
+           endif
+      1000 continue
+             radld(:) = 0._r8
+           radclrd(:) = 0._r8
+            lclddn(:) = .false.
+            do lev=nlayers_,1,-1
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                   plfrac(iplon) = fracs(iplon,lev,igc)
+                     blay(iplon) = planklay(iplon,lev,iband)
+                 dplankup(iplon) = planklev(iplon,lev,iband) - blay(iplon)
+                 dplankdn(iplon) = planklev(iplon,lev-1,iband) - blay(iplon)
+                   odepth(iplon) = secdiff(iband) * taut(iplon,lev,igc)
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (odepth(iplon) .lt. 0.0_r8) then
+                  odepth(iplon) = 0.0_r8
+                endif
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                path1(iplon) = .false.
+                path2(iplon) = .false.
+                path3(iplon) = .false.
+                if (lcldlyr(iplon,lev) ) then
+                  lclddn(iplon) = .true.
+                  if(odepth(iplon) + odcld(iplon,lev,igc) .lt. 0.06_r8) then
+                    path1(iplon) = .true.
+                  elseif (odepth(iplon) .le. 0.06_r8) then
+                    path2(iplon) = .true.
+                  else
+                    path3(iplon) = .true.
+                  endif
+                endif
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (path1(iplon)) then
+                  odtot             = odepth(iplon) + odcld(iplon,lev,igc)
+                  atrans(iplon,lev) = odepth(iplon) - 0.5_r8*odepth(iplon)*odepth(iplon)
+                  odepth_rec        = rec_6*odepth(iplon)
+                  gassrc            = plfrac(iplon)*(blay(iplon)+dplankdn(iplon)*odepth_rec)*atrans(iplon,lev)
+                  atot(iplon,lev)   = odtot - 0.5_r8*odtot*odtot
+                  odtot_rec         = rec_6*odtot
+                  bbdtot            = plfrac(iplon) * (blay(iplon)+dplankdn(iplon)*odtot_rec)
+                  bbd(iplon)        = plfrac(iplon)*(blay(iplon)+dplankdn(iplon)*odepth_rec)
+                  radld(iplon)      = radld(iplon) - radld (iplon)* (atrans(iplon,lev) + efclfrac(iplon,lev,igc) * (1._r8 - atrans(iplon,lev))) + &
+                                                                               gassrc + cldfmc(iplon,igc,lev) * (bbdtot * atot(iplon,lev) - gassrc)
+                  drad(iplon,lev-1) = drad(iplon,lev-1) + radld(iplon)
+                  bbugas(iplon,lev) = plfrac(iplon) * (blay(iplon)+dplankup(iplon)*odepth_rec)
+                  bbutot(iplon,lev) = plfrac(iplon) * (blay(iplon)+dplankup(iplon)*odtot_rec)
+                endif
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (path2(iplon)) then
+                  atrans(iplon,lev) = odepth(iplon) - 0.5_r8*odepth(iplon)*odepth(iplon)
+                  odepth_rec        = rec_6*odepth(iplon)
+                  gassrc            = plfrac(iplon)*(blay(iplon)+dplankdn(iplon)*odepth_rec)*atrans(iplon,lev)
+                  odtot             = odepth(iplon) + odcld(iplon,lev,igc)
+                  tblind            = odtot/(bpade+odtot)
+                  ittot             = tblint*tblind + 0.5_r8
+                  tfactot           = tfn_tbl(ittot)
+                  bbdtot            = plfrac(iplon) * (blay(iplon) + tfactot*dplankdn(iplon))
+                  bbd(iplon)        = plfrac(iplon)*(blay(iplon)+dplankdn(iplon)*odepth_rec)
+                  atot(iplon,lev)   = 1._r8 - exp_tbl(ittot)
+                  radld(iplon)      = radld(iplon) - radld(iplon) * (atrans(iplon,lev) + efclfrac(iplon,lev,igc) * (1._r8 - atrans(iplon,lev))) + &
+                                                                               gassrc + cldfmc(iplon,igc,lev) * (bbdtot * atot(iplon,lev) - gassrc)
+                  drad(iplon,lev-1) = drad(iplon,lev-1) + radld(iplon)
+                  bbugas(iplon,lev) = plfrac(iplon) * (blay(iplon) + dplankup(iplon)*odepth_rec)
+                  bbutot(iplon,lev) = plfrac(iplon) * (blay(iplon) + tfactot * dplankup(iplon))
+                endif
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (path3(iplon)) then
+                  tblind            = odepth(iplon)/(bpade+odepth(iplon))
+                  itgas             = tblint*tblind+0.5_r8
+                  odepth(iplon)     = tau_tbl(itgas)
+                  atrans(iplon,lev) = 1._r8 - exp_tbl(itgas)
+                  tfacgas           = tfn_tbl(itgas)
+                  gassrc            = atrans(iplon,lev) * plfrac(iplon) * (blay(iplon) + tfacgas*dplankdn(iplon))
+                  odtot             = odepth(iplon) + odcld(iplon,lev,igc)
+                  tblind            = odtot/(bpade+odtot)
+                  ittot             = tblint*tblind + 0.5_r8
+                  tfactot           = tfn_tbl(ittot)
+                  bbdtot            = plfrac(iplon) * (blay(iplon) + tfactot*dplankdn(iplon))
+                  bbd(iplon)        = plfrac(iplon)*(blay(iplon)+tfacgas*dplankdn(iplon))
+                  atot(iplon,lev)   = 1._r8 - exp_tbl(ittot)
+                  radld(iplon)      = radld(iplon) - radld(iplon) * (atrans(iplon,lev) + efclfrac(iplon,lev,igc) * (1._r8 - atrans(iplon,lev))) + &
+                                                                               gassrc + cldfmc(iplon,igc,lev) * (bbdtot * atot(iplon,lev) - gassrc)
+                  drad(iplon,lev-1) = drad(iplon,lev-1) + radld(iplon)
+                  bbugas(iplon,lev) = plfrac(iplon) * (blay(iplon) + tfacgas * dplankup(iplon))
+                  bbutot(iplon,lev) = plfrac(iplon) * (blay(iplon) + tfactot * dplankup(iplon))
+               endif
+             enddo
+ 
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (.NOT. lcldlyr(iplon,lev)) then
+                  if (odepth(iplon) .le. 0.06_r8) then
+                    atrans(iplon,lev) = odepth(iplon)-0.5_r8*odepth(iplon)*odepth(iplon)
+                    odepth(iplon)     = rec_6*odepth(iplon)
+                    bbd(iplon)        = plfrac(iplon)*(blay(iplon)+dplankdn(iplon)*odepth(iplon))
+                    bbugas(iplon,lev) = plfrac(iplon)*(blay(iplon)+dplankup(iplon)*odepth(iplon))
+                  else
+                    tblind            = odepth(iplon)/(bpade+odepth(iplon))
+                    itr               = tblint*tblind+0.5_r8
+                    transc            = exp_tbl(itr)
+                    atrans(iplon,lev) = 1._r8-transc
+                    tausfac           = tfn_tbl(itr)
+                    bbd(iplon)        = plfrac(iplon)*(blay(iplon)+tausfac*dplankdn(iplon))
+                    bbugas(iplon,lev) = plfrac(iplon) * (blay(iplon) + tausfac * dplankup(iplon))
+                  endif
+                  radld(iplon) = radld(iplon) + (bbd(iplon)-radld(iplon))*atrans(iplon,lev)
+                  drad(iplon,lev-1)   = drad(iplon,lev-1) + radld(iplon)
+                endif
+                if (lclddn(iplon)) then
+                  radclrd(iplon)      = radclrd(iplon)+ (bbd(iplon)-radclrd(iplon)) * atrans(iplon,lev)
+                  clrdrad(iplon,lev-1) = clrdrad(iplon,lev-1) + radclrd(iplon)      
+                else
+                  radclrd(iplon)      = radld(iplon)
+                  clrdrad(iplon,lev-1) = drad(iplon,lev-1)
+                endif
+              enddo
+            enddo
+ 
+!DIR$ VECTOR ALIGNED
+            do iplon=1,ncols_
+              rad0             = fracs(iplon,1,igc) * plankbnd(iband)
+              reflect          = 1._r8 - semiss(iband)
+              radlu(iplon)     = rad0 + reflect * radld(iplon)
+              radclru(iplon)   = rad0 + reflect * radclrd      (iplon)
+              urad(iplon,0)    = urad(iplon,0) + radlu(iplon)
+              clrurad(iplon,0) = clrurad(iplon,0) + radclru(iplon)
+ 
+            enddo
+ 
+            do lev=1,nlayers_
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (lcldlyr(iplon,lev)) then
+                  gassrc = bbugas(iplon,lev) * atrans(iplon,lev)
+                  radlu(iplon) = radlu(iplon) - radlu(iplon) * (atrans(iplon,lev) + efclfrac(iplon,lev,igc) * (1._r8 - atrans(iplon,lev))) + &
+                                          gassrc + cldfmc(iplon,igc,lev) * (bbutot(iplon,lev) * atot(iplon,lev) - gassrc)
+                  urad(iplon,lev) = urad(iplon,lev) + radlu(iplon)
+                else
+                  radlu(iplon) = radlu(iplon) + (bbugas(iplon,lev)-radlu(iplon))*atrans(iplon,lev)
+                  urad(iplon,lev) = urad(iplon,lev) + radlu(iplon)
+                endif
+              enddo
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                if (lclddn(iplon)) then
+                  radclru(iplon)     = radclru(iplon) + (bbugas(iplon,lev)-radclru(iplon))*atrans(iplon,lev)
+                  clrurad(iplon,lev) = clrurad(iplon,lev) + radclru(iplon)
+                else
+                  radclru(iplon)     = radlu(iplon)
+                  clrurad(iplon,lev) = urad(iplon,lev)
+                endif
+              enddo
+            enddo
+            igc = igc + 1
+            if (igc .le. ngs(iband)) go to 1000
+
+            do lev=nlayers_,0,-1
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                   uflux(iplon,lev)        = urad(iplon,lev)*wtdiff
+                   dflux(iplon,lev)        = drad(iplon,lev)*wtdiff
+                    urad(iplon,lev)        = 0.0_r8
+                    drad(iplon,lev)        = 0.0_r8
+                 totuflux(iplon,lev)       = totuflux(iplon,lev) + uflux(iplon,lev) * delwave(iband)
+                totdflux(iplon,lev)        = totdflux(iplon,lev) + dflux(iplon,lev) * delwave(iband)
+                   uclfl(iplon,lev)        = clrurad(iplon,lev)*wtdiff
+                   dclfl(iplon,lev)        = clrdrad(iplon,lev)*wtdiff
+                 clrurad(iplon,lev)        = 0.0_r8
+                 clrdrad(iplon,lev)        = 0.0_r8
+                totuclfl(iplon,lev)        = totuclfl(iplon,lev) + uclfl(iplon,lev) * delwave(iband)
+                totdclfl(iplon,lev)        = totdclfl(iplon,lev) + dclfl(iplon,lev) * delwave(iband)
+                totufluxs(iplon,iband,lev) = uflux(iplon,lev) * delwave(iband)
+                totdfluxs(iplon,iband,lev) = dflux(iplon,lev) * delwave(iband)
+              enddo
+            enddo
+          enddo
+
+          do iband=istart_,iend_
+!DIR$ VECTOR ALIGNED
+            do iplon=1,ncols_
+              totufluxs(iplon,iband,0) = totufluxs(iplon,iband,0) * fluxfac
+              totdfluxs(iplon,iband,0) = totdfluxs(iplon,iband,0) * fluxfac
+            enddo
+          enddo
+!DIR$ VECTOR ALIGNED
+          do iplon=1,ncols_
+               totuflux(iplon,0) = totuflux(iplon,0) * fluxfac
+               totdflux(iplon,0) = totdflux(iplon,0) * fluxfac
+                   fnet(iplon,0) = totuflux(iplon,0) - totdflux(iplon,0)
+               totuclfl(iplon,0) = totuclfl(iplon,0) * fluxfac
+               totdclfl(iplon,0) = totdclfl(iplon,0) * fluxfac
+                  fnetc(iplon,0) = totuclfl(iplon,0) - totdclfl(iplon,0)
+          enddo
+
+          do lev=1,nlayers_
+            do iband=istart_,iend_
+!DIR$ VECTOR ALIGNED
+              do iplon=1,ncols_
+                totufluxs(iplon,iband,lev) = totufluxs(iplon,iband,lev) * fluxfac
+                totdfluxs(iplon,iband,lev) = totdfluxs(iplon,iband,lev) * fluxfac
+              enddo
+            enddo
+!DIR$ VECTOR ALIGNED
+            do iplon=1,ncols_
+              totuflux(iplon,lev) = totuflux(iplon,lev) * fluxfac
+              totdflux(iplon,lev) = totdflux(iplon,lev) * fluxfac
+                  fnet(iplon,lev) = totuflux(iplon,lev) - totdflux(iplon,lev)
+              totuclfl(iplon,lev) = totuclfl(iplon,lev) * fluxfac
+              totdclfl(iplon,lev) = totdclfl(iplon,lev) * fluxfac
+                 fnetc(iplon,lev) = totuclfl(iplon,lev) - totdclfl(iplon,lev)
+                 htr(iplon,lev-1) = heatfac*(fnet(iplon,lev-1)-fnet(iplon,lev))/ &
+                                                   (pz(iplon,lev-1)-pz(iplon,lev))
+                htrc(iplon,lev-1) = heatfac*(fnetc(iplon,lev-1)-fnetc(iplon,lev))/ &
+                                                   (pz(iplon,lev-1)-pz(iplon,lev))
+            enddo
+          enddo
+
+!DIR$ VECTOR ALIGNED
+          do iplon=1,ncols_
+             htr(iplon,nlayers_) = 0.0_r8
+            htrc(iplon,nlayers_) = 0.0_r8
+          enddo
+
+    end subroutine rtrnmc
+
+    END SUBROUTINE kernel_driver
+
+
+    ! RESOLVER SUBPROGRAMS
+    
+    FUNCTION kgen_get_newunit(seed) RESULT(new_unit)
+       INTEGER, PARAMETER :: UNIT_MIN=100, UNIT_MAX=1000000
+       LOGICAL :: is_opened
+       INTEGER :: nunit, new_unit, counter
+       INTEGER, INTENT(IN) :: seed
+    
+       new_unit = -1
+       
+       DO counter=UNIT_MIN, UNIT_MAX
+           inquire(UNIT=counter, OPENED=is_opened)
+           IF (.NOT. is_opened) THEN
+               new_unit = counter
+               EXIT
+           END IF
+       END DO
+    END FUNCTION
+
+    
+    SUBROUTINE kgen_error_stop( msg )
+        IMPLICIT NONE
+        CHARACTER(LEN=*), INTENT(IN) :: msg
+    
+        WRITE (*,*) msg
+        STOP 1
+    END SUBROUTINE
