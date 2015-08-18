@@ -1,7 +1,7 @@
 FC := ifort
 SRC := ./kernel_rtrnmc.F90
 EXE := ${SRC:.F90=.exe}
-FFLAGS := -O4 -xAVX  -I./ -no-prec-div -no-prec-sqrt -override-limits -qopt-report=5 -align array64byte -fimf-precision=low 
+FFLAGS := -O3 -xAVX -g -I./ -no-prec-div -no-prec-sqrt -override-limits -qopt-report=4 -align array64byte
 FLAGS := ${FFLAGS}
 
 all: build 

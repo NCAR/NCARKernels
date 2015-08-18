@@ -1,0 +1,13 @@
+In these kernels, the results are not verified against the results file because of the number of loop
+changes that change answers. The results for each of these cases have been verified against the original
+code in kernel_rtrnmc.F90.v0 in a separate study.
+
+kernel_rtrnmc.F90.v0: 
+ Original version of the code
+
+kernel_rtrnmc.F90.v1: 
+ Version of code where the IPLON loop is moved inside the LEV loop
+
+kernel_rtrnmc.F90.v2: 
+ Version of code where the conditionals are moved outside of IPLON loop and 
+ loop and array bounds can be defined
