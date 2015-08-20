@@ -11,3 +11,4 @@ kernel_rtrnmc.F90.v1:
 kernel_rtrnmc.F90.v2: 
  Version of code where the conditionals are moved outside of IPLON loop and 
  loop and array bounds can be defined
+ kernel_rtrnmc.F90.v2.1:  Bug fix in definitions in "pathc3".
