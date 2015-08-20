@@ -81,6 +81,8 @@
             ! ------- Input -------
             INTEGER, intent(in) :: nlayers
             INTEGER, intent(in) :: ncol
+
+
             LOGICAL, intent(in) :: lrtchk(:,:) ! Logical flag for reflectivity and
             ! and transmissivity calculation;
             !   Dimensions: (nlayers)
@@ -149,14 +151,19 @@
             REAL(KIND=r8) :: zwcrit
             REAL(KIND=r8) :: zw
             REAL(KIND=r8) :: zwo
+            REAL(KIND=r8) :: temp1, temp2
             REAL(KIND=r8), parameter :: eps = 1.e-08_r8
             !     ------------------------------------------------------------------
             ! Initialize
+
+!DIR$ ASSUME_ALIGNED lrtchk:256, pgg:256, ptau:256, pw:256, prmuz:256, pref:256, prefd:256, ptra:256, ptrad:256
+
       hvrrft = '$Revision: 1.2 $'
-	do icol = 1,ncol
       zsr3=sqrt(3._r8)
       zwcrit=0.9999995_r8
       kmodts=2
+	do icol = 1,ncol
+!DIR$ VECTOR ALWAYS ALIGNED
       do jk=1, nlayers
          if (.not.lrtchk(icol,jk)) then
             pref(icol,jk) =0._r8
@@ -184,7 +191,9 @@
             end if
             zgamma4= 1._r8 - zgamma3
                         ! Recompute original s.s.a. to test for conservative solution
-            zwo= zw / (1._r8 - (1._r8 - zw) * (zg / (1._r8 - zg))**2)
+            !zwo= zw / (1._r8 - (1._r8 - zw) * (zg / (1._r8 - zg))**2)
+            temp1 = 1._r8 - 2._r8 * zg
+            zwo= zw * (temp1 + zg**2)/(temp1 + zg**2 * zw)
             if (zwo >= zwcrit) then
                             ! Conservative scattering
                za  = zgamma1 * prmuz(icol) 
@@ -223,6 +232,7 @@
                za1 = zgamma1 * zgamma4 + zgamma2 * zgamma3
                za2 = zgamma1 * zgamma3 + zgamma2 * zgamma4
                zrk = sqrt ( zgamma1**2 - zgamma2**2)
+               !zrk = sqrt ( (zgamma1 - zgamma2) * (zgamma1 + zgamma2) )
                zrp = zrk * prmuz(icol)               
                zrp1 = 1._r8 + zrp
                zrm1 = 1._r8 - zrp
@@ -278,13 +288,17 @@
                endif
                             ! collimated beam
                zdenr = zr4*zep1 + zr5*zem1
-               zdent = zt4*zep1 + zt5*zem1
+               temp2 = 1._r8 / zdenr
+               !zdent = zt4*zep1 + zt5*zem1
+               !temp2 = zem1 / (zr4 + zr5 * zem1**2)
                if (zdenr .ge. -eps .and. zdenr .le. eps) then
                   pref(icol,jk) = eps
                   ptra(icol,jk) = zem2
                else
-                  pref(icol,jk) = zw * (zr1*zep1 - zr2*zem1 - zr3*zem2) / zdenr
-                  ptra(icol,jk) = zem2 - zem2 * zw * (zt1*zep1 - zt2*zem1 - zt3*zep2) / zdent
+                  !pref(icol,jk) = zw * (zr1*zep1 - zr2*zem1 - zr3*zem2) / zdenr
+                  pref(icol,jk) = zw * (zr1*zep1 - zr2*zem1 - zr3*zem2) * temp2
+                  !ptra(icol,jk) = zem2 - zem2 * zw * (zt1*zep1 - zt2*zem1 - zt3*zep2) / zdent
+                  ptra(icol,jk) = zem2 - zem2 * zw * (zt1*zep1 - zt2*zem1 - zt3*zep2) * temp2
                endif 
                             ! diffuse beam
                zemm = zem1*zem1

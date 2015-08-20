@@ -145,6 +145,9 @@
             ! shortwave spectral flux up (nswbands,nlayers+1)
             ! shortwave spectral flux down (nswbands,nlayers+1)
             ! ------- Local -------
+
+!DIR$ ATTRIBUTES ALIGN : 256 :: lrtchkclr, zgcc, zomcc, zrefc, zrefdc, ztauc, ztrac, ztradc
+
             LOGICAL :: lrtchkclr(ncol,nlayers)
             INTEGER :: klev
             !      integer, parameter :: nuv = ??
@@ -202,12 +205,12 @@ zrefc, zrefdc, ztrac, ztradc)
                         CALL kgen_verify_real_r8_dim2( "ztradc", check_status, ztradc, ref_ztradc)
                         CALL kgen_print_check("reftra_sw", check_status)
                         CALL system_clock(start_clock, rate_clock)
-                        DO kgen_intvar=1,10
+                        DO kgen_intvar=1,3000
                             CALL reftra_sw(klev, ncol, lrtchkclr, zgcc, prmu0, ztauc, zomcc, zrefc, zrefdc, ztrac, ztradc)
                         END DO
                         CALL system_clock(stop_clock, rate_clock)
                         WRITE(*,*)
-                        PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                        PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*3000)
         CONTAINS
 
         ! write subroutines
