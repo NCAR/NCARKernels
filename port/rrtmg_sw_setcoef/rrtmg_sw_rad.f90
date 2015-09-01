@@ -77,7 +77,10 @@
         !------------------------------------------------------------------
 
         SUBROUTINE rrtmg_sw(ncol, nlay, kgen_unit)
-                USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
+            !USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check, kgen_perturb
+            ! PERTURB: add kgen_perturb
+            USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check, kgen_perturb
+
             ! ------- Description -------
             ! This program is the driver for RRTMG_SW, the AER SW radiation model for
             !  application to GCMs, that has been adapted from RRTM_SW for improved
@@ -546,6 +549,10 @@
             READ(UNIT=kgen_unit) ref_fac11
             READ(UNIT=kgen_unit) ref_fac10
 
+            ! PERTURB: add following lines
+            ! Uncomment following line for perturbation of a variable
+            ! Change the variable name for one to be perturbated
+            !CALL kgen_perturb( wkl, 1.0E-15_r8)
 
             ! call to kernel
          call setcoef_sw(ncol,nlay, pavel, tavel, pz, tz, tbound, coldry, wkl, &
