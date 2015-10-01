@@ -1,0 +1,1166 @@
+
+! KGEN-generated Fortran source file
+!
+! Filename    : mpas_atm_time_integration.F90
+! Generated at: 2015-09-25 10:14:07
+! KGEN version: 0.5.0
+
+
+
+    MODULE atm_time_integration
+        USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
+        USE mpas_kind_types, ONLY: rkind
+        ! Added only clause to keep xlf90 from getting confused from the overloaded abs intrinsic in mpas_timekeeping
+        PUBLIC kgen_read_externs_atm_time_integration
+        PUBLIC atm_srk3
+        ! Used in compute_dyn_tend
+        !   real (kind=RKIND), allocatable, dimension(:,:) :: delsq_circulation    ! no longer used -> removed
+        ! Used in advance_acoustic_step
+        !   real (kind=RKIND), allocatable, dimension(:,:) :: drthetadz
+        ! Used in atm_advance_scalars
+        ! Used in atm_advance_scalars_mono
+        ! Used in compute_solve_diagnostics
+        REAL(KIND=rkind), allocatable, dimension(:,:) :: ref_ke_vertex
+        REAL(KIND=rkind), allocatable, dimension(:,:) :: ke_vertex
+        REAL(KIND=rkind), allocatable, dimension(:,:) :: ref_ke_edge
+        REAL(KIND=rkind), allocatable, dimension(:,:) :: ke_edge
+        CONTAINS
+
+        ! write subroutines
+            SUBROUTINE kgen_read_real_rkind_dim2_alloc(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                real(KIND=rkind), INTENT(OUT), ALLOCATABLE, DIMENSION(:,:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1,idx2
+                INTEGER, DIMENSION(2,2) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(1, 2)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 2)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_real_rkind_dim2_alloc
+
+
+        ! module extern variables
+
+        SUBROUTINE kgen_read_externs_atm_time_integration(kgen_unit)
+            INTEGER, INTENT(IN) :: kgen_unit
+            CALL kgen_read_real_rkind_dim2_alloc(ke_edge, kgen_unit)
+            CALL kgen_read_real_rkind_dim2_alloc(ke_vertex, kgen_unit)
+        END SUBROUTINE kgen_read_externs_atm_time_integration
+
+
+
+        SUBROUTINE atm_srk3(dt, myrank, kgen_unit)
+                USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ! Advance model state forward in time by the specified time step using
+            !   time-split RK3 scheme
+            !
+            ! Nonhydrostatic atmospheric solver
+            !
+            ! Input: domain - current model state in time level 1 (e.g., time_levs(1)state%h(:,:))
+            !                 plus grid meta-data and some diagnostics of state.
+            ! Output: domain - upon exit, time level 2 (e.g., time_levs(2)%state%h(:,:)) contains
+            !                  model state advanced forward in time by dt seconds,
+            !                  and some diagnostics in diag
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            IMPLICIT NONE
+            integer, intent(in) :: kgen_unit
+            integer, intent(in) :: myrank
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock
+            INTEGER, PARAMETER :: maxiter=1000
+            TYPE(check_t):: check_status
+            REAL(KIND=kgen_dp) :: tolerance
+            REAL(KIND=rkind), intent(in) :: dt
+            INTEGER :: rk_step
+            !  additions for splitting scalar transport from dynamics, WCS 18 November 2014
+            INTEGER, pointer :: nedges
+            INTEGER, pointer :: ref_nedges => NULL()
+            INTEGER, pointer :: ncells
+            INTEGER, pointer :: ref_ncells => NULL()
+            INTEGER, pointer :: nvertices
+            INTEGER, pointer :: ref_nvertices => NULL()
+            INTEGER, pointer :: nvertlevels
+            INTEGER, pointer :: ref_nvertlevels => NULL()
+            INTEGER, pointer, dimension(:) :: nedgesonedge
+            INTEGER, pointer :: ref_nedgesonedge(:) => NULL()
+            INTEGER, pointer, dimension(:) :: nedgesoncell
+            INTEGER, pointer :: ref_nedgesoncell(:) => NULL()
+            INTEGER, pointer :: vertexdegree
+            INTEGER, pointer :: ref_vertexdegree => NULL()
+            !JMD
+            INTEGER, dimension(:,:), pointer :: edgesoncell
+            INTEGER, pointer :: ref_edgesoncell(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: edgesonedge
+            INTEGER, pointer :: ref_edgesonedge(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: edgesonvertex
+            INTEGER, pointer :: ref_edgesonvertex(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: cellsonedge
+            INTEGER, pointer :: ref_cellsonedge(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: cellsonvertex
+            INTEGER, pointer :: ref_cellsonvertex(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: verticesoncell
+            INTEGER, pointer :: ref_verticesoncell(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: verticesonedge
+            INTEGER, pointer :: ref_verticesonedge(:,:) => NULL()
+            INTEGER, dimension(:,:), pointer :: kiteforcell
+            INTEGER, pointer :: ref_kiteforcell(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: areacell
+            REAL(KIND=rkind), pointer :: ref_areacell(:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: areatriangle
+            REAL(KIND=rkind), pointer :: ref_areatriangle(:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: invareacell
+            REAL(KIND=rkind), pointer :: ref_invareacell(:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: fvertex
+            REAL(KIND=rkind), pointer :: ref_fvertex(:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: fedge
+            REAL(KIND=rkind), pointer :: ref_fedge(:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: edgesoncell_sign
+            REAL(KIND=rkind), pointer :: ref_edgesoncell_sign(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: edgesonvertex_sign
+            REAL(KIND=rkind), pointer :: ref_edgesonvertex_sign(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: weightsonedge
+            REAL(KIND=rkind), pointer :: ref_weightsonedge(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: kiteareasonvertex
+            REAL(KIND=rkind), pointer :: ref_kiteareasonvertex(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:), pointer :: dcedge
+            REAL(KIND=rkind), dimension(:), pointer :: dvedge
+            REAL(KIND=rkind), dimension(:,:), pointer :: pv_cell
+            REAL(KIND=rkind), pointer :: ref_pv_cell(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: pv_edge
+            REAL(KIND=rkind), pointer :: ref_pv_edge(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: pv_vertex
+            REAL(KIND=rkind), pointer :: ref_pv_vertex(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: gradpvt
+            REAL(KIND=rkind), pointer :: ref_gradpvt(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: gradpvn
+            REAL(KIND=rkind), pointer :: ref_gradpvn(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: v_jmd
+            REAL(KIND=rkind), pointer :: ref_v_jmd(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: u_jmd
+            REAL(KIND=rkind), pointer :: ref_u_jmd(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: vh
+            REAL(KIND=rkind), pointer :: ref_vh(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: h_edge
+            REAL(KIND=rkind), pointer :: ref_h_edge(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: h
+            REAL(KIND=rkind), pointer :: ref_h(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: vorticity
+            REAL(KIND=rkind), pointer :: ref_vorticity(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: ke
+            REAL(KIND=rkind), pointer :: ref_ke(:,:) => NULL()
+            REAL(KIND=rkind), dimension(:,:), pointer :: divergence
+            REAL(KIND=rkind), pointer :: ref_divergence(:,:) => NULL()
+            REAL(KIND=rkind), pointer :: config_apvm_upwinding
+            REAL(KIND=rkind), pointer :: ref_config_apvm_upwinding => NULL()
+            INTEGER :: vertexthreadstart_jmd
+            INTEGER :: edgethreadstart_jmd
+            INTEGER :: edgethreadend_jmd
+            INTEGER :: vertexthreadend_jmd
+            INTEGER :: cellthreadstart_jmd
+            INTEGER :: cellthreadend_jmd
+!DIR$ ATTRIBUTES ALIGN:64 :: dvEdge, dcEdge, cellsOnEdge, verticesOnEdge
+!DIR$ ATTRIBUTES ALIGN:64 :: pv_vertex, pv_cell, pv_edge, gradPVt, gradPVn, v_jmd, u_jmd
+!DIR$ ATTRIBUTES ALIGN:64 :: vh, h_edge, h, vorticity, ke, divergence
+            !
+            ! Retrieve configuration options
+            !
+            !  config variables for dynamics-transport splitting, WCS 18 November 2014
+            !
+            ! Retrieve field structures
+            !
+            !
+            ! Retrieve fields
+            !
+            !
+            ! Initialize RK weights
+            !
+            !      rk_sub_timestep(1) = dt_dynamics/3.
+            !  this is to test the second-order variant of RK3 for dynamics
+            ! theta_m
+            ! scalars
+            ! pressure_p
+            ! rtheta_p
+                            tolerance = 1.E-14
+                            CALL kgen_init_check(check_status, tolerance)
+                            CALL kgen_read_integer_4_ptr(nvertlevels, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(nedges, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ncells, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(nvertices, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(vertexdegree, kgen_unit)
+                            CALL kgen_read_integer_4_dim1_ptr(nedgesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim1_ptr(nedgesonedge, kgen_unit)
+                            READ(UNIT=kgen_unit) cellthreadstart_jmd
+                            READ(UNIT=kgen_unit) cellthreadend_jmd
+                            READ(UNIT=kgen_unit) vertexthreadstart_jmd
+                            READ(UNIT=kgen_unit) vertexthreadend_jmd
+                            READ(UNIT=kgen_unit) edgethreadstart_jmd
+                            READ(UNIT=kgen_unit) edgethreadend_jmd
+                            CALL kgen_read_integer_4_dim2_ptr(edgesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(edgesonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(edgesonvertex, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(cellsonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(cellsonvertex, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(verticesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(verticesonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(kiteforcell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(fvertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(fedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(areacell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(areatriangle, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(invareacell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(edgesonvertex_sign, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(edgesoncell_sign, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(weightsonedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(kiteareasonvertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(dcedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(dvedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(pv_edge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(pv_vertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(pv_cell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(gradpvt, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(gradpvn, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(u_jmd, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(v_jmd, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(vh, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(h_edge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(h, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(vorticity, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ke, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(divergence, kgen_unit)
+                            CALL kgen_read_real_rkind_ptr(config_apvm_upwinding, kgen_unit)
+                            READ(UNIT=kgen_unit) rk_step
+
+                            CALL kgen_read_real_rkind_dim2_alloc(ref_ke_edge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_alloc(ref_ke_vertex, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ref_nvertlevels, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ref_nedges, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ref_ncells, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ref_nvertices, kgen_unit)
+                            CALL kgen_read_integer_4_ptr(ref_vertexdegree, kgen_unit)
+                            CALL kgen_read_integer_4_dim1_ptr(ref_nedgesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim1_ptr(ref_nedgesonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_edgesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_edgesonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_edgesonvertex, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_cellsonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_cellsonvertex, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_verticesoncell, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_verticesonedge, kgen_unit)
+                            CALL kgen_read_integer_4_dim2_ptr(ref_kiteforcell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(ref_fvertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(ref_fedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(ref_areacell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(ref_areatriangle, kgen_unit)
+                            CALL kgen_read_real_rkind_dim1_ptr(ref_invareacell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_edgesonvertex_sign, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_edgesoncell_sign, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_weightsonedge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_kiteareasonvertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_pv_edge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_pv_vertex, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_pv_cell, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_gradpvt, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_gradpvn, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_u_jmd, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_v_jmd, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_vh, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_h_edge, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_h, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_vorticity, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_ke, kgen_unit)
+                            CALL kgen_read_real_rkind_dim2_ptr(ref_divergence, kgen_unit)
+                            CALL kgen_read_real_rkind_ptr(ref_config_apvm_upwinding, kgen_unit)
+
+
+                            ! call to kernel
+                  call atm_compute_solve_diagnostics(nVertLevels,nEdges,nCells,nVertices, vertexDegree,nEdgesOnCell, nEdgesOnEdge, &
+                                                     dt, 2, &
+                                                     cellThreadStart_jmd, cellThreadEnd_jmd, &
+                                                     vertexThreadStart_jmd, vertexThreadEnd_jmd, &
+                                                     edgeThreadStart_jmd, edgeThreadEnd_jmd, &
+                                                     edgesOnCell, edgesOnEdge, edgesOnVertex, &
+                                                     cellsOnEdge, cellsOnVertex, &
+                                                     verticesOnCell, verticesOnEdge,  &
+                                                     kiteForCell, &
+                                                     fVertex, fEdge, areaCell, areaTriangle, invAreaCell, &
+                                                     edgesOnVertex_sign, edgesOnCell_sign, &
+                                                     weightsOnEdge, kiteAreasOnVertex, &
+                                                     dcEdge,dvEdge,pv_edge,pv_vertex,pv_cell, gradPVt, gradPVn, u_jmd,v_jmd, &
+                                                     vh, h_edge, h, vorticity, ke, divergence, &
+                                                     config_apvm_upwinding, rk_step)
+                            ! kernel verification for output variables
+                            CALL kgen_verify_real_rkind_dim2_alloc( "ke_edge", check_status, ke_edge, ref_ke_edge)
+                            CALL kgen_verify_real_rkind_dim2_alloc( "ke_vertex", check_status, ke_vertex, ref_ke_vertex)
+                            CALL kgen_verify_integer_4_ptr( "nvertlevels", check_status, nvertlevels, ref_nvertlevels)
+                            CALL kgen_verify_integer_4_ptr( "nedges", check_status, nedges, ref_nedges)
+                            CALL kgen_verify_integer_4_ptr( "ncells", check_status, ncells, ref_ncells)
+                            CALL kgen_verify_integer_4_ptr( "nvertices", check_status, nvertices, ref_nvertices)
+                            CALL kgen_verify_integer_4_ptr( "vertexdegree", check_status, vertexdegree, ref_vertexdegree)
+                            CALL kgen_verify_integer_4_dim1_ptr( "nedgesoncell", check_status, nedgesoncell, ref_nedgesoncell)
+                            CALL kgen_verify_integer_4_dim1_ptr( "nedgesonedge", check_status, nedgesonedge, ref_nedgesonedge)
+                            CALL kgen_verify_integer_4_dim2_ptr( "edgesoncell", check_status, edgesoncell, ref_edgesoncell)
+                            CALL kgen_verify_integer_4_dim2_ptr( "edgesonedge", check_status, edgesonedge, ref_edgesonedge)
+                            CALL kgen_verify_integer_4_dim2_ptr( "edgesonvertex", check_status, edgesonvertex, ref_edgesonvertex)
+                            CALL kgen_verify_integer_4_dim2_ptr( "cellsonedge", check_status, cellsonedge, ref_cellsonedge)
+                            CALL kgen_verify_integer_4_dim2_ptr( "cellsonvertex", check_status, cellsonvertex, ref_cellsonvertex)
+                            CALL kgen_verify_integer_4_dim2_ptr( "verticesoncell", check_status, verticesoncell, ref_verticesoncell)
+                            CALL kgen_verify_integer_4_dim2_ptr( "verticesonedge", check_status, verticesonedge, ref_verticesonedge)
+                            CALL kgen_verify_integer_4_dim2_ptr( "kiteforcell", check_status, kiteforcell, ref_kiteforcell)
+                            CALL kgen_verify_real_rkind_dim1_ptr( "fvertex", check_status, fvertex, ref_fvertex)
+                            CALL kgen_verify_real_rkind_dim1_ptr( "fedge", check_status, fedge, ref_fedge)
+                            CALL kgen_verify_real_rkind_dim1_ptr( "areacell", check_status, areacell, ref_areacell)
+                            CALL kgen_verify_real_rkind_dim1_ptr( "areatriangle", check_status, areatriangle, ref_areatriangle)
+                            CALL kgen_verify_real_rkind_dim1_ptr( "invareacell", check_status, invareacell, ref_invareacell)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "edgesonvertex_sign", check_status, edgesonvertex_sign, ref_edgesonvertex_sign)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "edgesoncell_sign", check_status, edgesoncell_sign, ref_edgesoncell_sign)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "weightsonedge", check_status, weightsonedge, ref_weightsonedge)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "kiteareasonvertex", check_status, kiteareasonvertex, ref_kiteareasonvertex)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "pv_edge", check_status, pv_edge, ref_pv_edge)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "pv_vertex", check_status, pv_vertex, ref_pv_vertex)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "pv_cell", check_status, pv_cell, ref_pv_cell)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "gradpvt", check_status, gradpvt, ref_gradpvt)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "gradpvn", check_status, gradpvn, ref_gradpvn)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "u_jmd", check_status, u_jmd, ref_u_jmd)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "v_jmd", check_status, v_jmd, ref_v_jmd)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "vh", check_status, vh, ref_vh)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "h_edge", check_status, h_edge, ref_h_edge)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "h", check_status, h, ref_h)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "vorticity", check_status, vorticity, ref_vorticity)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "ke", check_status, ke, ref_ke)
+                            CALL kgen_verify_real_rkind_dim2_ptr( "divergence", check_status, divergence, ref_divergence)
+                            CALL kgen_verify_real_rkind_ptr( "config_apvm_upwinding", check_status, config_apvm_upwinding, ref_config_apvm_upwinding)
+                            CALL kgen_print_check("atm_compute_solve_diagnostics", check_status)
+                            CALL system_clock(start_clock, rate_clock)
+                            DO kgen_intvar=1,maxiter
+                                CALL atm_compute_solve_diagnostics(nvertlevels, nedges, ncells, nvertices, vertexdegree, nedgesoncell, nedgesonedge, dt, 2, cellthreadstart_jmd, cellthreadend_jmd, vertexthreadstart_jmd, vertexthreadend_jmd, edgethreadstart_jmd, edgethreadend_jmd, edgesoncell, edgesonedge, edgesonvertex, cellsonedge, cellsonvertex, verticesoncell, verticesonedge, kiteforcell, fvertex, fedge, areacell, areatriangle, invareacell, edgesonvertex_sign, edgesoncell_sign, weightsonedge, kiteareasonvertex, dcedge, dvedge, pv_edge, pv_vertex, pv_cell, gradpvt, gradpvn, u_jmd, v_jmd, vh, h_edge, h, vorticity, ke, divergence, config_apvm_upwinding, rk_step)
+                            END DO
+                            CALL system_clock(stop_clock, rate_clock)
+                            WRITE(*,*)
+                            if(myrank == 0) then 
+                               PRINT *, "atm_compute_solve_diagnostics : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+                            endif
+            !  we are finished with qtot now...
+            !
+            !  split transport, at present RK3
+            !
+            !
+            ! reconstruct full velocity vectors at cell centers:
+            !
+            !
+            ! call to parameterizations of cloud microphysics. calculation of the tendency of water vapor to horizontal and
+            ! vertical advection needed for the Tiedtke parameterization of convection.
+            !
+        CONTAINS
+
+        ! write subroutines
+            SUBROUTINE kgen_read_real_rkind_dim2_alloc(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                real(KIND=rkind), INTENT(OUT), ALLOCATABLE, DIMENSION(:,:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1,idx2
+                INTEGER, DIMENSION(2,2) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(1, 2)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 2)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_real_rkind_dim2_alloc
+
+            SUBROUTINE kgen_read_integer_4_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                integer(KIND=4), INTENT(OUT), POINTER :: var
+                LOGICAL :: is_true
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    ALLOCATE(var)
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_integer_4_ptr
+
+            SUBROUTINE kgen_read_integer_4_dim1_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                integer(KIND=4), INTENT(OUT), POINTER, DIMENSION(:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1
+                INTEGER, DIMENSION(2,1) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_integer_4_dim1_ptr
+
+            SUBROUTINE kgen_read_integer_4_dim2_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                integer(KIND=4), INTENT(OUT), POINTER, DIMENSION(:,:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1,idx2
+                INTEGER, DIMENSION(2,2) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(1, 2)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 2)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_integer_4_dim2_ptr
+
+            SUBROUTINE kgen_read_real_rkind_dim1_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                real(KIND=rkind), INTENT(OUT), POINTER, DIMENSION(:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1
+                INTEGER, DIMENSION(2,1) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_real_rkind_dim1_ptr
+
+            SUBROUTINE kgen_read_real_rkind_dim2_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                real(KIND=rkind), INTENT(OUT), POINTER, DIMENSION(:,:) :: var
+                LOGICAL :: is_true
+                INTEGER :: idx1,idx2
+                INTEGER, DIMENSION(2,2) :: kgen_bound
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    READ(UNIT = kgen_unit) kgen_bound(1, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 1)
+                    READ(UNIT = kgen_unit) kgen_bound(1, 2)
+                    READ(UNIT = kgen_unit) kgen_bound(2, 2)
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_real_rkind_dim2_ptr
+
+            SUBROUTINE kgen_read_real_rkind_ptr(var, kgen_unit, printvar)
+                INTEGER, INTENT(IN) :: kgen_unit
+                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
+                real(KIND=rkind), INTENT(OUT), POINTER :: var
+                LOGICAL :: is_true
+
+                READ(UNIT = kgen_unit) is_true
+
+                IF ( is_true ) THEN
+                    ALLOCATE(var)
+                    READ(UNIT = kgen_unit) var
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** " // printvar // " **", var
+                    END IF
+                ELSE
+                    IF ( PRESENT(printvar) ) THEN
+                        PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
+                    END IF
+                END IF
+            END SUBROUTINE kgen_read_real_rkind_ptr
+
+
+        ! verify subroutines
+            SUBROUTINE kgen_verify_real_rkind_dim2_alloc( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                real(KIND=rkind), intent(in), DIMENSION(:,:), ALLOCATABLE :: var, ref_var
+                real(KIND=rkind) :: nrmsdiff, rmsdiff
+                real(KIND=rkind), allocatable, DIMENSION(:,:) :: temp, temp2
+                integer :: n
+                IF ( ALLOCATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( ALL( var == ref_var ) ) THEN
+                
+                    check_status%numIdentical = check_status%numIdentical + 1            
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
+                        !WRITE(*,*) "KERNEL: ", var
+                        !WRITE(*,*) "REF.  : ", ref_var
+                        IF ( ALL( var == 0 ) ) THEN
+                            if(check_status%verboseLevel > 2) then
+                                WRITE(*,*) "All values are zero."
+                            end if
+                        END IF
+                    end if
+                ELSE
+                    allocate(temp(SIZE(var,dim=1),SIZE(var,dim=2)))
+                    allocate(temp2(SIZE(var,dim=1),SIZE(var,dim=2)))
+                
+                    n = count(var/=ref_var)
+                    where(abs(ref_var) > check_status%minvalue)
+                        temp  = ((var-ref_var)/ref_var)**2
+                        temp2 = (var-ref_var)**2
+                    elsewhere
+                        temp  = (var-ref_var)**2
+                        temp2 = temp
+                    endwhere
+                    nrmsdiff = sqrt(sum(temp)/real(n))
+                    rmsdiff = sqrt(sum(temp2)/real(n))
+                
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                        if(check_status%verboseLevel > 1) then
+                            WRITE(*,*) "Average - kernel ", sum(var)/real(size(var))
+                            WRITE(*,*) "Average - reference ", sum(ref_var)/real(size(ref_var))
+                        endif
+                        WRITE(*,*) "RMS of difference is ",rmsdiff
+                        WRITE(*,*) "Normalized RMS of difference is ",nrmsdiff
+                    end if
+                
+                    if (nrmsdiff > check_status%tolerance) then
+                        check_status%numFatal = check_status%numFatal+1
+                    else
+                        check_status%numWarning = check_status%numWarning+1
+                    endif
+                
+                    deallocate(temp,temp2)
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_real_rkind_dim2_alloc
+
+            SUBROUTINE kgen_verify_integer_4_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                integer, intent(in), POINTER :: var, ref_var
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( var == ref_var ) THEN
+                    check_status%numIdentical = check_status%numIdentical + 1
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is IDENTICAL( ", var, " )."
+                    endif
+                ELSE
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        if(check_status%verboseLevel > 2) then
+                            WRITE(*,*) "KERNEL: ", var
+                            WRITE(*,*) "REF.  : ", ref_var
+                        end if
+                    end if
+                    check_status%numFatal = check_status%numFatal + 1
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_integer_4_ptr
+
+            SUBROUTINE kgen_verify_integer_4_dim1_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                integer, intent(in), DIMENSION(:), POINTER :: var, ref_var
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( ALL( var == ref_var ) ) THEN
+                
+                    check_status%numIdentical = check_status%numIdentical + 1            
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
+                        !WRITE(*,*) "KERNEL: ", var
+                        !WRITE(*,*) "REF.  : ", ref_var
+                        IF ( ALL( var == 0 ) ) THEN
+                            if(check_status%verboseLevel > 2) then
+                                WRITE(*,*) "All values are zero."
+                            end if
+                        END IF
+                    end if
+                ELSE
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                    end if
+                
+                    check_status%numFatal = check_status%numFatal+1
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_integer_4_dim1_ptr
+
+            SUBROUTINE kgen_verify_integer_4_dim2_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                integer, intent(in), DIMENSION(:,:), POINTER :: var, ref_var
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( ALL( var == ref_var ) ) THEN
+                
+                    check_status%numIdentical = check_status%numIdentical + 1            
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
+                        !WRITE(*,*) "KERNEL: ", var
+                        !WRITE(*,*) "REF.  : ", ref_var
+                        IF ( ALL( var == 0 ) ) THEN
+                            if(check_status%verboseLevel > 2) then
+                                WRITE(*,*) "All values are zero."
+                            end if
+                        END IF
+                    end if
+                ELSE
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                    end if
+                
+                    check_status%numFatal = check_status%numFatal+1
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_integer_4_dim2_ptr
+
+            SUBROUTINE kgen_verify_real_rkind_dim1_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                real(KIND=rkind), intent(in), DIMENSION(:), POINTER :: var, ref_var
+                real(KIND=rkind) :: nrmsdiff, rmsdiff
+                real(KIND=rkind), allocatable, DIMENSION(:) :: temp, temp2
+                integer :: n
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( ALL( var == ref_var ) ) THEN
+                
+                    check_status%numIdentical = check_status%numIdentical + 1            
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
+                        !WRITE(*,*) "KERNEL: ", var
+                        !WRITE(*,*) "REF.  : ", ref_var
+                        IF ( ALL( var == 0 ) ) THEN
+                            if(check_status%verboseLevel > 2) then
+                                WRITE(*,*) "All values are zero."
+                            end if
+                        END IF
+                    end if
+                ELSE
+                    allocate(temp(SIZE(var,dim=1)))
+                    allocate(temp2(SIZE(var,dim=1)))
+                
+                    n = count(var/=ref_var)
+                    where(abs(ref_var) > check_status%minvalue)
+                        temp  = ((var-ref_var)/ref_var)**2
+                        temp2 = (var-ref_var)**2
+                    elsewhere
+                        temp  = (var-ref_var)**2
+                        temp2 = temp
+                    endwhere
+                    nrmsdiff = sqrt(sum(temp)/real(n))
+                    rmsdiff = sqrt(sum(temp2)/real(n))
+                
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                        if(check_status%verboseLevel > 1) then
+                            WRITE(*,*) "Average - kernel ", sum(var)/real(size(var))
+                            WRITE(*,*) "Average - reference ", sum(ref_var)/real(size(ref_var))
+                        endif
+                        WRITE(*,*) "RMS of difference is ",rmsdiff
+                        WRITE(*,*) "Normalized RMS of difference is ",nrmsdiff
+                    end if
+                
+                    if (nrmsdiff > check_status%tolerance) then
+                        check_status%numFatal = check_status%numFatal+1
+                    else
+                        check_status%numWarning = check_status%numWarning+1
+                    endif
+                
+                    deallocate(temp,temp2)
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_real_rkind_dim1_ptr
+
+            SUBROUTINE kgen_verify_real_rkind_dim2_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                real(KIND=rkind), intent(in), DIMENSION(:,:), POINTER :: var, ref_var
+                real(KIND=rkind) :: nrmsdiff, rmsdiff
+                real(KIND=rkind), allocatable, DIMENSION(:,:) :: temp, temp2
+                integer :: n
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( ALL( var == ref_var ) ) THEN
+                
+                    check_status%numIdentical = check_status%numIdentical + 1            
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
+                        !WRITE(*,*) "KERNEL: ", var
+                        !WRITE(*,*) "REF.  : ", ref_var
+                        IF ( ALL( var == 0 ) ) THEN
+                            if(check_status%verboseLevel > 2) then
+                                WRITE(*,*) "All values are zero."
+                            end if
+                        END IF
+                    end if
+                ELSE
+                    allocate(temp(SIZE(var,dim=1),SIZE(var,dim=2)))
+                    allocate(temp2(SIZE(var,dim=1),SIZE(var,dim=2)))
+                
+                    n = count(var/=ref_var)
+                    where(abs(ref_var) > check_status%minvalue)
+                        temp  = ((var-ref_var)/ref_var)**2
+                        temp2 = (var-ref_var)**2
+                    elsewhere
+                        temp  = (var-ref_var)**2
+                        temp2 = temp
+                    endwhere
+                    nrmsdiff = sqrt(sum(temp)/real(n))
+                    rmsdiff = sqrt(sum(temp2)/real(n))
+                
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                        if(check_status%verboseLevel > 1) then
+                            WRITE(*,*) "Average - kernel ", sum(var)/real(size(var))
+                            WRITE(*,*) "Average - reference ", sum(ref_var)/real(size(ref_var))
+                        endif
+                        WRITE(*,*) "RMS of difference is ",rmsdiff
+                        WRITE(*,*) "Normalized RMS of difference is ",nrmsdiff
+                    end if
+                
+                    if (nrmsdiff > check_status%tolerance) then
+                        check_status%numFatal = check_status%numFatal+1
+                    else
+                        check_status%numWarning = check_status%numWarning+1
+                    endif
+                
+                    deallocate(temp,temp2)
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_real_rkind_dim2_ptr
+
+            SUBROUTINE kgen_verify_real_rkind_ptr( varname, check_status, var, ref_var)
+                character(*), intent(in) :: varname
+                type(check_t), intent(inout) :: check_status
+                real(KIND=rkind), intent(in), POINTER :: var, ref_var
+                IF ( ASSOCIATED(var) ) THEN
+                check_status%numTotal = check_status%numTotal + 1
+                IF ( var == ref_var ) THEN
+                    check_status%numIdentical = check_status%numIdentical + 1
+                    if(check_status%verboseLevel > 1) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is IDENTICAL( ", var, " )."
+                    endif
+                ELSE
+                    if(check_status%verboseLevel > 0) then
+                        WRITE(*,*)
+                        WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
+                        if(check_status%verboseLevel > 2) then
+                            WRITE(*,*) "KERNEL: ", var
+                            WRITE(*,*) "REF.  : ", ref_var
+                        end if
+                    end if
+                    check_status%numFatal = check_status%numFatal + 1
+                END IF
+                END IF
+            END SUBROUTINE kgen_verify_real_rkind_ptr
+
+        END SUBROUTINE atm_srk3
+
+
+
+
+
+
+
+
+
+        !                                            dt, state, time_lev, diag, mesh, configs, &
+
+!DIR$ ATTRIBUTES NOINLINE :: atm_compute_solve_diagnostics
+        SUBROUTINE atm_compute_solve_diagnostics(nvertlevels, nedges, ncells, nvertices, vertexdegree, nedgesoncell, nedgesonedge,&
+         dt, time_lev, cellstart, cellend, vertexstart, vertexend, edgestart, edgeend, edgesoncell, edgesonedge, edgesonvertex, &
+        cellsonedge, cellsonvertex, verticesoncell, verticesonedge, kiteforcell, fvertex, fedge, areacell, areatriangle, &
+        invareacell, edgesonvertex_sign, edgesoncell_sign, weightsonedge, kiteareasonvertex, dcedge, dvedge, pv_edge, pv_vertex, &
+        pv_cell, gradpvt, gradpvn, u, v, vh, h_edge, h, vorticity, ke, divergence, config_apvm_upwinding, rk_step)
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ! Compute diagnostic fields used in the tendency computations
+            !
+            ! Input: state (s), grid - grid metadata
+            !
+            ! Output: diag - computed diagnostics
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            IMPLICIT NONE
+            INTEGER :: nvertlevels ! number of vertical levels passed as an argument
+            INTEGER :: nedges
+            INTEGER :: ncells
+            INTEGER :: nvertices
+            INTEGER :: vertexdegree
+            INTEGER, dimension(:) :: nedgesoncell, nedgesonedge
+            REAL(KIND=rkind), intent(in) :: dt
+            !      type (mpas_pool_type), intent(inout) :: state
+            INTEGER, intent(in) :: time_lev ! which time level of state to use
+            !      type (mpas_pool_type), intent(inout) :: diag
+            !      type (mpas_pool_type), intent(in) :: mesh
+            !      type (mpas_pool_type), intent(in) :: configs
+            INTEGER, intent(in) :: cellstart, cellend, vertexstart, vertexend, edgestart, edgeend
+            INTEGER, dimension(:,:) :: edgesoncell, edgesonedge, edgesonvertex
+            INTEGER, dimension(:,:) :: cellsonedge, cellsonvertex
+            INTEGER, dimension(:,:) :: verticesoncell, verticesonedge
+            INTEGER, dimension(:,:) :: kiteforcell
+            REAL(KIND=rkind), dimension(:) :: fvertex, fedge, areacell, areatriangle, invareacell
+            REAL(KIND=rkind), dimension(:,:) :: edgesonvertex_sign, edgesoncell_sign
+            REAL(KIND=rkind), dimension(:,:) :: weightsonedge, kiteareasonvertex
+            REAL(KIND=rkind), intent(in), dimension(nedges) :: dvedge, dcedge !JMD
+            REAL(KIND=rkind), intent(inout) :: pv_edge(nvertlevels,nedges) !JMD
+            REAL(KIND=rkind), intent(inout) :: pv_vertex(nvertlevels,nvertices) !JMD
+            REAL(KIND=rkind), intent(inout) :: pv_cell(nvertlevels,ncells) !JMD
+            REAL(KIND=rkind), intent(inout) :: gradpvt(nvertlevels,nedges) !JMD
+            REAL(KIND=rkind), intent(inout) :: gradpvn(nvertlevels,nedges) !JMD
+            REAL(KIND=rkind), intent(inout), dimension(nvertlevels,nedges) :: u, v !JMD
+            REAL(KIND=rkind), dimension(nVertLevels,nCells)    :: h
+            REAL(KIND=rkind), dimension(nVertLevels,nEdges)    :: h_edge
+            REAL(KIND=rkind), dimension(nVertLevels,nEdges)    :: vh
+            REAL(KIND=rkind), dimension(nVertLevels,nVertices) :: vorticity
+            REAL(KIND=rkind), dimension(nVertLevels,nCells) :: ke
+            REAL(KIND=rkind), dimension(nVertLevels,nCells) :: divergence
+
+            REAL(KIND=rkind) :: config_apvm_upwinding
+            INTEGER, intent(in), optional :: rk_step ! which rk_step
+            INTEGER :: iedge, icell, ivertex, k, cell1, cell2, eoe, i, j
+            INTEGER :: icell1, icell2, ivert1, ivert2
+            REAL(KIND=rkind) :: h_vertex, r, s
+            REAL(KIND=rkind) :: invareatriangle, r1, r2
+            LOGICAL, parameter :: hollingsworth=.true.
+            REAL(KIND=rkind) :: ke_fact, efac
+            LOGICAL :: reconstruct_v
+
+!DIR$ ASSUME_ALIGNED dvEdge:64, dcEdge:64, cellsOnEdge:64,verticesOnEdge:64 
+!DIR$ ASSUME_ALIGNED pv_vertex:64, pv_cell:64, pv_edge:64,gradPVt:64, gradPVn:64, v:64, u:64
+!DIR$ ASSUME_ALIGNED vh:64, h_edge:64, h:64, vorticity:64, ke:64, divergence:64
+
+            !      call mpas_pool_get_config(configs, 'config_apvm_upwinding', config_apvm_upwinding)
+            !      call mpas_pool_get_array(state, 'rho_zz', h, time_lev)
+            !      call mpas_pool_get_array(state, 'u', u, time_lev)
+            !      call mpas_pool_get_array(diag, 'v', v)
+            !      call mpas_pool_get_array(diag, 'rv', vh)
+            !      call mpas_pool_get_array(diag, 'rho_edge', h_edge)
+            !      call mpas_pool_get_array(diag, 'vorticity', vorticity)
+            !      call mpas_pool_get_array(diag, 'divergence', divergence)
+            !      call mpas_pool_get_array(diag, 'ke', ke)
+            !      call mpas_pool_get_array(diag, 'pv_edge', pv_edge)
+            !      call mpas_pool_get_array(diag, 'pv_vertex', pv_vertex)
+            !      call mpas_pool_get_array(diag, 'pv_cell', pv_cell)
+            !      call mpas_pool_get_array(diag, 'gradPVn', gradPVn)
+            !      call mpas_pool_get_array(diag, 'gradPVt', gradPVt)
+            !      call mpas_pool_get_array(mesh, 'weightsOnEdge', weightsOnEdge)
+            !      call mpas_pool_get_array(mesh, 'kiteAreasOnVertex', kiteAreasOnVertex)
+            !      call mpas_pool_get_array(mesh, 'cellsOnVertex', cellsOnVertex)
+            !      call mpas_pool_get_array(mesh, 'verticesOnCell', verticesOnCell)
+            !      call mpas_pool_get_array(mesh, 'nEdgesOnCell', nEdgesOnCell)
+            !      call mpas_pool_get_array(mesh, 'nEdgesOnEdge', nEdgesOnEdge)
+            !      call mpas_pool_get_array(mesh, 'edgesOnCell', edgesOnCell)
+            !      call mpas_pool_get_array(mesh, 'edgesOnEdge', edgesOnEdge)
+            !      call mpas_pool_get_array(mesh, 'edgesOnVertex', edgesOnVertex)
+            !      call mpas_pool_get_array(mesh, 'edgesOnVertex_sign', edgesOnVertex_sign)
+            !      call mpas_pool_get_array(mesh, 'edgesOnCell_sign', edgesOnCell_sign)
+            !      call mpas_pool_get_array(mesh, 'kiteForCell', kiteForCell)
+            !      call mpas_pool_get_array(mesh, 'dcEdge', dcEdge)
+            !      call mpas_pool_get_array(mesh, 'dvEdge', dvEdge)
+            !      call mpas_pool_get_array(mesh, 'areaCell', areaCell)
+            !      call mpas_pool_get_array(mesh, 'invAreaCell', invAreaCell)
+            !      call mpas_pool_get_array(mesh, 'areaTriangle', areaTriangle)
+            !      call mpas_pool_get_array(mesh, 'fVertex', fVertex)
+            !      call mpas_pool_get_array(mesh, 'fEdge', fEdge)
+            !JMD      call mpas_pool_get_dimension(mesh, 'nCells', nCells)
+            !JMD      call mpas_pool_get_dimension(mesh, 'nEdges', nEdges)
+            !JMD      call mpas_pool_get_dimension(mesh, 'nVertices', nVertices)
+            !JMD      call mpas_pool_get_dimension(mesh, 'nVertLevels', nVertLevels)
+            !      call mpas_pool_get_dimension(mesh, 'vertexDegree', vertexDegree)
+            !
+            ! Compute height on cell edges at velocity locations
+            !
+      do iEdge=edgeStart,edgeEnd
+         cell1 = cellsOnEdge(1,iEdge)
+         cell2 = cellsOnEdge(2,iEdge)
+         do k=1,nVertLevels
+            h_edge(k,iEdge) = 0.5 * (h(k,cell1) + h(k,cell2))
+         end do
+                !  the first openmp barrier below is set so that ke_edge is computed
+                !  it would be good to move this somewhere else?
+         efac = dcEdge(iEdge)*dvEdge(iEdge)
+         do k=1,nVertLevels
+            ke_edge(k,iEdge) = efac*u(k,iEdge)**2
+         end do
+      end do
+            !
+            ! Compute circulation and relative vorticity at each vertex
+            !
+      do iVertex=vertexStart,vertexEnd
+         vorticity(1:nVertLevels,iVertex) = 0.0
+         do i=1,vertexDegree
+            iEdge = edgesOnVertex(i,iVertex)
+            s = edgesOnVertex_sign(i,iVertex) * dcEdge(iEdge)
+            do k=1,nVertLevels
+               vorticity(k,iVertex) = vorticity(k,iVertex) + s * u(k,iEdge)
+            end do
+         end do
+         invAreaTriangle = 1.0_RKIND / areaTriangle(iVertex)
+         do k=1,nVertLevels
+            vorticity(k,iVertex) = vorticity(k,iVertex) * invAreaTriangle
+         end do
+      end do
+            !
+            ! Compute the divergence at each cell center
+            !
+      do iCell=cellStart,cellEnd
+         divergence(1:nVertLevels,iCell) = 0.0
+         do i=1,nEdgesOnCell(iCell)
+            iEdge = edgesOnCell(i,iCell)
+            s = edgesOnCell_sign(i,iCell) * dvEdge(iEdge)
+            do k=1,nVertLevels
+              divergence(k,iCell) = divergence(k,iCell) + s * u(k,iEdge)
+            end do
+         end do
+         r = 1.0 / areaCell(iCell)
+         do k = 1,nVertLevels
+            divergence(k,iCell) = divergence(k,iCell) * r
+         end do
+      end do
+            !$OMP BARRIER
+            !
+            ! Compute kinetic energy in each cell (Ringler et al JCP 2009)
+            !
+            ! Replace 2.0 with 2 in exponentiation to avoid outside chance that
+            ! compiler will actually allow "float raised to float" operation
+      do iCell=cellStart,cellEnd
+         ke(1:nVertLevels,iCell) = 0.0
+         do i=1,nEdgesOnCell(iCell)
+            iEdge = edgesOnCell(i,iCell)
+            do k=1,nVertLevels
+                        !               ke(k,iCell) = ke(k,iCell) + 0.25 * dcEdge(iEdge) * dvEdge(iEdge) * u(k,iEdge)**2
+               ke(k,iCell) = ke(k,iCell) + 0.25 * ke_edge(k,iEdge)
+            end do
+         end do
+         do k=1,nVertLevels
+            ke(k,iCell) = ke(k,iCell) * invAreaCell(iCell)
+         end do
+      end do
+      if (hollingsworth) then
+                ! Compute ke at cell vertices - AG's new KE construction, part 1
+                ! *** approximation here because we don't have inner triangle areas
+                !
+                ! Replace 2.0 with 2 in exponentiation to avoid outside chance that
+                ! compiler will actually allow "float raised to float" operation
+         do iVertex=vertexStart,vertexEnd
+            r = 0.25 / areaTriangle(iVertex) 
+            do k=1,nVertLevels
+                        !               ke_vertex(k,iVertex) = (  dcEdge(EdgesOnVertex(1,iVertex))*dvEdge(EdgesOnVertex(1,iVertex)
+                        ! )*u(k,EdgesOnVertex(1,iVertex))**2  &
+                        !                                        +dcEdge(EdgesOnVertex(2,iVertex))*dvEdge(EdgesOnVertex(2,iVertex)
+                        ! )*u(k,EdgesOnVertex(2,iVertex))**2  &
+                        !                                        +dcEdge(EdgesOnVertex(3,iVertex))*dvEdge(EdgesOnVertex(3,iVertex)
+                        ! )*u(k,EdgesOnVertex(3,iVertex))**2  &
+                        !                                      ) * r
+               ke_vertex(k,iVertex) = (  ke_edge(k,EdgesOnVertex(1,iVertex))+ke_edge(k,EdgesOnVertex(2,iVertex))+ke_edge(k,EdgesOnVertex(3,iVertex)) )*r
+            end do
+         end do
+                !$OMP BARRIER
+                ! adjust ke at cell vertices - AG's new KE construction, part 2
+                !
+         ke_fact = 1.0 - .375
+         do iCell=cellStart,cellEnd
+            do k=1,nVertLevels
+               ke(k,iCell) = ke_fact * ke(k,iCell)
+            end do
+         end do
+                ! Avoid FP errors caused by a potential division by zero below by
+                ! initializing the "garbage cell" of areaCell to a non-zero value
+         areaCell(nCells+1) = 1.0
+         do iCell=cellStart,cellEnd
+            r = 1.0 / areaCell(iCell)
+            do i=1,nEdgesOnCell(iCell)
+               iVertex = verticesOnCell(i,iCell)
+               j = kiteForCell(i,iCell)
+               do k = 1,nVertLevels
+                  ke(k,iCell) = ke(k,iCell) + (1.-ke_fact)*kiteAreasOnVertex(j,iVertex) * ke_vertex(k,iVertex) * r
+               end do
+            end do
+         end do
+      end if
+            !
+            ! Compute v (tangential) velocities following Thuburn et al JCP 2009
+            ! The tangential velocity is only used to compute the Smagorinsky coefficient
+      reconstruct_v = .true.
+      if(present(rk_step)) then
+        if(rk_step /= 3) reconstruct_v = .false.
+      end if
+      if (reconstruct_v) then
+        do iEdge = edgeStart,edgeEnd
+          v(1:nVertLevels,iEdge) = 0.0
+          do i=1,nEdgesOnEdge(iEdge)
+            eoe = edgesOnEdge(i,iEdge)
+            do k = 1,nVertLevels
+              v(k,iEdge) = v(k,iEdge) + weightsOnEdge(i,iEdge) * u(k, eoe)
+            end do
+          end do
+        end do
+      end if
+            !
+            ! Compute height at vertices, pv at vertices, and average pv to edge locations
+            !  ( this computes pv_vertex at all vertices bounding real cells )
+            !
+            ! Avoid dividing h_vertex by areaTriangle and move areaTriangle into
+            ! numerator for the pv_vertex calculation
+      do iVertex = vertexStart,vertexEnd
+         do k=1,nVertLevels
+                    !
+                    ! the following commented code is for the PV conserving shallow water solver.
+                    !            h_vertex = 0.0
+                    !            do i=1,vertexDegree
+                    !               h_vertex = h_vertex + h(k,cellsOnVertex(i,iVertex)) * kiteAreasOnVertex(i,iVertex)
+                    !            end do
+                    !            pv_vertex(k,iVertex) = (fVertex(iVertex) + vorticity(k,iVertex)) * areaTriangle(iVertex) / h_vertex
+            pv_vertex(k,iVertex) = (fVertex(iVertex) + vorticity(k,iVertex))
+         end do
+      end do
+            !$OMP BARRIER
+            !
+            ! Compute pv at the edges
+            !   ( this computes pv_edge at all edges bounding real cells )
+            !
+      do iEdge = edgeStart,edgeEnd
+         do k=1,nVertLevels
+            pv_edge(k,iEdge) =  0.5 * (pv_vertex(k,verticesOnEdge(1,iEdge)) + pv_vertex(k,verticesOnEdge(2,iEdge)))
+         end do
+      end do
+      if (config_apvm_upwinding > 0.0) then
+                !
+                ! Compute pv at cell centers
+                !    ( this computes pv_cell for all real cells )
+                !  only needed for APVM upwinding
+                !
+      do iCell=cellStart,cellEnd
+         pv_cell(1:nVertLevels,iCell) = 0.0
+         r = 1.0 / areaCell(iCell)
+         do i=1,nEdgesOnCell(iCell)
+            iVertex = verticesOnCell(i,iCell)
+            j = kiteForCell(i,iCell)
+            do k = 1,nVertLevels
+               pv_cell(k,iCell) = pv_cell(k,iCell) + kiteAreasOnVertex(j,iVertex) * pv_vertex(k,iVertex) * r
+            end do
+         end do
+      end do
+                !$OMP BARRIER
+                !
+                ! Modify PV edge with upstream bias.
+                !
+                ! Compute gradient of PV in the tangent direction
+                !   ( this computes gradPVt at all edges bounding real cells )
+                !
+                ! Compute gradient of PV in normal direction
+                !   (tdr: 2009-10-02: this is not correct because the pv_cell in the halo is not correct)
+                !
+                ! Modify PV edge with upstream bias.
+                !
+                ! Merged loops for calculating gradPVt, gradPVn and pv_edge
+                ! Also precomputed inverses of dvEdge and dcEdge to avoid repeated divisions
+                !
+         r = config_apvm_upwinding * dt
+         do iEdge = edgeStart,edgeEnd
+            r1 = 1.0_RKIND / dvEdge(iEdge)
+            r2 = 1.0_RKIND / dcEdge(iEdge)
+            icell1 = cellsOnEdge(1,iEdge)
+            icell2 = cellsOnEdge(2,iEdge)
+            ivert1 = verticesOnEdge(1,iEdge)
+            ivert2 = verticesOnEdge(2,iEdge)
+                    !DIR$ IVDEP
+            do k = 1,nVertLevels
+               gradPVt(k,iEdge) = (pv_vertex(k,ivert2) - pv_vertex(k,ivert1)) * r1
+               gradPVn(k,iEdge) = (pv_cell(k,icell2) - pv_cell(k,icell1)) * r2
+               pv_edge(k,iEdge) = pv_edge(k,iEdge) - r * (v(k,iEdge) * gradPVt(k,iEdge) + u(k,iEdge) * gradPVn(k,iEdge))
+            end do
+         end do
+      end if  ! apvm upwinding ! apvm upwinding
+        END SUBROUTINE atm_compute_solve_diagnostics
+
+
+    END MODULE atm_time_integration
