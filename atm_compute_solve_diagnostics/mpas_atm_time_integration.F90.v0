@@ -348,9 +348,7 @@
 !print *,'before call to system_clock'
                             CALL system_clock(start_clock, rate_clock)
                             DO kgen_intvar=1,maxiter
-!				print *,'before atm_compute_solve_diagnostics'
                                 CALL atm_compute_solve_diagnostics(nvertlevels, nedges, ncells, nvertices, vertexdegree, nedgesoncell, nedgesonedge, dt, 2, cellthreadstart_jmd, cellthreadend_jmd, vertexthreadstart_jmd, vertexthreadend_jmd, edgethreadstart_jmd, edgethreadend_jmd, edgesoncell, edgesonedge, edgesonvertex, cellsonedge, cellsonvertex, verticesoncell, verticesonedge, kiteforcell, fvertex, fedge, areacell, areatriangle, invareacell, edgesonvertex_sign, edgesoncell_sign, weightsonedge, kiteareasonvertex, dcedge, dvedge, pv_edge, pv_vertex, pv_cell, gradpvt, gradpvn, u_jmd, v_jmd, vh, h_edge, h, vorticity, ke, divergence, config_apvm_upwinding, rk_step)
-!			       print *,'after atm_compute_solve_diagnostics'
                             END DO
 	
                             CALL system_clock(stop_clock, rate_clock)
@@ -860,7 +858,6 @@
 
         !                                            dt, state, time_lev, diag, mesh, configs, &
 
-!DIR$ ATTRIBUTES NOINLINE :: atm_compute_solve_diagnostics
         SUBROUTINE atm_compute_solve_diagnostics(nvertlevels, nedges, ncells, nvertices, vertexdegree, nedgesoncell, nedgesonedge,&
          dt, time_lev, cellstart, cellend, vertexstart, vertexend, edgestart, edgeend, edgesoncell, edgesonedge, edgesonvertex, &
         cellsonedge, cellsonvertex, verticesoncell, verticesonedge, kiteforcell, fvertex, fedge, areacell, areatriangle, &

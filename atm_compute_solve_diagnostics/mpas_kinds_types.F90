@@ -9,7 +9,11 @@
 
     MODULE mpas_kind_types
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
+#ifdef SINGLE_PRECISION
+        INTEGER, parameter :: rkind  = selected_real_kind(6)
+#else
         INTEGER, parameter :: rkind  = selected_real_kind(12)
+#endif
         CONTAINS
 
         ! write subroutines

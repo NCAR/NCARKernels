@@ -24,6 +24,10 @@
         REAL(KIND=rkind), allocatable, dimension(:,:) :: ke_vertex
         REAL(KIND=rkind), allocatable, dimension(:,:) :: ref_ke_edge
         REAL(KIND=rkind), allocatable, dimension(:,:) :: ke_edge
+        INTEGER, parameter :: numwords = 20000000
+
+        real(kind=rkind) :: a(numwords),b(numwords),c(numwords)
+
         CONTAINS
 
         ! write subroutines
@@ -174,6 +178,7 @@
             INTEGER :: vertexthreadend_jmd
             INTEGER :: cellthreadstart_jmd
             INTEGER :: cellthreadend_jmd
+            INTEGER :: i
             !
             ! Retrieve configuration options
             !
@@ -343,6 +348,11 @@
                             CALL kgen_verify_real_rkind_dim2_ptr( "divergence", check_status, divergence, ref_divergence)
                             CALL kgen_verify_real_rkind_ptr( "config_apvm_upwinding", check_status, config_apvm_upwinding, ref_config_apvm_upwinding)
                             CALL kgen_print_check("atm_compute_solve_diagnostics", check_status)
+                            b = 4.56789
+                            c = 4.56789
+                            do i=1,numwords
+                               a(i) = b(i) + c(i)
+                            enddo
                             CALL system_clock(start_clock, rate_clock)
                             DO kgen_intvar=1,maxiter
                                 CALL atm_compute_solve_diagnostics(nvertlevels, nedges, ncells, nvertices, vertexdegree, nedgesoncell, nedgesonedge, dt, 2, cellthreadstart_jmd, cellthreadend_jmd, vertexthreadstart_jmd, vertexthreadend_jmd, edgethreadstart_jmd, edgethreadend_jmd, edgesoncell, edgesonedge, edgesonvertex, cellsonedge, cellsonvertex, verticesoncell, verticesonedge, kiteforcell, fvertex, fedge, areacell, areatriangle, invareacell, edgesonvertex_sign, edgesoncell_sign, weightsonedge, kiteareasonvertex, dcedge, dvedge, pv_edge, pv_vertex, pv_cell, gradpvt, gradpvn, u_jmd, v_jmd, vh, h_edge, h, vorticity, ke, divergence, config_apvm_upwinding, rk_step)
