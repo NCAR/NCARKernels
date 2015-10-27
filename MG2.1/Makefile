@@ -1,13 +1,13 @@
 #
 # Intel 
-FC := ftn
+FC := ifort
 #
 # Knights Corner
 #
 # FFLAGS := -mmic -O3 -qopt-report=5 -fp-model fast -no-prec-div -no-prec-sqrt -I./
 # FFLAGS := -O3 -fp-model precise -I./ -DCPRINTEL
 # FFLAGS := -O3 -fp-model fast -xHost -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
-# FFLAGS := -O2 -fp-model precise -xHost -I./ -DCPRINTEL
+FFLAGS := -O2 -fp-model precise -xHost -I./ -DCPRINTEL
 #
 # Haswell
 # 
@@ -23,7 +23,7 @@ FC := ftn
 # Use of these option below gives a 6-percent improvement in performance, but causes minor differences in answers
 # FFLAGS := -O3 -xAVX -ftz -g -I./     -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 \
 
-  FFLAGS := -O3 -xAVX -ftz -g -I./ -ipo4 -ipo-jobs4 -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 -openmp 
+#  FFLAGS := -O3 -xAVX -ftz -g -I./ -ipo4 -ipo-jobs4 -fimf-precision=low -no-prec-sqrt -no-prec-div -override-limits -qopt-report=5 -openmp 
 #
 # PGI 
 # FC := pgf95

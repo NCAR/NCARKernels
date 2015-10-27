@@ -1,13 +1,17 @@
+.SUFFIXES:
+.SUFFIXES: .o .f .F90 .f90
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
-#FC_FLAGS :=  -O3 -fp-model fast=2 -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
+#FC_FLAGS :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
+FC_FLAGS :=  -O3 -fp-model fast=2 -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xCORE-AVX2
 
-ALL_OBJS := kernel_driver.o clubb_intr.o kgen_utils.o fill_holes.o Skw_module.o mono_flux_limiter.o shr_const_mod.o stats_type_utilities.o stats_variables.o surface_varnce_module.o saturation.o interpolation.o parameters_tunable.o advance_windm_edsclrm_module.o model_flags.o anl_erf.o mixing_length.o pdf_parameter_module.o variables_diagnostic_module.o clubb_precision.o lapack_wrap.o constants_clubb.o grid_class.o mean_adv.o clubb_intr.o advance_helper_module.o clip_semi_implicit.o diffusion.o pdf_utilities.o stat_file_module.o ppgrid.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o T_in_K_module.o stats_type.o array_index.o advance_clubb_core_module.o stats_clubb_utilities.o numerical_check.o advance_xm_wpxp_module.o error_code.o pdf_closure_module.o parameters_model.o sigma_sqd_w_module.o shr_kind_mod.o advance_wp2_wp3_module.o pos_definite_module.o
+LAPACK_OBJS = dgtsvx.o dgtsv.o dgbsvx.o dgbsv.o xerbla.o lsame.o dlangt.o dgtcon.o dlacpy.o dlamch.o  dcopy.o dlacn2.o dgttrs.o  dgtts2.o disnan.o ilaenv.o dgtrfs.o dgttrf.o dlassq.o dgbtrf.o dasum.o dgemm.o dswap.o idamax.o dgbtrs.o dger.o  dgemv.o dtbsv.o dtrsm.o dscal.o dlantb.o dlangb.o dgbcon.o dgbrfs.o dgbequ.o dlaqgb.o dlagtm.o dgbtf2.o dlaisnan.o iparmq.o ieeeck.o  daxpy.o dlaswp.o dgbmv.o dlatbs.o ddot.o drscl.o dlabad.o
+
+ALL_OBJS := kernel_driver.o clubb_intr.o kgen_utils.o fill_holes.o Skw_module.o mono_flux_limiter.o shr_const_mod.o stats_type_utilities.o stats_variables.o surface_varnce_module.o saturation.o interpolation.o parameters_tunable.o advance_windm_edsclrm_module.o model_flags.o anl_erf.o mixing_length.o pdf_parameter_module.o variables_diagnostic_module.o clubb_precision.o lapack_wrap.o constants_clubb.o grid_class.o mean_adv.o clubb_intr.o advance_helper_module.o clip_semi_implicit.o diffusion.o pdf_utilities.o stat_file_module.o ppgrid.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o T_in_K_module.o stats_type.o array_index.o advance_clubb_core_module.o stats_clubb_utilities.o numerical_check.o advance_xm_wpxp_module.o error_code.o pdf_closure_module.o parameters_model.o sigma_sqd_w_module.o shr_kind_mod.o advance_wp2_wp3_module.o pos_definite_module.o $(LAPACK_OBJS)
+
 
 run: build
-	module load mkl
 	./kernel.exe
 
 build: ${ALL_OBJS}
@@ -16,8 +20,12 @@ build: ${ALL_OBJS}
 kernel_driver.o: kernel_driver.f90 clubb_intr.o kgen_utils.o fill_holes.o Skw_module.o mono_flux_limiter.o shr_const_mod.o stats_type_utilities.o stats_variables.o surface_varnce_module.o saturation.o interpolation.o parameters_tunable.o advance_windm_edsclrm_module.o model_flags.o anl_erf.o mixing_length.o pdf_parameter_module.o variables_diagnostic_module.o clubb_precision.o lapack_wrap.o constants_clubb.o grid_class.o mean_adv.o clubb_intr.o advance_helper_module.o clip_semi_implicit.o diffusion.o pdf_utilities.o stat_file_module.o ppgrid.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o T_in_K_module.o stats_type.o array_index.o advance_clubb_core_module.o stats_clubb_utilities.o numerical_check.o advance_xm_wpxp_module.o error_code.o pdf_closure_module.o parameters_model.o sigma_sqd_w_module.o shr_kind_mod.o advance_wp2_wp3_module.o pos_definite_module.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
+
 fill_holes.o: fill_holes.F90 kgen_utils.o clubb_precision.o grid_class.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
+
+%.o: %.f
+	${FC} ${FC_FLAGS} -c $< -o $@
 
 Skw_module.o: Skw_module.F90 kgen_utils.o clubb_precision.o constants_clubb.o parameters_tunable.o
 	${FC} ${FC_FLAGS} -c -o $@ $<

@@ -33,29 +33,29 @@ export LID="`date +%y%m%d-%H%M%S`"
 
 
 #mpiexec.hydra -f hostfile.txt -n 1 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.1x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 1 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.1x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 1 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.1x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 2 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.2x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 2 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.2x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 2 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.2x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 4 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.4x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 4 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.4x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 4 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.4x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 6 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.6x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 6 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.6x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 6 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.6x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 8 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.8x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 8 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.8x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 8 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.8x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 10 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.10x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 10 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.10x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 10 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.10x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 12 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.12x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 12 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.12x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 12 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.12x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 14 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.14x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 14 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.14x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 14 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.14x1.log.$LID
 
 #mpiexec.hydra -f hostfile.txt -n 16 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v0.r4.exe >& kernel.v0.r4.96x1.16x1.log.$LID
-mpiexec.hydra -f hostfile.txt -n 16 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v2.r4.exe >& kernel.v2.r4.96x1.16x1.log.$LID
+mpiexec.hydra -f hostfile.txt -n 16 -env I_MPI_PIN_MODE $I_MPI_PIN_MODE -env LD_LIBRARY_PATH $LD_LIBRARY_PATH -env KMP_AFFINITY 'verbose,scatter' ./kernel.avx.v5.r4.exe >& kernel.v5.r4.96x1.16x1.log.$LID
 
