@@ -11,7 +11,7 @@ KGEN Version: 0.6.0 (https://github.com/NCAR/KGen.git "devel" branch)
 >> make
 
 [ Files ]
-./Makefile : makefile used to extract the kernel
+./Makefile.kgen : makefile used to extract the kernel
 ./include.ini : KGEN include file to provide file search paths and macros
 ./kernel/* : kernel source files and makefile to build and run the kernel
 ./state/* : kgen-instrumented source files and makefile to generate state data
