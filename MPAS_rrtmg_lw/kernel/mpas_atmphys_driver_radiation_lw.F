@@ -1,6 +1,6 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2015-12-24 11:55:33
+!Generated at : 2015-12-29 15:06:49
 !KGEN version : 0.6.0
 
 ! Copyright (c) 2013,  Los Alamos National Security, LLC (LANS)
@@ -378,6 +378,7 @@
      USE rrlw_con, ONLY: kv_externs_rrlw_con
      USE rrlw_vsn, ONLY: kv_externs_rrlw_vsn
      USE module_ra_rrtmg_lw, ONLY: kv_externs_module_ra_rrtmg_lw
+     USE kgen_utils_mod, ONLY: kgen_perturb_real
 
 
 !inout arguments:
@@ -449,7 +450,8 @@
      !local output variables
      
      !Uncomment following call statement to turn on perturbation experiment.
-     !CALL kgen_perturb_real( your_variable, 1.0E-15 )
+     !Adjust perturbation value and/or kind parameter if required.
+     !CALL kgen_perturb_real( pres_hyd_p, 1.0E-15_8 )
      
        call rrtmg_lwrad( &
              p3d        = pres_hyd_p   , p8w        = pres2_hyd_p , pi3d       = pi_p          ,&
@@ -501,17 +503,28 @@
        
        !local verify variables
        WRITE (*, *) ""
-       WRITE (*, *) "Number of verified variables: ", check_status%numTotal
+       IF (check_status%verboseLevel > 0) THEN
+           WRITE (*, *) "Number of verified variables: ", check_status%numTotal
+           WRITE (*, *) "Number of identical variables: ", check_status%numIdentical
+           WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol
+           WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol
+           WRITE (*, *) "Tolerance: ", check_status%tolerance
+       END IF 
+       WRITE (*, *) ""
        IF (check_status%numOutTol > 0) THEN
            WRITE (*, *) "Verification FAILED"
+           check_status%Passed = .FALSE.
        ELSE
            WRITE (*, *) "Verification PASSED"
+           check_status%Passed = .TRUE.
        END IF 
+       WRITE (*, *) ""
        CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock)
        DO kgen_intvar = 1, kgen_maxiter
            
            !Uncomment following call statement to turn on perturbation experiment.
-           !CALL kgen_perturb_real( your_variable, 1.0E-15 )
+           !Adjust perturbation value and/or kind parameter if required.
+           !CALL kgen_perturb_real( your_variable, 1.0E-15_8 )
            
        call rrtmg_lwrad( &
              p3d        = pres_hyd_p   , p8w        = pres2_hyd_p , pi3d       = pi_p          ,&

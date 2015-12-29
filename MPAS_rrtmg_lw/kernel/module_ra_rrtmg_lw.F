@@ -1,6 +1,6 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2015-12-24 11:55:33
+!Generated at : 2015-12-29 15:06:49
 !KGEN version : 0.6.0
 
 !MODULE module_ra_rrtmg_lw
@@ -299,31 +299,40 @@
           
           IF (var == kgenref_var) THEN
               check_status%numIdentical = check_status%numIdentical + 1
-              WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+              END IF 
               check_result = CHECK_IDENTICAL
           ELSE
               diff = ABS(var - kgenref_var)
               IF (diff <= check_status%tolerance) THEN
                   check_status%numInTol = check_status%numInTol + 1
-                  WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL within tolerance."
+                  IF (check_status%verboseLevel > 0) THEN
+                      WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
+                  END IF 
                   check_result = CHECK_IN_TOL
               ELSE
                   check_status%numOutTol = check_status%numOutTol + 1
-                  WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL out of tolerance."
+                  IF (check_status%verboseLevel > 0) THEN
+                      WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+                  END IF 
                   check_result = CHECK_OUT_TOL
               END IF 
           END IF 
           IF (check_result == CHECK_IDENTICAL) THEN
               IF (check_status%verboseLevel > 2) THEN
                   WRITE (*, *) "Difference is ", 0
+                  WRITE (*, *) ""
               END IF 
           ELSE IF (check_result == CHECK_OUT_TOL) THEN
               IF (check_status%verboseLevel > 0) THEN
                   WRITE (*, *) "Difference is ", diff
+                  WRITE (*, *) ""
               END IF 
           ELSE IF (check_result == CHECK_IN_TOL) THEN
               IF (check_status%verboseLevel > 1) THEN
                   WRITE (*, *) "Difference is ", diff
+                  WRITE (*, *) ""
               END IF 
           END IF 
           
@@ -1891,24 +1900,31 @@
           
           IF (var == kgenref_var) THEN
               check_status%numIdentical = check_status%numIdentical + 1
-              WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+              END IF 
               check_result = CHECK_IDENTICAL
           ELSE
               check_status%numOutTol = check_status%numOutTol + 1
-              WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL."
+              IF (check_status%verboseLevel > 0) THEN
+                  WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL."
+              END IF 
               check_result = CHECK_OUT_TOL
           END IF 
           IF (check_result == CHECK_IDENTICAL) THEN
               IF (check_status%verboseLevel > 2) THEN
                   WRITE (*, *) "NOT IMPLEMENTED"
+                  WRITE (*, *) ""
               END IF 
           ELSE IF (check_result == CHECK_OUT_TOL) THEN
               IF (check_status%verboseLevel > 0) THEN
                   WRITE (*, *) "NOT IMPLEMENTED"
+                  WRITE (*, *) ""
               END IF 
           ELSE IF (check_result == CHECK_IN_TOL) THEN
               IF (check_status%verboseLevel > 1) THEN
                   WRITE (*, *) "NOT IMPLEMENTED"
+                  WRITE (*, *) ""
               END IF 
           END IF 
           
@@ -2332,40 +2348,49 @@ contains
       
       check_status%numTotal = check_status%numTotal + 1
       
-      CALL kgen_init_check(dtype_check_status)
+      CALL kgen_init_check(dtype_check_status, verboseLevel=check_status%verboseLevel)
+      dtype_check_status%numTotal = dtype_check_status%numTotal + 1
       IF (var%currentelement == kgenref_var%currentelement) THEN
           dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1
-          WRITE (*, *) trim(adjustl(varname)), "%currentelement is IDENTICAL."
+          IF (check_status%verboseLevel > 2) THEN
+              WRITE (*, *) trim(adjustl(varname)), "%currentelement is IDENTICAL."
+          END IF 
           check_result = CHECK_IDENTICAL
       ELSE
           diff_currentelement = ABS(var%currentelement - kgenref_var%currentelement)
           IF (diff_currentelement <= dtype_check_status%tolerance) THEN
               dtype_check_status%numInTol = dtype_check_status%numInTol + 1
-              WRITE (*, *) trim(adjustl(varname)), "%currentelement is NOT IDENTICAL within tolerance."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), "%currentelement is NOT IDENTICAL(within tolerance)."
+              END IF 
               check_result = CHECK_IN_TOL
           ELSE
               dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1
-              WRITE (*, *) trim(adjustl(varname)), "%currentelement is NOT IDENTICAL out of tolerance."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), "%currentelement is NOT IDENTICAL(out of tolerance)."
+              END IF 
               check_result = CHECK_OUT_TOL
           END IF 
       END IF 
       IF (check_result == CHECK_IDENTICAL) THEN
+      ELSE IF (check_result == CHECK_OUT_TOL) THEN
           IF (check_status%verboseLevel > 2) THEN
               WRITE (*, *) "Difference is ", diff_currentelement
-          END IF 
-      ELSE IF (check_result == CHECK_OUT_TOL) THEN
-          IF (check_status%verboseLevel > 0) THEN
-              WRITE (*, *) "Difference is ", diff_currentelement
+              WRITE (*, *) ""
           END IF 
       ELSE IF (check_result == CHECK_IN_TOL) THEN
-          IF (check_status%verboseLevel > 1) THEN
+          IF (check_status%verboseLevel > 2) THEN
               WRITE (*, *) "Difference is ", diff_currentelement
+              WRITE (*, *) ""
           END IF 
       END IF 
       
+      dtype_check_status%numTotal = dtype_check_status%numTotal + 1
       IF (ALL(var%state == kgenref_var%state)) THEN
           dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1
-          WRITE (*, *) trim(adjustl(varname)), "%state is IDENTICAL."
+          IF (check_status%verboseLevel > 2) THEN
+              WRITE (*, *) trim(adjustl(varname)), "%state is IDENTICAL."
+          END IF 
           check_result = CHECK_IDENTICAL
       ELSE
           ALLOCATE (buf1_state(SIZE(var%state,dim=1)))
@@ -2382,43 +2407,46 @@ contains
           rmsdiff_state = SQRT(SUM(buf2_state)/REAL(n_state))
           IF (nrmsdiff_state > dtype_check_status%tolerance) THEN
               dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1
-              WRITE (*, *) trim(adjustl(varname)), "%state is NOT IDENTICAL out of tolerance."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), "%state is NOT IDENTICAL(out of tolerance)."
+              END IF 
               check_result = CHECK_OUT_TOL
           ELSE
               dtype_check_status%numInTol = dtype_check_status%numInTol + 1
-              WRITE (*, *) trim(adjustl(varname)), "%state is NOT IDENTICAL within tolerance."
+              IF (check_status%verboseLevel > 1) THEN
+                  WRITE (*, *) trim(adjustl(varname)), "%state is NOT IDENTICAL(within tolerance)."
+              END IF 
               check_result = CHECK_IN_TOL
           END IF 
       END IF 
       IF (check_result == CHECK_IDENTICAL) THEN
+      ELSE IF (check_result == CHECK_OUT_TOL) THEN
           IF (check_status%verboseLevel > 2) THEN
               WRITE (*, *) count( var%state /= kgenref_var%state), " of ", size( var%state ), " elements are different."
               WRITE (*, *) "Average - kernel ", sum(var%state)/real(size(var%state))
               WRITE (*, *) "Average - reference ", sum(kgenref_var%state)/real(size(kgenref_var%state))
               WRITE (*, *) "RMS of difference is ", rmsdiff_state
               WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff_state
-              
-          END IF 
-      ELSE IF (check_result == CHECK_OUT_TOL) THEN
-          IF (check_status%verboseLevel > 0) THEN
-              WRITE (*, *) count( var%state /= kgenref_var%state), " of ", size( var%state ), " elements are different."
-              WRITE (*, *) "Average - kernel ", sum(var%state)/real(size(var%state))
-              WRITE (*, *) "Average - reference ", sum(kgenref_var%state)/real(size(kgenref_var%state))
-              WRITE (*, *) "RMS of difference is ", rmsdiff_state
-              WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff_state
-              
+              WRITE (*, *) ""
           END IF 
       ELSE IF (check_result == CHECK_IN_TOL) THEN
-          IF (check_status%verboseLevel > 1) THEN
+          IF (check_status%verboseLevel > 2) THEN
               WRITE (*, *) count( var%state /= kgenref_var%state), " of ", size( var%state ), " elements are different."
               WRITE (*, *) "Average - kernel ", sum(var%state)/real(size(var%state))
               WRITE (*, *) "Average - reference ", sum(kgenref_var%state)/real(size(kgenref_var%state))
               WRITE (*, *) "RMS of difference is ", rmsdiff_state
               WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff_state
-              
+              WRITE (*, *) ""
           END IF 
       END IF 
       
+      IF (dtype_check_status%numTotal == dtype_check_status%numIdentical) THEN
+          check_status%numIdentical = check_status%numIdentical + 1
+      ELSE IF (dtype_check_status%numOutTol > 0) THEN
+          check_status%numOutTol = check_status%numOutTol + 1
+      ELSE IF (dtype_check_status%numInTol > 0) THEN
+          check_status%numInTol = check_status%numInTol + 1
+      END IF 
   END SUBROUTINE kv_mersennetwister_randomnumbersequence
   
   end module MersenneTwister
@@ -10184,31 +10212,40 @@ CONTAINS
       
       IF (var == kgenref_var) THEN
           check_status%numIdentical = check_status%numIdentical + 1
-          WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+          IF (check_status%verboseLevel > 1) THEN
+              WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+          END IF 
           check_result = CHECK_IDENTICAL
       ELSE
           diff = ABS(var - kgenref_var)
           IF (diff <= check_status%tolerance) THEN
               check_status%numInTol = check_status%numInTol + 1
-              WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL within tolerance."
+              IF (check_status%verboseLevel > 0) THEN
+                  WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
+              END IF 
               check_result = CHECK_IN_TOL
           ELSE
               check_status%numOutTol = check_status%numOutTol + 1
-              WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL out of tolerance."
+              IF (check_status%verboseLevel > 0) THEN
+                  WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+              END IF 
               check_result = CHECK_OUT_TOL
           END IF 
       END IF 
       IF (check_result == CHECK_IDENTICAL) THEN
           IF (check_status%verboseLevel > 2) THEN
               WRITE (*, *) "Difference is ", 0
+              WRITE (*, *) ""
           END IF 
       ELSE IF (check_result == CHECK_OUT_TOL) THEN
           IF (check_status%verboseLevel > 0) THEN
               WRITE (*, *) "Difference is ", diff
+              WRITE (*, *) ""
           END IF 
       ELSE IF (check_result == CHECK_IN_TOL) THEN
           IF (check_status%verboseLevel > 1) THEN
               WRITE (*, *) "Difference is ", diff
+              WRITE (*, *) ""
           END IF 
       END IF 
       

@@ -1,6 +1,6 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2015-12-24 11:50:58
+!Generated at : 2015-12-29 15:03:36
 !KGEN version : 0.6.0
 
 ! Copyright (c) 2013,  Los Alamos National Security, LLC (LANS)
@@ -502,7 +502,9 @@
      IF (ALLOCATED(var)) THEN
          IF (ALL(var == kgenref_var)) THEN
              check_status%numIdentical = check_status%numIdentical + 1
-             WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             IF (check_status%verboseLevel > 1) THEN
+                 WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             END IF 
              check_result = CHECK_IDENTICAL
          ELSE
              ALLOCATE (buf1(SIZE(var,dim=1),SIZE(var,dim=2),SIZE(var,dim=3)))
@@ -519,11 +521,15 @@
              rmsdiff = SQRT(SUM(buf2)/REAL(n))
              IF (nrmsdiff > check_status%tolerance) THEN
                  check_status%numOutTol = check_status%numOutTol + 1
-                 WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL out of tolerance."
+                 IF (check_status%verboseLevel > 0) THEN
+                     WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+                 END IF 
                  check_result = CHECK_OUT_TOL
              ELSE
                  check_status%numInTol = check_status%numInTol + 1
-                 WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL within tolerance."
+                 IF (check_status%verboseLevel > 0) THEN
+                     WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
+                 END IF 
                  check_result = CHECK_IN_TOL
              END IF 
          END IF 
@@ -534,7 +540,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", 0
                  WRITE (*, *) "Normalized RMS of difference is ", 0
-                 
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_OUT_TOL) THEN
              IF (check_status%verboseLevel > 0) THEN
@@ -543,7 +549,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", rmsdiff
                  WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
-                 
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_IN_TOL) THEN
              IF (check_status%verboseLevel > 1) THEN
@@ -552,7 +558,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", rmsdiff
                  WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
-                 
+                 WRITE (*, *) ""
              END IF 
          END IF 
          
@@ -575,25 +581,32 @@
      IF (ALLOCATED(var)) THEN
          IF (ALL(var .EQV. kgenref_var)) THEN
              check_status%numIdentical = check_status%numIdentical + 1
-             WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             IF (check_status%verboseLevel > 1) THEN
+                 WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             END IF 
              check_result = CHECK_IDENTICAL
          ELSE
              n = COUNT(var /= kgenref_var)
              check_status%numOutTol = check_status%numOutTol + 1
-             WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL out of tolerance."
+             IF (check_status%verboseLevel > 0) THEN
+                 WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+             END IF 
              check_result = CHECK_OUT_TOL
          END IF 
          IF (check_result == CHECK_IDENTICAL) THEN
              IF (check_status%verboseLevel > 2) THEN
                  WRITE (*, *) "NOT IMPLEMENTED"
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_OUT_TOL) THEN
              IF (check_status%verboseLevel > 0) THEN
                  WRITE (*, *) "NOT IMPLEMENTED"
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_IN_TOL) THEN
              IF (check_status%verboseLevel > 1) THEN
                  WRITE (*, *) "NOT IMPLEMENTED"
+                 WRITE (*, *) ""
              END IF 
          END IF 
          
@@ -618,7 +631,9 @@
      IF (ALLOCATED(var)) THEN
          IF (ALL(var == kgenref_var)) THEN
              check_status%numIdentical = check_status%numIdentical + 1
-             WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             IF (check_status%verboseLevel > 1) THEN
+                 WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+             END IF 
              check_result = CHECK_IDENTICAL
          ELSE
              ALLOCATE (buf1(SIZE(var,dim=1),SIZE(var,dim=2)))
@@ -635,11 +650,15 @@
              rmsdiff = SQRT(SUM(buf2)/REAL(n))
              IF (nrmsdiff > check_status%tolerance) THEN
                  check_status%numOutTol = check_status%numOutTol + 1
-                 WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL out of tolerance."
+                 IF (check_status%verboseLevel > 0) THEN
+                     WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+                 END IF 
                  check_result = CHECK_OUT_TOL
              ELSE
                  check_status%numInTol = check_status%numInTol + 1
-                 WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL within tolerance."
+                 IF (check_status%verboseLevel > 0) THEN
+                     WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
+                 END IF 
                  check_result = CHECK_IN_TOL
              END IF 
          END IF 
@@ -650,7 +669,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", 0
                  WRITE (*, *) "Normalized RMS of difference is ", 0
-                 
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_OUT_TOL) THEN
              IF (check_status%verboseLevel > 0) THEN
@@ -659,7 +678,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", rmsdiff
                  WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
-                 
+                 WRITE (*, *) ""
              END IF 
          ELSE IF (check_result == CHECK_IN_TOL) THEN
              IF (check_status%verboseLevel > 1) THEN
@@ -668,7 +687,7 @@
                  WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                  WRITE (*, *) "RMS of difference is ", rmsdiff
                  WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
-                 
+                 WRITE (*, *) ""
              END IF 
          END IF 
          

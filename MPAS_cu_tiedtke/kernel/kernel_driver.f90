@@ -1,6 +1,6 @@
     !KGEN-generated Fortran source file
     
-    !Generated at : 2015-12-24 11:50:59
+    !Generated at : 2015-12-29 15:03:36
     !KGEN version : 0.6.0
     
     PROGRAM kernel_driver
@@ -36,7 +36,7 @@
             END IF 
             
             WRITE (*, *) ""
-            WRITE (*, *) "** Verification against '" // trim(adjustl(kgen_filepath)) // "' **"
+            WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
             
             
             !driver read in arguments
