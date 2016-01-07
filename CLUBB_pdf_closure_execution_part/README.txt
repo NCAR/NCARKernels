@@ -2,12 +2,12 @@
 
 Kernel: CLUBB_pdf_closure_execution_part
 Source: cesm1_4_beta06
-Compiler: Intel Fortran Compiler 12.1.5
+Compiler: Intel Fortran Compiler 16.0.1
 KGEN Version: 0.6.1 (https://github.com/NCAR/KGen.git "devel" branch)
 
 [ Running the kernel ]
 >> cd kernel
->> module load intel/12.1.5
+>> module load intel/16.0.1
 >> module load mkl
 >> make
 
