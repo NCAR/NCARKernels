@@ -1,0 +1,52 @@
+KGEN_HOME ?= ${HOME}/repos/github/KGen
+KGEN := $(KGEN_HOME)/bin/kgen
+
+CESM_HOME := ${HOME}/trepo/temp/kgen_system_test/branches/initial/cesm1_4_beta06
+CASE_DIR := ${CESM_HOME}/cime/scripts/KGEN-FC5-MG2
+SOURCE_MODS := ${CASE_DIR}/SourceMods/src.cam
+SRC := ${CESM_HOME}/components/cam/src/physics/clubb/advance_clubb_core_module.F90
+OUTPUT_DIR := ${HOME}/trepo/temp/kgen_system_test/branches/initial/test_cases/CLUBB_pdf_closure
+
+all: extract
+
+test: gendata
+	 ${MAKE} -C kernel
+
+gendata: extract
+	if [ -d "./data" ]; then \
+		if [ -a  "./data/pdf_closure.10.100" ]; then \
+			cp -f data/* kernel; \
+			echo "Using pre-generated data files"; \
+		else \
+			rm -f ${SOURCE_MODS}/*; \
+			${MAKE} -C state || exit 1; \
+			echo "Generating new data files"; \
+			echo "Rerun test once data is successfully generated."; \
+			exit 1; \
+		fi \
+	else \
+		rm -f ${SOURCE_MODS}/*; \
+		${MAKE} -C state || exit 1; \
+		echo "Generating new data files"; \
+		echo "Rerun test once data is successfully generated."; \
+		exit 1; \
+	fi 
+
+extract: clean
+	${KGEN} \
+        -i include.ini \
+        -e exclude.ini \
+        --outdir ${OUTPUT_DIR} \
+		--timing repeat=1 \
+        --invocation 10:50:100 \
+		--source format=free,strict=no,alias=/glade/scratch/youngsun:/glade/u/home/youngsun/trepo/temp \
+        --mpi ranks=100:300:500,comm=mpicom,use="spmd_utils:mpicom" \
+        --state-switch type=copy,cmds="rm -f ${SOURCE_MODS}/*; cp -f ${OUTPUT_DIR}/state/*.F90 ${SOURCE_MODS}" \
+        --state-build cmds="cd ${CASE_DIR}; ./KGEN-FC5-MG2.clean_build; ./KGEN-FC5-MG2.build" \
+        --state-run cmds="cd ${CASE_DIR}; ./KGEN-FC5-MG2.submit" \
+        --kernel-compile FC_FLAGS='-no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -xHost -O2 -mkl' \
+        ${SRC}:advance_clubb_core_module:advance_clubb_core:pdf_closure
+		#--debug printvar=:wp4_zt
+
+clean:
+	rm -rf kgen.log kernel state

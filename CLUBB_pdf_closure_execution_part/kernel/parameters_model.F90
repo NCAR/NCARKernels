@@ -1,7 +1,7 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2016-01-04 08:38:23
-!KGEN version : 0.6.0
+!Generated at : 2016-01-07 08:45:17
+!KGEN version : 0.6.1
 
 !-------------------------------------------------------------------------------
 ! $Id: parameters_model.F90 7226 2014-08-19 15:52:41Z betlej@uwm.edu $
@@ -40,10 +40,7 @@ module parameters_model
 
 !$omp threadprivate(rtm_min, rtm_nudge_max_altitude)
 
-  integer, public :: & 
-    sclr_dim = 0,        & ! Number of passive scalars
-    edsclr_dim = 0,      & ! Number of eddy-diff. passive scalars
-    hydromet_dim = 0       ! Number of hydrometeor species
+  INTEGER, public :: sclr_dim = 0
 
 !$omp threadprivate(sclr_dim, edsclr_dim, hydromet_dim)
 
@@ -135,7 +132,7 @@ module parameters_model
           ALLOCATE (var(kgen_bound(2,1)-kgen_bound(1,1)+1))
           READ (UNIT = kgen_unit) var
           IF (PRESENT( printvar )) THEN
-              WRITE (*, *) "** KGEN DEBUG: " // printvar // " sclr_tol **", SUM(var)
+              WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
           END IF 
       END IF 
   END SUBROUTINE kr_parameters_model_real__core_rknd_dim1

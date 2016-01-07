@@ -7,7 +7,7 @@ SOURCE_MODS := ${CASE_DIR}/SourceMods/src.cam
 SRC := ${CESM_HOME}/components/cam/src/physics/clubb/pdf_closure_module.F90
 OUTPUT_DIR := ${HOME}/trepo/temp/kgen_system_test/branches/initial/test_cases/CLUBB_pdf_closure_part3
 
-#all: extract
+all: extract
 
 test: gendata
 	 ${MAKE} -C kernel
@@ -36,7 +36,7 @@ extract: clean
 	${KGEN} \
         -i include.ini \
         --outdir ${OUTPUT_DIR} \
-		--timing repeat=1 \
+		--timing repeat=1000 \
         --invocation 10:100:500 \
 		--source format=free,strict=no,alias=/glade/scratch/youngsun:/glade/u/home/youngsun/trepo/temp \
         --mpi ranks=0:100:200:300,comm=mpicom,use="spmd_utils:mpicom" \

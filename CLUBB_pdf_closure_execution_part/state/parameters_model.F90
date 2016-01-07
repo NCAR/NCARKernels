@@ -192,7 +192,7 @@ module parameters_model
           WRITE (UNIT = kgen_unit) UBOUND(var, 1)
           WRITE (UNIT = kgen_unit) var
           IF (PRESENT( printvar )) THEN
-              WRITE (*, *) "** KGEN DEBUG: " // printvar // " sclr_tol **", SUM(var)
+              WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
           END IF 
       END IF 
       

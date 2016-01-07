@@ -1,7 +1,7 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2016-01-04 08:38:23
-!KGEN version : 0.6.0
+!Generated at : 2016-01-07 08:45:17
+!KGEN version : 0.6.1
 
 !---------------------------------------------------------------------------
 ! $Id: pdf_closure_module.F90 7309 2014-09-20 17:06:28Z betlej@uwm.edu $
@@ -96,15 +96,15 @@ module pdf_closure_module
       REAL(KIND=core_rknd), dimension(hydromet_dim), INTENT(INOUT) :: wphydrometp, wp2hmp, rtphmp, thlphmp
 
     ! Output Variables
-      REAL(KIND=core_rknd) :: wp4, wprtp2, wp2rtp, wpthlp2, wp2thlp, cloud_frac, ice_supersat_frac, rcm, wpthvp, wp2thvp, rtpthvp, thlpthvp, wprcp, wp2rcp, rtprcp, thlprcp, rcp2, wprtpthlp
+      REAL(KIND=core_rknd), INTENT(INOUT) :: wp4, wprtp2, wp2rtp, wpthlp2, wp2thlp, cloud_frac, ice_supersat_frac, rcm, wpthvp, wp2thvp, rtpthvp, thlpthvp, wprcp, wp2rcp, rtprcp, thlprcp, rcp2, wprtpthlp
 
-      TYPE(pdf_parameter) :: pdf_params
+      TYPE(pdf_parameter), INTENT(INOUT) :: pdf_params
 
-      INTEGER :: err_code
+      INTEGER, INTENT(INOUT) :: err_code
 
     ! Output (passive scalar variables)
 
-      REAL(KIND=core_rknd), dimension(sclr_dim) :: sclrpthvp, sclrprcp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp
+      REAL(KIND=core_rknd), dimension(sclr_dim), INTENT(INOUT) :: sclrpthvp, sclrprcp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp
 
     ! Local Variables
 
@@ -136,7 +136,7 @@ module pdf_closure_module
 
     ! Thermodynamic quantity
 
-      REAL(KIND=core_rknd) :: rc_coef
+      REAL(KIND=core_rknd), INTENT(INOUT) :: rc_coef
 
       REAL(KIND=core_rknd) :: wp2rxp, wprxp, thlprxp, rtprxp
 
@@ -200,50 +200,6 @@ module pdf_closure_module
     CALL kr_externs_in_array_index(kgen_unit)
     
     !local input variables
-    READ (UNIT = kgen_unit) wp2rtp
-    READ (UNIT = kgen_unit) wp2thlp
-    READ (UNIT = kgen_unit) wp4
-    READ (UNIT = kgen_unit) wprtp2
-    READ (UNIT = kgen_unit) wpthlp2
-    READ (UNIT = kgen_unit) wprtpthlp
-    READ (UNIT = kgen_unit) wp2rcp
-    READ (UNIT = kgen_unit) wp2thvp
-    READ (UNIT = kgen_unit) wprcp
-    READ (UNIT = kgen_unit) wpthvp
-    READ (UNIT = kgen_unit) thlprcp
-    READ (UNIT = kgen_unit) thlpthvp
-    READ (UNIT = kgen_unit) rtprcp
-    READ (UNIT = kgen_unit) rtpthvp
-    READ (UNIT = kgen_unit) cloud_frac
-    READ (UNIT = kgen_unit) rcm
-    READ (UNIT = kgen_unit) ice_supersat_frac
-    READ (UNIT = kgen_unit) rcp2
-    CALL kr_pdf_parameter_module_pdf_parameter(pdf_params, kgen_unit)
-    READ (UNIT = kgen_unit) err_code
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) wp2sclrp
-    END IF 
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) wpsclrp2
-    END IF 
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) wpsclrprtp
-    END IF 
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) wpsclrpthlp
-    END IF 
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) sclrprcp
-    END IF 
-    READ (UNIT = kgen_unit) kgen_istrue
-    IF (kgen_istrue) THEN
-        READ (UNIT = kgen_unit) sclrpthvp
-    END IF 
     READ (UNIT = kgen_unit) w_1_n
     READ (UNIT = kgen_unit) w_2_n
     READ (UNIT = kgen_unit) alpha_thl
@@ -317,7 +273,6 @@ module pdf_closure_module
     READ (UNIT = kgen_unit) beta1
     READ (UNIT = kgen_unit) beta2
     READ (UNIT = kgen_unit) sqrt_wp2
-    READ (UNIT = kgen_unit) rc_coef
     READ (UNIT = kgen_unit) wp2rxp
     READ (UNIT = kgen_unit) wprxp
     READ (UNIT = kgen_unit) thlprxp
@@ -478,49 +433,19 @@ module pdf_closure_module
     !Adjust perturbation value and/or kind parameter if required.
     !CALL kgen_perturb_real( your_variable, 1.0E-15_8 )
     
-    if ( sclr_dim > 0 ) then
-      l_scalar_calc = .true.
-    else
-      l_scalar_calc = .false.
-    end if
+    
+    !call to kgen kernel
+    CALL kgen_kernel
 
-    err_code = clubb_no_error ! Initialize to the value for no errors
+
 
     ! If there is no variance in vertical velocity, then treat rt and theta-l as
     ! constant, as well.  Otherwise width parameters (e.g. varnce_w_1,
     ! varnce_w_2, etc.) are non-zero.
-    if ( wp2 <= w_tol_sqd )  then
 
-      mixt_frac    = one_half
-      w_1          = wm
-      w_2          = wm
-      varnce_w_1   = 0._core_rknd
-      varnce_w_2   = 0._core_rknd
-      rt_1         = rtm
-      rt_2         = rtm
-      alpha_rt     = one_half
-      varnce_rt_1  = 0._core_rknd
-      varnce_rt_2  = 0._core_rknd
-      thl_1        = thlm
-      thl_2        = thlm
-      alpha_thl    = one_half
-      varnce_thl_1 = 0._core_rknd
-      varnce_thl_2 = 0._core_rknd
-      rrtthl       = 0._core_rknd
 
-      if ( l_scalar_calc ) then
-        do i = 1, sclr_dim, 1
-          sclr1(i)        = sclrm(i)
-          sclr2(i)        = sclrm(i)
-          varnce_sclr1(i) = 0.0_core_rknd
-          varnce_sclr2(i) = 0.0_core_rknd
-          alpha_sclr(i)   = one_half
-          rsclrrt(i)      = 0.0_core_rknd
-          rsclrthl(i)     = 0.0_core_rknd
-        end do ! 1..sclr_dim
-      end if
 
-    else ! Width (standard deviation) parameters are non-zero
+
 
        ! The variable "mixt_frac" is the weight of the 1st PDF component.  The
        ! weight of the 2nd PDF component is "1-mixt_frac".  If there isn't any
@@ -531,42 +456,29 @@ module pdf_closure_module
        ! is negative skewness of w (Sk_w < 0 because w'^3 < 0),
        ! 0.5 < mixt_frac < 1, and the 1st PDF component has greater weight than
        ! does the 2nd PDF component.
-       if ( abs( Skw ) <= 1e-5_core_rknd ) then
-          mixt_frac = one_half
-       else
-          mixt_frac = one_half * ( one - Skw/ &
-             sqrt( 4.0_core_rknd*( one - sigma_sqd_w )**3 + Skw**2 ) )
-       endif
+
 
       ! Determine sqrt( wp2 ) here to avoid re-computing it
-      sqrt_wp2 = sqrt( wp2 )
 
       ! Clip mixt_frac, 1-mixt_frac, to avoid dividing by zero
       ! Formula for mixt_frac_max_mag =
       ! 1 - ( 1/2 * ( 1 - Skw_max/sqrt( 4*( 1 - sigma_sqd_w )^3 + Skw_max^2 ) ) )
       ! Where sigma_sqd_w is fixed at 0.4.
-      mixt_frac = min( max( mixt_frac, one-mixt_frac_max_mag ), mixt_frac_max_mag )
 
       ! The normalized mean of w for Gaussian "plume" 1 is w_1_n.  It's value
       ! will always be greater than 0.  As an example, a value of 1.0 would
       ! indicate that the actual mean of w for Gaussian "plume" 1 is found
       ! 1.0 standard deviation above the overall mean for w.
-      w_1_n = sqrt( ( (one-mixt_frac)/mixt_frac )*(one-sigma_sqd_w) )
       ! The normalized mean of w for Gaussian "plume" 2 is w_2_n.  It's value
       ! will always be less than 0.  As an example, a value of -0.5 would
       ! indicate that the actual mean of w for Gaussian "plume" 2 is found
       ! 0.5 standard deviations below the overall mean for w.
-      w_2_n = -sqrt( ( mixt_frac/(one-mixt_frac) )*(one-sigma_sqd_w) )
       ! The mean of w for Gaussian "plume" 1 is w_1.
-      w_1 = wm + sqrt_wp2*w_1_n
       ! The mean of w for Gaussian "plume" 2 is w_2.
-      w_2 = wm + sqrt_wp2*w_2_n
 
       ! The variance of w for Gaussian "plume" 1 for varnce_w_1.
-      varnce_w_1  = sigma_sqd_w*wp2
       ! The variance of w for Gaussian "plume" 2 for varnce_w_2.
       ! The variance in both Gaussian "plumes" is defined to be the same.
-      varnce_w_2  = sigma_sqd_w*wp2
 
 
       ! The normalized variance for thl, rt, and sclr for "plume" 1 is:
@@ -592,214 +504,76 @@ module pdf_closure_module
       ! beta=1.5_core_rknd recovers Chris Golaz' simplified formula.
       ! 3 Nov 2003
 
-      width_factor_1 = ( 2.0_core_rknd/3.0_core_rknd )*beta + 2.0_core_rknd&
-           *mixt_frac*( one - ( 2.0_core_rknd/3.0_core_rknd )*beta )
-      width_factor_2 = 2.0_core_rknd - width_factor_1
 
-      if ( thlp2 <= thl_tol**2 ) then
-        thl_1        = thlm
-        thl_2        = thlm
-        varnce_thl_1 = 0.0_core_rknd
-        varnce_thl_2 = 0.0_core_rknd
-        alpha_thl    = one_half
-      else
 !       thl_1_n = - (wpthlp/(sqrt( wp2 )*sqrt( thlp2 )))/w_2_n
 !       thl_2_n = - (wpthlp/(sqrt( wp2 )*sqrt( thlp2 )))/w_1_n
 
-        thl_1 = thlm - ( wpthlp/sqrt_wp2 )/w_2_n
-        thl_2 = thlm - ( wpthlp/sqrt_wp2 )/w_1_n
 
-        alpha_thl = one_half * ( one - wpthlp*wpthlp / &
-           ((one-sigma_sqd_w)*wp2*thlp2) )
 
-        alpha_thl = max( min( alpha_thl, one ), zero_threshold )
 
         ! Vince Larson multiplied original expressions by width_factor_1,2
         !   to generalize scalar skewnesses.  05 Nov 03
-        varnce_thl_1 = ( alpha_thl / mixt_frac * thlp2 ) * width_factor_1
-        varnce_thl_2 = ( alpha_thl / (one-mixt_frac) * thlp2 ) * width_factor_2
 
-      end if ! thlp2 <= thl_tol**2
 
-      if ( rtp2 <= rt_tol**2 ) then
-        rt_1        = rtm
-        rt_2        = rtm
-        varnce_rt_1 = 0.0_core_rknd
-        varnce_rt_2 = 0.0_core_rknd
-        alpha_rt    = one_half
-      else
 !       rt_1_n = -( wprtp / ( sqrt( wp2 )*sqrt( rtp2 ) ) ) / w_2_n
 !       rt_2_n = -( wprtp / ( sqrt( wp2 )*sqrt( rtp2 ) ) ) / w_1_n
 
-        rt_1 = rtm - ( wprtp / sqrt_wp2 ) / w_2_n
-        rt_2 = rtm - ( wprtp / sqrt_wp2 ) / w_1_n
 
-        alpha_rt = one_half * ( one - wprtp*wprtp / &
-           ((one-sigma_sqd_w)*wp2*rtp2) )
 
-        alpha_rt = max( min( alpha_rt, one ), zero_threshold )
 
         ! Vince Larson multiplied original expressions by width_factor_1,2
         !   to generalize scalar skewnesses.  05 Nov 03
-        varnce_rt_1 = ( alpha_rt / mixt_frac * rtp2 ) * width_factor_1
-        varnce_rt_2 = ( alpha_rt / (one-mixt_frac) * rtp2 ) * width_factor_2
 
-      end if ! rtp2 <= rt_tol**2
 
       ! Compute pdf parameters for passive scalars
-      if ( l_scalar_calc ) then
-        do i = 1, sclr_dim
-          if ( sclrp2(i) <= sclr_tol(i)**2 ) then
             ! Set plume sclr for plume 1,2 to the mean
-            sclr1(i)= sclrm(i)
-            sclr2(i)= sclrm(i)
             ! Set the variance to zero
-            varnce_sclr1(i) = 0.0_core_rknd
-            varnce_sclr2(i) = 0.0_core_rknd
 
-            alpha_sclr(i) = one_half
-          else
 !           sclr1_n(i) = - ( wpsclrp(i) / (sqrt( wp2 ) &
 !                        * sqrt( sclrp2(i) )) )/w_2_n
 !           sclr2_n(i) = - ( wpsclrp(i) / (sqrt( wp2 ) &
 !                        * sqrt( sclrp2(i) )) )/w_1_n
 
-            sclr1(i) = sclrm(i)  & 
-                     - ( wpsclrp(i) / sqrt_wp2 ) / w_2_n
-            sclr2(i) = sclrm(i)  & 
-                     - ( wpsclrp(i) / sqrt_wp2 ) / w_1_n
 
-            alpha_sclr(i) = one_half * ( one - wpsclrp(i)*wpsclrp(i) & 
-                    / ((one-sigma_sqd_w)*wp2*sclrp2(i)) )
 
-            alpha_sclr(i) = max( min( alpha_sclr(i), one ), zero_threshold )
 
             ! Vince Larson multiplied original expressions by width_factor_1,2
             !  to generalize scalar skewnesses.  05 Nov 03
-            varnce_sclr1(i) = ( alpha_sclr(i) / mixt_frac * sclrp2(i) ) * width_factor_1
-            varnce_sclr2(i) = ( alpha_sclr(i) / (one-mixt_frac) * &
-                sclrp2(i) ) * width_factor_2
-          end if ! sclrp2(i) <= sclr_tol(i)**2
-        end do ! i=1, sclr_dim
-      end if ! l_scalar_calc
 
       ! We include sub-plume correlation with coeff rrtthl.
 
-      if ( varnce_rt_1*varnce_thl_1 > 0._core_rknd .and. &
-             varnce_rt_2*varnce_thl_2 > 0._core_rknd ) then
-        rrtthl = ( rtpthlp - mixt_frac * ( rt_1-rtm ) * ( thl_1-thlm ) & 
-                   - (one-mixt_frac) * ( rt_2-rtm ) * ( thl_2-thlm ) ) & 
-                / ( mixt_frac*sqrt( varnce_rt_1*varnce_thl_1 ) &
-                   + (one-mixt_frac)*sqrt( varnce_rt_2*varnce_thl_2 ) )
-        if ( rrtthl < -one ) then
-          rrtthl = -one
-        end if
-        if ( rrtthl > one ) then
-          rrtthl = one
-        end if
-      else
-        rrtthl = 0.0_core_rknd
-      end if ! varnce_rt_1*varnce_thl_1 > 0 .and. varnce_rt_2*varnce_thl_2 > 0
+
+
 
       ! Sub-plume correlation, rsclrthl, of passive scalar and theta_l.
-      if ( l_scalar_calc ) then
-        do i=1, sclr_dim
-          if ( varnce_sclr1(i)*varnce_thl_1 > 0._core_rknd .and. &
-               varnce_sclr2(i)*varnce_thl_2 > 0._core_rknd ) then
-            rsclrthl(i) = ( sclrpthlp(i)  & 
-            - mixt_frac * ( sclr1(i)-sclrm(i) ) * ( thl_1-thlm ) & 
-            - (one-mixt_frac) * ( sclr2(i)-sclrm(i) ) * ( thl_2-thlm ) ) & 
-                / ( mixt_frac*sqrt( varnce_sclr1(i)*varnce_thl_1 )  & 
-                         + (one-mixt_frac)*sqrt( varnce_sclr2(i)*varnce_thl_2 ) )
-            if ( rsclrthl(i) < -one ) then
-              rsclrthl(i) = -one
-            end if
-            if ( rsclrthl(i) > one ) then
-              rsclrthl(i) = one
-            end if
-          else
-            rsclrthl(i) = 0.0_core_rknd
-          end if
+
+
 
           ! Sub-plume correlation, rsclrrt, of passive scalar and total water.
 
-          if ( varnce_sclr1(i)*varnce_rt_1 > 0._core_rknd .and. &
-               varnce_sclr2(i)*varnce_rt_2 > 0._core_rknd ) then
-            rsclrrt(i) = ( sclrprtp(i) - mixt_frac * ( sclr1(i)-sclrm(i) ) * ( rt_1-rtm )&
-                         - (one-mixt_frac) * ( sclr2(i)-sclrm(i) ) * ( rt_2-rtm ) ) & 
-                       / ( mixt_frac*sqrt( varnce_sclr1(i)*varnce_rt_1 ) &
-                         + (one-mixt_frac)*sqrt( varnce_sclr2(i)*varnce_rt_2 ) )
-            if ( rsclrrt(i) < -one ) then
-              rsclrrt(i) = -one
-            end if
-            if ( rsclrrt(i) > one ) then
-              rsclrrt(i) = one
-            end if
-          else
-            rsclrrt(i) = 0.0_core_rknd
-          end if
-        end do ! i=1, sclr_dim
-      end if ! l_scalar_calc
 
-    end if  ! Widths non-zero
+
+
 
     ! Compute higher order moments (these are interactive)
-    wp2rtp  = mixt_frac * ( (w_1-wm)**2+varnce_w_1 ) * ( rt_1-rtm ) & 
-            + (one-mixt_frac) * ( (w_2-wm)**2+varnce_w_2 ) * ( rt_2-rtm )
 
-    wp2thlp = mixt_frac * ( (w_1-wm)**2+varnce_w_1 ) * ( thl_1-thlm ) & 
-            + (one-mixt_frac) * ( (w_2-wm)**2+varnce_w_2 ) * ( thl_2-thlm )
 
     ! Compute higher order moments (these are non-interactive diagnostics)
-    if ( iwp4 > 0 ) then
-      wp4 = mixt_frac * ( 3._core_rknd*varnce_w_1**2 + &
-          6._core_rknd*((w_1-wm)**2)*varnce_w_1 + (w_1-wm)**4 ) & 
-          + (one-mixt_frac) * ( 3._core_rknd*varnce_w_2**2 + &
-          6._core_rknd*((w_2-wm)**2)*varnce_w_2 + (w_2-wm)**4 )
-    end if
 
-    if ( iwprtp2 > 0 ) then
-      wprtp2  = mixt_frac * ( w_1-wm )*( (rt_1-rtm)**2 + varnce_rt_1 )  & 
-              + (one-mixt_frac) * ( w_2-wm )*( (rt_2-rtm)**2 + varnce_rt_2)
-    end if
 
-    if ( iwpthlp2 > 0 ) then
-      wpthlp2 = mixt_frac * ( w_1-wm )*( (thl_1-thlm)**2 + varnce_thl_1 )  & 
-              + (one-mixt_frac) * ( w_2-wm )*( (thl_2-thlm)**2+varnce_thl_2 )
-    end if
 
-    if ( iwprtpthlp > 0 ) then
-      wprtpthlp = mixt_frac * ( w_1-wm )*( (rt_1-rtm)*(thl_1-thlm)  & 
-                + rrtthl*sqrt( varnce_rt_1*varnce_thl_1 ) ) & 
-                + ( one-mixt_frac ) * ( w_2-wm )*( (rt_2-rtm)*(thl_2-thlm) & 
-                + rrtthl*sqrt( varnce_rt_2*varnce_thl_2 ) )
-    end if
+
+
+
+
 
 
     ! Scalar Addition to higher order moments
-    if ( l_scalar_calc ) then
-      do i=1, sclr_dim
 
-        wp2sclrp(i)  = mixt_frac * ( (w_1-wm)**2+varnce_w_1 )*( sclr1(i)-sclrm(i) ) & 
-                     + (one-mixt_frac) * ( (w_2-wm)**2+varnce_w_2 ) * ( sclr2(i)-sclrm(i) )
 
-        wpsclrp2(i) = mixt_frac * ( w_1-wm ) * ( (sclr1(i)-sclrm(i))**2 + varnce_sclr1(i) )  & 
-                    + (one-mixt_frac) * ( w_2-wm ) * &
-                    ( (sclr2(i)-sclrm(i))**2 + varnce_sclr2(i) )
 
-        wpsclrprtp(i) = mixt_frac * ( w_1-wm ) * ( ( rt_1-rtm )*( sclr1(i)-sclrm(i) )  & 
-          + rsclrrt(i)*sqrt( varnce_rt_1*varnce_sclr1(i) ) ) &
-          + ( one-mixt_frac )*( w_2-wm ) *  &
-            ( ( rt_2-rtm )*( sclr2(i)-sclrm(i) ) + rsclrrt(i)*sqrt( varnce_rt_2*varnce_sclr2(i) ) )
 
-        wpsclrpthlp(i) = mixt_frac * ( w_1-wm ) * ( ( sclr1(i)-sclrm(i) )*( thl_1-thlm )  & 
-          + rsclrthl(i)*sqrt( varnce_sclr1(i)*varnce_thl_1 ) ) & 
-          + ( one-mixt_frac ) * ( w_2-wm ) * &
-            ( ( sclr2(i)-sclrm(i) )*( thl_2-thlm ) &
-              + rsclrthl(i)*sqrt( varnce_sclr2(i)*varnce_thl_2 ) )
 
-      end do ! i=1, sclr_dim
-    end if ! l_scalar_calc
 
     ! Compute higher order moments that include theta_v.
 
@@ -807,20 +581,12 @@ module pdf_closure_module
     ! "1" denotes first Gaussian; "2" denotes 2nd Gaussian
     ! liq water temp (Sommeria & Deardorff 1977 (SD), eqn. 3)
 
-    tl1  = thl_1*exner
-    tl2  = thl_2*exner
 
-    rsatl_1 = sat_mixrat_liq( p_in_Pa, tl1 )
-    rsatl_2 = sat_mixrat_liq( p_in_Pa, tl2 ) ! h1g, 2010-06-16 end mod
 
 
     ! SD's beta (eqn. 8)
-    beta1 = ep * ( Lv/(Rd*tl1) ) * ( Lv/(Cp*tl1) )
-    beta2 = ep * ( Lv/(Rd*tl2) ) * ( Lv/(Cp*tl2) )
 
     ! s from Lewellen and Yoh 1993 (LY) eqn. 1
-    chi_1 = ( rt_1 - rsatl_1 ) / ( one + beta1 * rsatl_1 )
-    chi_2 = ( rt_2 - rsatl_2 ) / ( one + beta2 * rsatl_2 )
 
     ! Coefficients for s'
     ! For each normal distribution in the sum of two normal distributions,
@@ -828,13 +594,7 @@ module pdf_closure_module
     ! therefore, x's' = crt * x'rt'  +  cthl * x'thl'.
     ! Larson et al. May, 2001.
 
-    crt_1  = one/( one + beta1*rsatl_1)
-    crt_2  = one/( one + beta2*rsatl_2)
 
-    cthl_1 = ( (one + beta1 * rt_1) / ( one + beta1*rsatl_1)**2 ) & 
-             * ( Cp/Lv ) * beta1 * rsatl_1 * exner
-    cthl_2 = ( (one + beta2 * rt_2) / ( one + beta2*rsatl_2 )**2 ) & 
-             * ( Cp/Lv ) * beta2 * rsatl_2 * exner
 
     ! Standard deviation of chi for each component.
     ! Include subplume correlation of qt, thl
@@ -842,59 +602,23 @@ module pdf_closure_module
     ! stdev_chi_1 (and probably stdev_chi_2) can become negative when rrtthl=1
     ! One could also write this as a squared term
     ! plus a postive correction; this might be a neater format
-    stdev_chi_1 = sqrt( max( crt_1**2 * varnce_rt_1  &
-                          - two * rrtthl * crt_1 * cthl_1  &
-                                * sqrt( varnce_rt_1 * varnce_thl_1 )  &
-                          + cthl_1**2 * varnce_thl_1,  &
-                          zero_threshold )  )
 
-    stdev_chi_2 = sqrt( max( crt_2**2 * varnce_rt_2  &
-                          - two * rrtthl * crt_2 * cthl_2  &
-                                * sqrt( varnce_rt_2 * varnce_thl_2 )  &
-                          + cthl_2**2 * varnce_thl_2,  &
-                          zero_threshold )  )
 
     ! We need to introduce a threshold value for the variance of chi
-    if ( stdev_chi_1 <= chi_tol ) then
       ! Treat chi as a delta function in this component.
-      stdev_chi_1 = zero
-    end if
 
-    if ( stdev_chi_2 <= chi_tol ) then
       ! Treat chi as a delta function in this component.
-      stdev_chi_2 = zero
-    end if
 
     ! Standard deviation of eta for each component.
-    stdev_eta_1 = sqrt( max( crt_1**2 * varnce_rt_1  &
-                          + two * rrtthl * crt_1 * cthl_1  &
-                                * sqrt( varnce_rt_1 * varnce_thl_1 )  &
-                          + cthl_1**2 * varnce_thl_1,  &
-                          zero_threshold )  )
 
-    stdev_eta_2 = sqrt( max( crt_2**2 * varnce_rt_2  &
-                          + two * rrtthl * crt_2 * cthl_2  &
-                                * sqrt( varnce_rt_2 * varnce_thl_2 )  &
-                          + cthl_2**2 * varnce_thl_2,  &
-                          zero_threshold )  )
 
     ! Covariance of chi and eta for each component.
-    covar_chi_eta_1 = crt_1**2 * varnce_rt_1 - cthl_1**2 * varnce_thl_1
 
-    covar_chi_eta_2 = crt_2**2 * varnce_rt_2 - cthl_2**2 * varnce_thl_2
 
     ! Correlation of chi and eta for each component.
-    if ( stdev_chi_1 * stdev_eta_1 > zero ) then
-      corr_chi_eta_1 = covar_chi_eta_1 / ( stdev_chi_1 * stdev_eta_1 )
-    else
-      corr_chi_eta_1 = zero
-    endif
 
-    if ( stdev_chi_2 * stdev_eta_2 > zero ) then
-      corr_chi_eta_2 = covar_chi_eta_2 / ( stdev_chi_2 * stdev_eta_2 )
-    else
-      corr_chi_eta_2 = zero
-    endif
+
+
     
     ! Determine whether to compute ice_supersat_frac. We do not compute
     ! ice_supersat_frac for GFDL (unless do_liquid_only_in_clubb is true),
@@ -906,43 +630,22 @@ module pdf_closure_module
 
 
 
-    l_calc_ice_supersat_frac = .true.
 
 
     ! Calculate cloud_frac_1 and rc_1
-    call calc_cloud_frac_component(chi_1, stdev_chi_1, chi_at_liq_sat, cloud_frac_1, rc_1)
 
     ! Calculate cloud_frac_2 and rc_2
-    call calc_cloud_frac_component(chi_2, stdev_chi_2, chi_at_liq_sat, cloud_frac_2, rc_2)
 
-    if ( l_calc_ice_supersat_frac ) then
       ! We must compute chi_at_ice_sat1 and chi_at_ice_sat2
-      if (tl1 <= T_freeze_K) then
-        rt_at_ice_sat1 = sat_mixrat_ice( p_in_Pa, tl1 )
-        chi_at_ice_sat1 = ( rt_at_ice_sat1 - rsatl_1 ) / ( one + beta1 * rsatl_1 )
-      else
         ! If the temperature is warmer than freezing (> 0C) then ice_supersat_frac
         ! is not defined, so we use chi_at_liq_sat
-        chi_at_ice_sat1 = chi_at_liq_sat
-      end if
 
-      if (tl2 <= T_freeze_K) then
-        rt_at_ice_sat2 = sat_mixrat_ice( p_in_Pa, tl2 )
-        chi_at_ice_sat2 = ( rt_at_ice_sat2 - rsatl_2 ) / ( one + beta2 * rsatl_2 )
-      else
         ! If the temperature is warmer than freezing (> 0C) then ice_supersat_frac
         ! is not defined, so we use chi_at_liq_sat
-        chi_at_ice_sat2 = chi_at_liq_sat
-      end if
 
       ! Calculate ice_supersat_frac1
-      call calc_cloud_frac_component( chi_1, stdev_chi_1, chi_at_ice_sat1, &
-                                      ice_supersat_frac1, rc_1_ice )
       
       ! Calculate ice_supersat_frac2
-      call calc_cloud_frac_component( chi_2, stdev_chi_2, chi_at_ice_sat2, &
-                                      ice_supersat_frac2, rc_2_ice )
-    end if
 
     ! Compute moments that depend on theta_v
     !
@@ -959,86 +662,29 @@ module pdf_closure_module
     !
     ! where thv_ds is used as a reference value to approximate theta_l.
 
-    rc_coef = Lv / (exner*Cp) - ep2 * thv_ds
 
-    wp2rxp  = zero
-    wprxp   = zero
-    thlprxp = zero
-    rtprxp  = zero
-    if ( l_liq_ice_loading_test ) then
-       do hm_idx = 1, hydromet_dim, 1
-          if ( l_mix_rat_hm(hm_idx) ) then
-             wp2rxp  = wp2rxp + wp2hmp(hm_idx)
-             wprxp   = wprxp + wphydrometp(hm_idx)
-             thlprxp = thlprxp + thlphmp(hm_idx)
-             rtprxp  = rtprxp + rtphmp(hm_idx)
-          endif
-       enddo ! hm_idx = 1, hydromet_dim, 1
-    endif ! l_liq_ice_loading_test
 
-    wp2rcp = mixt_frac * ((w_1-wm)**2 + varnce_w_1)*rc_1 &
-               + (one-mixt_frac) * ((w_2-wm)**2 + varnce_w_2)*rc_2 & 
-             - wp2 * (mixt_frac*rc_1+(one-mixt_frac)*rc_2)
 
-    wp2thvp = wp2thlp + ep1*thv_ds*wp2rtp + rc_coef*wp2rcp - thv_ds * wp2rxp
 
-    wprcp = mixt_frac * (w_1-wm)*rc_1 + (one-mixt_frac) * (w_2-wm)*rc_2
 
-    wpthvp = wpthlp + ep1*thv_ds*wprtp + rc_coef*wprcp - thv_ds * wprxp
+
 
     ! Account for subplume correlation in qt-thl
-    thlprcp  = mixt_frac * ( (thl_1-thlm)*rc_1 - (cthl_1*varnce_thl_1)*cloud_frac_1 ) & 
-             + (one-mixt_frac) * ( (thl_2-thlm)*rc_2 - (cthl_2*varnce_thl_2)*cloud_frac_2 ) & 
-             + mixt_frac*rrtthl*crt_1*sqrt( varnce_rt_1*varnce_thl_1 )*cloud_frac_1 & 
-             + (one-mixt_frac)*rrtthl*crt_2*sqrt( varnce_rt_2*varnce_thl_2 )*cloud_frac_2
-    thlpthvp = thlp2 + ep1*thv_ds*rtpthlp + rc_coef*thlprcp - thv_ds * thlprxp
 
     ! Account for subplume correlation in qt-thl
-    rtprcp = mixt_frac * ( (rt_1-rtm)*rc_1 + (crt_1*varnce_rt_1)*cloud_frac_1 ) & 
-           + (one-mixt_frac) * ( (rt_2-rtm)*rc_2 + (crt_2*varnce_rt_2)*cloud_frac_2 ) & 
-           - mixt_frac*rrtthl*cthl_1*sqrt( varnce_rt_1*varnce_thl_1 )*cloud_frac_1 & 
-           - (one-mixt_frac)*rrtthl*cthl_2*sqrt( varnce_rt_2*varnce_thl_2 )*cloud_frac_2
 
-    rtpthvp  = rtpthlp + ep1*thv_ds*rtp2 + rc_coef*rtprcp - thv_ds * rtprxp
 
     ! Account for subplume correlation of scalar, theta_v.
     ! See Eqs. A13, A8 from Larson et al. (2002) ``Small-scale...''
     !  where the ``scalar'' in this paper is w.
-    if ( l_scalar_calc ) then
-      do i=1, sclr_dim
-        sclrprcp(i) &
-        = mixt_frac * ( ( sclr1(i)-sclrm(i) ) * rc_1 ) &
-          + (one-mixt_frac) * ( ( sclr2(i)-sclrm(i) ) * rc_2 ) & 
-          + mixt_frac*rsclrrt(i) * crt_1 &
-            * sqrt( varnce_sclr1(i) * varnce_rt_1 ) * cloud_frac_1 & 
-          + (one-mixt_frac) * rsclrrt(i) * crt_2 &
-            * sqrt( varnce_sclr2(i) * varnce_rt_2 ) * cloud_frac_2 & 
-          - mixt_frac * rsclrthl(i) * cthl_1 &
-            * sqrt( varnce_sclr1(i) * varnce_thl_1 ) * cloud_frac_1 & 
-          - (one-mixt_frac) * rsclrthl(i) * cthl_2 &
-            * sqrt( varnce_sclr2(i) * varnce_thl_2 ) * cloud_frac_2
 
-        sclrpthvp(i) = sclrpthlp(i) + ep1*thv_ds*sclrprtp(i) + rc_coef*sclrprcp(i)
-      end do ! i=1, sclr_dim
-    end if ! l_scalar_calc
 
     ! Compute mean cloud fraction and cloud water
-    cloud_frac = calc_cloud_frac(cloud_frac_1, cloud_frac_2, mixt_frac)
-    rcm        = mixt_frac * rc_1         + (one-mixt_frac) * rc_2
     
-    rcm = max( zero_threshold, rcm )
     
-    if (l_calc_ice_supersat_frac) then
       ! Compute ice cloud fraction, ice_supersat_frac
-      ice_supersat_frac = calc_cloud_frac(ice_supersat_frac1, ice_supersat_frac2, mixt_frac)
-    else
       ! ice_supersat_frac will be garbage if computed as above
-      ice_supersat_frac = 0.0_core_rknd
-      if (clubb_at_least_debug_level( 1 )) then
-         write(fstderr,*) "Warning: ice_supersat_frac has garbage values if &
-                         & do_liquid_only_in_clubb = .false."
-      end if
-    end if
+
     ! Compute variance of liquid water mixing ratio.
     ! This is not needed for closure.  Statistical Analysis only.
 
@@ -1047,9 +693,6 @@ module pdf_closure_module
 
 
 
-      rcp2 = mixt_frac * ( chi_1*rc_1 + cloud_frac_1*stdev_chi_1**2 ) &
-             + ( one-mixt_frac ) * ( chi_2*rc_2 + cloud_frac_2*stdev_chi_2**2 ) - rcm**2
-      rcp2 = max( zero_threshold, rcp2 )
 
 
 
@@ -1058,158 +701,25 @@ module pdf_closure_module
 
 
     ! Save PDF parameters
-    pdf_params%w_1             = w_1
-    pdf_params%w_2             = w_2
-    pdf_params%varnce_w_1      = varnce_w_1
-    pdf_params%varnce_w_2      = varnce_w_2
-    pdf_params%rt_1            = rt_1
-    pdf_params%rt_2            = rt_2
-    pdf_params%varnce_rt_1     = varnce_rt_1
-    pdf_params%varnce_rt_2     = varnce_rt_2
-    pdf_params%thl_1           = thl_1
-    pdf_params%thl_2           = thl_2
-    pdf_params%varnce_thl_1    = varnce_thl_1
-    pdf_params%varnce_thl_2    = varnce_thl_2
-    pdf_params%rrtthl          = rrtthl
-    pdf_params%alpha_thl       = alpha_thl
-    pdf_params%alpha_rt        = alpha_rt
-    pdf_params%crt_1           = crt_1
-    pdf_params%crt_2           = crt_2
-    pdf_params%cthl_1          = cthl_1
-    pdf_params%cthl_2          = cthl_2
-    pdf_params%chi_1           = chi_1
-    pdf_params%chi_2           = chi_2
-    pdf_params%stdev_chi_1     = stdev_chi_1
-    pdf_params%stdev_chi_2     = stdev_chi_2
-    pdf_params%stdev_eta_1     = stdev_eta_1
-    pdf_params%stdev_eta_2     = stdev_eta_2
-    pdf_params%covar_chi_eta_1 = covar_chi_eta_1
-    pdf_params%covar_chi_eta_2 = covar_chi_eta_2
-    pdf_params%corr_chi_eta_1  = corr_chi_eta_1
-    pdf_params%corr_chi_eta_2  = corr_chi_eta_2
-    pdf_params%rsatl_1         = rsatl_1
-    pdf_params%rsatl_2         = rsatl_2
-    pdf_params%rc_1            = rc_1
-    pdf_params%rc_2            = rc_2
-    pdf_params%cloud_frac_1    = cloud_frac_1
-    pdf_params%cloud_frac_2    = cloud_frac_2
-    pdf_params%mixt_frac       = mixt_frac
 
 
-    if ( clubb_at_least_debug_level( 2 ) ) then
 
-      call pdf_closure_check & 
-           ( wp4, wprtp2, wp2rtp, wpthlp2, & 
-             wp2thlp, cloud_frac, rcm, wpthvp, wp2thvp, & 
-             rtpthvp, thlpthvp, wprcp, wp2rcp, & 
-             rtprcp, thlprcp, rcp2, wprtpthlp, & 
-             crt_1, crt_2, cthl_1, cthl_2, pdf_params, &
-             sclrpthvp, sclrprcp, wpsclrp2, & 
-             wpsclrprtp, wpsclrpthlp, wp2sclrp, &
-             err_code )
 
       ! Error Reporting
       ! Joshua Fasching February 2008
 
-      if ( fatal_error( err_code ) ) then
 
-        write(fstderr,*) "Error in pdf_closure_new"
 
-        write(fstderr,*) "Intent(in)"
 
-        write(fstderr,*) "p_in_Pa = ", p_in_Pa
-        write(fstderr,*) "exner = ", exner
-        write(fstderr,*) "thv_ds = ", thv_ds
-        write(fstderr,*) "wm = ", wm
-        write(fstderr,*) "wp2 = ", wp2
-        write(fstderr,*) "wp3 = ", wp3
-        write(fstderr,*) "sigma_sqd_w = ", sigma_sqd_w
-        write(fstderr,*) "rtm = ", rtm
-        write(fstderr,*) "rtp2 = ", rtp2
-        write(fstderr,*) "wprtp = ", wprtp
-        write(fstderr,*) "thlm = ", thlm
-        write(fstderr,*) "thlp2 = ", thlp2
-        write(fstderr,*) "wpthlp = ", wpthlp
-        write(fstderr,*) "rtpthlp = ", rtpthlp
 
-        if ( sclr_dim > 0 ) then
-          write(fstderr,*) "sclrm = ", sclrm
-          write(fstderr,*) "wpsclrp = ", wpsclrp
-          write(fstderr,*) "sclrp2 = ", sclrp2
-          write(fstderr,*) "sclrprtp = ", sclrprtp
-          write(fstderr,*) "sclrpthlp = ", sclrpthlp
-        end if
 
-        write(fstderr,*) "level = ", level
 
-        write(fstderr,*) "Intent(out)"
 
-        write(fstderr,*) "wp4 = ", wp4
-        write(fstderr,*) "wprtp2 = ", wprtp2
-        write(fstderr,*) "wp2rtp = ", wp2rtp
-        write(fstderr,*) "wpthlp2 = ", wpthlp2
-        write(fstderr,*) "cloud_frac = ", cloud_frac
-        write(fstderr,*) "ice_supersat_frac = ", ice_supersat_frac
-        write(fstderr,*) "rcm = ", rcm
-        write(fstderr,*) "wpthvp = ", wpthvp
-        write(fstderr,*) "wp2thvp = ", wp2thvp
-        write(fstderr,*) "rtpthvp = ", rtpthvp
-        write(fstderr,*) "thlpthvp = ", thlpthvp
-        write(fstderr,*) "wprcp = ", wprcp
-        write(fstderr,*) "wp2rcp = ", wp2rcp
-        write(fstderr,*) "rtprcp = ", rtprcp
-        write(fstderr,*) "thlprcp = ", thlprcp
-        write(fstderr,*) "rcp2 = ", rcp2
-        write(fstderr,*) "wprtpthlp = ", wprtpthlp
-        write(fstderr,*) "pdf_params%w_1 = ", pdf_params%w_1
-        write(fstderr,*) "pdf_params%w_2 = ", pdf_params%w_2
-        write(fstderr,*) "pdf_params%varnce_w_1 = ", pdf_params%varnce_w_1
-        write(fstderr,*) "pdf_params%varnce_w_2 = ", pdf_params%varnce_w_2
-        write(fstderr,*) "pdf_params%rt_1 = ", pdf_params%rt_1
-        write(fstderr,*) "pdf_params%rt_2 = ", pdf_params%rt_2
-        write(fstderr,*) "pdf_params%varnce_rt_1 = ", pdf_params%varnce_rt_1
-        write(fstderr,*) "pdf_params%varnce_rt_2 = ", pdf_params%varnce_rt_2
-        write(fstderr,*) "pdf_params%thl_1 = ", pdf_params%thl_1
-        write(fstderr,*) "pdf_params%thl_2 = ", pdf_params%thl_2
-        write(fstderr,*) "pdf_params%varnce_thl_1 = ", pdf_params%varnce_thl_1
-        write(fstderr,*) "pdf_params%varnce_thl_2 = ", pdf_params%varnce_thl_2
-        write(fstderr,*) "pdf_params%rrtthl = ", pdf_params%rrtthl
-        write(fstderr,*) "pdf_params%alpha_thl = ", pdf_params%alpha_thl
-        write(fstderr,*) "pdf_params%alpha_rt = ", pdf_params%alpha_rt
-        write(fstderr,*) "pdf_params%crt_1 = ", pdf_params%crt_1
-        write(fstderr,*) "pdf_params%crt_2 = ", pdf_params%crt_2
-        write(fstderr,*) "pdf_params%cthl_1 = ", pdf_params%cthl_1
-        write(fstderr,*) "pdf_params%cthl_2 = ", pdf_params%cthl_2
-        write(fstderr,*) "pdf_params%chi_1 = ", pdf_params%chi_1
-        write(fstderr,*) "pdf_params%chi_2 = ", pdf_params%chi_2
-        write(fstderr,*) "pdf_params%stdev_chi_1 = ", pdf_params%stdev_chi_1
-        write(fstderr,*) "pdf_params%stdev_chi_2 = ", pdf_params%stdev_chi_2
-        write(fstderr,*) "pdf_params%stdev_eta_1 = ", pdf_params%stdev_eta_1
-        write(fstderr,*) "pdf_params%stdev_eta_2 = ", pdf_params%stdev_eta_2
-        write(fstderr,*) "pdf_params%covar_chi_eta_1 = ", pdf_params%covar_chi_eta_1
-        write(fstderr,*) "pdf_params%covar_chi_eta_2 = ", pdf_params%covar_chi_eta_2
-        write(fstderr,*) "pdf_params%corr_chi_eta_1 = ", pdf_params%corr_chi_eta_1
-        write(fstderr,*) "pdf_params%corr_chi_eta_2 = ", pdf_params%corr_chi_eta_2
-        write(fstderr,*) "pdf_params%rsatl_1 = ", pdf_params%rsatl_1
-        write(fstderr,*) "pdf_params%rsatl_2 = ", pdf_params%rsatl_2
-        write(fstderr,*) "pdf_params%rc_1 = ", pdf_params%rc_1
-        write(fstderr,*) "pdf_params%rc_2 = ", pdf_params%rc_2
-        write(fstderr,*) "pdf_params%cloud_frac_1 = ", pdf_params%cloud_frac_1
-        write(fstderr,*) "pdf_params%cloud_frac_2 = ", pdf_params%cloud_frac_2
-        write(fstderr,*) "pdf_params%mixt_frac = ", pdf_params%mixt_frac
 
-        if ( sclr_dim > 0 )then
-          write(fstderr,*) "sclrpthvp = ", sclrpthvp
-          write(fstderr,*) "sclrprcp = ", sclrprcp
-          write(fstderr,*) "wpsclrp2 = ", wpsclrp2
-          write(fstderr,*) "wpsclrprtp = ", wpsclrprtp
-          write(fstderr,*) "wpsclrpthlp = ", wpsclrpthlp
-          write(fstderr,*) "wp2sclrp = ", wp2sclrp
-        end if
 
-      end if ! Fatal error
 
-    end if ! clubb_at_least_debug_level
+
+
 
 !$kgen end_callsite
     
@@ -1331,13 +841,21 @@ module pdf_closure_module
         check_status%Passed = .TRUE.
     END IF 
     WRITE (*, *) ""
+    
+    !Measuring elapsed time. Please increase the value of kgen_maxiter to get improve timing measurment resolution.
     CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock)
     DO kgen_intvar = 1, kgen_maxiter
-        
-        !Uncomment following call statement to turn on perturbation experiment.
-        !Adjust perturbation value and/or kind parameter if required.
-        !CALL kgen_perturb_real( your_variable, 1.0E-15_8 )
-        
+        CALL kgen_kernel
+    END DO 
+    CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock)
+    kgen_elapsed_time = 1.0e6*(kgen_stop_clock - kgen_start_clock)/REAL(kgen_rate_clock*kgen_maxiter)
+    WRITE (*, *) "pdf_closure_part3 : Time per call (usec): ", kgen_elapsed_time
+    kgen_total_time = kgen_total_time + kgen_elapsed_time
+    
+    CONTAINS
+    
+    !kgen kernel subroutine
+    SUBROUTINE kgen_kernel()
     if ( sclr_dim > 0 ) then
       l_scalar_calc = .true.
     else
@@ -2071,13 +1589,7 @@ module pdf_closure_module
       end if ! Fatal error
 
     end if ! clubb_at_least_debug_level
-    END DO 
-    CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock)
-    kgen_elapsed_time = 1.0e6*(kgen_stop_clock - kgen_start_clock)/REAL(kgen_rate_clock*kgen_maxiter)
-    WRITE (*, *) "pdf_closure_part3 : Time per call (usec): ", kgen_elapsed_time
-    kgen_total_time = kgen_total_time + kgen_elapsed_time
-    
-    CONTAINS
+    END SUBROUTINE kgen_kernel
     
     !verify state subroutine for kv_pdf_closure_real__core_rknd
     RECURSIVE SUBROUTINE kv_pdf_closure_real__core_rknd(varname, check_status, var, kgenref_var)

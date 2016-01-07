@@ -1,7 +1,7 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2016-01-04 08:38:23
-!KGEN version : 0.6.0
+!Generated at : 2016-01-07 08:45:17
+!KGEN version : 0.6.1
 
 !-------------------------------------------------------------------------------
 ! $Id: stats_variables.F90 7383 2014-11-13 17:43:38Z schemena@uwm.edu $
@@ -39,54 +39,14 @@ module stats_variables
 
 !       Indices for statistics in stats_zt file
 
-  integer, public :: & 
-     ithlm = 0, & 
-     ithvm = 0, & 
-     irtm = 0, & 
-     ircm = 0, &
-     irvm = 0, & 
-     ium = 0, & 
-     ivm = 0, & 
-     iwm_zt = 0, &
-     iwm_zm = 0, &
-     ium_ref = 0,&
-     ivm_ref = 0, & 
-     iug = 0, & 
-     ivg = 0, & 
-     icloud_frac = 0, &
-     iice_supersat_frac = 0, &
-     ircm_in_layer = 0, &
-     ircm_in_cloud = 0, &
-     icloud_cover = 0, &
-     ip_in_Pa = 0, & 
-     iexner = 0, & 
-     irho_ds_zt = 0, &
-     ithv_ds_zt = 0, &
-     iLscale = 0, & 
-     iwp3 = 0, & 
-     iwpthlp2 = 0, & 
-     iwp2thlp = 0, & 
-     iwprtp2 = 0, & 
-     iwp2rtp = 0, &
-     iSkw_zt = 0
+    INTEGER, public :: iwpthlp2 = 0, iwprtp2 = 0
 !$omp threadprivate(ithlm, ithvm, irtm, ircm, irvm, ium, ivm, ium_ref, ivm_ref, &
 !$omp   iwm_zt, iwm_zm, iug, ivg, icloud_frac, iice_supersat_frac, ircm_in_layer, &
 !$omp   ircm_in_cloud, icloud_cover, &
 !$omp   ip_in_Pa, iexner, irho_ds_zt, ithv_ds_zt, iLscale, iwp3, &
 !$omp   iwpthlp2, iwp2thlp, iwprtp2, iwp2rtp, iSkw_zt, iSkw_zm )
 
-  integer, public :: & 
-     iLscale_up = 0, & 
-     iLscale_down = 0, & 
-     iLscale_pert_1 = 0, & 
-     iLscale_pert_2 = 0, & 
-     itau_zt = 0, & 
-     iKh_zt = 0, & 
-     iwp2thvp = 0, & 
-     iwp2rcp = 0, & 
-     iwprtpthlp = 0, & 
-     isigma_sqd_w_zt = 0, & 
-     irho = 0
+    INTEGER, public :: iwprtpthlp = 0
 !$omp threadprivate( iLscale_up, iLscale_down, &
 !$omp   iLscale_pert_1, iLscale_pert_2, &
 !$omp   itau_zt, iKh_zt, iwp2thvp, iwp2rcp, iwprtpthlp, isigma_sqd_w_zt, irho )
@@ -322,27 +282,7 @@ module stats_variables
 !$omp   iNG_INST, iT_in_K_mc, ihl_on_Cp_residual, iqto_residual  )
 
   ! Indices for statistics in stats_zm file
-  integer, public :: & 
-     iwp2 = 0, & 
-     irtp2 = 0, & 
-     ithlp2 = 0, & 
-     irtpthlp = 0, & 
-     iwprtp = 0, & 
-     iwpthlp = 0, & 
-     iwp4 = 0, & 
-     iwpthvp = 0, & 
-     irtpthvp = 0, & 
-     ithlpthvp = 0, & 
-     itau_zm = 0, & 
-     iKh_zm = 0, & 
-     iwprcp = 0, & 
-     irc_coef = 0, &
-     ithlprcp = 0, & 
-     irtprcp = 0, & 
-     ircp2 = 0, & 
-     iupwp = 0, & 
-     ivpwp = 0, &
-     iSkw_zm = 0
+    INTEGER, public :: iwp4 = 0, ircp2 = 0
 
 
    ! Stability correction applied to Kh_N2_zm (diffusion on rtm and thlm)
@@ -501,20 +441,20 @@ module stats_variables
 !$omp   threadprivate(zmscr11, zmscr12, zmscr13, zmscr14, zmscr15)
 !$omp   threadprivate(zmscr16, zmscr17)
 
-  PUBLIC kr_externs_in_stats_variables
-  
-  CONTAINS
-  
-  !read state subroutine for kr_externs_in_stats_variables
-  SUBROUTINE kr_externs_in_stats_variables(kgen_unit)
-      INTEGER, INTENT(IN) :: kgen_unit
-      LOGICAL :: kgen_istrue
-      
-      READ (UNIT = kgen_unit) iwprtp2
-      READ (UNIT = kgen_unit) iwpthlp2
-      READ (UNIT = kgen_unit) iwprtpthlp
-      READ (UNIT = kgen_unit) iwp4
-      READ (UNIT = kgen_unit) ircp2
-  END SUBROUTINE kr_externs_in_stats_variables
-  
+    PUBLIC kr_externs_in_stats_variables
+    
+    CONTAINS
+    
+    !read state subroutine for kr_externs_in_stats_variables
+    SUBROUTINE kr_externs_in_stats_variables(kgen_unit)
+        INTEGER, INTENT(IN) :: kgen_unit
+        LOGICAL :: kgen_istrue
+        
+        READ (UNIT = kgen_unit) iwprtp2
+        READ (UNIT = kgen_unit) iwpthlp2
+        READ (UNIT = kgen_unit) iwprtpthlp
+        READ (UNIT = kgen_unit) iwp4
+        READ (UNIT = kgen_unit) ircp2
+    END SUBROUTINE kr_externs_in_stats_variables
+    
 end module stats_variables

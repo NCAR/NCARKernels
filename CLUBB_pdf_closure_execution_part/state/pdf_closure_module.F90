@@ -334,11 +334,11 @@ module pdf_closure_module
     LOGICAL :: kgen_istrue
     
     !$OMP MASTER
-    CALL mpi_comm_rank(1140850688, kgen_mpi_rank, kgen_ierr)
+    CALL mpi_comm_rank(mpicom, kgen_mpi_rank, kgen_ierr)
     IF (kgen_ierr /= 0) THEN
         CALL kgen_error_stop("MPI ERROR")
     END IF 
-    CALL mpi_comm_size(1140850688, kgen_mpi_size, kgen_ierr)
+    CALL mpi_comm_size(mpicom, kgen_mpi_size, kgen_ierr)
     IF (kgen_ierr /= 0) THEN
         CALL kgen_error_stop("MPI ERROR")
     END IF 
@@ -420,128 +420,6 @@ module pdf_closure_module
                 CALL kw_externs_in_array_index(kgen_unit)
                 
                 !local input variables
-                WRITE (UNIT = kgen_unit) wp2rtp
-                WRITE (UNIT = kgen_unit) wp2thlp
-                WRITE (UNIT = kgen_unit) wp4
-                WRITE (UNIT = kgen_unit) wprtp2
-                WRITE (UNIT = kgen_unit) wpthlp2
-                WRITE (UNIT = kgen_unit) wprtpthlp
-                WRITE (UNIT = kgen_unit) wp2rcp
-                WRITE (UNIT = kgen_unit) wp2thvp
-                WRITE (UNIT = kgen_unit) wprcp
-                WRITE (UNIT = kgen_unit) wpthvp
-                WRITE (UNIT = kgen_unit) thlprcp
-                WRITE (UNIT = kgen_unit) thlpthvp
-                WRITE (UNIT = kgen_unit) rtprcp
-                WRITE (UNIT = kgen_unit) rtpthvp
-                WRITE (UNIT = kgen_unit) cloud_frac
-                WRITE (UNIT = kgen_unit) rcm
-                WRITE (UNIT = kgen_unit) ice_supersat_frac
-                WRITE (UNIT = kgen_unit) rcp2
-                CALL kw_pdf_parameter_module_pdf_parameter(pdf_params, kgen_unit)
-                WRITE (UNIT = kgen_unit) err_code
-                IF (SIZE(wp2sclrp)==1) THEN
-                    IF (UBOUND(wp2sclrp, 1)<LBOUND(wp2sclrp, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(wp2sclrp, 1)==0 .AND. LBOUND(wp2sclrp, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(wp2sclrp)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) wp2sclrp
-                END IF 
-                IF (SIZE(wpsclrp2)==1) THEN
-                    IF (UBOUND(wpsclrp2, 1)<LBOUND(wpsclrp2, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(wpsclrp2, 1)==0 .AND. LBOUND(wpsclrp2, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(wpsclrp2)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) wpsclrp2
-                END IF 
-                IF (SIZE(wpsclrprtp)==1) THEN
-                    IF (UBOUND(wpsclrprtp, 1)<LBOUND(wpsclrprtp, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(wpsclrprtp, 1)==0 .AND. LBOUND(wpsclrprtp, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(wpsclrprtp)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) wpsclrprtp
-                END IF 
-                IF (SIZE(wpsclrpthlp)==1) THEN
-                    IF (UBOUND(wpsclrpthlp, 1)<LBOUND(wpsclrpthlp, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(wpsclrpthlp, 1)==0 .AND. LBOUND(wpsclrpthlp, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(wpsclrpthlp)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) wpsclrpthlp
-                END IF 
-                IF (SIZE(sclrprcp)==1) THEN
-                    IF (UBOUND(sclrprcp, 1)<LBOUND(sclrprcp, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(sclrprcp, 1)==0 .AND. LBOUND(sclrprcp, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(sclrprcp)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) sclrprcp
-                END IF 
-                IF (SIZE(sclrpthvp)==1) THEN
-                    IF (UBOUND(sclrpthvp, 1)<LBOUND(sclrpthvp, 1)) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE IF (UBOUND(sclrpthvp, 1)==0 .AND. LBOUND(sclrpthvp, 1)==0) THEN
-                        kgen_istrue = .FALSE.
-                    ELSE
-                        kgen_istrue = .TRUE.
-                    END IF 
-                ELSE IF (SIZE(sclrpthvp)==0) THEN
-                    kgen_istrue = .FALSE.
-                ELSE
-                    kgen_istrue = .TRUE.
-                END IF 
-                WRITE (UNIT = kgen_unit) kgen_istrue
-                IF (kgen_istrue) THEN
-                    WRITE (UNIT = kgen_unit) sclrpthvp
-                END IF 
                 WRITE (UNIT = kgen_unit) w_1_n
                 WRITE (UNIT = kgen_unit) w_2_n
                 WRITE (UNIT = kgen_unit) alpha_thl
@@ -706,7 +584,6 @@ module pdf_closure_module
                 WRITE (UNIT = kgen_unit) beta1
                 WRITE (UNIT = kgen_unit) beta2
                 WRITE (UNIT = kgen_unit) sqrt_wp2
-                WRITE (UNIT = kgen_unit) rc_coef
                 WRITE (UNIT = kgen_unit) wp2rxp
                 WRITE (UNIT = kgen_unit) wprxp
                 WRITE (UNIT = kgen_unit) thlprxp
@@ -1784,11 +1661,11 @@ module pdf_closure_module
     END DO 
     IF (kgen_counter > maxval(kgen_counter_at)) THEN
         WRITE (*, *) "All state data is collected.  Stopping program..."
-        CALL mpi_abort(1140850688, 0, kgen_ierr)
+        CALL mpi_abort(mpicom, 0, kgen_ierr)
     ELSE
         WRITE (*, *) "kgen_counter = ", kgen_counter, " at rank ", kgen_mpi_rank
     END IF 
-    CALL mpi_barrier(1140850688, kgen_ierr)
+    CALL mpi_barrier(mpicom, kgen_ierr)
     kgen_counter = kgen_counter + 1
     !$OMP END MASTER
 
@@ -1855,7 +1732,7 @@ module pdf_closure_module
             WRITE (UNIT = kgen_unit) UBOUND(var, 1)
             WRITE (UNIT = kgen_unit) var
             IF (PRESENT( printvar )) THEN
-                WRITE (*, *) "** KGEN DEBUG: " // printvar // " sclrm **", SUM(var)
+                WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
             END IF 
         END IF 
         

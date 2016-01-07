@@ -1,7 +1,7 @@
     !KGEN-generated Fortran source file
     
-    !Generated at : 2016-01-04 08:38:23
-    !KGEN version : 0.6.0
+    !Generated at : 2016-01-07 08:45:17
+    !KGEN version : 0.6.1
     
     PROGRAM kernel_driver
         USE kgen_utils_mod, ONLY: kgen_get_newunit, kgen_error_stop, kgen_dp
@@ -183,7 +183,7 @@
                 ALLOCATE (var(kgen_bound(2,1)-kgen_bound(1,1)+1))
                 READ (UNIT = kgen_unit) var
                 IF (PRESENT( printvar )) THEN
-                    WRITE (*, *) "** KGEN DEBUG: " // printvar // " sclrm **", SUM(var)
+                    WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
                 END IF 
             END IF 
         END SUBROUTINE kr_pdf_closure_real__core_rknd_dim1

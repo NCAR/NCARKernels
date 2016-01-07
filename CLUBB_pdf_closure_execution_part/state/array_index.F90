@@ -103,7 +103,7 @@ module array_index
           WRITE (UNIT = kgen_unit) UBOUND(var, 1)
           WRITE (UNIT = kgen_unit) var
           IF (PRESENT( printvar )) THEN
-              WRITE (*, *) "** KGEN DEBUG: " // printvar // " l_mix_rat_hm **" // NEW_LINE("A"), var
+              WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
           END IF 
       END IF 
       

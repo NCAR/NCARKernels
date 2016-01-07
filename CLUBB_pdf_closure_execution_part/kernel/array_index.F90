@@ -1,7 +1,7 @@
 !KGEN-generated Fortran source file
 
-!Generated at : 2016-01-04 08:38:23
-!KGEN version : 0.6.0
+!Generated at : 2016-01-07 08:45:17
+!KGEN version : 0.6.1
 
 !---------------------------------------------------------------------------
 ! $Id: array_index.F90 7118 2014-07-25 00:12:15Z raut@uwm.edu $
@@ -32,9 +32,7 @@ module array_index
 !$omp   iiedsclr_rt, iiedsclr_thl, iiedsclr_CO2)
 
   ! Logical fields
-  logical, dimension(:), allocatable, public :: &
-    l_frozen_hm, & ! if true, then the hydrometeor is frozen; otherwise liquid
-    l_mix_rat_hm   ! if true, then the quantity is a hydrometeor mixing ratio
+    LOGICAL, dimension(:), allocatable, public :: l_mix_rat_hm
 !$omp threadprivate(l_frozen_hm, l_mix_rat_hm)
 
 
@@ -43,44 +41,44 @@ module array_index
 
 !$omp threadprivate( hydromet_tol )   
 
-  PRIVATE
+    PRIVATE
 
 !===============================================================================
 
-  PUBLIC kr_externs_in_array_index
-  
-  CONTAINS
-  
-  !read state subroutine for kr_externs_in_array_index
-  SUBROUTINE kr_externs_in_array_index(kgen_unit)
-      INTEGER, INTENT(IN) :: kgen_unit
-      LOGICAL :: kgen_istrue
-      
-      CALL kr_array_index_logical___dim1(l_mix_rat_hm, kgen_unit)
-  END SUBROUTINE kr_externs_in_array_index
-  
-  !read state subroutine for kr_array_index_logical___dim1
-  SUBROUTINE kr_array_index_logical___dim1(var, kgen_unit, printvar)
-      LOGICAL, INTENT(INOUT), ALLOCATABLE, DIMENSION(:) :: var
-      INTEGER, INTENT(IN) :: kgen_unit
-      CHARACTER(LEN=*), INTENT(IN), OPTIONAL :: printvar
-      LOGICAL :: kgen_istrue
-      INTEGER :: idx1
-      INTEGER, DIMENSION(2,1) :: kgen_bound
-      
-      READ (UNIT = kgen_unit) kgen_istrue
-      IF (kgen_istrue) THEN
-          IF (ALLOCATED( var )) THEN
-              DEALLOCATE (var)
-          END IF 
-          READ (UNIT = kgen_unit) kgen_bound(1, 1)
-          READ (UNIT = kgen_unit) kgen_bound(2, 1)
-          ALLOCATE (var(kgen_bound(2,1)-kgen_bound(1,1)+1))
-          READ (UNIT = kgen_unit) var
-          IF (PRESENT( printvar )) THEN
-              WRITE (*, *) "** KGEN DEBUG: " // printvar // " l_mix_rat_hm **" // NEW_LINE("A"), var
-          END IF 
-      END IF 
-  END SUBROUTINE kr_array_index_logical___dim1
-  
+    PUBLIC kr_externs_in_array_index
+    
+    CONTAINS
+    
+    !read state subroutine for kr_externs_in_array_index
+    SUBROUTINE kr_externs_in_array_index(kgen_unit)
+        INTEGER, INTENT(IN) :: kgen_unit
+        LOGICAL :: kgen_istrue
+        
+        CALL kr_array_index_logical___dim1(l_mix_rat_hm, kgen_unit)
+    END SUBROUTINE kr_externs_in_array_index
+    
+    !read state subroutine for kr_array_index_logical___dim1
+    SUBROUTINE kr_array_index_logical___dim1(var, kgen_unit, printvar)
+        LOGICAL, INTENT(INOUT), ALLOCATABLE, DIMENSION(:) :: var
+        INTEGER, INTENT(IN) :: kgen_unit
+        CHARACTER(LEN=*), INTENT(IN), OPTIONAL :: printvar
+        LOGICAL :: kgen_istrue
+        INTEGER :: idx1
+        INTEGER, DIMENSION(2,1) :: kgen_bound
+        
+        READ (UNIT = kgen_unit) kgen_istrue
+        IF (kgen_istrue) THEN
+            IF (ALLOCATED( var )) THEN
+                DEALLOCATE (var)
+            END IF 
+            READ (UNIT = kgen_unit) kgen_bound(1, 1)
+            READ (UNIT = kgen_unit) kgen_bound(2, 1)
+            ALLOCATE (var(kgen_bound(2,1)-kgen_bound(1,1)+1))
+            READ (UNIT = kgen_unit) var
+            IF (PRESENT( printvar )) THEN
+                WRITE (*, *) "** KGEN DEBUG: " // printvar // "**" // NEW_LINE("A"), var
+            END IF 
+        END IF 
+    END SUBROUTINE kr_array_index_logical___dim1
+    
 end module array_index
