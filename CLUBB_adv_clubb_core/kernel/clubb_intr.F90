@@ -578,7 +578,7 @@ module clubb_intr
       TYPE(pdf_parameter), dimension(pverp) :: kgenref_pdf_params
       TYPE(check_t) :: check_status
       INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
-      INTEGER, PARAMETER :: kgen_maxiter = 1
+      INTEGER, PARAMETER :: kgen_maxiter = 10
       REAL(KIND=kgen_dp) :: kgen_elapsed_time
 
 

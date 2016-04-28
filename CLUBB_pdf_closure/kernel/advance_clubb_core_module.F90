@@ -261,7 +261,7 @@ module advance_clubb_core_module
       REAL(KIND=core_rknd), dimension(gr%nz, sclr_dim) :: kgenref_sclrpthvp_zt, kgenref_sclrprcp_zt
       TYPE(check_t) :: check_status
       INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
-      INTEGER, PARAMETER :: kgen_maxiter = 1
+      INTEGER, PARAMETER :: kgen_maxiter = 100
       REAL(KIND=kgen_dp) :: kgen_elapsed_time
 
       ! Spurious source will only be calculated if rtm_ma and thlm_ma are zero.
