@@ -4,8 +4,9 @@
 from __future__ import print_function
 import os
 import sys
+import json
+import datetime
 import subprocess
-import shutil
 
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
 KERNEL_HOME = '%s/..'%SCRIPT_HOME
@@ -35,6 +36,36 @@ def main():
     # check if it is a kgen kernel directory that can be executed
     # run the kernel
     # walk through sub directories
+    tests = {}
+
+    out, err = run_shcmd('env')
+    tests['env'] = out.rstrip()
+
+    out, err = run_shcmd('ifort --version')
+    tests['ifort'] = out.rstrip()
+
+    out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
+    tests['gitbranch'] = out.rstrip()
+
+    out, err = run_shcmd('git rev-parse HEAD')
+    tests['gitcommit'] = out.rstrip()
+
+    out, err = run_shcmd('git diff')
+    tests['gitdiff'] = out.rstrip()
+
+    out, err = run_shcmd('cat /proc/cpuinfo')
+    tests['cpuinfo'] = out.rstrip()
+
+    out, err = run_shcmd('cat /proc/meminfo')
+    tests['meminfo'] = out.rstrip()
+
+    out, err = run_shcmd('top -n1 -b')
+    tests['top'] = out.rstrip()
+
+    tests['begin'] = str(datetime.datetime.now())
+
+    tests['tests'] = {}
+
     for testroot in testroots:
         for dirName, subdirList, fileList in os.walk(testroot):
             relpath = os.path.relpath(dirName, testroot)
@@ -48,25 +79,20 @@ def main():
                 if makefile[0]!=SIGNATURE: continue
 
             print('***************************************************************')
-            print('      TEST for ', dirName)
+            print('      TEST for ', dirName )
             print('***************************************************************')
 
             #print('Running a kernel at %s: '%relpath, end='')
             # modify makefile list
 
-            # save original Makefile
-            mksrc = os.path.join('%s/%s'%(dirName, MAKEFILE))
-            mkdstname = '%s.%s'%(MAKEFILE, TEMP)
-            mkdst = os.path.join('%s/%s'%(dirName, mkdstname))
-            if not os.path.exists(mkdst):
-                shutil.copyfile(mksrc, mkdst)
-     
             try:
-                # run test
-                out, err = run_shcmd('make -f %s'%mkdstname, cwd=dirName)
+                summary = {'etime': [], 'diff': [], 'tol': 0.0, 'passed': False, 'begin': str(datetime.datetime.now()), 'end': 'Not completed'}
+                tests['tests'][dirName] = summary
 
-                # collect summary of the test results
-                summary = {'etime': [], 'diff': [], 'tol': 0.0}
+                # run test
+                out, err = run_shcmd('make -f %s'%MAKEFILE, cwd=dirName)
+
+                summary['end'] = str(datetime.datetime.now())
 
                 npassed = 0
                 nfailed = 0
@@ -107,9 +133,7 @@ def main():
                         except:
                             nexttol = not nexttol
 
-                if nfailed>0 or npassed==0:
-                    summary['passed'] = False
-                else:
+                if nfailed==0 and npassed>0:
                     summary['passed'] = True
 
                 #import pdb; pdb.set_trace()
@@ -123,25 +147,25 @@ def main():
                     print('The average Normalized RMS difference: ', sum(summary['diff'])/float(len(summary['diff'])) )
                     print('The largest Normalized RMS difference: ', max(summary['diff']) )
                     print('')
-                if len(summary['etime'])>0:
-                    print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
-                    print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
-                    print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
-                    print('')
+                print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
+                print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
+                print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
+                print('')
+
+                out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, cwd=dirName)
+                summary['perf-stat'] = err.rstrip()
 
             except Exception as e:
-                import pdb; pdb.set_trace()    
+                print ('ERROR: %s'%str(e))
+                print ( err )
+                #import pdb; pdb.set_trace()    
             finally:
-                out, err = run_shcmd('make -f %s clean'%mkdstname, cwd=dirName)
-                os.remove(mkdst)
+                out, err = run_shcmd('make -f %s clean'%MAKEFILE, cwd=dirName)
 
-#                ntests = 0
-#                npassed = 0
-#                for relpath, test in tests.items():
-#                    summary = test['summary']
-#                    ntests += 1
-#                    if summary['passed']: npassed += 1
+    tests['end'] = str(datetime.datetime.now())
 
+    with open('%s_result.json'%tests['gitbranch'], 'w') as f:
+        json.dump(tests, f, sort_keys=True, indent=4)
 
 if __name__ == '__main__':
     main()
