@@ -10,13 +10,13 @@ DEFINE := -DSINGLE_PRECISION
 
 # SINGLE_PRECISION flags 
 # FC_FLAGS := $(DEFINE) -qopt-report=5  -O3 -xCORE-AVX2 -convert big_endian -FR
-FC_FLAGS := $(DEFINE) -pgo -align array32byte -qopt-report=5  -O3 -xAVX -convert big_endian -FR
+FC_FLAGS := $(DEFINE) -mmic -pgo -align array32byte -qopt-report=5  -O3 -convert big_endian -FR
 #FC_FLAGS := $(DEFINE) -qopt-report=5  -O3 -xHost -convert big_endian -FR
 
 ALL_OBJS := kernel_driver.o mpas_atm_time_integration.o kgen_utils.o mpas_kinds_types.o
 
 run: build
-	./kernel.exe
+	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

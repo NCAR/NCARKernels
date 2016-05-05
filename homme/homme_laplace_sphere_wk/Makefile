@@ -10,21 +10,21 @@ EXE := ${SRC:.F90=.exe}
 #
 # Intel
 #
-#FC := ifort
+FC := ifort
 # Cases
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic #-Fa
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model fast=2
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -Fa
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -no-vec
 #FFLAGS := -O3 -g -debug inline-debug-info -mmic -fp-model precise -mP2OPT_hpo_matrix_opt_framework=0
-#FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast=2
+FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast=2
 #FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
 
 #
 # GFORTRAN
 # 
- FC :=gfortran
- FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
+# FC :=gfortran
+# FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
 # #
 #
 

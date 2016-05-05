@@ -1,12 +1,12 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := -assume byterecl -fp-model precise -ftz -O3 -g -openmp
+FC_FLAGS := -mmic -assume byterecl -fp-model precise -ftz -O3 -g -openmp
 
 ALL_OBJS := kernel_driver.o prim_advection_mod.o dimensions_mod.o kinds.o perf_utils.o perf_mod.o control_mod.o
 
 run: build
-	./kernel.exe
+	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

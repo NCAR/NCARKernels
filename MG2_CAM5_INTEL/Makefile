@@ -1,12 +1,12 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := -no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -xHost -O2
+FC_FLAGS := -mmic -no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -O2
 
 ALL_OBJS := kernel_driver.o micro_mg_cam.o wv_sat_methods.o shr_spfn_mod.o shr_kind_mod.o micro_mg2_0.o micro_mg_utils.o
 
 run: build
-	./kernel.exe
+	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

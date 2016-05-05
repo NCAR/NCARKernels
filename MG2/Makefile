@@ -4,7 +4,7 @@ FC := ifort
 #
 # Knights Corner
 #
-#FFLAGS := -mmic -O3 -qopt-report=5 -fp-model fast -no-prec-div -no-prec-sqrt -I./
+FFLAGS := -mmic -O3 -qopt-report=5 -fp-model fast -no-prec-div -no-prec-sqrt -I./
 #FFLAGS := -O3 -fp-model precise -I./ -DCPRINTEL
 #FFLAGS := -O3 -fp-model fast -xHost -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
 #FFLAGS := -O2 -fp-model precise -xHost -I./ -DCPRINTEL
@@ -27,8 +27,8 @@ FC := ifort
 #FFLAGS := -O3 -ffree-form -ffree-line-length-none -D__GFORTRAN__ -I./
 #
 # Cray 
-FC := ftn
-FFLAGS := -O2 -N 255
+#FC := ftn
+#FFLAGS := -O2 -N 255
 #
 
 all: kernel.exe

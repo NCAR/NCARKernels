@@ -11,9 +11,9 @@ EXE := ${SRC:.F90=.exe}
 # Intel
 #
  FC := ifort
-# FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
+ FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
 # FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
- FFLAGS := -O3 -xAVX -qopt-report=5 -fp-model fast
+# FFLAGS := -O3 -xAVX -qopt-report=5 -fp-model fast
 #
 # GFORTRAN
 # 

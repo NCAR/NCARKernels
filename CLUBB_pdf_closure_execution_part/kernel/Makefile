@@ -1,12 +1,12 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := -no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -xHost -O2 -mkl
+FC_FLAGS := -mmic -no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -O2 -mkl
 
 ALL_OBJS := pdf_closure_module.o parameters_model.o error_code.o clubb_precision.o constants_clubb.o parameters_tunable.o stats_variables.o saturation.o model_flags.o shr_const_mod.o shr_kind_mod.o anl_erf.o array_index.o pdf_parameter_module.o numerical_check.o kernel_driver.o kgen_utils.o
 
 run: build
-	./kernel.exe
+	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

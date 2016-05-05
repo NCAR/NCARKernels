@@ -147,10 +147,11 @@ def main():
                     print('The average Normalized RMS difference: ', sum(summary['diff'])/float(len(summary['diff'])) )
                     print('The largest Normalized RMS difference: ', max(summary['diff']) )
                     print('')
-                print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
-                print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
-                print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
-                print('')
+                if len(summary['etime'])>0:
+					print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
+					print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
+					print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
+					print('')
 
                 out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, cwd=dirName)
                 summary['perf-stat'] = err.rstrip()

@@ -1,7 +1,7 @@
 FC := ifort
 SRC := ./kernel_binterp.F90
 EXE := ${SRC:.F90=.exe}
-FFLAGS :=  -O3 -xAVX -ftz  -ip  -no-fp-port -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL -mkl
+FFLAGS :=  -mmic -O3 -ftz  -ip  -no-fp-port -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL -mkl
 FLAGS := ${FFLAGS}
 
 all: build run 
