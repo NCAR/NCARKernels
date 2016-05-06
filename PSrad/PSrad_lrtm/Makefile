@@ -5,7 +5,8 @@ FC_FLAGS := -xCORE-AVX2 -O3
 
 ALL_OBJS := kernel_driver.o mo_psrad_interface.o mo_lrtm_kgs.o mo_cld_sampling.o mo_lrtm_solver.o mo_rrtm_coeffs.o mo_exception_stub.o mo_physical_constants.o mo_radiation_parameters.o mo_kind.o mo_spec_sampling.o mo_random_numbers.o mo_lrtm_setup.o mo_math_constants.o mo_rrtm_params.o mo_rad_fastmath.o mo_lrtm_driver.o mo_lrtm_gas_optics.o
 
-#	bash -i -c "module load mkl; ${FC} ${FC_FLAGS}  -lmkl_rt -o kernel.exe $^"
+run: build
+	./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS} -lmkl_rt -o kernel.exe $^
