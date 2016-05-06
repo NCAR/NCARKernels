@@ -43,7 +43,7 @@
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
-            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=1000
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100
             integer*4, parameter :: veclen=8
 
             TYPE(check_t):: check_status
@@ -134,7 +134,6 @@
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
 
-                            PRINT *, 'veclen: ',veclen,' Time per lu_slv call [R4](usec): ', (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
                             PRINT *, 'veclen: ',veclen,' Time per lu_slv per system [R4](usec): ', (stop_clock - start_clock)*1e6/REAL(veclen*rate_clock*maxiter)
             !
             !

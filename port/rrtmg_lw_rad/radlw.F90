@@ -240,7 +240,6 @@
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, TRIM(kname), ": Total time (secs): ", (stop_clock - start_clock)/REAL(rate_clock)
             PRINT *, TRIM(kname), ": Elapsed time (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
             !
             !----------------------------------------------------------------------

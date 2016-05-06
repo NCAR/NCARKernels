@@ -580,7 +580,6 @@
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, TRIM(kname), ": Total Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
             PRINT *, TRIM(kname), ": Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*real(maxiter,kind=r8))
             !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
             !  input cloud physical properties.  Select method based on choices described

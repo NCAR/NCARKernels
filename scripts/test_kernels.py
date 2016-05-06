@@ -6,27 +6,26 @@
     History:
       - Created at May 1, 2016
 
-    Test Data File Format( Revision 0.1 ):
+    KGen Kernel Execution Result File Format( Revision 0.1 ):
       - Test data is saved in JSON format
       - Accepted primitive test data formats are boolean, string, integer, and floating-pointer number.
       - Accepted container data formats are list and dictionary.
       - String is saved in unicode character format.
       - Mandated test items are:
-        * "git_branch": current git branch name - string
-        * "git_commit": current git commit SHA hash - string
         * "cpu_model": cpu model name of a test system - string
         * "total_memsize": total memory of a test system - string
         * "uname": uname result of a test system - string
         * "compiler": compiler version being used - string
-        * "cases": this is dictionaly contain for test result. Following test result information is mandated. - dictionary in the form of <testname> : <dictionary>
-            ** "begin": test start date and time (YYYY-MM-DD HH:MM:SS.SSSSSS) - string
-            ** "end": test end date and time - string
-            ** "passed": verification result - boolean
-            ** "tolerance": tolerance for verification - float
-            ** "difference": Verification difference - list of float numbers
-            ** "diff_type": The type of difference and tolerance  0: Normalized RMS difference
-            ** "elapsed_time": Elapsed time in micro-second for a test case list of float numbers
-      - Other test information can be added similar the mandated information.
+        * "cases": this is a dictionary that contains results of each test cases - dictionary.
+            ** <testname>: Each test result much contain at least following items. - dictionary in the form of <testname> : <dictionary>
+                *** "begin": test start date and time (YYYY-MM-DD HH:MM:SS.SSSSSS) - string
+                *** "end": test end date and time - string
+                *** "passed": verification result - boolean
+                *** "tolerance": tolerance for verification - float
+                *** "difference": Verification difference - list of float numbers
+                *** "diff_type": The type of difference and tolerance  0: Normalized RMS difference
+                *** "elapsed_time": Elapsed time in micro-second for a test case list of float numbers
+      - Other test information can be added in similar way to the mandated information.
 '''
 
 from __future__ import print_function
@@ -36,24 +35,32 @@ import json
 import datetime
 import subprocess
 
+NREPEAT = 3
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
 MAKEFILE = 'Makefile'
 SIGNATURE = '# Makefile for KGEN-generated kernel\n'
 
-def run_shcmd(cmd, input=None, **kwargs):
+def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
+    ''' executing shell command. The last white spaces will be removed'''
+
     try:
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, \
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, **kwargs)
         out, err = proc.communicate(input=input)
-        if err:
-            print (err)
+        if stderr_exit and err:
+            print ('COMMAND ERROR: ', str(err))
             sys.exit(-1)
-        return out, err
+
+        if out is None: out = ''
+        if err is None: err = ''
+        return out.rstrip(), err.rstrip()
+
     except Exception as e:
-        print (e)
+        print ('SHELL ERROR: ', str(e))
         sys.exit(-1)
 
 def main():
+    ''' Main function: generated test data through executing linux commands and kgen kernels'''
 
     if len(sys.argv) > 1:
         testroots = sys.argv[1:]
@@ -65,33 +72,34 @@ def main():
     tests = {}
 
     # madatory information
-    out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
-    tests['git_branch'] = out.rstrip()
-
-    out, err = run_shcmd('git rev-parse HEAD')
-    tests['git_commit'] = out.rstrip()
-
     out, err = run_shcmd('cat /proc/cpuinfo | grep "model name" | head -n 1')
-    tests['cpu_model'] = out.rstrip()
+    tests['cpu_model'] = out
 
     out, err = run_shcmd('cat /proc/meminfo | grep -i memtotal')
-    tests['total_memsize'] = out.rstrip()
+    tests['total_memsize'] = out
 
     out, err = run_shcmd('uname -a')
-    tests['uname'] = out.rstrip()
+    tests['uname'] = out
 
     out, err = run_shcmd('ifort --version')
-    tests['compiler'] = out.rstrip()
+    tests['compiler'] = out
 
     # optional information such as:
+
+    out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
+    tests['git_branch'] = out
+
+    out, err = run_shcmd('git rev-parse HEAD')
+    tests['git_commit'] = out
+
     #out, err = run_shcmd('env')
-    #tests['env'] = out.rstrip()
+    #tests['env'] = out
 
     #out, err = run_shcmd('top -n1 -b')
-    #tests['top'] = out.rstrip()
+    #tests['top'] = out
 
     #out, err = run_shcmd('git diff')
-    #tests['gitdiff'] = out.rstrip()
+    #tests['gitdiff'] = out
 
 
     ######### START OF TEST DATA COLLECTION ###########
@@ -115,15 +123,18 @@ def main():
             print('      TEST for ', dirName )
             print('***************************************************************')
 
-            #print('Running a kernel at %s: '%relpath, end='')
-            # modify makefile list
-
             try:
                 summary = {'elapsed_time': [], 'difference': [], 'diff_type': 0, 'tolerance': 0.0, 'passed': False, 'begin': str(datetime.datetime.now()), 'end': 'Not completed'}
                 tests['cases'][dirName] = summary
 
+                # initialize test
+                out, err = run_shcmd('make -f %s clean'%MAKEFILE, stderr_exit=False, cwd=dirName)
+
                 # run test
-                out, err = run_shcmd('make -f %s'%MAKEFILE, cwd=dirName)
+                out = ''
+                for _ in range(NREPEAT):
+                    o, e= run_shcmd('make -f %s'%MAKEFILE, stderr_exit=False, cwd=dirName)
+                    out = '%s\n%s'%(out, o)
 
                 summary['end'] = str(datetime.datetime.now())
 
@@ -142,9 +153,9 @@ def main():
                     if nexttime or outline.find('time')>=0 or outline.find('Time')>=0:
                         try:
                             etime = float(outline.split()[-1])
-                            if outline.find('usec')>=0:
+                            if outline.find('usec')>=0 and outline.find('summary')<0:
                                 summary['elapsed_time'].append(float(etime))
-                            elif outline.find('sec')>=0:
+                            elif outline.find('sec')>=0 and outline.find('summary')<0:
                                 summary['elapsed_time'].append(float(etime)*1000000.0)
                             if nexttime: nexttime = False
                         except:
@@ -161,7 +172,7 @@ def main():
                     if nexttol or outline.find('tolerance')>=0 or outline.find('Tolerance')>=0:
                         try:
                             tol = float(outline.split()[-1])
-                            summary['tolerance'].append(max( summary['tol'], float(tol)))
+                            summary['tolerance'].append(max( summary['tolerance'], float(tol)))
                             if nexttol: nexttol = False
                         except:
                             nexttol = not nexttol
@@ -173,34 +184,33 @@ def main():
                 print('NO. of verifications: %d'%(npassed+nfailed))
                 print('NO. of passed verifications: ', npassed)
                 print('NO. of failed verifications: ', nfailed)
-                print('Tolerance for verification: ', '{:22.16f}'.format(summary['tol']) )
+                print('Tolerance for verification: ', '{:22.16f}'.format(summary['tolerance']) )
                 print('')
                 if len(summary['difference'])>0:
-                    print('The smallest Normalized RMS difference: ', min(summary['diff']) )
-                    print('The average Normalized RMS difference: ', sum(summary['diff'])/float(len(summary['diff'])) )
-                    print('The largest Normalized RMS difference: ', max(summary['diff']) )
+                    print('The smallest Normalized RMS difference: ', min(summary['difference']) )
+                    print('The average Normalized RMS difference: ', sum(summary['difference'])/float(len(summary['difference'])) )
+                    print('The largest Normalized RMS difference: ', max(summary['difference']) )
                     print('')
                 if len(summary['elapsed_time'])>0:
-					print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
-					print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
-					print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
+					print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['elapsed_time'])) )
+					print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['elapsed_time'])/float(len(summary['elapsed_time']))) )
+					print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['elapsed_time'])) )
 					print('')
 
-                out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, cwd=dirName)
-                summary['perf_stat'] = err.rstrip()
+                out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, stderr_exit=False, cwd=dirName)
+                summary['perf_stat'] = err
 
             except Exception as e:
                 print ('ERROR: %s'%str(e))
-                print ( err )
-                #import pdb; pdb.set_trace()    
+                sys.exit(-1)
             finally:
-                out, err = run_shcmd('make -f %s clean'%MAKEFILE, cwd=dirName)
+                out, err = run_shcmd('make -f %s clean'%MAKEFILE, stderr_exit=False, cwd=dirName)
 
     tests['end'] = str(datetime.datetime.now())
     ######### END OF TEST DATA COLLECTION ###########
 
     ######### SAVING TEST DATA IN A JSON FILE ###########
-    with open('%s_result.json'%tests['gitbranch'], 'w') as f:
+    with open('%s_result.json'%tests['git_branch'], 'w') as f:
         json.dump(tests, f, sort_keys=True, indent=4)
 
 if __name__ == '__main__':

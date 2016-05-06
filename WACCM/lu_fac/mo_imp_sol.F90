@@ -39,7 +39,7 @@
             ! ... dummy args
             !-----------------------------------------------------------------------
             integer, intent(in) :: kgen_unit
-            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=1000
+            INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock,maxiter=100
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             ! columns in chunck
@@ -76,7 +76,6 @@
                                 END DO
                                 CALL system_clock(stop_clock, rate_clock)
                                 WRITE(*,*)
-                                PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
                                 PRINT *, "Elapsed time per lu_fac call (usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
             !
             !
