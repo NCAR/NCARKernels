@@ -98,7 +98,6 @@
 
                             WRITE(*,*)
                             PRINT *, "Elapsed time [R8](sec): ", (stop_clock - start_clock)/REAL(rate_clock)
-                            PRINT *, "veclen: 1 Time per lu_slv call [R8](usec): ", (stop_clock - start_clock)*1e6/REAL(rate_clock*maxiter)
 
                             forcing_r4 = forcing
                             sys_jac_r4 = sys_jac
