@@ -48,7 +48,7 @@ def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, **kwargs)
         out, err = proc.communicate(input=input)
         if stderr_exit and err:
-            print ('COMMAND ERROR: ', str(err))
+            print ('COMMAND ERROR: %s\n\n'%cmd, str(err))
             sys.exit(-1)
 
         if out is None: out = ''
@@ -56,7 +56,7 @@ def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
         return out.rstrip(), err.rstrip()
 
     except Exception as e:
-        print ('SHELL ERROR: ', str(e))
+        print ('SHELL ERROR: %s\n\n'%cmd, str(e))
         sys.exit(-1)
 
 def main():
@@ -72,7 +72,7 @@ def main():
     tests = {}
 
     # madatory information
-    out, err = run_shcmd('cat /proc/cpuinfo | grep "model name" | head -n 1')
+    out, err = run_shcmd('cat /proc/cpuinfo | grep "model name"')
     tests['cpu_model'] = out
 
     out, err = run_shcmd('cat /proc/meminfo | grep -i memtotal')
