@@ -1,7 +1,7 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := -real-size 64 -O3 -convert big_endian -FR
+FC_FLAGS := -xAVX -real-size 64 -O3 -convert big_endian -FR
 
 ALL_OBJS := mpas_atmphys_driver_convection.o mpas_kind_types.o mpas_atmphys_vars.o module_cu_tiedtke.o kernel_driver.o kgen_utils.o
 

@@ -1,4 +1,5 @@
-
+# Makefile for KGEN-generated kernel
+#
 SRC := ./kernel_divergence_sphere.F90
 EXE := ${SRC:.F90=.exe}
 
@@ -29,9 +30,7 @@ EXE := ${SRC:.F90=.exe}
 
 FLAGS := ${FFLAGS}
 
-all: build
-
-run: ${EXE}
+run: build
 	${EXE}
 
 build: ${SRC} clean

@@ -1,7 +1,7 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS := -assume byterecl -fp-model precise -ftz -O3
+FC_FLAGS := -xAVX -assume byterecl -fp-model precise -ftz -O3
 
 ALL_OBJS := kernel_driver.o prim_advance_mod.o hybvcoord_mod.o prim_si_mod.o dimensions_mod.o kinds.o
 

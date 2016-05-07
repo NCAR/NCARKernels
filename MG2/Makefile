@@ -1,4 +1,5 @@
-#
+# Makefile for KGEN-generated kernel
+# #
 # Intel 
 FC := ifort
 #

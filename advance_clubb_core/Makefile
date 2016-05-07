@@ -4,7 +4,7 @@
 
 FC := ifort
 #FC_FLAGS :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
-FC_FLAGS :=  -O3 -fp-model fast=2 -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xCORE-AVX2
+FC_FLAGS :=  -O3 -fp-model fast=2 -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
 
 LAPACK_OBJS = dgtsvx.o dgtsv.o dgbsvx.o dgbsv.o xerbla.o lsame.o dlangt.o dgtcon.o dlacpy.o dlamch.o  dcopy.o dlacn2.o dgttrs.o  dgtts2.o disnan.o ilaenv.o dgtrfs.o dgttrf.o dlassq.o dgbtrf.o dasum.o dgemm.o dswap.o idamax.o dgbtrs.o dger.o  dgemv.o dtbsv.o dtrsm.o dscal.o dlantb.o dlangb.o dgbcon.o dgbrfs.o dgbequ.o dlaqgb.o dlagtm.o dgbtf2.o dlaisnan.o iparmq.o ieeeck.o  daxpy.o dlaswp.o dgbmv.o dlatbs.o ddot.o drscl.o dlabad.o
 
