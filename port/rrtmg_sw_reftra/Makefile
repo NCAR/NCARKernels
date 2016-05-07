@@ -8,11 +8,13 @@ FC_FLAGS_PHI :=  -mmic -O2 -fp-model source -convert big_endian -assume byterecl
 #FC_FLAGS := ${FC_FLAGS_SNB}
 #FC_FLAGS := ${FC_FLAGS_HSW}
 FC_FLAGS := ${FC_FLAGS_PHI}
+NODE := $(shell uname -n)
+
 
 ALL_OBJS := kernel_driver.o rrtmg_sw_spcvmc.o kgen_utils.o rrsw_vsn.o rrtmg_sw_reftra.o shr_kind_mod.o rrsw_tbl.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 runphi: build
 	ssh `hostname`-mic0 "cd ${PWD}; ./kernel.exe" | tee phi.out

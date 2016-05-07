@@ -2,11 +2,12 @@
 
 FC := ifort
 FC_FLAGS :=  -mmic -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs 
+NODE := $(shell uname -n)
 
 ALL_OBJS := kernel_driver.o rrtmg_sw_spcvmc.o kgen_utils.o rrsw_kg21.o rrsw_kg25.o rrsw_kg26.o shr_kind_mod.o rrsw_kg18.o rrsw_kg17.o rrsw_con.o rrsw_wvn.o rrsw_kg27.o rrsw_kg19.o rrsw_kg29.o rrsw_kg22.o rrsw_kg24.o rrsw_kg20.o rrsw_kg16.o parrrsw.o rrtmg_sw_taumol.o rrsw_kg23.o rrsw_vsn.o rrsw_kg28.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

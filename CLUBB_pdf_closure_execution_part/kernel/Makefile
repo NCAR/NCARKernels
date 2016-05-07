@@ -2,11 +2,12 @@
 
 FC := ifort
 FC_FLAGS := -mmic -no-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -O2 -mkl
+NODE := $(shell uname -n)
 
 ALL_OBJS := pdf_closure_module.o parameters_model.o error_code.o clubb_precision.o constants_clubb.o parameters_tunable.o stats_variables.o saturation.o model_flags.o shr_const_mod.o shr_kind_mod.o anl_erf.o array_index.o pdf_parameter_module.o numerical_check.o kernel_driver.o kgen_utils.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

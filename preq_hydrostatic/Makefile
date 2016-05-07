@@ -2,11 +2,12 @@
 
 FC := ifort
 FC_FLAGS := -mmic -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -O2
+NODE := $(shell uname -n)
 
 ALL_OBJS := kernel_driver.o prim_advance_mod.o kgen_utils.o kinds.o shr_const_mod.o physical_constants.o shr_kind_mod.o prim_si_mod.o element_mod.o physconst.o coordinate_systems_mod.o gridgraph_mod.o edge_mod.o dimensions_mod.o constituents.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

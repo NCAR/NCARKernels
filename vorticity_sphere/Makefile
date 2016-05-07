@@ -2,11 +2,12 @@
 
 FC := ifort
 FC_FLAGS := -mmic -assume byterecl -fp-model precise -ftz -O3
+NODE := $(shell uname -n)
 
 ALL_OBJS := kernel_driver.o prim_advance_mod.o derivative_mod.o dimensions_mod.o kinds.o physical_constants.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 SRC := kissvec_mod.F90 uniform.F90
 EXE := uniform.exe
@@ -7,9 +9,10 @@ EXE := uniform.exe
 FFLAGS := -O3 -mmic -fp-model fast -mkl
 #FFLAGS := -O3 -qopt-report=5 -fp-model fast -mkl
 FLAGS := ${FFLAGS}
+NODE := $(shell uname -n)
 
 all: ${EXE}
-
+	ssh ${NODE}-mic1 "cd ${PWD}; ./${EXE}"
 
 ${EXE}: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC} $(LIBS)

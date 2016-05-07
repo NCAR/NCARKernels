@@ -1,4 +1,5 @@
-
+# Makefile for KGEN-generated kernel
+#
 SRC := ./kernel_divergence_sphere.F90
 EXE := ${SRC:.F90=.exe}
 
@@ -12,6 +13,8 @@ EXE := ${SRC:.F90=.exe}
 #
  FC := ifort
  FFLAGS := -O3 -mmic -qopt-report=5 -fp-model fast
+NODE := $(shell uname -n)
+
 # FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
 # FFLAGS := -O3 -xAVX -qopt-report=5 -fp-model fast
 #
@@ -29,10 +32,8 @@ EXE := ${SRC:.F90=.exe}
 
 FLAGS := ${FFLAGS}
 
-all: build
-
 run: ${EXE}
-	${EXE}
+	ssh ${NODE}-mic1 "cd ${PWD}; ./${EXE}"
 
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}

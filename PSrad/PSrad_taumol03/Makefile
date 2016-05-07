@@ -1,5 +1,9 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 FFLAGS := -O3 -mmic  -I./
+NODE := $(shell uname -n)
+
 #FC := pgfortran
 #FFLAGS := -O3 -I./
 #FC := gfortran
@@ -9,10 +13,8 @@ EXE := ./kernel.exe
 
 FLAGS := ${FFLAGS}
 
-all: run build
-
 run: ${EXE}
-	taskset 0x00000010 ${EXE}
+	ssh ${NODE}-mic1 "cd ${PWD}; ./${EXE}"
 
 build: ${EXE}
 

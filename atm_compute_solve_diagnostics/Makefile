@@ -1,6 +1,6 @@
 # Makefile for KGEN-generated kernel
 
-FC := mpiifort 
+FC := ifort 
 DEFINE := -DSINGLE_PRECISION
 
 #FC_FLAGS := $(DEFINE) -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX
@@ -12,11 +12,13 @@ DEFINE := -DSINGLE_PRECISION
 # FC_FLAGS := $(DEFINE) -qopt-report=5  -O3 -xCORE-AVX2 -convert big_endian -FR
 FC_FLAGS := $(DEFINE) -mmic -pgo -align array32byte -qopt-report=5  -O3 -convert big_endian -FR
 #FC_FLAGS := $(DEFINE) -qopt-report=5  -O3 -xHost -convert big_endian -FR
+NODE := $(shell uname -n)
+
 
 ALL_OBJS := kernel_driver.o mpas_atm_time_integration.o kgen_utils.o mpas_kinds_types.o
 
 run: build
-	ssh mike-mic1 "cd ${PWD}; ./kernel.exe"
+	ssh ${NODE}-mic1 "cd ${PWD}; ./kernel.exe"
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^
