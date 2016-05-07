@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 SRC := ./kernel_laplace_sphere_wk.F90
 EXE := ${SRC:.F90=.exe}
 
@@ -30,10 +32,8 @@ FFLAGS := -O3 -xMIC-AVX512 -qopt-report=5 -fp-model fast
 
 FLAGS := ${FFLAGS}
 
-all: build 
-
 run: ${EXE}
-	${EXE}
+	numactl --membind 1 ./${EXE}
 
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}

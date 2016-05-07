@@ -33,6 +33,8 @@ FFLAGS := -xMIC-AVX512 -O3 -fp-model fast -no-prec-div -no-prec-sqrt  -I./ -DCPR
 #
 
 all: kernel.exe
+	numactl --membind 1  ./kernel.exe
+
 SRCS := shr_kind_mod.F90 kgen_utils.F90 shr_spfn_mod.F90 micro_mg_utils.F90 wv_sat_methods.F90 micro_mg2_0.F90 micro_mg_cam.F90 kernel_micro_mg_tend.F90
 
 kernel.exe: $(SRCS)

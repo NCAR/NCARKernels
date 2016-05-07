@@ -12,7 +12,7 @@ ALL_OBJS := kernel_driver.o clubb_intr.o kgen_utils.o fill_holes.o Skw_module.o 
 
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

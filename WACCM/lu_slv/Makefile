@@ -10,6 +10,7 @@ FC_FLAGS := -xMIC-AVX512 -qopt-report=5 -no-opt-dynamic-align -convert big_endia
 ALL_OBJS := kernel_driver.o mo_imp_sol.o kgen_utils.o chem_mods.o mo_lu_solve.o mo_lu_solve_r4.o mo_lu_solve_vec.o mo_lu_solve_vecr4.o shr_kind_mod.o
 
 run: build
+	numactl --membind 1  ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

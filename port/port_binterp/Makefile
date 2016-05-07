@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 SRC := ./kernel_binterp.F90
 EXE := ${SRC:.F90=.exe}
@@ -7,7 +9,7 @@ FLAGS := ${FFLAGS}
 all: build run 
 
 run: ${EXE}
-	${EXE}
+	numactl --membind 1  ./${EXE}
 
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}

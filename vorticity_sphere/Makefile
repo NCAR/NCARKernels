@@ -6,7 +6,7 @@ FC_FLAGS := -xMIC-AVX512 -assume byterecl -fp-model precise -ftz -O3
 ALL_OBJS := kernel_driver.o prim_advance_mod.o derivative_mod.o dimensions_mod.o kinds.o physical_constants.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

@@ -6,7 +6,7 @@ FC_FLAGS :=  -xMIC-AVX512 -pg -O2 -fp-model source -convert big_endian -assume b
 ALL_OBJS := kernel_driver.o advance_clubb_core_module.o kgen_utils.o model_flags.o clip_explicit.o advance_clubb_core_module.o constants_clubb.o sponge_layer_damping.o error_code.o clubb_precision.o variables_diagnostic_module.o lapack_wrap.o stats_type_utilities.o parameters_model.o grid_class.o mean_adv.o parameters_tunable.o stats_variables.o stats_type.o advance_windm_edsclrm_module.o diffusion.o stat_file_module.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

@@ -15,7 +15,7 @@ FC_FLAGS := ${FC_FLAGS_KNL}
 ALL_OBJS := kernel_driver.o rrtmg_sw_spcvmc.o kgen_utils.o rrsw_vsn.o rrtmg_sw_reftra.o shr_kind_mod.o rrsw_tbl.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 runphi: build
 	ssh `hostname`-mic0 "cd ${PWD}; ./kernel.exe" | tee phi.out

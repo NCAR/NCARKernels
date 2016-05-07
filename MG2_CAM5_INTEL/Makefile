@@ -6,7 +6,7 @@ FC_FLAGS := -xMIC-AVX512 -no-opt-dynamic-align -fp-model source -convert big_end
 ALL_OBJS := kernel_driver.o micro_mg_cam.o wv_sat_methods.o shr_spfn_mod.o shr_kind_mod.o micro_mg2_0.o micro_mg_utils.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

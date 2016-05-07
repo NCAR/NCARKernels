@@ -6,7 +6,7 @@ FC_FLAGS := -xMIC-AVX512 -no-opt-dynamic-align -fp-model source -convert big_end
 ALL_OBJS := advance_clubb_core_module.o pdf_closure_module.o clubb_precision.o parameters_model.o pdf_parameter_module.o error_code.o constants_clubb.o parameters_tunable.o stats_variables.o saturation.o model_flags.o shr_const_mod.o shr_kind_mod.o anl_erf.o array_index.o numerical_check.o grid_class.o variables_diagnostic_module.o interpolation.o kernel_driver.o kgen_utils.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1  ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

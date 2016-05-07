@@ -6,7 +6,7 @@ FC_FLAGS := -xMIC-AVX512 -real-size 64 -O3 -convert big_endian -FR
 ALL_OBJS := mpas_atmphys_driver_radiation_lw.o mpas_kind_types.o mpas_atmphys_vars.o module_ra_rrtmg_lw.o mpas_atmphys_o3climatology.o mpas_atmphys_constants.o mpas_constants.o kernel_driver.o kgen_utils.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

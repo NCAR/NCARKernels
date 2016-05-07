@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 SRC := ./kernel_inatm.F90
 EXE := ${SRC:.F90=.exe}
@@ -5,10 +7,8 @@ EXE := ${SRC:.F90=.exe}
 #FFLAGS := -fp-model precise
 FLAGS := -xMIC-AVX512 ${FFLAGS}
 
-all: run build 
-
 run: ${EXE}
-	${EXE}
+	numactl --membind 1 ./${EXE}
 
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}

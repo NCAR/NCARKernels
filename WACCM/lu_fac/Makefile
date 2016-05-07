@@ -6,7 +6,7 @@ FC_FLAGS := -xMIC-AVX512 -no-opt-dynamic-align  -convert big_endian -assume byte
 ALL_OBJS := kernel_driver.o mo_imp_sol.o kgen_utils.o chem_mods.o mo_lu_factor.o shr_kind_mod.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

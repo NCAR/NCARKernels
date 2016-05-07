@@ -6,7 +6,7 @@ FC_FLAGS :=  -xMIC-AVX512 -O2 -fp-model source -convert big_endian -assume byter
 ALL_OBJS := kernel_driver.o rrtmg_lw_rad.o kgen_utils.o shr_kind_mod.o rrlw_ref.o rrlw_vsn.o parrrtm.o rrlw_wvn.o rrtmg_lw_setcoef.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

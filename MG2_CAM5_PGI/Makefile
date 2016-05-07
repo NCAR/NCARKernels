@@ -6,7 +6,7 @@ FC_FLAGS := -i4 -gopt -Mlist -time -Mextend -byteswapio -Mflushz -Kieee   -O  -m
 ALL_OBJS := kernel_driver.o micro_mg_cam.o micro_mg_utils.o shr_kind_mod.o micro_mg2_0.o shr_spfn_mod.o wv_sat_methods.o shr_const_mod.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1 ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

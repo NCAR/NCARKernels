@@ -16,7 +16,7 @@ FC_FLAGS := $(DEFINE) -xMIC-AVX512 -pgo -align array32byte -qopt-report=5  -O3 -
 ALL_OBJS := kernel_driver.o mpas_atm_time_integration.o kgen_utils.o mpas_kinds_types.o
 
 run: build
-	./kernel.exe
+	numactl --membind 1  ./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^

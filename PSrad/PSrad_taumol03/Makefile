@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 FFLAGS := -O3 -xMIC-AVX512 -I./
 #FC := pgfortran
@@ -9,10 +11,8 @@ EXE := ./kernel.exe
 
 FLAGS := ${FFLAGS}
 
-all: run build
-
 run: ${EXE}
-	taskset 0x00000010 ${EXE}
+	numactl --membind 1  ./${EXE}
 
 build: ${EXE}
 
