@@ -112,7 +112,6 @@
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
 !            flops = real(nelem,kind=real_kind)*real(4*np*np*np + 5*np*np,kind=real_kind)*real(itmax,kind=real_kind)
-            print *, TRIM(kname1), ' total time (sec): ',dt
             print *, TRIM(kname1), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
 #if 0
@@ -125,7 +124,6 @@
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
-            print *, TRIM(kname2a), ' total time (sec): ',dt
             print *, TRIM(kname2a), ' time per call (usec): ',1.e6*dt/dble(itmax)
 #endif
 
@@ -139,7 +137,6 @@
                enddo
                call system_clock(c2,cr,cm)
                dt = dble(c2-c1)/dble(cr)
-               print *, TRIM(kname2b), ' total time (sec): ',dt
                print *, TRIM(kname2b), ' time per call (usec): ',1.e6*dt/dble(itmax)
             endif
 
@@ -153,7 +150,6 @@
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
-            print *, TRIM(kname2c), ' total time (sec): ',dt
             print *, TRIM(kname2c), ' time per call (usec): ',1.e6*dt/dble(itmax)
 #endif
 
@@ -166,7 +162,6 @@
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
-            print *, TRIM(kname2d), ' total time (sec): ',dt
             print *, TRIM(kname2d), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
             if (nelem == 1) then 
@@ -179,7 +174,6 @@
                enddo
                call system_clock(c2,cr,cm)
                dt = dble(c2-c1)/dble(cr)
-               print *, TRIM(kname2e), ' total time (sec): ',dt
                print *, TRIM(kname2e), ' time per call (usec): ',1.e6*dt/dble(itmax)
             endif
 
@@ -193,7 +187,6 @@
             enddo
             call system_clock(c2,cr,cm)
             dt = dble(c2-c1)/dble(cr)
-            print *, TRIM(kname2f), ' total time (sec): ',dt
             print *, TRIM(kname2f), ' time per call (usec): ',1.e6*dt/dble(itmax)
 #endif
 

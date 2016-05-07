@@ -165,7 +165,6 @@
     enddo
     call system_clock(c2,cr,cm)
     dt = dble(c2-c1)/dble(cr)
-    print *, TRIM(kname), ' total time (sec): ',dt
     print *, TRIM(kname), ' time per call (usec): ',1.e6*dt/dble(itmax)
 
 
