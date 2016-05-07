@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 SRC := ./kernel_inatm.F90
 EXE := ${SRC:.F90=.exe}

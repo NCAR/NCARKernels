@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 FC := ifort
 SRC := ./kernel_reftra_sw.F90
 EXE := ${SRC:.F90=.exe}

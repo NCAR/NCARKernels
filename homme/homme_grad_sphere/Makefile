@@ -1,3 +1,5 @@
+# Makefile for KGEN-generated kernel
+#
 
 SRC := ./kernel_gradient_sphere.F90
 EXE := ${SRC:.F90=.exe}

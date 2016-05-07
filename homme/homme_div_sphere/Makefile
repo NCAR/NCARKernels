@@ -1,4 +1,5 @@
-
+# Makefile for KGEN-generated kernel
+#
 SRC := ./kernel_divergence_sphere.F90
 EXE := ${SRC:.F90=.exe}
 
