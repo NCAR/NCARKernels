@@ -28,7 +28,7 @@ FC := ifort
 #
 # Cray 
 FC := ftn
-FFLAGS := -O2 -N 255
+FFLAGS := -O2 -xAVX -N 255
 #
 
 all: kernel.exe

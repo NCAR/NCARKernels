@@ -1,7 +1,7 @@
 # Makefile for KGEN-generated kernel
 
 FC := ifort
-FC_FLAGS_SNB :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xHost -vec-threshold0 -qopt-report=5 -align array256byte
+FC_FLAGS_SNB :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs  -xAVX -vec-threshold0 -qopt-report=5 -align array256byte
 FC_FLAGS_HSW :=  -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -vec-threshold0 -xCORE-AVX2 -qopt-report=5 -align array256byte
 FC_FLAGS_PHI :=  -mmic -O2 -fp-model source -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -vec-threshold0 -qopt-report=5 -align array256byte
 
