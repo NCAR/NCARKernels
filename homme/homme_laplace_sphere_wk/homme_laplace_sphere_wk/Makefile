@@ -8,9 +8,7 @@ FFLAGS := -O3 -xCORE-AVX2 -qopt-report=5 -fp-model fast
 #FFLAGS := -O3 -qopt-report=5 -fp-model fast
 FLAGS := ${FFLAGS}
 
-all: build 
-
-run: ${EXE}
+run: build
 	${EXE}
 
 build: ${SRC} clean

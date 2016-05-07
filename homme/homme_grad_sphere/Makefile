@@ -32,9 +32,7 @@ EXE := ${SRC:.F90=.exe}
 
 FLAGS :=  ${FFLAGS}
 
-all: build
-
-run: ${EXE}
+run: build
 	${EXE}
 
 build: ${SRC} clean
