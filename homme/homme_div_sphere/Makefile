@@ -35,6 +35,8 @@ FLAGS := ${FFLAGS}
 run: ${EXE}
 	ssh ${NODE}-mic1 "cd ${PWD}; ./${EXE}"
 
+${EXE}: build
+
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}
 
