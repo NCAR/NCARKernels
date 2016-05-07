@@ -34,6 +34,8 @@ FLAGS :=  ${FFLAGS}
 run: ${EXE}
 	numactl --membind 1  ./${EXE}
 
+${EXE}: build
+
 build: ${SRC} clean
 	${FC} ${FLAGS} -o ${EXE} ${SRC}
 
