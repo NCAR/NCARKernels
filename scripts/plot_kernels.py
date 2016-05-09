@@ -302,7 +302,7 @@ def main():
     ax.text(0, -2, '   >> git clone https://github.com/NCAR/kernelOptimization.git', fontsize=SUBTITLE_SIZE)
     ax.text(0, -3, '   >> cd kernelOptimization', fontsize=SUBTITLE_SIZE)
     ax.text(0, -4, '   >> git checkout [snb_tag_org|hsw_tag_org|knc_tag_org|knl_tag_org]', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -5, '   >> ./scripts/test_kernels.py .', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -5, '   >> cd path/to/kernel; make', fontsize=SUBTITLE_SIZE)
     ax.text(0, -6, '   NOTE: It is assumed that you are on one of test platforms.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -7, '         You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -8, 'Raw test results for this report are available:', fontsize=TITLE_SIZE)
