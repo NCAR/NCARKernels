@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 ''' Script to plot test results collected by test_kernels.py
 
     Author: Youngsung Kim (youngsun@ucar.edu)
