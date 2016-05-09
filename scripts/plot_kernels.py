@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 ''' Script to plot test results collected by test_kernels.py
 
     Author: Youngsung Kim (youngsun@ucar.edu)
@@ -29,7 +29,7 @@ except:
     sys.exit(-1)
 
 TITLE_SIZE = 24
-SUBTITLE_SIZE = 20
+SUBTITLE_SIZE = 18
 LABEL_SIZE = 18 
 REF_NAME = 'HSW'
 #REF_NAME = 'SNB'
@@ -221,11 +221,9 @@ def main():
     # front page
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 1, 1, 0])
-    ax.text(0.5, 0.3, 'Single Thread Performance Comparison', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.3, 'Single-thread Performance Evaluation', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.text(0.5, 0.4, 'of the latest Intel Platforms', fontsize=TITLE_SIZE, \
-        horizontalalignment='center', verticalalignment='center')
-    ax.text(0.5, 0.5, '( 41 Climate KGen Kernels )', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.text(0.5, 0.7, 'May 10, 2016', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
@@ -248,7 +246,7 @@ def main():
         ax.text(3, j, 'CPU Model Name : %s'%test['cpuname'])
         #j -= 1
         #ax.text(3, j, 'Test Date/Time : %s'%test['testdatetime'])
-        #j -= 1
+        j -= 1
         ax.text(3, j, 'Compiler : %s'%test['ifort'])
         j -= 1
         ax.text(3, j, '')
@@ -258,28 +256,36 @@ def main():
     fig.tight_layout()
     pdf.savefig(fig)
 
+    plot_etime_list = plot_etime.items()
+    plot_etime_list.sort( key = lambda (k,v): k.lower())
+
     # kernels page
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 10, -1*len(plot_etime), 0])
     ax.text(1, -1, 'Climate KGen Kernels', fontsize=TITLE_SIZE)
+    ax.text(0, -3, '* Available from https://github.com/NCAR/kernelOptimization')
+    ax.text(0, -4.5, '* Extracted using KGen(https://github.com/NCAR/KGen)')
+    ax.text(0, -6, '   from CESM, HOMME, PORT(RRTMG), and MPAS')
     half = int(len(plot_etime)/2.0)
-    row1 = 4
-    row2 = 4
-    for i, (casename, etime) in enumerate(plot_etime.items()):
+    row1 = 5
+    row2 = 5
+    #for i, (casename, etime) in enumerate(plot_etime.items()):
+    for i, (casename, etime) in enumerate(plot_etime_list):
         if i < half:
-            if len(casename)>40:
-                ax.text(0, (-row1 - 1)*1.5, '(%d) %s'%(i, casename[:40]), ha='left')
+            if len(casename)>41:
+                ax.text(0, (-row1 - 1)*1.5, '(%d) %s'%(i, casename[:41]), ha='left')
                 row1 += 1
-                ax.text(0, (-row1 - 1)*1.5, '%s'% casename[40:], ha='left')
+                ax.text(0.2, (-row1 - 1)*1.5, '%s'% casename[41:], ha='left')
             else:
                 ax.text(0, (-row1 - 1)*1.5, '(%d) %s'%(i, casename), ha='left')
             row1 += 1
-    for i, (casename, etime) in enumerate(plot_etime.items()):
+    #for i, (casename, etime) in enumerate(plot_etime.items()):
+    for i, (casename, etime) in enumerate(plot_etime_list):
         if i >= half:
-            if len(casename)>40:
-                ax.text(5, (-row2-1)*1.5, '(%d) %s'%(i, casename[:40]), ha='left')
+            if len(casename)>41:
+                ax.text(5, (-row2-1)*1.5, '(%d) %s'%(i, casename[:41]), ha='left')
                 row2 += 1
-                ax.text(5, (-row2-1)*1.5, '%s'%casename[40:], ha='left')
+                ax.text(5.2, (-row2-1)*1.5, '%s'%casename[41:], ha='left')
             else:
                 ax.text(5, (-row2-1)*1.5, '(%d) %s'%(i, casename), ha='left')
             row2 += 1
@@ -291,18 +297,16 @@ def main():
 
     # test introduction page
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.axis([0, 1, 1, 0])
-    ax.text(0, 0.05, 'Test Introduction', fontsize=TITLE_SIZE)
-    ax.text(0, 0.2, '- Climate KGen kernels are executed on Intel SandyBridge,', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '   Haswell, Knights Corner, and Knights Landing', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.4, '- Elapsed time of each kernels are compared to Intel Haswell result', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.5, '- Cluster Analysis based on several H/W counters are presented.', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '- The tests can be reproducible as following.', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '   >> git clone https://github.com/NCAR/kernelOptimization.git', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '   >> git checkout [snb_test|hsw_test|knc_test|knl_test]', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '   >> ./scripts/test_kernels.py', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '   NOTE: You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
-    ax.text(0, 0.3, '- Test result of ', fontsize=SUBTITLE_SIZE)
+    ax.axis([0, 1, -10, 0])
+    ax.text(0, -1, 'How to rerun the tests:', fontsize=TITLE_SIZE)
+    ax.text(0, -2, '   >> git clone https://github.com/NCAR/kernelOptimization.git', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -3, '   >> cd kernelOptimization', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -4, '   >> git checkout [snb_tag_org|hsw_tag_org|knc_tag_org|knl_tag_org]', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -5, '   >> ./scripts/test_kernels.py .', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -6, '   NOTE: It is assumed that you are on one of test platforms.', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -7, '         You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -8, 'Raw test results for this report are available:', fontsize=TITLE_SIZE)
+    ax.text(0, -9, '   >> cd testdata/May_05_2016', fontsize=SUBTITLE_SIZE)
 
     ax.axis('off')
     fig.tight_layout()
@@ -322,7 +326,8 @@ def main():
     plot_sumetime = [ 0.0 ] * len(platform_labels)
     for cidx, (casename, etime) in enumerate(plot_etime.items()):
         for i in range(len(platform_labels)):
-            plot_sumetime[i] += plot_etime[casename][i]
+            #plot_sumetime[i] += plot_etime[casename][i]
+            plot_sumetime[i] += etime[i]
     fig = plt.figure(figsize=(10, 6))
     width = 0.7
     interval = 1.0
@@ -370,7 +375,8 @@ def main():
     # relative pages
     width = 0.7
     interval = 1.0
-    for cidx, (casename, etime) in enumerate(plot_etime.items()):
+    #for cidx, (casename, etime) in enumerate(plot_etime.items()):
+    for cidx, (casename, etime) in enumerate(plot_etime_list):
         fig = plt.figure(figsize=(10, 6))
         xticks = []
         for i in range(len(platform_labels)):
@@ -399,13 +405,17 @@ def main():
 
     # cluster analsys pages
 
-    for event in plot_perf_minmax['KNL']:
+    #for event in plot_perf_minmax['KNL']:
+    for event in [ 'instructions', 'branch-misses', 'branches', 'cycles' ]:
+        if event not in plot_perf_minmax['KNL']: continue
+
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" count )'%event)
         
         lim = [ float('inf'), float('-inf'), 0, 0.9 ]
         #ax.axis([minmax[0], minmax[1], 0, 0.9])
-        for i, (casename, etime) in enumerate(plot_etime.items()):
+        #for i, (casename, etime) in enumerate(plot_etime.items()):
+        for i, (casename, etime) in enumerate(plot_etime_list):
             if plot_perf[casename][platform_labels.index('KNL')][event][0] and plot_perf[casename][platform_labels.index('HSW')][event][0]:
                 #ax.text(plot_perf[casename][platform_labels.index('KNL')][event][0], etime[platform_labels.index('KNL')], '(%d)'%i, ha='center')
                 x = float(plot_perf[casename][platform_labels.index('KNL')][event][0]) / plot_perf[casename][platform_labels.index('HSW')][event][0]
