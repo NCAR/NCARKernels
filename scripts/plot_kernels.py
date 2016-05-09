@@ -423,7 +423,7 @@ def main():
                 lim[1] = max(lim[1], x)
                 ax.text(x, etime[platform_labels.index('KNL')], '(%d)'%i, ha='center')
         #ax.axis([0,5, 0, 0.9])
-        ax.set_xlabel('KNL relative "%s" to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
+        ax.set_xlabel('KNL relative "%s" count to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
         ax.set_ylabel('KNL relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
         ax.axis(lim)
         pdf.savefig(fig)
