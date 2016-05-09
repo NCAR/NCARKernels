@@ -225,7 +225,7 @@ def main():
         horizontalalignment='center', verticalalignment='center')
     ax.text(0.5, 0.4, 'of the latest Intel Platforms', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
-    ax.text(0.5, 0.7, 'May 10, 2016', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.7, 'May 9, 2016', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.text(0.5, 0.8, 'Youngsung Kim', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
@@ -438,7 +438,8 @@ def main():
         #ax.axis([minmax[2], minmax[3], 0, 0.9])
         lim = [ float('inf'), float('-inf'), 0, 0.9 ]
         #ax.axis([0, 5, 0, 0.9])
-        for i, (casename, etime) in enumerate(plot_etime.items()):
+        for i, (casename, etime) in enumerate(plot_etime_list):
+        #for i, (casename, etime) in enumerate(plot_etime.items()):
             if plot_perf[casename][platform_labels.index('KNL')][event][1] and plot_perf[casename][platform_labels.index('HSW')][event][1]:
                 #ax.text(plot_perf[casename][platform_labels.index('KNL')][event][1], etime[platform_labels.index('KNL')], '(%d)'%i, ha='center')
                 x = plot_perf[casename][platform_labels.index('KNL')][event][1] / plot_perf[casename][platform_labels.index('HSW')][event][1]
