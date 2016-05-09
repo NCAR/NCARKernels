@@ -306,7 +306,8 @@ def main():
     ax.text(0, -6, '   NOTE: It is assumed that you are on one of test platforms.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -7, '         You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -8, 'Raw test results for this report are available:', fontsize=TITLE_SIZE)
-    ax.text(0, -9, '   >> cd testdata/May_05_2016', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -9, '   >> git checkout [snb_test|hsw_test|knc_test|knl_test]', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -10, '   >> cd testdata/May_05_2016', fontsize=SUBTITLE_SIZE)
 
     ax.axis('off')
     fig.tight_layout()
