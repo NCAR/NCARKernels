@@ -145,7 +145,10 @@
 
 
     ! KERNEL RUN
-    CALL inatm(iplon, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr, cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, pavel, pz, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
+    CALL inatm(iplon, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, &
+n2ovmr, cfc11vmr, cfc12vmr, cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw, cldfmcl, taucmcl, &
+ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, pavel, pz, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, &
+wx, pwvcm, inflag, iceflag, liqflag, cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
 
 
     ! STATE VERIFICATION
@@ -493,7 +496,11 @@
 
 
     ! KERNEL SUBPROGRAM
-    subroutine inatm (iplon, nlay, icld, iaer,               play, plev, tlay, tlev, tsfc, h2ovmr,               o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr,               cfc22vmr, ccl4vmr, emis, inflglw, iceflglw, liqflglw,               cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer,               pavel, pz, tavel, tz, tbound, semiss, coldry,               wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag,               cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
+    subroutine inatm (iplon, nlay, icld, iaer,               play, plev, tlay, tlev, tsfc, h2ovmr,               &
+o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, cfc11vmr, cfc12vmr,               cfc22vmr, ccl4vmr, emis, inflglw, &
+iceflglw, liqflglw,               cldfmcl, taucmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer,               &
+pavel, pz, tavel, tz, tbound, semiss, coldry,               wkl, wbrodl, wx, pwvcm, inflag, iceflag, liqflag, &
+              cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua)
         integer, intent(in) :: iplon
         integer, intent(in) :: nlay
         integer, intent(in) :: icld

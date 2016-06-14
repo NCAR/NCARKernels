@@ -576,7 +576,11 @@
             CALL kgen_print_check("inatm_sw", check_status)
             CALL system_clock(start_clock, rate_clock)
             DO kgen_intvar=1,maxiter
-                CALL inatm_sw(1, ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, adjes, dyofyr, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, ssaaer, asmaer, pavel, pz, pdp, tavel, tz, tbound, coldry, wkl, adjflux, inflag, iceflag, liqflag, cldfmc, taucmc, ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, relqmc, taua, ssaa, asma)
+                CALL inatm_sw(1, ncol, nlay, icld, iaer, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, &
+ch4vmr, o2vmr, n2ovmr, adjes, dyofyr, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, &
+fsfcmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, ssaaer, asmaer, pavel, pz, pdp, tavel, tz, tbound, coldry, &
+wkl, adjflux, inflag, iceflag, liqflag, cldfmc, taucmc, ssacmc, asmcmc, fsfcmc, ciwpmc, clwpmc, reicmc, dgesmc, &
+relqmc, taua, ssaa, asma)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)

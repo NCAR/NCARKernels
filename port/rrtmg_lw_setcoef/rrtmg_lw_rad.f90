@@ -582,7 +582,11 @@
             CALL kgen_print_check("setcoef", check_status)
             CALL system_clock(start_clock, rate_clock)
             DO kgen_intvar=1,10
-                CALL setcoef(ncol, nlay, istart, pavel, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, laytrop, jp, jt, jt1, planklay, planklev, plankbnd, colh2o, colco2, colo3, coln2o, colco, colch4, colo2, colbrd, fac00, fac01, fac10, fac11, rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, rat_h2on2o, rat_h2on2o_1, rat_h2och4, rat_h2och4_1, rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, selffac, selffrac, indself, forfac, forfrac, indfor, minorfrac, scaleminor, scaleminorn2, indminor)
+                CALL setcoef(ncol, nlay, istart, pavel, tavel, tz, tbound, semiss, coldry, wkl, wbrodl, laytrop, &
+jp, jt, jt1, planklay, planklev, plankbnd, colh2o, colco2, colo3, coln2o, colco, colch4, colo2, colbrd, fac00, &
+fac01, fac10, fac11, rat_h2oco2, rat_h2oco2_1, rat_h2oo3, rat_h2oo3_1, rat_h2on2o, rat_h2on2o_1, rat_h2och4, &
+rat_h2och4_1, rat_n2oco2, rat_n2oco2_1, rat_o3co2, rat_o3co2_1, selffac, selffrac, indself, forfac, forfrac, &
+indfor, minorfrac, scaleminor, scaleminorn2, indminor)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)

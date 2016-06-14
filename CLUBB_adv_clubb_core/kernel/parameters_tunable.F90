@@ -39,7 +39,16 @@ module parameters_tunable
 
 
   ! Model constant parameters
-    REAL(KIND=core_rknd), public :: c1      = 1.000000_core_rknd, c1b     = 1.000000_core_rknd, c1c     = 1.000000_core_rknd, c2      = 1.300000_core_rknd, c2rt    = 1.000000_core_rknd, c2thl   = 1.000000_core_rknd, c2rtthl = 1.300000_core_rknd, c2b     = 1.300000_core_rknd, c2c     = 5.000000_core_rknd, c4      = 5.200000_core_rknd, c5      = 0.300000_core_rknd, c6rt    = 4.000000_core_rknd, c6rtb   = 6.000000_core_rknd, c6rtc   = 1.000000_core_rknd, c6thl   = 4.000000_core_rknd, c6thlb  = 6.000000_core_rknd, c6thlc  = 1.000000_core_rknd, c7      = 0.500000_core_rknd, c7b     = 0.500000_core_rknd, c7c     = 0.500000_core_rknd, c8      = 4.200000_core_rknd, c8b     = 0.000000_core_rknd, c11     = 0.70000_core_rknd, c11b    = 0.350000_core_rknd, c11c    = 0.500000_core_rknd, c12     = 1.000000_core_rknd, c14     = 1.000000_core_rknd, c15     = 0.4_core_rknd
+    REAL(KIND=core_rknd), public :: c1      = 1.000000_core_rknd, c1b     = 1.000000_core_rknd, &
+c1c     = 1.000000_core_rknd, c2      = 1.300000_core_rknd, c2rt    = 1.000000_core_rknd, &
+c2thl   = 1.000000_core_rknd, c2rtthl = 1.300000_core_rknd, c2b     = 1.300000_core_rknd, &
+c2c     = 5.000000_core_rknd, c4      = 5.200000_core_rknd, c5      = 0.300000_core_rknd, &
+c6rt    = 4.000000_core_rknd, c6rtb   = 6.000000_core_rknd, c6rtc   = 1.000000_core_rknd, &
+c6thl   = 4.000000_core_rknd, c6thlb  = 6.000000_core_rknd, c6thlc  = 1.000000_core_rknd, &
+c7      = 0.500000_core_rknd, c7b     = 0.500000_core_rknd, c7c     = 0.500000_core_rknd, &
+c8      = 4.200000_core_rknd, c8b     = 0.000000_core_rknd, c11     = 0.70000_core_rknd, &
+c11b    = 0.350000_core_rknd, c11c    = 0.500000_core_rknd, c12     = 1.000000_core_rknd, &
+c14     = 1.000000_core_rknd, c15     = 0.4_core_rknd
 !$omp threadprivate(C1, C1b, C1c, C2, C2b, C2c, &
 !$omp   C2rt, C2thl, C2rtthl, C4, C5, C6rt, C6rtb, C6rtc, &
 !$omp   C6thl, C6thlb, C6thlc, &
@@ -54,7 +63,11 @@ module parameters_tunable
 !$omp threadprivate(C6rt_Lscale0, C6thl_Lscale0, C7_Lscale0, wpxp_L_thresh)
 
   ! Note: DD 1987 is Duynkerke & Driedonks (1987).
-  REAL(KIND=core_rknd), public :: c_k         = 0.200000_core_rknd, c_k1        = 0.750000_core_rknd, c_k2        = 0.125000_core_rknd, c_k6        = 0.375000_core_rknd, c_k8        = 1.250000_core_rknd, c_k9        = 0.250000_core_rknd, gamma_coef  = 0.320000_core_rknd, gamma_coefb = 0.320000_core_rknd, gamma_coefc = 5.000000_core_rknd, mu          = 1.000e-3_core_rknd, taumax      = 3600.000_core_rknd, lmin        = 20.00000_core_rknd
+  REAL(KIND=core_rknd), public :: c_k         = 0.200000_core_rknd, c_k1        = 0.750000_core_rknd, &
+c_k2        = 0.125000_core_rknd, c_k6        = 0.375000_core_rknd, c_k8        = 1.250000_core_rknd, &
+c_k9        = 0.250000_core_rknd, gamma_coef  = 0.320000_core_rknd, gamma_coefb = 0.320000_core_rknd, &
+gamma_coefc = 5.000000_core_rknd, mu          = 1.000e-3_core_rknd, taumax      = 3600.000_core_rknd, &
+lmin        = 20.00000_core_rknd
 !$omp threadprivate(c_K, c_K1, c_K2, c_K6, &
 !$omp   c_K8, c_K9, c_K_hm, c_K_hmb, K_hm_min_coef, gamma_coef, gamma_coefb, gamma_coefc, &
 !$omp   mu, mult_coef, taumin, taumax, lmin)

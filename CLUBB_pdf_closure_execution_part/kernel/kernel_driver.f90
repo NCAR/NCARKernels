@@ -151,7 +151,12 @@
             READ (UNIT = kgen_unit) rc_coef
             
             !callsite part
-            CALL pdf_closure(kgen_unit, kgen_total_time, hydromet_dim, wp2, wm, rtm, thlm, skw, sigma_sqd_w, thlp2, wpthlp, rtp2, wprtp, rtpthlp, exner, p_in_pa, thv_ds, wp3, sclrm, sclrp2, wpsclrp, sclrpthlp, sclrprtp, level, wp2hmp, wphydrometp, thlphmp, rtphmp, wp2thlp, wp2rtp, wp2rcp, wprcp, thlprcp, rtprcp, rcm, rcp2, wp4, wprtp2, wpthlp2, cloud_frac, wpthvp, wp2thvp, rtpthvp, thlpthvp, wprtpthlp, ice_supersat_frac, pdf_params, err_code, sclrprcp, sclrpthvp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp, rc_coef)
+            CALL pdf_closure(kgen_unit, kgen_total_time, hydromet_dim, wp2, wm, rtm, thlm, skw, &
+sigma_sqd_w, thlp2, wpthlp, rtp2, wprtp, rtpthlp, exner, p_in_pa, thv_ds, wp3, sclrm, sclrp2, &
+wpsclrp, sclrpthlp, sclrprtp, level, wp2hmp, wphydrometp, thlphmp, rtphmp, wp2thlp, wp2rtp, &
+wp2rcp, wprcp, thlprcp, rtprcp, rcm, rcp2, wp4, wprtp2, wpthlp2, cloud_frac, wpthvp, wp2thvp, &
+rtpthvp, thlpthvp, wprtpthlp, ice_supersat_frac, pdf_params, err_code, sclrprcp, sclrpthvp, &
+wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp, rc_coef)
             CLOSE (UNIT=kgen_unit)
             
         END DO 

@@ -816,7 +816,9 @@ module advance_xm_wpxp_module
 
       USE stats_variables, ONLY: ztscr01, ztscr02, ztscr03, ztscr04, ztscr05, zmscr01, zmscr02, zmscr03, zmscr04, zmscr05, zmscr06, zmscr07, zmscr08, zmscr09, zmscr10, zmscr11, zmscr12, zmscr13, zmscr14, zmscr15
 
-      USE stats_variables, ONLY: l_stats_samp, ithlm_ma, ithlm_ta, irtm_ma, irtm_ta, iwpthlp_ma, iwpthlp_ta, iwpthlp_tp, iwpthlp_ac, iwpthlp_pr1, iwpthlp_pr2, iwpthlp_dp1, iwpthlp_sicl, iwprtp_ma, iwprtp_ta, iwprtp_tp, iwprtp_ac, iwprtp_pr1, iwprtp_pr2, iwprtp_dp1, iwprtp_sicl
+      USE stats_variables, ONLY: l_stats_samp, ithlm_ma, ithlm_ta, irtm_ma, irtm_ta, iwpthlp_ma, iwpthlp_ta, &
+iwpthlp_tp, iwpthlp_ac, iwpthlp_pr1, iwpthlp_pr2, iwpthlp_dp1, iwpthlp_sicl, iwprtp_ma, iwprtp_ta, iwprtp_tp, &
+iwprtp_ac, iwprtp_pr1, iwprtp_pr2, iwprtp_dp1, iwprtp_sicl
 
       USE advance_helper_module, ONLY: set_boundary_conditions_lhs, calc_stability_correction
 

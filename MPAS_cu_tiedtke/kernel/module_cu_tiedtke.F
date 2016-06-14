@@ -62,7 +62,10 @@ MODULE module_cu_tiedtke
      REAL :: CVDIFTS, CEVAPCU1, CEVAPCU2,ZDNOPRC
     
   
-     PARAMETER (alv=2.5008e6, als=2.8345e6, alf=als-alv, cpd=1005.46, rcpd=1.0/cpd, rhoh2o=1.0e03, tmelt=273.16, g=9.806, zrg=1.0/g, rd=287.05, rv=461.51, c1es=610.78, c2es=c1es*rd/rv, c3les=17.269, c4les=35.86, c5les=c3les*(tmelt-c4les), c3ies=21.875, c4ies=7.66, c5ies=c3ies*(tmelt-c4ies), vtmpc1=rv/rd-1.0, cevapcu1=1.93e-6*261.0*0.5/g, cevapcu2=1.e3/(38.3*0.293))
+     PARAMETER (alv=2.5008e6, als=2.8345e6, alf=als-alv, cpd=1005.46, rcpd=1.0/cpd, rhoh2o=1.0e03, &
+tmelt=273.16, g=9.806, zrg=1.0/g, rd=287.05, rv=461.51, c1es=610.78, c2es=c1es*rd/rv, &
+c3les=17.269, c4les=35.86, c5les=c3les*(tmelt-c4les), c3ies=21.875, c4ies=7.66, &
+c5ies=c3ies*(tmelt-c4ies), vtmpc1=rv/rd-1.0, cevapcu1=1.93e-6*261.0*0.5/g, cevapcu2=1.e3/(38.3*0.293))
 
      
 !                SPECIFY PARAMETERS FOR MASSFLUX-SCHEME

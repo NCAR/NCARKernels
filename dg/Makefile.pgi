@@ -1,0 +1,14 @@
+# Makefile for KGEN-generated kernel
+FC := pgfortran
+SRC := ./dg_kernel.F90
+EXE := ${SRC:.F90=.exe}
+PARAMS := -DSET_NX=4 -DSET_NIT=10 -DSET_NELEM=120
+FLAGS := -fast -Mipa=fast,inline
+
+run: build
+
+build: ${SRC} clean
+	${FC} ${FLAGS} -o ${EXE} ${SRC}
+
+clean:
+	rm -f *.exe  *.oo

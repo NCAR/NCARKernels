@@ -562,7 +562,15 @@
                     !EXAMPLE: CALL kgen_perturb(var, 1.0E-15_8)
 
                     ! call to kernel
-                    CALL advance_clubb_core(l_implemented, dtime, fcor, sfc_elevation, hydromet_dim, thlm_forcing, rtm_forcing, um_forcing, vm_forcing, sclrm_forcing, edsclrm_forcing, wprtp_forcing, wpthlp_forcing, rtp2_forcing, thlp2_forcing, rtpthlp_forcing, wm_zm, wm_zt, wpthlp_sfc, wprtp_sfc, upwp_sfc, vpwp_sfc, wpsclrp_sfc, wpedsclrp_sfc, p_in_pa, rho_zm, rho_in, exner, rho_ds_zm, rho_ds_zt, invrs_rho_ds_zm, invrs_rho_ds_zt, thv_ds_zm, thv_ds_zt, hydromet, rfrzm, radf, do_expldiff, wphydrometp, wp2hmp, rtphmp_zt, thlphmp_zt, host_dx, host_dy, um_in, vm_in, upwp_in, vpwp_in, up2_in, vp2_in, thlm_in, rtm_in, wprtp_in, wpthlp_in, wp2_in, wp3_in, rtp2_in, thlp2_in, rtpthlp_in, sclrm, sclrp2, sclrprtp, sclrpthlp, wpsclrp, edsclr_in, err_code, rcm_out, wprcp_out, cloud_frac_out, ice_supersat_frac, rcm_in_layer_out, cloud_cover_out, khzm_out, khzt_out, qclvar_out, thlprcp_out, pdf_params)
+                    CALL advance_clubb_core(l_implemented, dtime, fcor, sfc_elevation, hydromet_dim, thlm_forcing, &
+rtm_forcing, um_forcing, vm_forcing, sclrm_forcing, edsclrm_forcing, wprtp_forcing, wpthlp_forcing, &
+rtp2_forcing, thlp2_forcing, rtpthlp_forcing, wm_zm, wm_zt, wpthlp_sfc, wprtp_sfc, upwp_sfc, vpwp_sfc, &
+wpsclrp_sfc, wpedsclrp_sfc, p_in_pa, rho_zm, rho_in, exner, rho_ds_zm, rho_ds_zt, invrs_rho_ds_zm, &
+invrs_rho_ds_zt, thv_ds_zm, thv_ds_zt, hydromet, rfrzm, radf, do_expldiff, wphydrometp, wp2hmp, rtphmp_zt, &
+thlphmp_zt, host_dx, host_dy, um_in, vm_in, upwp_in, vpwp_in, up2_in, vp2_in, thlm_in, rtm_in, wprtp_in, &
+wpthlp_in, wp2_in, wp3_in, rtp2_in, thlp2_in, rtpthlp_in, sclrm, sclrp2, sclrprtp, sclrpthlp, wpsclrp, &
+edsclr_in, err_code, rcm_out, wprcp_out, cloud_frac_out, ice_supersat_frac, rcm_in_layer_out, cloud_cover_out, &
+khzm_out, khzt_out, qclvar_out, thlprcp_out, pdf_params)
                     ! kernel verification for output variables
                     CALL kgen_verify_real_r8_dim1( "um_in", check_status, um_in, ref_um_in)
                     CALL kgen_verify_real_r8_dim1( "vm_in", check_status, vm_in, ref_vm_in)
@@ -600,7 +608,16 @@
                     CALL kgen_print_check("advance_clubb_core", check_status)
                     CALL system_clock(start_clock, rate_clock)
                     DO kgen_intvar=1,maxiter
-                    CALL advance_clubb_core(l_implemented, dtime, fcor, sfc_elevation, hydromet_dim, thlm_forcing, rtm_forcing, um_forcing, vm_forcing, sclrm_forcing, edsclrm_forcing, wprtp_forcing, wpthlp_forcing, rtp2_forcing, thlp2_forcing, rtpthlp_forcing, wm_zm, wm_zt, wpthlp_sfc, wprtp_sfc, upwp_sfc, vpwp_sfc, wpsclrp_sfc, wpedsclrp_sfc, p_in_pa, rho_zm, rho_in, exner, rho_ds_zm, rho_ds_zt, invrs_rho_ds_zm, invrs_rho_ds_zt, thv_ds_zm, thv_ds_zt, hydromet, rfrzm, radf, do_expldiff, wphydrometp, wp2hmp, rtphmp_zt, thlphmp_zt, host_dx, host_dy, um_in, vm_in, upwp_in, vpwp_in, up2_in, vp2_in, thlm_in, rtm_in, wprtp_in, wpthlp_in, wp2_in, wp3_in, rtp2_in, thlp2_in, rtpthlp_in, sclrm, sclrp2, sclrprtp, sclrpthlp, wpsclrp, edsclr_in, err_code, rcm_out, wprcp_out, cloud_frac_out, ice_supersat_frac, rcm_in_layer_out, cloud_cover_out, khzm_out, khzt_out, qclvar_out, thlprcp_out, pdf_params)
+                    CALL advance_clubb_core(l_implemented, dtime, fcor, sfc_elevation, hydromet_dim, thlm_forcing, &
+rtm_forcing, um_forcing, vm_forcing, sclrm_forcing, edsclrm_forcing, wprtp_forcing, wpthlp_forcing, &
+rtp2_forcing, thlp2_forcing, rtpthlp_forcing, wm_zm, wm_zt, wpthlp_sfc, wprtp_sfc, upwp_sfc, vpwp_sfc, &
+wpsclrp_sfc, wpedsclrp_sfc, p_in_pa, rho_zm, rho_in, exner, rho_ds_zm, rho_ds_zt, invrs_rho_ds_zm, &
+invrs_rho_ds_zt, thv_ds_zm, thv_ds_zt, hydromet, rfrzm, radf, do_expldiff, wphydrometp, wp2hmp, rtphmp_zt, &
+thlphmp_zt, host_dx, host_dy, um_in, vm_in, upwp_in, vpwp_in, up2_in, vp2_in, thlm_in, rtm_in, wprtp_in, &
+wpthlp_in, wp2_in, wp3_in, rtp2_in, thlp2_in, rtpthlp_in, sclrm, sclrp2, sclrprtp, sclrpthlp, wpsclrp, &
+edsclr_in, err_code, rcm_out, wprcp_out, cloud_frac_out, ice_supersat_frac, rcm_in_layer_out, cloud_cover_out, &
+khzm_out, khzt_out, qclvar_out, thlprcp_out, pdf_params)
+
                     END DO
                     CALL system_clock(stop_clock, rate_clock)
                     elapsed_time = 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)

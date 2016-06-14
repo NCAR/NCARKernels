@@ -632,7 +632,9 @@ module stats_clubb_utilities
 
       USE variables_diagnostic_module, ONLY: thvm, ug, vg, lscale, wpthlp2, wp2thlp, wprtp2, wp2rtp, lscale_up, lscale_down, tau_zt, kh_zt, wp2thvp, wp2rcp, wprtpthlp, sigma_sqd_w_zt, rsat
 
-      USE variables_diagnostic_module, ONLY: wp2_zt, thlp2_zt, wpthlp_zt, wprtp_zt, rtp2_zt, rtpthlp_zt, up2_zt, vp2_zt, upwp_zt, vpwp_zt, wp4, rtpthvp, thlpthvp, wpthvp, tau_zm, kh_zm, thlprcp, rtprcp, rcp2, em, frad, sclrpthvp, sclrprcp, wp2sclrp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wpedsclrp
+      USE variables_diagnostic_module, ONLY: wp2_zt, thlp2_zt, wpthlp_zt, wprtp_zt, rtp2_zt, rtpthlp_zt, &
+up2_zt, vp2_zt, upwp_zt, vpwp_zt, wp4, rtpthvp, thlpthvp, wpthvp, tau_zm, kh_zm, thlprcp, rtprcp, &
+rcp2, em, frad, sclrpthvp, sclrprcp, wp2sclrp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wpedsclrp
 
       USE variables_diagnostic_module, ONLY: a3_coef, a3_coef_zt, wp3_zm, wp3_on_wp2, wp3_on_wp2_zt, skw_velocity
 

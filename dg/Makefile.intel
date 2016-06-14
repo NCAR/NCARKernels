@@ -1,0 +1,16 @@
+# Makefile for KGEN-generated kernel
+FC := ifort
+SRC := ./dg_kernel.F90
+EXE := ${SRC:.F90=.exe}
+PARAMS := -DSET_NX=4 -DSET_NIT=100 -DSET_NELEM=120
+#FLAGS := -xAVX ${FFLAGS} ${PARAMS}
+FFLAGS := -O3 -no-prec-div -fp-model fast=2 -xHost  ${FFLAGS} ${PARAMS}
+
+run: build
+	${EXE}
+
+build: ${SRC} clean
+	${FC} ${FLAGS} -o ${EXE} ${SRC}
+
+clean:
+	rm -f *.exe

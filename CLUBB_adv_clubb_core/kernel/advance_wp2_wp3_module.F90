@@ -15,7 +15,9 @@ module advance_wp2_wp3_module
 
     PUBLIC advance_wp2_wp3
 
-    PRIVATE wp23_solve, wp23_lhs, wp23_rhs, wp2_term_ta_lhs, wp2_terms_ac_pr2_lhs, wp2_term_dp1_lhs, wp2_term_pr1_lhs, wp2_terms_bp_pr2_rhs, wp2_term_dp1_rhs, wp2_term_pr3_rhs, wp2_term_pr1_rhs, wp3_terms_ta_tp_lhs, wp3_terms_ac_pr2_lhs, wp3_term_pr1_lhs, wp3_terms_bp1_pr2_rhs, wp3_term_pr1_rhs, wp3_term_bp2_rhs
+    PRIVATE wp23_solve, wp23_lhs, wp23_rhs, wp2_term_ta_lhs, wp2_terms_ac_pr2_lhs, wp2_term_dp1_lhs, &
+wp2_term_pr1_lhs, wp2_terms_bp_pr2_rhs, wp2_term_dp1_rhs, wp2_term_pr3_rhs, wp2_term_pr1_rhs, &
+wp3_terms_ta_tp_lhs, wp3_terms_ac_pr2_lhs, wp3_term_pr1_lhs, wp3_terms_bp1_pr2_rhs, wp3_term_pr1_rhs, wp3_term_bp2_rhs
 
 ! private :: wp3_terms_ta_tp_rhs
 

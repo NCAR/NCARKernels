@@ -349,7 +349,10 @@
 
 
     ! KERNEL SUBPROGRAM
-    subroutine rtrnmc(nlayers, istart, iend, iout, pz, semiss, ncbands,                         cldfmc, taucmc, planklay, planklev, plankbnd,                         pwvcm, fracs, taut,                         totuflux, totdflux, fnet, htr,                         totuclfl, totdclfl, fnetc, htrc, totufluxs, totdfluxs )
+    subroutine rtrnmc(nlayers, istart, iend, iout, pz, semiss, ncbands,                         &
+cldfmc, taucmc, planklay, planklev, plankbnd,                         pwvcm, fracs, taut,   &
+                      totuflux, totdflux, fnet, htr,                         totuclfl, totdclfl, &
+fnetc, htrc, totufluxs, totdfluxs )
         integer, intent(in) :: nlayers
         integer, intent(in) :: istart
         integer, intent(in) :: iend

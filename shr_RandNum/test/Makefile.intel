@@ -1,0 +1,67 @@
+# Makefile created by mkmf $Id: mkmf,v 18.0.18.4 2012/12/04 15:24:15 Seth.Underwood Exp $ 
+
+# Intel 
+ FC := ifort 
+ LD := ifort
+ LDFLAGS += -mkl
+ CC := icc
+
+# Knights Corner
+
+# FFLAGS := -mmic -O3 -qopt-report=5 -fp-model fast -no-prec-div -no-prec-sqrt -I./
+
+# Haswell
+
+# FFLAGS := -O3 -xCORE-AVX2 -no-prec-div -no-prec-sqrt  -I./ -DCPRINTEL
+
+
+# Sandy Bridge/Ivy Bridge
+
+ FFLAGS := -O3 -xAVX -fp-model fast -I$(INCLUDE) -I./ -no-prec-div -no-prec-sqrt -override-limits
+
+ CFLAGS := -O3 -xAVX -fp-model fast -std=c99
+
+ CPPDEFS = -Dtest_shr_RandNum -DINTEL_MKL -DDSFMT_MEXP=19937 -DHAVE_SSE2
+
+.DEFAULT:
+	-echo $@ does not exist.
+all: ./shr_RandNum.exe
+dSFMT.o: ../dsfmt_f03/dSFMT.c
+	$(CC) $(CPPDEFS) $(CPPFLAGS) $(CFLAGS) $(OTHERFLAGS) -c	../dsfmt_f03/dSFMT.c
+dSFMT_interface.o: ../dsfmt_f03/dSFMT_interface.F90
+	$(FC) $(CPPDEFS) $(CPPFLAGS) $(FPPFLAGS) $(FFLAGS) $(OTHERFLAGS) -c	../dsfmt_f03/dSFMT_interface.F90
+dSFMT_utils.o: ../dsfmt_f03/dSFMT_utils.c ../dsfmt_f03/dSFMT.h
+	$(CC) $(CPPDEFS) $(CPPFLAGS) $(CFLAGS) $(OTHERFLAGS) -c -I../dsfmt_f03	../dsfmt_f03/dSFMT_utils.c
+kissvec_mod.o: ../kissvec/kissvec_mod.F90
+	$(FC) $(CPPDEFS) $(CPPFLAGS) $(FPPFLAGS) $(FFLAGS) $(OTHERFLAGS) -c	../kissvec/kissvec_mod.F90
+kissvec.o: ../kissvec/kissvec.c
+	$(CC) $(CPPDEFS) $(CPPFLAGS) $(CFLAGS) $(OTHERFLAGS) -c ../kissvec/kissvec.c
+test_shr_RandNum.o: ./test_shr_RandNum.F90 shr_RandNum_mod.o
+	$(FC) $(CPPDEFS) $(CPPFLAGS) $(FPPFLAGS) $(FFLAGS) $(OTHERFLAGS) -c	./test_shr_RandNum.F90
+mersennetwister_mod.o: ../mt19937/mersennetwister_mod.F90
+	$(FC) $(CPPDEFS) $(CPPFLAGS) $(FPPFLAGS) $(FFLAGS) $(OTHERFLAGS) -c	../mt19937/mersennetwister_mod.F90
+shr_RandNum_mod.o: ../shr_RandNum_mod.F90 kissvec_mod.o mersennetwister_mod.o dSFMT_interface.o
+	$(FC) $(CPPDEFS) $(CPPFLAGS) $(FPPFLAGS) $(FFLAGS) $(OTHERFLAGS) -c	../shr_RandNum_mod.F90
+./dSFMT.h: ../dsfmt_f03/dSFMT.h
+	cp ../dsfmt_f03/dSFMT.h .
+./dSFMT_utils.c: ../dsfmt_f03/dSFMT_utils.c
+	cp ../dsfmt_f03/dSFMT_utils.c .
+./mersennetwister_mod.F90: ../mt19937/mersennetwister_mod.F90
+	cp ../mt19937/mersennetwister_mod.F90 .
+./dSFMT.c: ../dsfmt_f03/dSFMT.c
+	cp ../dsfmt_f03/dSFMT.c .
+../shr_RandNum_mod.F90: ../shr_RandNum_mod.F90
+	cp ../shr_RandNum_mod.F90 .
+./test_shr_RandNum.F90: ./test_shr_RandNum.F90
+	cp ./test_shr_RandNum.F90 .
+../kissvec_mod.F90: ../kissvec/kissvec_mod.F90
+	cp ../kissvec/kissvec_mod.F90 .
+./dSFMT_interface.F90: ../dsfmt_f03/dSFMT_interface.F90
+	cp ../dsfmt_f03/dSFMT_interface.F90 .
+SRC = ./test_shr_RandNum.F90 ../kissvec/kissvec_mod.F90 ../mt19937/mersennetwister_mod.F90 ../dsfmt_f03/dSFMT.c ../dsfmt_f03/dSFMT_interface.F90 ../dsfmt_f03/dSFMT_utils.c ../shr_RandNum_mod.F90 ../dsfmt_f03/dSFMT.h
+OBJ = test_shr_RandNum.o kissvec_mod.o mersennetwister_mod.o dSFMT.o dSFMT_interface.o dSFMT_utils.o shr_RandNum_mod.o kissvec.o
+OFF = ../dsfmt_f03/dSFMT.h ../dsfmt_f03/dSFMT_utils.c ../mt19937/mersennetwister_mod.F90 ../dsfmt_f03/dSFMT.c ../shr_RandNum_mod.F90 ./test_shr_RandNum.F90 ../kissvec/kissvec_mod.F90 ../dsfmt_f03/dSFMT_interface.F90
+clean: 
+	-rm -f .shr_RandNum.exe.cppdefs $(OBJ) *.mod ./shr_RandNum.exe
+shr_RandNum.exe: $(OBJ) 
+	$(LD) $(OBJ) -o shr_RandNum.exe  $(LDFLAGS)

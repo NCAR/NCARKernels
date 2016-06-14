@@ -872,7 +872,22 @@
                         CALL system_clock(start_clock, rate_clock)
 !                       call vprof_start()
                         DO kgen_intvar=1,maxiter
-                            CALL micro_mg_tend2_0(mgncol, nlev, dtime / num_steps, packed_t, packed_q, packed_qc, packed_qi, packed_nc, packed_ni, packed_qr, packed_qs, packed_nr, packed_ns, packed_relvar, packed_accre_enhan, packed_p, packed_pdel, packed_cldn, packed_liqcldf, packed_icecldf, packed_rate1ord_cw2pr_st, packed_naai, packed_npccn, packed_rndst, packed_nacon, packed_tlat, packed_qvlat, packed_qctend, packed_qitend, packed_nctend, packed_nitend, packed_qrtend, packed_qstend, packed_nrtend, packed_nstend, packed_rel, rel_fn_dum, packed_rei, packed_prect, packed_preci, packed_nevapr, packed_evapsnow, packed_prain, packed_prodsnow, packed_cmeout, packed_dei, packed_mu, packed_lambdac, packed_qsout, packed_des, packed_rflx, packed_sflx, packed_qrout, reff_rain_dum, reff_snow_dum, packed_qcsevap, packed_qisevap, packed_qvres, packed_cmei, packed_vtrmc, packed_vtrmi, packed_umr, packed_ums, packed_qcsedten, packed_qisedten, packed_qrsedten, packed_qssedten, packed_pra, packed_prc, packed_mnuccc, packed_mnucct, packed_msacwi, packed_psacws, packed_bergs, packed_berg, packed_melt, packed_homo, packed_qcres, packed_prci, packed_prai, packed_qires, packed_mnuccr, packed_pracs, packed_meltsdt, packed_frzrdt, packed_mnuccd, packed_nrout, packed_nsout, packed_refl, packed_arefl, packed_areflz, packed_frefl, packed_csrfl, packed_acsrfl, packed_fcsrfl, packed_rercld, packed_ncai, packed_ncal, packed_qrout2, packed_qsout2, packed_nrout2, packed_nsout2, drout_dum, dsout2_dum, packed_freqs, packed_freqr, packed_nfice, packed_qcrat, errstring, packed_tnd_qsnow, packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt, packed_frzdep)
+                            CALL micro_mg_tend2_0(mgncol, nlev, dtime / num_steps, packed_t, packed_q, packed_qc, &
+packed_qi, packed_nc, packed_ni, packed_qr, packed_qs, packed_nr, packed_ns, packed_relvar, packed_accre_enhan, &
+packed_p, packed_pdel, packed_cldn, packed_liqcldf, packed_icecldf, packed_rate1ord_cw2pr_st, packed_naai, &
+packed_npccn, packed_rndst, packed_nacon, packed_tlat, packed_qvlat, packed_qctend, packed_qitend, packed_nctend, &
+packed_nitend, packed_qrtend, packed_qstend, packed_nrtend, packed_nstend, packed_rel, rel_fn_dum, packed_rei, &
+packed_prect, packed_preci, packed_nevapr, packed_evapsnow, packed_prain, packed_prodsnow, packed_cmeout, &
+packed_dei, packed_mu, packed_lambdac, packed_qsout, packed_des, packed_rflx, packed_sflx, packed_qrout, &
+reff_rain_dum, reff_snow_dum, packed_qcsevap, packed_qisevap, packed_qvres, packed_cmei, packed_vtrmc, &
+packed_vtrmi, packed_umr, packed_ums, packed_qcsedten, packed_qisedten, packed_qrsedten, packed_qssedten, &
+packed_pra, packed_prc, packed_mnuccc, packed_mnucct, packed_msacwi, packed_psacws, packed_bergs, packed_berg, &
+packed_melt, packed_homo, packed_qcres, packed_prci, packed_prai, packed_qires, packed_mnuccr, packed_pracs, &
+packed_meltsdt, packed_frzrdt, packed_mnuccd, packed_nrout, packed_nsout, packed_refl, packed_arefl, packed_areflz, &
+packed_frefl, packed_csrfl, packed_acsrfl, packed_fcsrfl, packed_rercld, packed_ncai, packed_ncal, packed_qrout2, &
+packed_qsout2, packed_nrout2, packed_nsout2, drout_dum, dsout2_dum, packed_freqs, packed_freqr, packed_nfice, &
+packed_qcrat, errstring, packed_tnd_qsnow, packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, &
+packed_frzcnt, packed_frzdep)
                         END DO
 !                       call vprof_stop()
                         CALL system_clock(stop_clock, rate_clock)

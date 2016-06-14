@@ -787,7 +787,9 @@ module advance_xp2_xpyp_module
 
       USE mean_adv, ONLY: term_ma_zm_lhs
 
-      USE stats_variables, ONLY: zmscr01, zmscr02, zmscr03, zmscr04, zmscr05, zmscr06, zmscr07, zmscr08, zmscr09, zmscr10, l_stats_samp, irtp2_ma, irtp2_ta, irtp2_dp1, irtp2_dp2, ithlp2_ma, ithlp2_ta, ithlp2_dp1, ithlp2_dp2, irtpthlp_ma, irtpthlp_ta, irtpthlp_dp1, irtpthlp_dp2, iup2_ma, iup2_ta, iup2_dp2, ivp2_ma, ivp2_ta, ivp2_dp2
+      USE stats_variables, ONLY: zmscr01, zmscr02, zmscr03, zmscr04, zmscr05, zmscr06, zmscr07, zmscr08, zmscr09, &
+zmscr10, l_stats_samp, irtp2_ma, irtp2_ta, irtp2_dp1, irtp2_dp2, ithlp2_ma, ithlp2_ta, ithlp2_dp1, ithlp2_dp2, &
+irtpthlp_ma, irtpthlp_ta, irtpthlp_dp1, irtpthlp_dp2, iup2_ma, iup2_ta, iup2_dp2, ivp2_ma, ivp2_ta, ivp2_dp2
 
       USE advance_helper_module, ONLY: set_boundary_conditions_lhs
 

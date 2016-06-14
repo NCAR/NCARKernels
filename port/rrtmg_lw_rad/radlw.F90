@@ -236,7 +236,11 @@
             CALL kgen_print_check("rrtmg_lw", check_status)
             CALL system_clock(start_clock, rate_clock)
             DO kgen_intvar=1,maxiter
-                CALL rrtmg_lw(lchnk, ncol, rrtmg_levs, icld, r_state % pmidmb, r_state % pintmb, r_state % tlay, r_state % tlev, tsfc, r_state % h2ovmr, r_state % o3vmr, r_state % co2vmr, r_state % ch4vmr, r_state % o2vmr, r_state % n2ovmr, r_state % cfc11vmr, r_state % cfc12vmr, r_state % cfc22vmr, r_state % ccl4vmr, emis, inflglw, iceflglw, liqflglw, cld_stolw, tauc_stolw, cicewp_stolw, cliqwp_stolw, rei, rel, taua_lw, uflx, dflx, hr, uflxc, dflxc, hrc, lwuflxs, lwdflxs)
+                CALL rrtmg_lw(lchnk, ncol, rrtmg_levs, icld, r_state % pmidmb, r_state % pintmb, r_state % tlay, &
+r_state % tlev, tsfc, r_state % h2ovmr, r_state % o3vmr, r_state % co2vmr, r_state % ch4vmr, r_state % o2vmr, &
+r_state % n2ovmr, r_state % cfc11vmr, r_state % cfc12vmr, r_state % cfc22vmr, r_state % ccl4vmr, emis, inflglw, &
+iceflglw, liqflglw, cld_stolw, tauc_stolw, cicewp_stolw, cliqwp_stolw, rei, rel, taua_lw, uflx, dflx, hr, uflxc, &
+dflxc, hrc, lwuflxs, lwdflxs)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)

@@ -108,7 +108,9 @@ PROGRAM kernel_driver
             CALL kgen_read_real_r8_dim3(ssaaer, kgen_unit)
             CALL kgen_read_real_r8_dim3(asmaer, kgen_unit)
 
-            call rrtmg_sw(ncol, nlay, icld, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, n2ovmr, dyofyr, adjes, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, ssaaer, asmaer, kgen_unit)
+            call rrtmg_sw(ncol, nlay, icld, play, plev, tlay, tlev, tsfc, h2ovmr, o3vmr, co2vmr, ch4vmr, o2vmr, &
+n2ovmr, dyofyr, adjes, solvar, inflgsw, iceflgsw, liqflgsw, cldfmcl, taucmcl, ssacmcl, asmcmcl, fsfcmcl, &
+ciwpmcl, clwpmcl, reicmcl, relqmcl, tauaer, ssaaer, asmaer, kgen_unit)
 
             CLOSE (UNIT=kgen_unit)
         END DO

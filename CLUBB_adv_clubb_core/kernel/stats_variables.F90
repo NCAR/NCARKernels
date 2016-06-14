@@ -174,7 +174,9 @@ module stats_variables
 
 
   ! thlm/rtm budget terms
-  INTEGER, public :: irtm_bt = 0, irtm_ma = 0, irtm_ta = 0, irtm_forcing = 0, irtm_sdmp = 0, irtm_mfl = 0, irtm_tacl = 0, irtm_cl = 0, irtm_pd = 0, ithlm_bt = 0, ithlm_ma = 0, ithlm_ta = 0, ithlm_forcing = 0, ithlm_sdmp = 0, ithlm_mfl = 0, ithlm_tacl = 0, ithlm_cl = 0
+  INTEGER, public :: irtm_bt = 0, irtm_ma = 0, irtm_ta = 0, irtm_forcing = 0, irtm_sdmp = 0, irtm_mfl = 0, &
+irtm_tacl = 0, irtm_cl = 0, irtm_pd = 0, ithlm_bt = 0, ithlm_ma = 0, ithlm_ta = 0, ithlm_forcing = 0, &
+ithlm_sdmp = 0, ithlm_mfl = 0, ithlm_tacl = 0, ithlm_cl = 0
 
 !$omp   threadprivate(irtm_bt, irtm_ma, irtm_ta, irtm_forcing, &
 !$omp     irtm_mc, irtm_sdmp, irtm_mfl, irtm_tacl, irtm_cl, irtm_pd, &
@@ -728,8 +730,12 @@ module stats_variables
   PUBLIC kr_externs_in_stats_variables
   PUBLIC kr_externs_out_stats_variables
   PUBLIC kr_stats_type_stats
-  REAL(KIND=core_rknd), dimension(:), allocatable :: kgenref_ztscr01, kgenref_ztscr02, kgenref_ztscr03, kgenref_ztscr04, kgenref_ztscr05, kgenref_ztscr06, kgenref_ztscr07, kgenref_ztscr08, kgenref_ztscr09, kgenref_ztscr10, kgenref_ztscr11, kgenref_ztscr12, kgenref_ztscr13, kgenref_ztscr14, kgenref_ztscr15, kgenref_ztscr16
-  REAL(KIND=core_rknd), dimension(:), allocatable :: kgenref_zmscr01, kgenref_zmscr02, kgenref_zmscr03, kgenref_zmscr04, kgenref_zmscr05, kgenref_zmscr06, kgenref_zmscr07, kgenref_zmscr08, kgenref_zmscr09, kgenref_zmscr10, kgenref_zmscr11, kgenref_zmscr12, kgenref_zmscr13, kgenref_zmscr14, kgenref_zmscr15
+  REAL(KIND=core_rknd), dimension(:), allocatable :: kgenref_ztscr01, kgenref_ztscr02, kgenref_ztscr03, &
+kgenref_ztscr04, kgenref_ztscr05, kgenref_ztscr06, kgenref_ztscr07, kgenref_ztscr08, kgenref_ztscr09, &
+kgenref_ztscr10, kgenref_ztscr11, kgenref_ztscr12, kgenref_ztscr13, kgenref_ztscr14, kgenref_ztscr15, kgenref_ztscr16
+  REAL(KIND=core_rknd), dimension(:), allocatable :: kgenref_zmscr01, kgenref_zmscr02, kgenref_zmscr03, &
+kgenref_zmscr04, kgenref_zmscr05, kgenref_zmscr06, kgenref_zmscr07, kgenref_zmscr08, kgenref_zmscr09, &
+kgenref_zmscr10, kgenref_zmscr11, kgenref_zmscr12, kgenref_zmscr13, kgenref_zmscr14, kgenref_zmscr15
   PUBLIC kv_externs_stats_variables
   PUBLIC kv_stats_type_stats
   
