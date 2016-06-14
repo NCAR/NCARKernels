@@ -81,8 +81,8 @@ def main():
     out, err = run_shcmd('uname -a')
     tests['uname'] = out
 
-    out, err = run_shcmd('ifort --version', stderr_exit=False)
-    tests['compiler'] = out
+    out, err = run_shcmd('pgfortran --version', stderr_exit=False)
+    tests['compiler'] = out.strip()
 
     # optional information such as:
 
