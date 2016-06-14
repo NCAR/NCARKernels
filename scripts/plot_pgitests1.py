@@ -165,11 +165,11 @@ def main():
             raise
                 
 
-    # let reference platform on the first column
+    # let reference compiler on the first column
     compiler_labels[compiler_labels.index(REF_NAME)], compiler_labels[0] = \
         compiler_labels[0], compiler_labels[compiler_labels.index(REF_NAME)]
 
-    # collect reference data from reference platform
+    # collect reference data from reference compiler
     ref_data = tests[REF_NAME]
     ref_cases = ref_data['cases']
 
@@ -236,19 +236,24 @@ def main():
     fig.tight_layout()
     pdf.savefig(fig)
 
-    # platform page
+    # compiler page
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 10, -20, 0])
-    ax.text(1, -0.5, 'Test Platforms and a compiler', fontsize=TITLE_SIZE)
+    ax.text(1, -0.5, 'Test Platform and Compiler', fontsize=TITLE_SIZE)
     j = -3 
-    for platform, test in tests.items():
-        ax.text(1, j, platform)
+    for compiler, test in tests.items():
+        ax.text(1, j, compiler, fontsize=SUBTITLE_SIZE)
         j -= 1
         ax.text(3, j, 'CPU Model Name : %s'%test['cpuname'])
         #j -= 1
         #ax.text(3, j, 'Test Date/Time : %s'%test['testdatetime'])
         j -= 1
         ax.text(3, j, 'Compiler : %s'%test['compiler'])
+        j -= 1
+        if compiler=='ifort':
+            ax.text(3, j, 'Compiler options: -O3 -no-prec-div -fp-model fast=2 -xHost')
+        elif compiler=='pgfortran':
+            ax.text(3, j, 'Compiler options: -fast -Mipa=fast,inline')
         j -= 1
         ax.text(3, j, '')
         j -= 1
@@ -299,15 +304,14 @@ def main():
     # test introduction page
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 1, -10, 0])
-    ax.text(0, -1, 'How to rerun the tests:', fontsize=TITLE_SIZE)
+    ax.text(0, -1, 'How to rerun the tests on Yellowstone(NCAR):', fontsize=TITLE_SIZE)
     ax.text(0, -2, '   >> git clone https://github.com/NCAR/kernelOptimization.git', fontsize=SUBTITLE_SIZE)
     ax.text(0, -3, '   >> cd kernelOptimization', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -4, '   >> git checkout pgisnb_test', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -5, '   >> cd path/to/kernel; make -f Makefile.pgi', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -6, '   NOTE: It is assumed that you are on one of test platforms.', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -7, '         You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -4, '   >> git checkout pgisnb_tag_org', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -5, '   >> cd path/to/kernel; make -f Makefile.[pgi|intel]', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -6, '   NOTE: You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -8, 'Raw test results for this report are available:', fontsize=TITLE_SIZE)
-    ax.text(0, -9, '   >> git checkout pgisnb_test', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -9, '   >> git checkout pgisnb_tag_org', fontsize=SUBTITLE_SIZE)
     ax.text(0, -10, '   >> cd testdata/June_14_2016', fontsize=SUBTITLE_SIZE)
 
     ax.axis('off')
@@ -317,7 +321,9 @@ def main():
     # page break
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 1, 1, 0])
-    ax.text(0.5, 0.5, 'Performance Comparison to Intel compiler (Single Thread)', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.5, 'Performance Comparison between', fontsize=TITLE_SIZE, \
+        horizontalalignment='center', verticalalignment='center')
+    ax.text(0.5, 0.6, 'Intel and PGI Fortran compilers (Single Thread)', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.axis('off')
     fig.tight_layout()
@@ -326,7 +332,10 @@ def main():
 
     # average performance ratio page
     plot_sumetime = [ 0.0 ] * len(compiler_labels)
+    used_kernels = 0
     for cidx, (casename, etime) in enumerate(plot_etime.items()):
+        if any([ e==0.0 for e in etime]): continue
+        used_kernels += 1
         for i in range(len(compiler_labels)):
             #plot_sumetime[i] += plot_etime[casename][i]
             plot_sumetime[i] += etime[i]
@@ -334,14 +343,14 @@ def main():
     width = 0.7
     interval = 1.0
     xticks = []
-    for i, platform in enumerate(compiler_labels):
+    for i, compiler in enumerate(compiler_labels):
         y = plot_sumetime[i]/plot_sumetime[compiler_labels.index(REF_NAME)]
         barplot = plt.bar(i + interval/2 - width/2, y, width, color=color_names[i])
         plt.text(i + interval/2, y+0.05, "{:5.2f}".format(y), ha='center', va='bottom')
         xticks.append(i + interval/2)
-    plt.title('All KGen kernels(%d) - combined'%len(ref_cases), fontsize=TITLE_SIZE)
+    plt.title('KGen kernels(%d) - combined'%used_kernels, fontsize=TITLE_SIZE)
     plt.ylim([ 0.0, 1.1 ])
-    plt.xlabel('platform (single thread)', fontsize=LABEL_SIZE)
+    plt.xlabel('compiler (single thread)', fontsize=LABEL_SIZE)
     plt.ylabel('Relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
     plt.xticks(xticks, compiler_labels)
     pdf.savefig(fig)
@@ -362,14 +371,14 @@ def main():
 #    width = 0.7
 #    interval = 1.0
 #    xticks = []
-#    for i, platform in enumerate(compiler_labels):
+#    for i, compiler in enumerate(compiler_labels):
 #        y = sum(plot_sumdiff[i]) / len(plot_sumdiff[i])
 #        barplot = plt.bar(i + interval/2 - width/2, y, width, color=color_names[i])
 #        plt.text(i + interval/2, y+0.05, "{:5.2f}".format(y), ha='center', va='bottom')
 #        xticks.append(i + interval/2)
 #    plt.title('All KGen kernels(%d)'%len(ref_cases), fontsize=TITLE_SIZE)
 #    #plt.ylim([ 0.0, 1.1 ])
-#    plt.xlabel('platform', fontsize=LABEL_SIZE)
+#    plt.xlabel('compiler', fontsize=LABEL_SIZE)
 #    plt.ylabel('Normalized RMS Difference to SandyBridge', fontsize=LABEL_SIZE)
 #    plt.xticks(xticks, compiler_labels)
 #    pdf.savefig(fig)
@@ -390,71 +399,71 @@ def main():
         #plt.legend(barplots, compiler_labels)
         plt.title('(%d) %s'%(cidx,casename), fontsize=TITLE_SIZE)
         plt.ylim([ 0.0, max(etime)*1.1 ])
-        plt.xlabel('platform (single thread)', fontsize=LABEL_SIZE)
+        plt.xlabel('compiler (single thread)', fontsize=LABEL_SIZE)
         plt.ylabel('Relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
         plt.xticks(xticks, compiler_labels)
         pdf.savefig(fig)
         #plt.show()
 
-    # page break
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.axis([0, 1, 1, 0])
-    ax.text(0.5, 0.5, 'Cluster Analysis with Linux "perf stat" H/W counters', fontsize=TITLE_SIZE, \
-        horizontalalignment='center', verticalalignment='center')
-    ax.axis('off')
-    fig.tight_layout()
-    pdf.savefig(fig)
-
-
-    # cluster analsys pages
-
-    #for event in plot_perf_minmax['KNL']:
-    for event in [ 'instructions', 'branch-misses', 'branches', 'cycles' ]:
-        if event not in plot_perf_minmax['pgfortran']: continue
-
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" count )'%event)
-        
-        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
-        #ax.axis([minmax[0], minmax[1], 0, 2.6])
-        #for i, (casename, etime) in enumerate(plot_etime.items()):
-        for i, (casename, etime) in enumerate(plot_etime_list):
-            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
-                plot_perf[casename][compiler_labels.index('pgfortran')][event][0] and plot_perf[casename][compiler_labels.index('ifort')][event][0]:
-                #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][0], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-                x = float(plot_perf[casename][compiler_labels.index('pgfortran')][event][0]) / plot_perf[casename][compiler_labels.index('ifort')][event][0]
-                lim[0] = min(lim[0], x)
-                lim[1] = max(lim[1], x)
-                ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-        #ax.axis([0,5, 0, 2.6])
-        ax.set_xlabel('pgfortran relative "%s" count to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
-        ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
-        ax.axis(lim)
-        pdf.savefig(fig)
-
-        fig, ax = plt.subplots(figsize=(10, 6))
-        if plot_perf[casename][compiler_labels.index('pgfortran')][event][2]:
-            unit = plot_perf[casename][compiler_labels.index('pgfortran')][event][2]
-        else:
-            unit = ''
-        ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" ratio %s ) '%\
-            (event, unit))
-        #ax.axis([minmax[2], minmax[3], 0, 2.6])
-        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
-        #ax.axis([0, 5, 0, 2.6])
-        for i, (casename, etime) in enumerate(plot_etime_list):
-        #for i, (casename, etime) in enumerate(plot_etime.items()):
-            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
-                plot_perf[casename][compiler_labels.index('pgfortran')][event][1] and plot_perf[casename][compiler_labels.index('ifort')][event][1]:
-                #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][1], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-                x = plot_perf[casename][compiler_labels.index('pgfortran')][event][1] / plot_perf[casename][compiler_labels.index('ifort')][event][1]
-                lim[0] = min(lim[0], x)
-                lim[1] = max(lim[1], x)
-                ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-        ax.set_xlabel('pgfortran relative "%s" ratio to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
-        ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
-        ax.axis(lim)
-        pdf.savefig(fig)
+#    # page break
+#    fig, ax = plt.subplots(figsize=(10, 6))
+#    ax.axis([0, 1, 1, 0])
+#    ax.text(0.5, 0.5, 'Cluster Analysis with Linux "perf stat" H/W counters', fontsize=TITLE_SIZE, \
+#        horizontalalignment='center', verticalalignment='center')
+#    ax.axis('off')
+#    fig.tight_layout()
+#    pdf.savefig(fig)
+#
+#
+#    # cluster analsys pages
+#
+#    #for event in plot_perf_minmax['KNL']:
+#    for event in [ 'instructions', 'branch-misses', 'branches', 'cycles' ]:
+#        if event not in plot_perf_minmax['pgfortran']: continue
+#
+#        fig, ax = plt.subplots(figsize=(10, 6))
+#        ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" count )'%event)
+#        
+#        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
+#        #ax.axis([minmax[0], minmax[1], 0, 2.6])
+#        #for i, (casename, etime) in enumerate(plot_etime.items()):
+#        for i, (casename, etime) in enumerate(plot_etime_list):
+#            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
+#                plot_perf[casename][compiler_labels.index('pgfortran')][event][0] and plot_perf[casename][compiler_labels.index('ifort')][event][0]:
+#                #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][0], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
+#                x = float(plot_perf[casename][compiler_labels.index('pgfortran')][event][0]) / plot_perf[casename][compiler_labels.index('ifort')][event][0]
+#                lim[0] = min(lim[0], x)
+#                lim[1] = max(lim[1], x)
+#                ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
+#        #ax.axis([0,5, 0, 2.6])
+#        ax.set_xlabel('pgfortran relative "%s" count to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
+#        ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
+#        ax.axis(lim)
+#        pdf.savefig(fig)
+#
+#        fig, ax = plt.subplots(figsize=(10, 6))
+#        if plot_perf[casename][compiler_labels.index('pgfortran')][event][2]:
+#            unit = plot_perf[casename][compiler_labels.index('pgfortran')][event][2]
+#        else:
+#            unit = ''
+#        ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" ratio %s ) '%\
+#            (event, unit))
+#        #ax.axis([minmax[2], minmax[3], 0, 2.6])
+#        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
+#        #ax.axis([0, 5, 0, 2.6])
+#        for i, (casename, etime) in enumerate(plot_etime_list):
+#        #for i, (casename, etime) in enumerate(plot_etime.items()):
+#            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
+#                plot_perf[casename][compiler_labels.index('pgfortran')][event][1] and plot_perf[casename][compiler_labels.index('ifort')][event][1]:
+#                #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][1], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
+#                x = plot_perf[casename][compiler_labels.index('pgfortran')][event][1] / plot_perf[casename][compiler_labels.index('ifort')][event][1]
+#                lim[0] = min(lim[0], x)
+#                lim[1] = max(lim[1], x)
+#                ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
+#        ax.set_xlabel('pgfortran relative "%s" ratio to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
+#        ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
+#        ax.axis(lim)
+#        pdf.savefig(fig)
 
 #    # diff pages
 #    width = 0.7
@@ -471,7 +480,7 @@ def main():
 #        plt.title('DIFF (%d) %s'%(cidx,casename), fontsize=TITLE_SIZE)
 #        #plt.ylim([ 0.0, max([ f for f in diff if isinstance(f, float) and not math.isnan(f)])*1.1 ])
 #        plt.ylim([ 0.0, max(diff)*1.1 ])
-#        plt.xlabel('platform', fontsize=LABEL_SIZE)
+#        plt.xlabel('compiler', fontsize=LABEL_SIZE)
 #        plt.ylabel('Normalized RMS Diff', fontsize=LABEL_SIZE)
 #        plt.xticks(xticks, compiler_labels)
 #        pdf.savefig(fig)
