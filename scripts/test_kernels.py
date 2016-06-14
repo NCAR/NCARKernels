@@ -37,7 +37,7 @@ import subprocess
 
 NREPEAT = 3
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
-MAKEFILE = 'Makefile'
+MAKEFILE = 'Makefile.pgi'
 SIGNATURE = '# Makefile for KGEN-generated kernel\n'
 
 def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
@@ -81,7 +81,7 @@ def main():
     out, err = run_shcmd('uname -a')
     tests['uname'] = out
 
-    out, err = run_shcmd('ifort --version')
+    out, err = run_shcmd('ifort --version', stderr_exit=False)
     tests['compiler'] = out
 
     # optional information such as:
