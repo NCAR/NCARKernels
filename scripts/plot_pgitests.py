@@ -91,7 +91,6 @@ def main():
 
             test = {}
             tests[compiler_label] = test
-            print 'BBBB', compiler_label
             
             test['cpuname'] = cpuname
             test['testdatetime'] = in_testend
@@ -118,9 +117,9 @@ def main():
                 perf = {}
                 for line in in_testcase[u'perf_stat'].split('\n'):
                     if len(line)<49: continue
-                    valuestr = line[:20].strip()
-                    event = line[20:48].strip()
-                    ratiostr = line[48:].strip()
+                    valuestr = line[:19].strip()
+                    event = line[19:45].strip()
+                    ratiostr = line[45:].strip()
                     rval, runit = None, None
                     if ratiostr:
                         try:
@@ -225,9 +224,9 @@ def main():
     ax.axis([0, 1, 1, 0])
     ax.text(0.5, 0.3, 'Single-thread Performance Evaluation', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
-    ax.text(0.5, 0.4, 'of the latest Intel Platforms', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.4, 'of the latest PGI and Intel Compilers', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
-    ax.text(0.5, 0.7, 'May 9, 2016', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.7, 'June 14, 2016', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.text(0.5, 0.8, 'Youngsung Kim', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
@@ -303,13 +302,13 @@ def main():
     ax.text(0, -1, 'How to rerun the tests:', fontsize=TITLE_SIZE)
     ax.text(0, -2, '   >> git clone https://github.com/NCAR/kernelOptimization.git', fontsize=SUBTITLE_SIZE)
     ax.text(0, -3, '   >> cd kernelOptimization', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -4, '   >> git checkout [snb_tag_org|hsw_tag_org|knc_tag_org|knl_tag_org]', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -5, '   >> cd path/to/kernel; make', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -4, '   >> git checkout pgisnb_test', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -5, '   >> cd path/to/kernel; make -f Makefile.pgi', fontsize=SUBTITLE_SIZE)
     ax.text(0, -6, '   NOTE: It is assumed that you are on one of test platforms.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -7, '         You may need to modify Makefile(s) to fit to your test env.', fontsize=SUBTITLE_SIZE)
     ax.text(0, -8, 'Raw test results for this report are available:', fontsize=TITLE_SIZE)
-    ax.text(0, -9, '   >> git checkout [snb_test|hsw_test|knc_test|knl_test]', fontsize=SUBTITLE_SIZE)
-    ax.text(0, -10, '   >> cd testdata/May_05_2016', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -9, '   >> git checkout pgisnb_test', fontsize=SUBTITLE_SIZE)
+    ax.text(0, -10, '   >> cd testdata/June_14_2016', fontsize=SUBTITLE_SIZE)
 
     ax.axis('off')
     fig.tight_layout()
@@ -318,7 +317,7 @@ def main():
     # page break
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.axis([0, 1, 1, 0])
-    ax.text(0.5, 0.5, 'Performance Comparison to HSW (Single Thread)', fontsize=TITLE_SIZE, \
+    ax.text(0.5, 0.5, 'Performance Comparison to Intel compiler (Single Thread)', fontsize=TITLE_SIZE, \
         horizontalalignment='center', verticalalignment='center')
     ax.axis('off')
     fig.tight_layout()
@@ -382,6 +381,7 @@ def main():
     for cidx, (casename, etime) in enumerate(plot_etime_list):
         fig = plt.figure(figsize=(10, 6))
         xticks = []
+        if not all([ e>0.0 for e in etime ]): continue
         for i in range(len(compiler_labels)):
             barplot = plt.bar(i + interval/2 - width/2, etime[i], width, color=color_names[i])
             if etime[i]>0:
@@ -409,24 +409,24 @@ def main():
     # cluster analsys pages
 
     #for event in plot_perf_minmax['KNL']:
-    import pdb; pdb.set_trace()
     for event in [ 'instructions', 'branch-misses', 'branches', 'cycles' ]:
         if event not in plot_perf_minmax['pgfortran']: continue
 
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" count )'%event)
         
-        lim = [ float('inf'), float('-inf'), 0, 0.9 ]
-        #ax.axis([minmax[0], minmax[1], 0, 0.9])
+        lim = [ float('inf'), float('-inf'), 0, 1.9 ]
+        #ax.axis([minmax[0], minmax[1], 0, 1.9])
         #for i, (casename, etime) in enumerate(plot_etime.items()):
         for i, (casename, etime) in enumerate(plot_etime_list):
-            if plot_perf[casename][compiler_labels.index('pgfortran')][event][0] and plot_perf[casename][compiler_labels.index('HSW')][event][0]:
+            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
+                plot_perf[casename][compiler_labels.index('pgfortran')][event][0] and plot_perf[casename][compiler_labels.index('ifort')][event][0]:
                 #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][0], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-                x = float(plot_perf[casename][compiler_labels.index('pgfortran')][event][0]) / plot_perf[casename][compiler_labels.index('HSW')][event][0]
+                x = float(plot_perf[casename][compiler_labels.index('pgfortran')][event][0]) / plot_perf[casename][compiler_labels.index('ifort')][event][0]
                 lim[0] = min(lim[0], x)
                 lim[1] = max(lim[1], x)
                 ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-        #ax.axis([0,5, 0, 0.9])
+        #ax.axis([0,5, 0, 1.9])
         ax.set_xlabel('pgfortran relative "%s" count to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
         ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
         ax.axis(lim)
@@ -439,14 +439,15 @@ def main():
             unit = ''
         ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" ratio %s ) '%\
             (event, unit))
-        #ax.axis([minmax[2], minmax[3], 0, 0.9])
-        lim = [ float('inf'), float('-inf'), 0, 0.9 ]
-        #ax.axis([0, 5, 0, 0.9])
+        #ax.axis([minmax[2], minmax[3], 0, 1.9])
+        lim = [ float('inf'), float('-inf'), 0, 1.9 ]
+        #ax.axis([0, 5, 0, 1.9])
         for i, (casename, etime) in enumerate(plot_etime_list):
         #for i, (casename, etime) in enumerate(plot_etime.items()):
-            if plot_perf[casename][compiler_labels.index('pgfortran')][event][1] and plot_perf[casename][compiler_labels.index('HSW')][event][1]:
+            if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
+                plot_perf[casename][compiler_labels.index('pgfortran')][event][1] and plot_perf[casename][compiler_labels.index('ifort')][event][1]:
                 #ax.text(plot_perf[casename][compiler_labels.index('pgfortran')][event][1], etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-                x = plot_perf[casename][compiler_labels.index('pgfortran')][event][1] / plot_perf[casename][compiler_labels.index('HSW')][event][1]
+                x = plot_perf[casename][compiler_labels.index('pgfortran')][event][1] / plot_perf[casename][compiler_labels.index('ifort')][event][1]
                 lim[0] = min(lim[0], x)
                 lim[1] = max(lim[1], x)
                 ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
