@@ -415,8 +415,8 @@ def main():
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" count )'%event)
         
-        lim = [ float('inf'), float('-inf'), 0, 1.9 ]
-        #ax.axis([minmax[0], minmax[1], 0, 1.9])
+        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
+        #ax.axis([minmax[0], minmax[1], 0, 2.6])
         #for i, (casename, etime) in enumerate(plot_etime.items()):
         for i, (casename, etime) in enumerate(plot_etime_list):
             if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
@@ -426,7 +426,7 @@ def main():
                 lim[0] = min(lim[0], x)
                 lim[1] = max(lim[1], x)
                 ax.text(x, etime[compiler_labels.index('pgfortran')], '(%d)'%i, ha='center')
-        #ax.axis([0,5, 0, 1.9])
+        #ax.axis([0,5, 0, 2.6])
         ax.set_xlabel('pgfortran relative "%s" count to %s'%(event, REF_NAME), fontsize=LABEL_SIZE)
         ax.set_ylabel('pgfortran relative performance to %s'%REF_NAME, fontsize=LABEL_SIZE)
         ax.axis(lim)
@@ -439,9 +439,9 @@ def main():
             unit = ''
         ax.set_title('Cluster Analysis of KGen kernels\n( relative performance vs. relative "%s" ratio %s ) '%\
             (event, unit))
-        #ax.axis([minmax[2], minmax[3], 0, 1.9])
-        lim = [ float('inf'), float('-inf'), 0, 1.9 ]
-        #ax.axis([0, 5, 0, 1.9])
+        #ax.axis([minmax[2], minmax[3], 0, 2.6])
+        lim = [ float('inf'), float('-inf'), 0, 2.6 ]
+        #ax.axis([0, 5, 0, 2.6])
         for i, (casename, etime) in enumerate(plot_etime_list):
         #for i, (casename, etime) in enumerate(plot_etime.items()):
             if plot_perf[casename][compiler_labels.index('pgfortran')].has_key(event) and plot_perf[casename][compiler_labels.index('ifort')].has_key(event) and \
