@@ -1,11 +1,8 @@
 #!/bin/env python
 '''Python script for collecting test results of kgen kernels in "https://github.com/NCAR/kernelOptimization" Github repo.
-
     Author: Youngsung Kim (youngsun@ucar.edu)
-
     History:
       - Created at May 1, 2016
-
     KGen Kernel Execution Result File Format( Revision 0.1 ):
       - Test data is saved in JSON format
       - Accepted primitive test data formats are boolean, string, integer, and floating-pointer number.
@@ -38,6 +35,8 @@ import subprocess
 NREPEAT = 3
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
 MAKEFILE = 'Makefile'
+COMPILER = 'ifort'
+TEST_OUTPUT = 'test_result.json'
 SIGNATURE = '# Makefile for KGEN-generated kernel\n'
 
 def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
@@ -63,10 +62,34 @@ def main():
     ''' Main function: generated test data through executing linux commands and kgen kernels'''
 
     if len(sys.argv) > 1:
-        testroots = sys.argv[1:]
+
+        testroots = []
+        is_makefile = False
+        is_compiler = False
+
+        for arg in sys.argv[1:]:
+            if is_makefile:
+                MAKEFILE = arg
+                is_makefile = False
+                continue
+            if is_compiler:
+                COMPILER = arg
+                is_compiler = False
+                continue
+
+            if arg=='-f':
+                is_makefile = True
+            elif arg=='-c':
+                is_compiler = True
+            else:
+                testroots.append(arg)
     else:
-        print ('Please specify root paths to be tested.')
-        print ('Usage %s [ testroot [ testroot ... ] ]'%sys.argv[0])
+        print ('Please specify root paths to be tested and optional makefile and compiler.')
+        print ('Usage %s [-f makefile] [-c compiler] [ testroot [ testroot ... ] ]'%sys.argv[0])
+        print ('default settings:')
+        print ('makefile = %s'%MAKEFILE)
+        print ('compiler = %s'%COMPILER)
+        print ('testroot = ./')
         sys.exit(-1)
         
     tests = {}
@@ -81,16 +104,16 @@ def main():
     out, err = run_shcmd('uname -a')
     tests['uname'] = out
 
-    out, err = run_shcmd('ifort --version')
-    tests['compiler'] = out
+    out, err = run_shcmd('%s --version'%COMPILER, stderr_exit=False)
+    tests['compiler'] = out.strip()
 
     # optional information such as:
 
-    out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
-    tests['git_branch'] = out
+    #out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
+    #tests['git_branch'] = out
 
-    out, err = run_shcmd('git rev-parse HEAD')
-    tests['git_commit'] = out
+    #out, err = run_shcmd('git rev-parse HEAD')
+    #tests['git_commit'] = out
 
     #out, err = run_shcmd('env')
     #tests['env'] = out
@@ -192,10 +215,10 @@ def main():
                     print('The largest Normalized RMS difference: ', max(summary['difference']) )
                     print('')
                 if len(summary['elapsed_time'])>0:
-					print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['elapsed_time'])) )
-					print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['elapsed_time'])/float(len(summary['elapsed_time']))) )
-					print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['elapsed_time'])) )
-					print('')
+                    print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['elapsed_time'])) )
+                    print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['elapsed_time'])/float(len(summary['elapsed_time']))) )
+                    print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['elapsed_time'])) )
+                    print('')
 
                 out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, stderr_exit=False, cwd=dirName)
                 summary['perf_stat'] = err
@@ -210,7 +233,7 @@ def main():
     ######### END OF TEST DATA COLLECTION ###########
 
     ######### SAVING TEST DATA IN A JSON FILE ###########
-    with open('%s_result.json'%tests['git_branch'], 'w') as f:
+    with open(TEST_OUTPUT, 'w') as f:
         json.dump(tests, f, sort_keys=True, indent=4)
 
 if __name__ == '__main__':
