@@ -1,0 +1,1218 @@
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_Stubs.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_const_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_comm_mct.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_flux_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_file_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_ncread_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_strconvert_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_reprosum_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_ClockMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[shr_assert_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_cdata_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_CalendarMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_precip_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_FractionMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_flds_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_wv_sat_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_log_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_kind_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_map_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_dmodel_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_orb_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_io_read_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/MeatMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_mct_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_mpi_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_BaseTimeMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_strdata_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_msg_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_AlarmMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_pio_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_spfn_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_AlarmClockMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_TimeMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/shr_carma_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_nl_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_timemgr_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/glc_elevclass_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/wrf_message.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/shr_fire_emis_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_vmath_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/mct_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_BaseMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_cal_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_TimeIntervalMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_sys_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[shr_infnan_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_pcdf_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_reprosumx86.c]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/shr_expr_parser_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_tInterp_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_scam_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_timer_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_mem_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_infodata_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/ESMF_ShrTimeMod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/seq_drydep_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr/shr_megan_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_stream_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr/wrf_error_fatal.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
+[/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr/shr_string_mod.F90]
+NUM_COMP_INST_ICE = 1
+FORTRANUNDERSCORE = 1
+NUM_COMP_INST_GLC = 1
+USE_CONTIGUOUS = contiguous,
+NUM_COMP_INST_WAV = 1
+NDEBUG = 1
+THREADED_OMP = 1
+HAVE_MPI = 1
+NUM_COMP_INST_LND = 1
+NUM_COMP_INST_OCN = 1
+CPRINTEL = 1
+NUM_COMP_INST_ATM = 1
+LINUX = 1
+NUM_COMP_INST_ROF = 1
+HAVE_SLASHPROC = 1
+include = .:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/MCT/noesmf/a1l1r1i1o1g1w1/csm_share:/glade/apps/opt/netcdf-mpi/4.3.3.1/intel/default/include:/glade/apps/opt/pnetcdf/1.6.0/intel/default/include:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/intel/mpich2/nodebug/threads/include:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/include:.:/glade/p/work/mickelso/cesm_sandbox/f19_f19_SCALAR_cesm1_4_alpha07c/SourceMods/src.share:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/driver_cpl/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/components/xcpl_models/xshare:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/csm_share/shr:/glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/cime/share/esmf_wrf_timemgr:/glade/scratch/mickelso/f19_f19_SCALAR_cesm1_4_alpha07c/bld/lib/include
+MCT_INTERFACE = 1
+NO_R16 = 1
+
