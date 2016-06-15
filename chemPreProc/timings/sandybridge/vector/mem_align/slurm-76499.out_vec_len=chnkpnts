@@ -1,0 +1,54 @@
+ 
+ ***************** Verification against 'imp_sol.1.0' *****************
+ 
+ Number of verified variables:            1
+ Number of identical variables:            1
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    54060.0234375000     
+ 
+ ***************** Verification against 'imp_sol.48.0' *****************
+ 
+ Number of verified variables:            1
+ Number of identical variables:            1
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    52985.3671875000     
+ 
+ ***************** Verification against 'imp_sol.1.60' *****************
+ 
+ Number of verified variables:            1
+ Number of identical variables:            1
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57550.5898437500     
+ 
+ ***************** Verification against 'imp_sol.48.60' *****************
+ 
+ Number of verified variables:            1
+ Number of identical variables:            1
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    52526.5585937500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases: 4
+ imp_sol summary: Average call time of all calls (usec): 
+   54280.6347656250     
+ ******************************************************************************
