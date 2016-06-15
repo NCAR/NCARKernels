@@ -1,40 +1,135 @@
 #!/bin/env python
-'''Python script for running kgen kernels in this repo.'''
+'''Python script for collecting test results of kgen kernels in "https://github.com/NCAR/kernelOptimization" Github repo.
+    Author: Youngsung Kim (youngsun@ucar.edu)
+    History:
+      - Created at May 1, 2016
+    KGen Kernel Execution Result File Format( Revision 0.1 ):
+      - Test data is saved in JSON format
+      - Accepted primitive test data formats are boolean, string, integer, and floating-pointer number.
+      - Accepted container data formats are list and dictionary.
+      - String is saved in unicode character format.
+      - Mandated test items are:
+        * "cpu_model": cpu model name of a test system - string
+        * "total_memsize": total memory of a test system - string
+        * "uname": uname result of a test system - string
+        * "compiler": compiler version being used - string
+        * "cases": this is a dictionary that contains results of each test cases - dictionary.
+            ** <testname>: Each test result much contain at least following items. - dictionary in the form of <testname> : <dictionary>
+                *** "begin": test start date and time (YYYY-MM-DD HH:MM:SS.SSSSSS) - string
+                *** "end": test end date and time - string
+                *** "passed": verification result - boolean
+                *** "tolerance": tolerance for verification - float
+                *** "difference": Verification difference - list of float numbers
+                *** "diff_type": The type of difference and tolerance  0: Normalized RMS difference
+                *** "elapsed_time": Elapsed time in micro-second for a test case list of float numbers
+      - Other test information can be added in similar way to the mandated information.
+'''
 
 from __future__ import print_function
 import os
 import sys
+import json
+import datetime
 import subprocess
-import shutil
 
+NREPEAT = 3
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
-KERNEL_HOME = '%s/..'%SCRIPT_HOME
 MAKEFILE = 'Makefile'
+COMPILER = 'ifort'
+TEST_OUTPUT = 'test_result.json'
 SIGNATURE = '# Makefile for KGEN-generated kernel\n'
-FC = 'FC'
-FC_FLAGS = 'FC_FLAGS'
-TEMP = '__temp__'
 
-tests = {}
+def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
+    ''' executing shell command. The last white spaces will be removed'''
 
-def run_shcmd(cmd, input=None, **kwargs):
-    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, \
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, **kwargs)
-    return proc.communicate(input=input)
+    try:
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, \
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, **kwargs)
+        out, err = proc.communicate(input=input)
+        if stderr_exit and err:
+            print ('COMMAND ERROR: %s\n\n'%cmd, str(err))
+            sys.exit(-1)
+
+        if out is None: out = ''
+        if err is None: err = ''
+        return out.rstrip(), err.rstrip()
+
+    except Exception as e:
+        print ('SHELL ERROR: %s\n\n'%cmd, str(e))
+        sys.exit(-1)
 
 def main():
-    pass
+    ''' Main function: generated test data through executing linux commands and kgen kernels'''
 
     if len(sys.argv) > 1:
-        testroots = sys.argv[1:]
+
+        testroots = []
+        is_makefile = False
+        is_compiler = False
+
+        for arg in sys.argv[1:]:
+            if is_makefile:
+                MAKEFILE = arg
+                is_makefile = False
+                continue
+            if is_compiler:
+                COMPILER = arg
+                is_compiler = False
+                continue
+
+            if arg=='-f':
+                is_makefile = True
+            elif arg=='-c':
+                is_compiler = True
+            else:
+                testroots.append(arg)
     else:
-        print ('Please specify the paths to be tested or "all" for all tests.')
-        print ('Usage %s [ testroot [ testroot ... ] | all ]'%sys.argv[0])
+        print ('Please specify root paths to be tested and optional makefile and compiler.')
+        print ('Usage %s [-f makefile] [-c compiler] [ testroot [ testroot ... ] ]'%sys.argv[0])
+        print ('default settings:')
+        print ('makefile = %s'%MAKEFILE)
+        print ('compiler = %s'%COMPILER)
+        print ('testroot = ./')
         sys.exit(-1)
         
-    # check if it is a kgen kernel directory that can be executed
-    # run the kernel
-    # walk through sub directories
+    tests = {}
+
+    # madatory information
+    out, err = run_shcmd('cat /proc/cpuinfo | grep "model name"')
+    tests['cpu_model'] = out
+
+    out, err = run_shcmd('cat /proc/meminfo | grep -i memtotal')
+    tests['total_memsize'] = out
+
+    out, err = run_shcmd('uname -a')
+    tests['uname'] = out
+
+    out, err = run_shcmd('%s --version'%COMPILER, stderr_exit=False)
+    tests['compiler'] = out.strip()
+
+    # optional information such as:
+
+    #out, err = run_shcmd('git rev-parse --abbrev-ref HEAD')
+    #tests['git_branch'] = out
+
+    #out, err = run_shcmd('git rev-parse HEAD')
+    #tests['git_commit'] = out
+
+    #out, err = run_shcmd('env')
+    #tests['env'] = out
+
+    #out, err = run_shcmd('top -n1 -b')
+    #tests['top'] = out
+
+    #out, err = run_shcmd('git diff')
+    #tests['gitdiff'] = out
+
+
+    ######### START OF TEST DATA COLLECTION ###########
+    tests['begin'] = str(datetime.datetime.now())
+
+    tests['cases'] = {}
+
     for testroot in testroots:
         for dirName, subdirList, fileList in os.walk(testroot):
             relpath = os.path.relpath(dirName, testroot)
@@ -48,25 +143,23 @@ def main():
                 if makefile[0]!=SIGNATURE: continue
 
             print('***************************************************************')
-            print('      TEST for ', dirName)
+            print('      TEST for ', dirName )
             print('***************************************************************')
 
-            #print('Running a kernel at %s: '%relpath, end='')
-            # modify makefile list
-
-            # save original Makefile
-            mksrc = os.path.join('%s/%s'%(dirName, MAKEFILE))
-            mkdstname = '%s.%s'%(MAKEFILE, TEMP)
-            mkdst = os.path.join('%s/%s'%(dirName, mkdstname))
-            if not os.path.exists(mkdst):
-                shutil.copyfile(mksrc, mkdst)
-     
             try:
-                # run test
-                out, err = run_shcmd('make -f %s'%mkdstname, cwd=dirName)
+                summary = {'elapsed_time': [], 'difference': [], 'diff_type': 0, 'tolerance': 0.0, 'passed': False, 'begin': str(datetime.datetime.now()), 'end': 'Not completed'}
+                tests['cases'][dirName] = summary
 
-                # collect summary of the test results
-                summary = {'etime': [], 'diff': [], 'tol': 0.0}
+                # initialize test
+                out, err = run_shcmd('make -f %s clean'%MAKEFILE, stderr_exit=False, cwd=dirName)
+
+                # run test
+                out = ''
+                for _ in range(NREPEAT):
+                    o, e= run_shcmd('make -f %s'%MAKEFILE, stderr_exit=False, cwd=dirName)
+                    out = '%s\n%s'%(out, o)
+
+                summary['end'] = str(datetime.datetime.now())
 
                 npassed = 0
                 nfailed = 0
@@ -83,10 +176,10 @@ def main():
                     if nexttime or outline.find('time')>=0 or outline.find('Time')>=0:
                         try:
                             etime = float(outline.split()[-1])
-                            if outline.find('usec')>=0:
-                                summary['etime'].append(float(etime))
-                            elif outline.find('sec')>=0:
-                                summary['etime'].append(float(etime)*1000000.0)
+                            if outline.find('usec')>=0 and outline.find('summary')<0:
+                                summary['elapsed_time'].append(float(etime))
+                            elif outline.find('sec')>=0 and outline.find('summary')<0:
+                                summary['elapsed_time'].append(float(etime)*1000000.0)
                             if nexttime: nexttime = False
                         except:
                             nexttime = not nexttime
@@ -94,7 +187,7 @@ def main():
                     if nextdiff or outline.find('Normalized RMS of difference')>=0:
                         try:
                             diff = float(outline.split()[-1])
-                            summary['diff'].append(float(diff))
+                            summary['difference'].append(float(diff))
                             if nextdiff: nextdiff = False
                         except:
                             nextdiff = not nextdiff
@@ -102,45 +195,46 @@ def main():
                     if nexttol or outline.find('tolerance')>=0 or outline.find('Tolerance')>=0:
                         try:
                             tol = float(outline.split()[-1])
-                            summary['tol'].append(max( summary['tol'], float(tol)))
+                            summary['tolerance'].append(max( summary['tolerance'], float(tol)))
                             if nexttol: nexttol = False
                         except:
                             nexttol = not nexttol
 
-                if nfailed>0 or npassed==0:
-                    summary['passed'] = False
-                else:
+                if nfailed==0 and npassed>0:
                     summary['passed'] = True
 
                 #import pdb; pdb.set_trace()
                 print('NO. of verifications: %d'%(npassed+nfailed))
                 print('NO. of passed verifications: ', npassed)
                 print('NO. of failed verifications: ', nfailed)
-                print('Tolerance for verification: ', '{:22.16f}'.format(summary['tol']) )
+                print('Tolerance for verification: ', '{:22.16f}'.format(summary['tolerance']) )
                 print('')
-                if len(summary['diff'])>0:
-                    print('The smallest Normalized RMS difference: ', min(summary['diff']) )
-                    print('The average Normalized RMS difference: ', sum(summary['diff'])/float(len(summary['diff'])) )
-                    print('The largest Normalized RMS difference: ', max(summary['diff']) )
+                if len(summary['difference'])>0:
+                    print('The smallest Normalized RMS difference: ', min(summary['difference']) )
+                    print('The average Normalized RMS difference: ', sum(summary['difference'])/float(len(summary['difference'])) )
+                    print('The largest Normalized RMS difference: ', max(summary['difference']) )
                     print('')
-                print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['etime'])) )
-                print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['etime'])/float(len(summary['etime']))) )
-                print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['etime'])) )
-                print('')
+                if len(summary['elapsed_time'])>0:
+                    print('The minimum elapsed time (usec): ', '{:20.3f}'.format(min(summary['elapsed_time'])) )
+                    print('The average elapsed time (usec): ', '{:20.3f}'.format(sum(summary['elapsed_time'])/float(len(summary['elapsed_time']))) )
+                    print('The maximum elapsed time (usec): ', '{:20.3f}'.format(max(summary['elapsed_time'])) )
+                    print('')
+
+                out, err = run_shcmd('perf stat -- make -f %s run'%MAKEFILE, stderr_exit=False, cwd=dirName)
+                summary['perf_stat'] = err
 
             except Exception as e:
-                import pdb; pdb.set_trace()    
+                print ('ERROR: %s'%str(e))
+                sys.exit(-1)
             finally:
-                out, err = run_shcmd('make -f %s clean'%mkdstname, cwd=dirName)
-                os.remove(mkdst)
+                out, err = run_shcmd('make -f %s clean'%MAKEFILE, stderr_exit=False, cwd=dirName)
 
-#                ntests = 0
-#                npassed = 0
-#                for relpath, test in tests.items():
-#                    summary = test['summary']
-#                    ntests += 1
-#                    if summary['passed']: npassed += 1
+    tests['end'] = str(datetime.datetime.now())
+    ######### END OF TEST DATA COLLECTION ###########
 
+    ######### SAVING TEST DATA IN A JSON FILE ###########
+    with open(TEST_OUTPUT, 'w') as f:
+        json.dump(tests, f, sort_keys=True, indent=4)
 
 if __name__ == '__main__':
     main()
