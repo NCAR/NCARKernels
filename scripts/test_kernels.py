@@ -54,7 +54,6 @@ def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
         if out is None: out = ''
         if err is None: err = ''
         return out.rstrip(), err.rstrip()
-
     except Exception as e:
         print ('SHELL ERROR: %s\n\n'%cmd, str(e))
         sys.exit(-1)
