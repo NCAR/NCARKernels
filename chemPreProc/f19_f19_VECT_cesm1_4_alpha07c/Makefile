@@ -1,0 +1,26 @@
+KGEN_HOME := /glade/p/work/mickelso/cesm_sandbox/WACCM_pp/kgen/KGen/
+KGEN := ${KGEN_HOME}/bin/kgen
+
+SRC_DIR := /glade/p/work/mickelso/cesm_sandbox/cesm1_4_alpha07c/
+SRC := /glade/p/work/mickelso/cesm_sandbox/f19_f19_VECT_cesm1_4_alpha07c/SourceMods/src.cam/mo_gas_phase_chemdr.F90
+CALLSITE := mo_gas_phase_chemdr:gas_phase_chemdr:imp_sol
+FC := ifort
+FC_FLAGS := -no-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source    -xHost  -O2 -debug minimal  -openmp -free
+MPI_INC := /ncar/opt/intel/12.1.0.233/impi/4.0.3.008/intel64/include
+
+test:
+	python ${KGEN} \
+		-e exclude.ini \
+                -i include.ini \
+                --intrinsic skip,except=:mo_imp_sol::epsilon \
+		--mpi ranks=0:60 \
+		--invocation 1:48 \
+		--kernel-compile FC='${FC}',FC_FLAGS='${FC_FLAGS}' \
+		--timing repeat=100 \
+		--state-build cmds="cd /glade/p/work/mickelso/cesm_sandbox/f19_f19_VECT_cesm1_4_alpha07c/logs/bld/; make build" \
+		--state-run cmds="cd /glade/p/work/mickelso/cesm_sandbox/f19_f19_VECT_cesm1_4_alpha07c/logs/bld/; make run" \
+		${SRC}:${CALLSITE}
+
+clean:
+	${MAKE} clean -C src
+	rm -rf kernel state kgen.log

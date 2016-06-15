@@ -1,0 +1,88 @@
+mickelso@hlphi01-mic0:~/chem_devel_mic/chemPreProc/f19_f19_VECT_cesm1_4_alpha07c/kernel$ ./kernel.exe 
+ 
+ ***************** Verification against 'imp_sol.1.0' *****************
+Segmentation fault
+mickelso@hlphi01-mic0:~/chem_devel_mic/chemPreProc/f19_f19_VECT_cesm1_4_alpha07c/kernel$ ulimit -s unlimited
+mickelso@hlphi01-mic0:~/chem_devel_mic/chemPreProc/f19_f19_VECT_cesm1_4_alpha07c/kernel$ ./kernel.exe       
+ 
+ ***************** Verification against 'imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       48443  of       157014  elements are different.
+ Average - kernel   1.182598169810828E-003
+ Average - reference   1.182598169810828E-003
+ RMS of difference is   1.581292227043158E-018
+ Normalized RMS of difference is   4.596041122807744E-015
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            1
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    1498271.87500000     
+ 
+ ***************** Verification against 'imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       51123  of       157014  elements are different.
+ Average - kernel   1.191982192652479E-003
+ Average - reference   1.191982192652479E-003
+ RMS of difference is   1.479735850520153E-018
+ Normalized RMS of difference is   4.577929637297975E-015
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            1
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    1474967.12500000     
+ 
+ ***************** Verification against 'imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       48402  of       157014  elements are different.
+ Average - kernel   1.182634477661259E-003
+ Average - reference   1.182634477661259E-003
+ RMS of difference is   1.561855187084685E-018
+ Normalized RMS of difference is   4.169804956250996E-015
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            1
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    1523780.37500000     
+ 
+ ***************** Verification against 'imp_sol.48.60' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       50801  of       157014  elements are different.
+ Average - kernel   1.192043600589602E-003
+ Average - reference   1.192043600589602E-003
+ RMS of difference is   1.497852563262004E-018
+ Normalized RMS of difference is   4.149328866421012E-015
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            1
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    1458841.50000000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases: 4
+ imp_sol summary: Average call time of all calls (usec): 
+   1488965.21875000     
+ ******************************************************************************
