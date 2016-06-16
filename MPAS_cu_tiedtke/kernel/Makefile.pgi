@@ -1,7 +1,7 @@
 # Makefile for KGEN-generated kernel
 
 FC := pgfortran
-FC_FLAGS := -fast -Mipa=fast,inline -Mfreeform
+FC_FLAGS := -fast -Mipa=fast,inline -Mfreeform -r8
 
 ALL_OBJS := mpas_atmphys_driver_convection.o mpas_kind_types.o mpas_atmphys_vars.o module_cu_tiedtke.o kernel_driver.o kgen_utils.o
 
