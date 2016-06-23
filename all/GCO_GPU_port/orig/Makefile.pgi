@@ -1,0 +1,12 @@
+# Makefile for get_close_obs kernel
+
+FC := pgfortran 
+FC_FLAGS :=  -fast
+
+ALL_OBJS := gco_para_omp.f90 gco_cpu_omp.f90 gco_program_omp.f90
+
+build: ${ALL_OBJS}
+	${FC} ${FC_FLAGS} -o kernel.exe $^
+
+clean:
+	rm *.mod 

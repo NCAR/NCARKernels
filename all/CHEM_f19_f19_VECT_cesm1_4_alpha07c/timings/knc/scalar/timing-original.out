@@ -1,0 +1,116 @@
+mickelso@hlphi01-mic0:~/backup/chemPreProc/f19_f19_SCALAR_cesm1_4_alpha07c/kernel$ ./kernel.exe 
+ 
+ ***************** Verification against 'imp_sol.1.0' *****************
+Segmentation fault
+mickelso@hlphi01-mic0:~/backup/chemPreProc/f19_f19_SCALAR_cesm1_4_alpha07c/kernel$ ulimit -s unlimited
+mickelso@hlphi01-mic0:~/backup/chemPreProc/f19_f19_SCALAR_cesm1_4_alpha07c/kernel$ ./kernel.exe       
+ 
+ ***************** Verification against 'imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       49022  of       157014  elements are different.
+ Average - kernel   1.182598117170522E-003
+ Average - reference   1.182598117170522E-003
+ RMS of difference is   1.569903454279339E-018
+ Normalized RMS of difference is   4.278628754596144E-015
+ 
+ o3s_loss is NOT IDENTICAL(out of tolerance).
+         675  of          858  elements are different.
+ Average - kernel   7.379184438417628E-004
+ Average - reference   7.379184438417626E-004
+ RMS of difference is   2.508825147263520E-018
+ Normalized RMS of difference is   2.017985009900529E-015
+ 
+ 
+ Number of verified variables:            2
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            2
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    949204.375000000     
+ 
+ ***************** Verification against 'imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       51175  of       157014  elements are different.
+ Average - kernel   1.191983012368048E-003
+ Average - reference   1.191983012368048E-003
+ RMS of difference is   1.652384574817171E-018
+ Normalized RMS of difference is   4.341834056702538E-015
+ 
+ o3s_loss is NOT IDENTICAL(out of tolerance).
+         666  of          858  elements are different.
+ Average - kernel   1.801717710858885E-003
+ Average - reference   1.801717710858885E-003
+ RMS of difference is   6.530845823593094E-018
+ Normalized RMS of difference is   2.388359198514489E-015
+ 
+ 
+ Number of verified variables:            2
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            2
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    939885.375000000     
+ 
+ ***************** Verification against 'imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       48475  of       157014  elements are different.
+ Average - kernel   1.182634423307716E-003
+ Average - reference   1.182634423307716E-003
+ RMS of difference is   1.552893278813821E-018
+ Normalized RMS of difference is   4.852014045014250E-015
+ 
+ o3s_loss is NOT IDENTICAL(out of tolerance).
+         657  of          858  elements are different.
+ Average - kernel   7.343881201906930E-004
+ Average - reference   7.343881201906930E-004
+ RMS of difference is   1.243981700155304E-018
+ Normalized RMS of difference is   2.104396666444046E-015
+ 
+ 
+ Number of verified variables:            2
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            2
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    960866.875000000     
+ 
+ ***************** Verification against 'imp_sol.48.60' *****************
+ vmr is NOT IDENTICAL(out of tolerance).
+       51498  of       157014  elements are different.
+ Average - kernel   1.192043766239663E-003
+ Average - reference   1.192043766239664E-003
+ RMS of difference is   1.515074368907959E-018
+ Normalized RMS of difference is   4.174975821460214E-015
+ 
+ o3s_loss is NOT IDENTICAL(out of tolerance).
+         685  of          858  elements are different.
+ Average - kernel   1.766092414832713E-003
+ Average - reference   1.766092414832712E-003
+ RMS of difference is   6.602594588616071E-018
+ Normalized RMS of difference is   2.365616699999468E-015
+ 
+ 
+ Number of verified variables:            2
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            0
+ Number of non-identical variables out of tolerance:            2
+ Tolerance:   1.000000000000000E-015
+ 
+ Verification FAILED
+ 
+ imp_sol : Time per call (usec):    939659.500000000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases: 4
+ imp_sol summary: Average call time of all calls (usec): 
+   947404.031250000     
+ ******************************************************************************

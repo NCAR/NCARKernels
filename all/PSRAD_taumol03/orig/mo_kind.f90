@@ -1,0 +1,9 @@
+    MODULE mo_kind
+    IMPLICIT NONE
+
+    INTEGER, PARAMETER :: pd = 12
+    INTEGER, PARAMETER :: rd = 307
+    INTEGER, PARAMETER :: dp = SELECTED_REAL_KIND(pd,rd)
+    INTEGER, PARAMETER :: wp = dp
+
+    END MODULE mo_kind
