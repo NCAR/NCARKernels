@@ -1,1 +1,6 @@
 *.swp
+*.o
+*.optrpt
+*.exe
+*.mod
+*.oo
