@@ -18,7 +18,10 @@ If you find any conflicts on applying the license to the kernel, please contact 
 1.2 Directory structure
 -------------------
 
-<img src="dirtree.png" alt="Directory tree">
+Directory tree of the repo.:
+
+![alt text](dirtree.png "Directory tree")
+
 
 1.2.1 Conventions
 '''''''''''
