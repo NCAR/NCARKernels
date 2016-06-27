@@ -1,7 +1,7 @@
 NCAR Climate/Weather Kernels
 ===============================
 
-A open collection of *kernels* extracted from various climate/weather simulation software.
+A collection of *kernels* extracted from various climate/weather simulation software.
 
 1. How to use the kernels
 ===============================
