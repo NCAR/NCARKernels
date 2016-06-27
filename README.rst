@@ -23,36 +23,34 @@ If you find any conflicts on applying the license to the kernel, please contact 
 1.2.1 Conventions
 '''''''''''
 
-<name>: a variable name. User will select proper name for the variable such as kernel name.
+**<name>**: a variable name. User will select proper name for the variable such as kernel name.
 
-[name]: an optional name. User will choose to use or not use the name such as optinal directory name.
+**[name]**: an optional name. User will choose to use or not use the name such as optinal directory name.
 
-name: a literal name. This name should be used as it is such as "all" for a direcotry including all kernels.
+**name**: a literal name. This name should be used as it is such as "all" for a direcotry including all kernels.
 
 1.2.2 Directories and files
 '''''''''''''''''''''
 
-all: The directory contains all kernels
+**all**: The directory contains all kernels
 
-scripts: The directory contains all scripts that use kernels in this repo.
+**scripts**: The directory contains all scripts that use kernels in this repo.
 
-silver: The directory contains symbolic links to some of all kernels. Current category of this directory is based on their relative importance determined by adminstrator of this repo.
+**silver**: The directory contains symbolic links to some of all kernels. Current category of this directory is based on their relative importance determined by adminstrator of this repo.
 
-<kernel>: The directory contains all materials for a <kernel>
+**<kernel>**: The directory contains all materials for a <kernel>
 
-orig: The directory is an only mandatory directory that contains source files and <makefile> to build and run the <kernel>. There could be multiple <makefile>s to support various compilers and computing systems. See <makefile> section for details.
+**orig**: The directory is an only mandatory directory that contains source files and <makefile> to build and run the <kernel>. There could be multiple <makefile>s to support various compilers and computing systems. See <makefile> section for details.
 
-[config]: The directory contains materials for configuration of the kernel and other miscellaneous ones.
+**[config]**: The directory contains materials for configuration of the kernel and other miscellaneous ones.
 
-[data]: The directory contains data files used by the <kernel>
+**[data]**: The directory contains data files used by the <kernel>
 
-[final]: The directory contains optimized version of the <kernel>
+**[final]**: The directory contains optimized version of the <kernel>
 
-[README.txt]: The file contains information of the <kernel>
+**[README.txt]**: The file contains information of the <kernel>
 
-[state]: The directory contains information to generate files in [data] directory.
-
-test_kernels.py: A Python script to run <kernel>(s) in the repo. Please see "testing" section for details.
+**[state]**: The directory contains information to generate files in [data] directory.
 
 1.3 building/running the kernels
 ----------------------------
@@ -92,7 +90,7 @@ That being said, we have come up with a draft of test report specification for k
 3.1.2 content of test result:
 '''''''''''''''''''''''
 
-      - Mandated test items are:
+      - Essential items are:
       
         * "cpu_model": cpu model name of a test system - string
         
@@ -120,24 +118,9 @@ That being said, we have come up with a draft of test report specification for k
                 
                 *** "elapsed_time": Elapsed time in micro-second for a test case list of float numbers
                 
-      - Other test information can be added in similar way to the mandated information.
+      - Other test information can be added in similar way to above essential items.
 
 3.2 test result poltting
 --------------------
 
 There may be various plotting needs. As of this writing, one plotting format is developed.
-
-
-
-
-# how
-
-# what
-- kernel
-- ncar climate/weather kernel
-- directory structure
-- license
-
-# why
-
-# details
