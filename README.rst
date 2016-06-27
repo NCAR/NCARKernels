@@ -18,7 +18,7 @@ If you find any conflicts on applying the license to the kernel, please contact 
 1.2 Directory structure
 -------------------
 
-![directory tree](dirtree.png)
+<img src="dirtree.png" alt="Directory tree">
 
 1.2.1 Conventions
 '''''''''''
