@@ -84,7 +84,7 @@ That being said, we have come up with a draft of test report specification for k
 3.1 test result report
 ------------------
 
-    We recommend that test result report follows following rules.
+    We recommend that test result report follows rules specified in this section.
 
 3.1.1 file format: JSON
 '''''''''''''''''
