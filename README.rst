@@ -21,7 +21,6 @@ If you find any conflicts on applying the license to the kernel, please contact 
 Directory tree of the repo.:
    .. image:: dirtree.png
 
-![alt text](dirtree.png "Directory tree")
 
 1.2.1 Conventions
 '''''''''''
@@ -128,5 +127,10 @@ That being said, we have come up with a draft of test report specification for k
 
 There may be various plotting needs. As of this writing, one plotting format is developed.
 
+3.2.1 Performance comparison plot
+
+By convention, a red bar indicates reference value.
+
+Plot for kernel performance comparison on multiple platforms:
    .. image:: plot.png
    
