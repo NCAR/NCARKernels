@@ -22,7 +22,6 @@ Directory tree of the repo.:
 
 ![alt text](dirtree.png "Directory tree")
 
-
 1.2.1 Conventions
 '''''''''''
 
