@@ -9,7 +9,6 @@ A open collection of *kernels* extracted from various climate/weather simulation
 1.1 Download
 --------
 
-::
     >>> git clone https://github.com/NCAR/kernelOptimization.git
 
 Please see a license document located at the root direcotry of each kernel.
@@ -19,7 +18,7 @@ If you find any conflicts on applying the license to the kernel, please contact 
 1.2 Directory structure
 -------------------
 
-![directory tree](./dirtree.png "Directory Tree")
+![directory tree](dirtree.png)
 
 1.2.1 Conventions
 '''''''''''
