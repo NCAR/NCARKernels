@@ -11,7 +11,7 @@ A collection of *kernels* extracted from various climate/weather simulation soft
 
     >>> git clone https://github.com/NCAR/kernelOptimization.git
 
-Please see a license document located at the root direcotry of each kernel.
+Please see a license document located at the root directory of each kernel.
 If a license document does not exist, the license applied to original software that the kernel is extracted from is also applied to the kernel.
 If you find any conflicts on applying the license to the kernel, please contact us to kgen@ucar.edu.
 
@@ -25,9 +25,9 @@ If you find any conflicts on applying the license to the kernel, please contact 
 
 **<name>**: a variable name. User will select proper name for the variable such as kernel name.
 
-**[name]**: an optional name. User will choose to use or not use the name such as optinal directory name.
+**[name]**: an optional name. User will choose to use or not use the name such as optional directory name.
 
-**name**: a literal name. This name should be used as it is such as "all" for a direcotry including all kernels.
+**name**: a literal name. This name should be used as it is such as "all" for a directory including all kernels.
 
 1.2.2 Directories and files
 '''''''''''''''''''''
@@ -70,7 +70,7 @@ User can clean/build/run each kernel by issuing "<makefile> target". It is assum
 2. How to add/remove a kernel
 ==========================
 
-User can freely fork this repo. and manage kernels for your convinience.  If you want to add or request removal of a kernel, please contact us to kgen@ucar.edu until we setup a policy to mange the kernel in a systematic way.
+User can freely fork this repo. and manage your own kernels independently.  If you want to add or to remove a kernel in this repo., please contact us to kgen@ucar.edu.
 
 3. Sharing test result
 ===================
@@ -82,7 +82,7 @@ That being said, we have come up with a draft of test report specification for k
 3.1 test result report
 ------------------
 
-    It is recommeded to generate a test result from building/running kernels in the repo. as following:
+    We recommend that test result report follows following rules.
 
 3.1.1 file format: JSON
 '''''''''''''''''
@@ -102,7 +102,7 @@ That being said, we have come up with a draft of test report specification for k
         
         * "cases": this is a dictionary that contains results of each test cases - dictionary.
         
-            ** <testname>: Each test result much contain at least following items. - dictionary in the form of <testname> : <dictionary>
+            ** <testname>: Each test result should contain at least following items. - dictionary in the form of <testname> : <dictionary>
             
                 *** "begin": test start date and time (YYYY-MM-DD HH:MM:SS.SSSSSS) - string
                 
