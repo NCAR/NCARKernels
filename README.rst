@@ -1,10 +1,13 @@
-# NCAR Climate/Weather Kernels
+NCAR Climate/Weather Kernels
+===============================
 
 A open collection of *kernels* extracted from various climate/weather simulation software.
 
-# How to use the kernels
+1. How to use the kernels
+===============================
 
-## Download
+1.1 Download
+--------
 
 ::
     >>> git clone https://github.com/NCAR/kernelOptimization.git
@@ -13,30 +16,20 @@ Please see a license document located at the root direcotry of each kernel.
 If a license document does not exist, the license applied to original software that the kernel is extracted from is also applied to the kernel.
 If you find any conflicts on applying the license to the kernel, please contact us to kgen@ucar.edu.
 
-## Directory structure
+1.2 Directory structure
+-------------------
 
-.
-|-- all
-|   |-- <kernel>
-|   |   |-- [config]
-|   |   |-- [data]
-|   |   |-- [final]
-|   |   |-- orig
-|   |   |-- [README.txt]
-|   |   `-- [state]
-|   `-- <kernel>
-|-- scripts
-|   `-- test_kernels.py
-`-- silver
-    `-- <kernel> -> ../all/<kernel>/
+![directory tree](./dirtree.png "Directory Tree")
 
-### Conventions
+1.2.1 Conventions
+'''''''''''
 
 <name>: a variable name. User will select proper name for the variable such as kernel name.
 [name]: an optional name. User will choose to use or not use the name such as optinal directory name.
 name: a literal name. This name should be used as it is such as "all" for a direcotry including all kernels.
 
-### Directories and files
+1.2.2 Directories and files
+'''''''''''''''''''''
 
 all: The directory contains all kernels
 scripts: The directory contains all scripts that use kernels in this repo.
@@ -50,34 +43,44 @@ orig: The directory is an only mandatory directory that contains source files an
 [state]: The directory contains information to generate files in [data] directory.
 test_kernels.py: A Python script to run <kernel>(s) in the repo. Please see "testing" section for details.
 
-## building/running the kernels
+1.3 building/running the kernels
+----------------------------
 
-### <makefile>(s)
+1.3.1 <makefile>(s)
+'''''''''''''
 
 Each "orig" directory should contains one or more <makefile>(s). The name of <makefile> is arbitrary. However, for automating test tasks, it is highly desirable to use the same <makefile> name across all kernels. For example, we may put "Makefile.gnu" for all kernels so that a test script can build/run al the kernels automatically.
 
 There are three mandatory targets in each <makefile>: clean, build, and run.
 
-### clean/build/run Makefile targets
+1.3.2 clean/build/run Makefile targets
+''''''''''''''''''''''''''''''''
 
 User can clean/build/run each kernel by issuing "<makefile> target". It is assumed that user setup compilation and building environment before running the command.
 
-# How to add/remove a kernel
+2. How to add/remove a kernel
+==========================
 
 User can freely fork this repo. and manage kernels for your convinience.  If you want to add or request removal of a kernel, please contact us to kgen@ucar.edu until we setup a policy to mange the kernel in a systematic way.
 
-# Sharing test result
+3. Sharing test result
+===================
 
 While we encourage you to share your test result with others, please make sure that you are allowed to do so. For example, any test result bound to a certain NDA(Non-disclosure agreement) should not be shared through this repo.
 
 That being said, we have come up with a draft of test report specification for kernels in this repo.
 
-## test result report
+test result report
+------------------
 
     It is recommeded to generate a test result from building/running kernels in the repo. as following:
 
-### file format: JSON
-### content of test result:
+3.1 file format: JSON
+'''''''''''''''''
+
+3.2 content of test result:
+'''''''''''''''''''''''
+
       - Mandated test items are:
         * "cpu_model": cpu model name of a test system - string
         * "total_memsize": total memory of a test system - string
@@ -94,7 +97,8 @@ That being said, we have come up with a draft of test report specification for k
                 *** "elapsed_time": Elapsed time in micro-second for a test case list of float numbers
       - Other test information can be added in similar way to the mandated information.
 
-## test result poltting
+3.3 test result poltting
+--------------------
 
 There may be various plotting needs. As of this writing, one plotting format is developed.
 
