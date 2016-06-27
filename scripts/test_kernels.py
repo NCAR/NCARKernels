@@ -11,7 +11,7 @@
       - Mandated test items are:
         * "cpu_model": cpu model name of a test system - string
         * "total_memsize": total memory of a test system - string
-        * "uname": uname result of a test system - string
+        * "os": uname result of a test system - string
         * "compiler": compiler version being used - string
         * "cases": this is a dictionary that contains results of each test cases - dictionary.
             ** <testname>: Each test result much contain at least following items. - dictionary in the form of <testname> : <dictionary>
@@ -34,8 +34,6 @@ import subprocess
 
 NREPEAT = 3
 SCRIPT_HOME, SCRIPT_NAME = os.path.split(os.path.realpath(__file__))
-MAKEFILE = 'Makefile'
-COMPILER = 'ifort'
 TEST_OUTPUT = 'test_result.json'
 SIGNATURE = '# Makefile for KGEN-generated kernel\n'
 
@@ -60,6 +58,9 @@ def run_shcmd(cmd, input=None, stderr_exit=True, **kwargs):
 
 def main():
     ''' Main function: generated test data through executing linux commands and kgen kernels'''
+
+    COMPILER = 'ifort'
+    MAKEFILE = 'Makefile'
 
     if len(sys.argv) > 1:
 
@@ -102,7 +103,7 @@ def main():
     tests['total_memsize'] = out
 
     out, err = run_shcmd('uname -a')
-    tests['uname'] = out
+    tests['os'] = out
 
     out, err = run_shcmd('%s --version'%COMPILER, stderr_exit=False)
     tests['compiler'] = out.strip()
