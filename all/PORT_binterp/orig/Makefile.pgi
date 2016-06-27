@@ -1,0 +1,16 @@
+FC := pgfortran
+SRC := ./kernel_binterp.F90
+EXE := ${SRC:.F90=.exe}
+FFLAGS :=  -O3 -xAVX -ftz  -ip  -no-fp-port -fp-model fast -no-prec-div -no-prec-sqrt -override-limits -align array64byte -DCPRINTEL 
+FLAGS := ${FFLAGS}
+
+all: build run 
+
+run: ${EXE}
+	${EXE}
+
+build: ${SRC} clean
+	${FC} ${FLAGS} -o ${EXE} ${SRC}
+
+clean:
+	rm -f *.exe *.mod

@@ -33,7 +33,7 @@ PROGRAM kernel_driver
         WRITE( kgen_counter_conv, * ) kgen_counter
         kgen_mpi_rank = kgen_mpi_rank_at(mod(kgen_repeat_counter, 1)+1)
         WRITE( kgen_mpi_rank_conv, * ) kgen_mpi_rank
-        kgen_filepath = "./merged_streamfunction." // trim(adjustl(kgen_counter_conv)) // "." // trim(adjustl(kgen_mpi_rank_conv))
+        kgen_filepath = "../data/merged_streamfunction." // trim(adjustl(kgen_counter_conv)) // "." // trim(adjustl(kgen_mpi_rank_conv))
         kgen_unit = kgen_get_newunit()
         OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", IOSTAT=kgen_ierr, CONVERT="BIG_ENDIAN")
         WRITE (*,*)

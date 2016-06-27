@@ -63,7 +63,9 @@
                     READ(UNIT = kgen_unit) kgen_bound(2, 5)
                     READ(UNIT = kgen_unit) kgen_bound(1, 6)
                     READ(UNIT = kgen_unit) kgen_bound(2, 6)
-                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1, kgen_bound(2, 3) - kgen_bound(1, 3) + 1, kgen_bound(2, 4) - kgen_bound(1, 4) + 1, kgen_bound(2, 5) - kgen_bound(1, 5) + 1, kgen_bound(2, 6) - kgen_bound(1, 6) + 1))
+                    ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1, &
+kgen_bound(2, 3) - kgen_bound(1, 3) + 1, kgen_bound(2, 4) - kgen_bound(1, 4) + 1, &
+kgen_bound(2, 5) - kgen_bound(1, 5) + 1, kgen_bound(2, 6) - kgen_bound(1, 6) + 1))
                     READ(UNIT = kgen_unit) var
                     IF ( PRESENT(printvar) ) THEN
                         PRINT *, "** " // printvar // " **", var

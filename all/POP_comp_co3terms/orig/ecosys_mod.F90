@@ -687,7 +687,9 @@
                         CALL kgen_print_check("comp_co3terms", check_status)
                         CALL system_clock(start_clock, rate_clock)
                         DO kgen_intvar=1,10
-                            CALL comp_co3terms(bid, j, k, land_mask(:, j, bid) .AND. k <= kmt(:, j, bid), .TRUE., temp(:, j), salt(:, j), dic_loc(:, j), alk_loc(:, j), po4_loc(:, j), sio3_loc(:, j), work1(:, j), work2(:, j), work3(:, j), h2co3(:, j), hco3(:, j), co3(:, j))
+                            CALL comp_co3terms(bid, j, k, land_mask(:, j, bid) .AND. k <= kmt(:, j, bid), .TRUE., &
+temp(:, j), salt(:, j), dic_loc(:, j), alk_loc(:, j), po4_loc(:, j), sio3_loc(:, j), work1(:, j), work2(:, j), &
+work3(:, j), h2co3(:, j), hco3(:, j), co3(:, j))
                         END DO
                         CALL system_clock(stop_clock, rate_clock)
                         WRITE(*,*)

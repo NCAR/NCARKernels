@@ -24,7 +24,12 @@ module pdf_closure_module
   ! and GFDL.
   !#######################################################################
   !#######################################################################
-  SUBROUTINE pdf_closure(kgen_unit, kgen_total_time, hydromet_dim, wp2, wm, rtm, thlm, skw, sigma_sqd_w, thlp2, wpthlp, rtp2, wprtp, rtpthlp, exner, p_in_pa, thv_ds, wp3, sclrm, sclrp2, wpsclrp, sclrpthlp, sclrprtp, level, wp2hmp, wphydrometp, thlphmp, rtphmp, wp2thlp, wp2rtp, wp2rcp, wprcp, thlprcp, rtprcp, rcm, rcp2, wp4, wprtp2, wpthlp2, cloud_frac, wpthvp, wp2thvp, rtpthvp, thlpthvp, wprtpthlp, ice_supersat_frac, pdf_params, err_code, sclrprcp, sclrpthvp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp, rc_coef)
+  SUBROUTINE pdf_closure(kgen_unit, kgen_total_time, hydromet_dim, wp2, wm, rtm, thlm, skw, &
+sigma_sqd_w, thlp2, wpthlp, rtp2, wprtp, rtpthlp, exner, p_in_pa, thv_ds, wp3, &
+sclrm, sclrp2, wpsclrp, sclrpthlp, sclrprtp, level, wp2hmp, wphydrometp, thlphmp, rtphmp, &
+wp2thlp, wp2rtp, wp2rcp, wprcp, thlprcp, rtprcp, rcm, rcp2, wp4, wprtp2, wpthlp2, cloud_frac, &
+wpthvp, wp2thvp, rtpthvp, thlpthvp, wprtpthlp, ice_supersat_frac, pdf_params, err_code, &
+sclrprcp, sclrpthvp, wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp, rc_coef)
 
 
     ! Description:
@@ -145,13 +150,12 @@ module pdf_closure_module
       REAL(KIND=core_rknd) :: width_factor_1, width_factor_2
     
     ! variables for computing ice cloud fraction
-      REAL(KIND=core_rknd) :: ice_supersat_frac1, ice_supersat_frac2, rt_at_ice_sat1, rt_at_ice_sat2, chi_at_ice_sat1, chi_at_ice_sat2, rc_1_ice, rc_2_ice
+      REAL(KIND=core_rknd) :: ice_supersat_frac1, ice_supersat_frac2, rt_at_ice_sat1, rt_at_ice_sat2, &
+chi_at_ice_sat1, chi_at_ice_sat2, rc_1_ice, rc_2_ice
     
-    real( kind = core_rknd ), parameter :: &
-      chi_at_liq_sat  = 0.0_core_rknd    ! Always zero
+    real( kind = core_rknd ), parameter :: chi_at_liq_sat  = 0.0_core_rknd    ! Always zero
 
-    logical, parameter :: &
-      l_liq_ice_loading_test = .false. ! Temp. flag liq./ice water loading test
+    logical, parameter :: l_liq_ice_loading_test = .false. ! Temp. flag liq./ice water loading test
 
     INTEGER :: i, hm_idx
 
@@ -170,21 +174,33 @@ module pdf_closure_module
     REAL(KIND=kgen_dp), INTENT(INOUT) :: kgen_total_time
     LOGICAL :: kgen_istrue
     
-    REAL(KIND=core_rknd) :: kgenref_wp4, kgenref_wprtp2, kgenref_wp2rtp, kgenref_wpthlp2, kgenref_wp2thlp, kgenref_cloud_frac, kgenref_ice_supersat_frac, kgenref_rcm, kgenref_wpthvp, kgenref_wp2thvp, kgenref_rtpthvp, kgenref_thlpthvp, kgenref_wprcp, kgenref_wp2rcp, kgenref_rtprcp, kgenref_thlprcp, kgenref_rcp2, kgenref_wprtpthlp
+    REAL(KIND=core_rknd) :: kgenref_wp4, kgenref_wprtp2, kgenref_wp2rtp, kgenref_wpthlp2, kgenref_wp2thlp, &
+kgenref_cloud_frac, kgenref_ice_supersat_frac, kgenref_rcm, kgenref_wpthvp, kgenref_wp2thvp, &
+kgenref_rtpthvp, kgenref_thlpthvp, kgenref_wprcp, kgenref_wp2rcp, kgenref_rtprcp, kgenref_thlprcp, &
+kgenref_rcp2, kgenref_wprtpthlp
     TYPE(pdf_parameter) :: kgenref_pdf_params
     INTEGER :: kgenref_err_code
-    REAL(KIND=core_rknd), dimension(sclr_dim) :: kgenref_sclrpthvp, kgenref_sclrprcp, kgenref_wpsclrp2, kgenref_wpsclrprtp, kgenref_wpsclrpthlp, kgenref_wp2sclrp
+    REAL(KIND=core_rknd), dimension(sclr_dim) :: kgenref_sclrpthvp, kgenref_sclrprcp, kgenref_wpsclrp2, &
+kgenref_wpsclrprtp, kgenref_wpsclrpthlp, kgenref_wp2sclrp
     REAL(KIND=core_rknd) :: kgenref_w_1_n, kgenref_w_2_n
-    REAL(KIND=core_rknd) :: kgenref_w_1, kgenref_w_2, kgenref_varnce_w_1, kgenref_varnce_w_2, kgenref_rt_1, kgenref_rt_2, kgenref_varnce_rt_1, kgenref_varnce_rt_2, kgenref_thl_1, kgenref_thl_2, kgenref_varnce_thl_1, kgenref_varnce_thl_2, kgenref_rrtthl, kgenref_alpha_thl, kgenref_alpha_rt, kgenref_crt_1, kgenref_crt_2, kgenref_cthl_1, kgenref_cthl_2
-    REAL(KIND=core_rknd) :: kgenref_chi_1, kgenref_chi_2, kgenref_stdev_chi_1, kgenref_stdev_chi_2, kgenref_stdev_eta_1, kgenref_stdev_eta_2, kgenref_covar_chi_eta_1, kgenref_covar_chi_eta_2, kgenref_corr_chi_eta_1, kgenref_corr_chi_eta_2, kgenref_rsatl_1, kgenref_rsatl_2, kgenref_rc_1, kgenref_rc_2, kgenref_cloud_frac_1, kgenref_cloud_frac_2, kgenref_mixt_frac
-    REAL(KIND=core_rknd), dimension(sclr_dim) :: kgenref_sclr1, kgenref_sclr2, kgenref_varnce_sclr1, kgenref_varnce_sclr2, kgenref_alpha_sclr, kgenref_rsclrthl, kgenref_rsclrrt
+    REAL(KIND=core_rknd) :: kgenref_w_1, kgenref_w_2, kgenref_varnce_w_1, kgenref_varnce_w_2, kgenref_rt_1, &
+kgenref_rt_2, kgenref_varnce_rt_1, kgenref_varnce_rt_2, kgenref_thl_1, kgenref_thl_2, kgenref_varnce_thl_1, &
+kgenref_varnce_thl_2, kgenref_rrtthl, kgenref_alpha_thl, kgenref_alpha_rt, kgenref_crt_1, kgenref_crt_2, &
+kgenref_cthl_1, kgenref_cthl_2
+    REAL(KIND=core_rknd) :: kgenref_chi_1, kgenref_chi_2, kgenref_stdev_chi_1, kgenref_stdev_chi_2, &
+kgenref_stdev_eta_1, kgenref_stdev_eta_2, kgenref_covar_chi_eta_1, kgenref_covar_chi_eta_2, &
+kgenref_corr_chi_eta_1, kgenref_corr_chi_eta_2, kgenref_rsatl_1, kgenref_rsatl_2, kgenref_rc_1, &
+kgenref_rc_2, kgenref_cloud_frac_1, kgenref_cloud_frac_2, kgenref_mixt_frac
+    REAL(KIND=core_rknd), dimension(sclr_dim) :: kgenref_sclr1, kgenref_sclr2, kgenref_varnce_sclr1, &
+kgenref_varnce_sclr2, kgenref_alpha_sclr, kgenref_rsclrthl, kgenref_rsclrrt
     LOGICAL :: kgenref_l_scalar_calc, kgenref_l_calc_ice_supersat_frac
     REAL(KIND=core_rknd) :: kgenref_tl1, kgenref_tl2, kgenref_beta1, kgenref_beta2
     REAL(KIND=core_rknd) :: kgenref_sqrt_wp2
     REAL(KIND=core_rknd) :: kgenref_rc_coef
     REAL(KIND=core_rknd) :: kgenref_wp2rxp, kgenref_wprxp, kgenref_thlprxp, kgenref_rtprxp
     REAL(KIND=core_rknd) :: kgenref_width_factor_1, kgenref_width_factor_2
-    REAL(KIND=core_rknd) :: kgenref_ice_supersat_frac1, kgenref_ice_supersat_frac2, kgenref_rt_at_ice_sat1, kgenref_rt_at_ice_sat2, kgenref_chi_at_ice_sat1, kgenref_chi_at_ice_sat2, kgenref_rc_1_ice, kgenref_rc_2_ice
+    REAL(KIND=core_rknd) :: kgenref_ice_supersat_frac1, kgenref_ice_supersat_frac2, kgenref_rt_at_ice_sat1, &
+kgenref_rt_at_ice_sat2, kgenref_chi_at_ice_sat1, kgenref_chi_at_ice_sat2, kgenref_rc_1_ice, kgenref_rc_2_ice
     INTEGER :: kgenref_i, kgenref_hm_idx
     TYPE(check_t) :: check_status
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
