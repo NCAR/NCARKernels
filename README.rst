@@ -19,6 +19,7 @@ If you find any conflicts on applying the license to the kernel, please contact 
 -------------------
 
 Directory tree of the repo.:
+   .. image:: dirtree.png
 
 ![alt text](dirtree.png "Directory tree")
 
@@ -126,3 +127,6 @@ That being said, we have come up with a draft of test report specification for k
 --------------------
 
 There may be various plotting needs. As of this writing, one plotting format is developed.
+
+   .. image:: plot.png
+   
