@@ -122,7 +122,7 @@ That being said, we have come up with a draft of test report specification for k
                 
       - Other test information can be added in similar way to above essential items.
 
-3.2 test result poltting
+3.2 test result plotting
 --------------------
 
 There may be various plotting needs. As of this writing, one plotting format is developed.
