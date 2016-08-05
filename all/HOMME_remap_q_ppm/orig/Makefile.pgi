@@ -33,4 +33,4 @@ control_mod.o: control_mod.F90
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 clean:
-	rm -f kernel.exe *.mod *.o
+	rm -f kernel.exe *.mod *.o *.oo

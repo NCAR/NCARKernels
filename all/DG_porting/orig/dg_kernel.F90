@@ -38,7 +38,7 @@
       REAL(KIND=DOUBLE) :: s1, s2
       REAL(KIND=DOUBLE) :: start_time, stop_time, elapsed_time
 
-      INTEGER :: i, j, k, l, ii, ie, it, dummy
+      INTEGER :: i, j, k, l, ii, ie, it
 
       ! Init static matrices
 
@@ -54,14 +54,10 @@
       flx(:,:) = 1.0_8
       fly(:,:) = -1.0_8
 
-      !$OMP PARALLEL
-      dummy = omp_get_num_threads()
-      !$OMP END PARALLEL  
-
       start_time = omp_get_wtime()
 
-      !$OMP PARALLEL DEFAULT(NONE) SHARED(flx,fly,grad,delta,der,gw) PRIVATE(it,ie,ii,i,j,k,l,s2,s1)
       DO it=1,nit
+      !$OMP PARALLEL DEFAULT(NONE) SHARED(flx,fly,grad,delta,der,gw) PRIVATE(ie,ii,i,j,k,l,s2,s1)
       !$OMP DO
       DO ie=1,nelem
          DO ii=1,npts
@@ -70,41 +66,30 @@
             s2 = 0.0_8
             DO j = 1, nx
                s1 = 0.0_8
-!JMD               DO i = 1, nx
-                  i = 1
-                  s1 = (delta(l,j)*flx(i+(j-1)*nx,ie)*der(i,k) + &
-                             delta(i,k)*fly(i+(j-1)*nx,ie)*der(j,l))*gw(i)
-                  i = i+1 
+               DO i = 1, nx
                   s1 = s1 + (delta(l,j)*flx(i+(j-1)*nx,ie)*der(i,k) + &
                              delta(i,k)*fly(i+(j-1)*nx,ie)*der(j,l))*gw(i)
-                  i = i+1 
-                  s1 = s1 + (delta(l,j)*flx(i+(j-1)*nx,ie)*der(i,k) + &
-                             delta(i,k)*fly(i+(j-1)*nx,ie)*der(j,l))*gw(i)
-                  i = i+1 
-                  s1 = s1 + (delta(l,j)*flx(i+(j-1)*nx,ie)*der(i,k) + &
-                             delta(i,k)*fly(i+(j-1)*nx,ie)*der(j,l))*gw(i)
-!JMD               END DO  ! i loop
+               END DO  ! i loop
                s2 = s2 + s1*gw(j) 
             END DO ! j loop
             grad(ii,ie) = s2
          END DO ! i1 loop
-!JMD      END DO ! ie
-!JMD      !$OMP END DO
+      END DO ! ie
+      !$OMP END DO
 
      !write(*,*) "DOne with gradient"
 
-!JMD      !$OMP DO
-!JMD      DO ie=1,nelem
-!DEC$ vector always
+      !$OMP DO
+      DO ie=1,nelem
          DO ii=1,npts
             flx(ii,ie) = flx(ii,ie)+ dt*grad(ii,ie)
             fly(ii,ie) = fly(ii,ie)+ dt*grad(ii,ie)
          END DO
       END DO
       !$OMP END DO
+      !$OMP END PARALLEL
       
       END DO ! iteration count, it
-      !$OMP END PARALLEL
 
       stop_time = omp_get_wtime()
 
@@ -112,10 +97,12 @@
 
       WRITE(*, *) "****************** RESULT ********************"
       WRITE(*, *)
-      WRITE(*, "(A,I2,A,I10,A,I8)") "NX = ",SET_NX,", NELEM = ",SET_NELEM,", NIT = ", nit
+      WRITE(*, "(A,I2,A,I2,A)") "DG_KERNEL VERSION (",0," ,",0," )"
+      WRITE(*, *)
+      WRITE(*, "(A, I1,A,I2,A,I10,A,I8)")  "TARGET = ",0,", NX = ",SET_NX,", NELEM = ",SET_NELEM,", NIT = ", nit
       WRITE(*, "(A,E15.7)") "MAX(flx) = ", MAXVAL(flx)
       WRITE(*, "(A,E15.7)") "MIN(fly) = ", MINVAL(fly)
-      WRITE(*, "(A,F7.2)") "Analytic Gflops   = ",(1.0d-9*nit*nelem*npts*(nx*nx*7.D0+2.D0*nx+4.0D0))/elapsed_time
+      WRITE(*, "(A,F7.2)") "Gflops   = ",(1.0d-9*nit*nelem*npts*(nx*nx*7.D0+2.D0*nx+4.0D0))/elapsed_time
       WRITE(*, "(A,F10.3,A)") 'completed in ', elapsed_time, ' seconds'
 
       END PROGRAM Grad_Term_GPU

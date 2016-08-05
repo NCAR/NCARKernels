@@ -63,4 +63,4 @@ kgen_utils.o: kgen_utils.f90
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 clean:
-	rm -f kernel.exe *.mod *.o
+	rm -f kernel.exe *.mod *.o *.oo

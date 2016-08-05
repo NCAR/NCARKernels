@@ -141,7 +141,7 @@
             USE micro_mg2_0, ONLY: micro_mg_tend2_0 => micro_mg_tend
             integer, intent(in) :: kgen_unit
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock
-            INTEGER, PARAMETER :: maxiter=10000
+            INTEGER, PARAMETER :: maxiter=1000
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             REAL(KIND=r8), intent(in) :: dtime
