@@ -45,7 +45,7 @@
             WRITE (kgen_mpi_rank_conv, *) kgen_mpi_rank
             kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 2) + 1)
             WRITE (kgen_counter_conv, *) kgen_counter
-            kgen_filepath = "imp_sol." // TRIM(ADJUSTL(kgen_counter_conv)) // "." // TRIM(ADJUSTL(kgen_mpi_rank_conv))
+            kgen_filepath = "../data/imp_sol." // TRIM(ADJUSTL(kgen_counter_conv)) // "." // TRIM(ADJUSTL(kgen_mpi_rank_conv))
             kgen_unit = kgen_get_newunit()
             
             OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", CONVERT="BIG_ENDIAN", IOSTAT=kgen_ierr)

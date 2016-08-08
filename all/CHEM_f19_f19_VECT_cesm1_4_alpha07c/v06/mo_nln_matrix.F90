@@ -18,7 +18,7 @@
 
       contains
 
-      subroutine nlnmat01( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat01( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -27,12 +27,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -44,7 +42,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,1223) = -(rxt(k,116)*y(k,2) + rxt(k,134)*y(k,3) + rxt(k,161)*y(k,22) &
                       + rxt(k,166)*y(k,23) + rxt(k,174)*y(k,24) + rxt(k,189)*y(k,9) &
                       + rxt(k,192)*y(k,10) + rxt(k,204)*y(k,28) + rxt(k,231)*y(k,37) &
@@ -277,7 +275,7 @@
 
       end subroutine nlnmat01
 
-      subroutine nlnmat02( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat02( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -286,12 +284,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -303,7 +299,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,971) = -(rxt(k,183)*y(k,8) + rxt(k,187)*y(k,2) + rxt(k,188)*y(k,24) &
                       + rxt(k,189)*y(k,1) + rxt(k,197)*y(k,11) + rxt(k,216)*y(k,30) &
                       + rxt(k,237)*y(k,38) + rxt(k,270)*y(k,16) + rxt(k,278)*y(k,137) &
@@ -558,7 +554,7 @@
 
       end subroutine nlnmat02
 
-      subroutine nlnmat03( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat03( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -567,12 +563,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -584,7 +578,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,1013) = -(rxt(k,193)*y(k,10) + rxt(k,197)*y(k,9) + rxt(k,198)*y(k,2) &
                       + rxt(k,199)*y(k,23) + rxt(k,200)*y(k,24) + rxt(k,266)*y(k,19) &
                       + rxt(k,298)*y(k,50) + rxt(k,312)*y(k,59) + rxt(k,328)*y(k,68) &
@@ -911,7 +905,7 @@
 
       end subroutine nlnmat03
 
-      subroutine nlnmat04( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat04( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -920,12 +914,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -937,7 +929,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,338) = -(rxt(k,171)*y(k,23) + rxt(k,176)*y(k,2) + rxt(k,206)*y(k,28))
          mat(k,1136) = -rxt(k,171)*y(k,25)
          mat(k,1441) = -rxt(k,176)*y(k,25)
@@ -1181,7 +1173,7 @@
 
       end subroutine nlnmat04
 
-      subroutine nlnmat05( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat05( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -1190,12 +1182,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -1207,7 +1197,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,429) = -(rxt(k,461)*y(k,132))
          mat(k,439) = -rxt(k,461)*y(k,131)
 
@@ -1484,7 +1474,7 @@
 
       end subroutine nlnmat05
 
-      subroutine nlnmat06( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat06( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -1493,12 +1483,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -1510,7 +1498,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len 
          mat(k,39) = -(rxt(k,388)*y(k,23))
          mat(k,1092) = -rxt(k,388)*y(k,99)
 
@@ -1769,7 +1757,7 @@
 
       end subroutine nlnmat06
 
-      subroutine nlnmat07( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat07( vec_len, avec_len, mat, y, rxt )
 
 
 
@@ -1778,12 +1766,10 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
 
 !----------------------------------------------
@@ -1795,7 +1781,7 @@
 ! ... complete matrix entries implicit species
 !----------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          mat(k,625) = -(rxt(k,322)*y(k,9) + rxt(k,323)*y(k,24) + rxt(k,324)*y(k,16))
          mat(k,955) = -rxt(k,322)*y(k,67)
          mat(k,1312) = -rxt(k,323)*y(k,67)
@@ -1941,17 +1927,15 @@
          mat(k,1094) = -rxt(k,408)*y(k,159)
       end do
       end subroutine nlnmat07
-      subroutine nlnmat_finit( ofl, ofu, mat, lmat, dti, chnkpnts )
+      subroutine nlnmat_finit( vec_len, avec_len, mat, lmat, dti )
       implicit none
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
       real(r8), intent(in) :: dti
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: lmat(chnkpnts,nzcnt)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: lmat(vec_len,nzcnt)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 !----------------------------------------------
 ! ... local variables
 !----------------------------------------------
@@ -1959,7 +1943,7 @@
 !----------------------------------------------
 ! ... complete matrix entries implicit species
 !----------------------------------------------
-      do k = ofl,ofu
+      do k = 1,avec_len 
          mat(k, 1) = lmat(k, 1)
          mat(k, 2) = lmat(k, 2)
          mat(k, 3) = lmat(k, 3)
@@ -2713,26 +2697,24 @@
          mat(k,1471) = mat(k,1471) - dti
       end do
       end subroutine nlnmat_finit
-      subroutine nlnmat( ofl, ofu, mat, y, rxt, lmat, dti, chnkpnts )
+      subroutine nlnmat( vec_len, avec_len, mat, y, rxt, lmat, dti )
       implicit none
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
       real(r8), intent(in) :: dti
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
-      real(r8), intent(in) :: lmat(chnkpnts,nzcnt) 
-      call nlnmat01( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat02( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat03( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat04( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat05( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat06( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat07( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat_finit( ofl, ofu, mat, lmat, dti, chnkpnts )
+      integer, intent(in) :: vec_len, avec_len ! total spatial points in chunk;
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
+      real(r8), intent(in) :: lmat(vec_len,nzcnt) 
+      call nlnmat01( vec_len, avec_len, mat, y, rxt )
+      call nlnmat02( vec_len, avec_len, mat, y, rxt )
+      call nlnmat03( vec_len, avec_len, mat, y, rxt )
+      call nlnmat04( vec_len, avec_len, mat, y, rxt )
+      call nlnmat05( vec_len, avec_len, mat, y, rxt )
+      call nlnmat06( vec_len, avec_len, mat, y, rxt )
+      call nlnmat07( vec_len, avec_len, mat, y, rxt )
+      call nlnmat_finit( vec_len, avec_len, mat, lmat, dti )
       end subroutine nlnmat
       end module mo_nln_matrix

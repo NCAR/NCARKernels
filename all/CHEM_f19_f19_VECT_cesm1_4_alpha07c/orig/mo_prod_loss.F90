@@ -12,7 +12,6 @@
           USE shr_kind_mod, ONLY: r8 => shr_kind_r8
 
           USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck
-          USE chem_mods, ONLY: clscnt4, gas_pcnst, rxntot
           PRIVATE
           PUBLIC imp_prod_loss
 
@@ -38,7 +37,7 @@
 
 
       subroutine imp_prod_loss( ofl, ofu, prod, loss, y, &
-                                rxt, het_rates, chnkpnts )
+                                rxt, het_rates )
 
 
       implicit none
@@ -46,15 +45,14 @@
 !--------------------------------------------------------------------
 ! ... dummy args
 !--------------------------------------------------------------------
-      integer, intent(in) :: chnkpnts
-      real(r8), dimension(chnkpnts,clscnt4), intent(out) :: &
+      real(r8), dimension(:,:), intent(out) :: &
             prod, &
             loss
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: het_rates(chnkpnts,gas_pcnst)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(in) :: het_rates(:,:)
 
 
 !--------------------------------------------------------------------

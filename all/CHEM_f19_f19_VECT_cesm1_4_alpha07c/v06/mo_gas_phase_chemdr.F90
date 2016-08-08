@@ -516,11 +516,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     
     !kgen kernel subroutine
     SUBROUTINE kgen_kernel()
-!    use extrae_module
-!    call extrae_user_function(1)
     call imp_sol( vmr, reaction_rates_chnks, het_rates_chnks, extfrc, delt,  ncol, lchnk, chnkpnts )
-!    call extrae_user_function(0)
-!    call extrae_next_hwc_set()
     END SUBROUTINE kgen_kernel
     
     !verify state subroutine for kv_gas_phase_chemdr_real__r8_dim3

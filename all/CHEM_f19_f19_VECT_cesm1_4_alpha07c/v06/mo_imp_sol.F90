@@ -21,6 +21,7 @@
 !-----------------------------------------------------------------------
       integer, parameter :: itermax = 11
       integer, parameter :: cut_limit = 5
+      integer, parameter :: vec_len = 16 
       real(r8), parameter :: sol_min = 1.e-20_r8
       real(r8), parameter :: small = 1.e-40_r8
 
@@ -28,6 +29,7 @@
 
       real(r8) :: epsilon(clscnt4)
       logical :: factor(itermax)
+      logical :: first_time = .true.
 
       PRIVATE
       PUBLIC imp_sol
@@ -50,7 +52,7 @@
 
 
 
-      subroutine imp_sol( base_sol, reaction_rates, het_rates, extfrc, delt, &
+      subroutine imp_sol( base_sol_full, reaction_rates_full, het_rates_full, extfrc_full, delt, &
                           ncol, lchnk, chnkpnts )
 !-----------------------------------------------------------------------
 ! ... imp_sol advances the volumetric mixing ratio
@@ -65,7 +67,7 @@
           USE mo_nln_matrix, ONLY: nlnmat
           USE mo_lu_factor, ONLY: lu_fac
           USE mo_lu_solve, ONLY: lu_slv
-          USE mo_prod_loss, ONLY: imp_prod_loss
+          USE mo_prod_loss, ONLY: imp_prod_loss, imp_prod_loss_blk
           USE mo_indprd, ONLY: indprd
 
       implicit none
@@ -77,10 +79,10 @@
       integer, intent(in) :: lchnk ! chunk id
       integer, intent(in) :: chnkpnts ! total spatial points in chunk; ncol*pver
       real(r8), intent(in) :: delt ! time step (s)
-      real(r8), intent(in) :: reaction_rates(chnkpnts,max(1,rxntot)) ! rxt rates (1/cm^3/s)
-      real(r8), intent(in) :: extfrc(chnkpnts,max(1,extcnt)) ! external in-situ forcing (1/cm^3/s)
-      real(r8), intent(in) :: het_rates(chnkpnts,max(1,gas_pcnst)) ! washout rates (1/s)
-      real(r8), intent(inout) :: base_sol(chnkpnts,gas_pcnst) ! species mixing ratios (vmr)
+      real(r8), intent(in) :: reaction_rates_full(chnkpnts,max(1,rxntot)) ! rxt rates (1/cm^3/s)
+      real(r8), intent(in) :: extfrc_full(chnkpnts,max(1,extcnt)) ! external in-situ forcing (1/cm^3/s)
+      real(r8), intent(in) :: het_rates_full(chnkpnts,max(1,gas_pcnst)) ! washout rates (1/s)
+      real(r8), intent(inout) :: base_sol_full(chnkpnts,gas_pcnst) ! species mixing ratios (vmr)
 
 !-----------------------------------------------------------------------
 ! ... local variables
@@ -91,43 +93,45 @@
       integer :: bndx ! base index
       integer :: cndx ! class index
       integer :: pndx ! permuted class index
-      integer :: m
+      integer :: i, m
       integer :: fail_cnt
       integer :: cut_cnt
       integer :: stp_con_cnt
       integer :: nstep
+      integer :: avec_len
       real(r8) :: interval_done
       real(r8) :: dt
       real(r8) :: dti
       real(r8) :: max_delta(max(1,clscnt4))
-      real(r8) :: sys_jac(chnkpnts,max(1,nzcnt))
-      real(r8) :: lin_jac(chnkpnts,max(1,nzcnt))
-      real(r8) :: solution(chnkpnts,max(1,clscnt4))
-      real(r8) :: forcing(chnkpnts,max(1,clscnt4))
-      real(r8) :: iter_invariant(chnkpnts,max(1,clscnt4))
-      real(r8) :: prod(chnkpnts,max(1,clscnt4))
-      real(r8) :: loss(chnkpnts,max(1,clscnt4))
-      real(r8) :: ind_prd(chnkpnts,max(1,clscnt4))
-      real(r8) :: sbase_sol(chnkpnts,gas_pcnst)
-      real(r8) :: wrk(chnkpnts)
+      real(r8) :: ind_prd_full(chnkpnts,max(1,clscnt4))
       logical :: convergence
-      logical :: spc_conv(chnkpnts,max(1,clscnt4))
-      logical :: cls_conv(chnkpnts)
       logical :: converged(max(1,clscnt4))
-      integer :: vec_len
-!      vec_len = ncol
-!      vec_len=chnkpnts
-!      vec_len = 64
-      vec_len = 64
+
+      real(r8) :: sys_jac_blk(vec_len,max(1,nzcnt))
+      real(r8) :: lin_jac_blk(vec_len,max(1,nzcnt))
+      real(r8) :: solution_blk(vec_len,max(1,clscnt4))
+      real(r8) :: forcing_blk(vec_len,max(1,clscnt4))
+      real(r8) :: iter_invariant_blk(vec_len,max(1,clscnt4))
+      real(r8) :: prod_blk(vec_len,max(1,clscnt4))
+      real(r8) :: loss_blk(vec_len,max(1,clscnt4))
+      real(r8) :: ind_prd_blk(vec_len,max(1,clscnt4))
+      real(r8) :: sbase_sol_blk(vec_len,gas_pcnst)
+      real(r8) :: wrk_blk(vec_len)
+      logical :: spc_conv_blk(vec_len,max(1,clscnt4))
+      logical :: cls_conv_blk(vec_len)
+      real(r8) :: reaction_rates_blk(vec_len,max(1,rxntot))
+      real(r8) :: extfrc_blk(vec_len,max(1,extcnt))
+      real(r8) :: het_rates_blk(vec_len,max(1,gas_pcnst))
+      real(r8) :: base_sol_blk(vec_len,gas_pcnst)
 
 !-----------------------------------------------------------------------
 ! ... class independent forcing
 !-----------------------------------------------------------------------
       if( cls_rxt_cnt(1,4) > 0 .or. extcnt > 0 ) then
-         call indprd( 4, ind_prd, base_sol, extfrc, reaction_rates, chnkpnts )
+         call indprd( 4, ind_prd_full, base_sol_full, extfrc_full, reaction_rates_full, chnkpnts )
       else
          do m = 1,clscnt4
-            ind_prd(:,m) = 0._r8
+            ind_prd_full(:,m) = 0._r8
          end do
       end if
 
@@ -135,8 +139,36 @@
 chnkpnts_loop : &
       do 
          ofu = min( chnkpnts,ofl + vec_len - 1 )
+         avec_len = (ofu - ofl) + 1
+!         write(*,*) 'avec_len = ',avec_len, ofl, ofu
+
+!         sys_jac_blk = 0._r8
+!         lin_jac_blk = 0._r8
+!         solution_blk = 0._r8
+!         forcing_blk = 0._r8
+!         iter_invariant_blk = 0._r8
+!         prod_blk = 0._r8
+!         loss_blk = 0._r8
+!         ind_prd_blk = 0._r8
+!         sbase_sol_blk = 0._r8
+!         wrk_blk = 0._r8
+!         spc_conv_blk = 0
+!         cls_conv_blk = 0
+!         reaction_rates_blk = 0._r8
+!         extfrc_blk = 0._r8
+!         het_rates_blk = 0._r8
+!         base_sol_blk = 0._r8
+
+         reaction_rates_blk(1:avec_len,:) = reaction_rates_full(ofl:ofu,:)
+         extfrc_blk(1:avec_len,:) = extfrc_full(ofl:ofu,:)
+         het_rates_blk(1:avec_len,:) = het_rates_full(ofl:ofu,:)
+         ind_prd_blk(1:avec_len,:) = ind_prd_full(ofl:ofu,:)
+         base_sol_blk(1:avec_len,:) = base_sol_full(ofl:ofu,:)
+
          do m = 1,gas_pcnst
-            sbase_sol(ofl:ofu,m) = base_sol(ofl:ofu,m)
+           do i = 1, avec_len
+             sbase_sol_blk(i,m) = base_sol_blk(i,m)
+           end do
          end do
 !-----------------------------------------------------------------------
 ! ... time step loop
@@ -155,60 +187,73 @@ time_step_loop : &
             do cndx = 1,clscnt4
                bndx = clsmap(cndx,4)
                pndx = permute(cndx,4)
-               solution(ofl:ofu,pndx) = base_sol(ofl:ofu,bndx)
+               do i = 1, avec_len
+                 solution_blk(i,pndx) = base_sol_blk(i,bndx)
+               end do
             end do
 !-----------------------------------------------------------------------
 ! ... set the iteration invariant part of the function f(y)
 !-----------------------------------------------------------------------
             if( cls_rxt_cnt(1,4) > 0 .or. extcnt > 0 ) then
                do m = 1,clscnt4
-                  iter_invariant(ofl:ofu,m) = dti * solution(ofl:ofu,m) + ind_prd(ofl:ofu,m)
+                 do i = 1, avec_len
+                   iter_invariant_blk(i,m) = dti * solution_blk(i,m) + ind_prd_blk(i,m)
+                 enddo
                end do
             else
                do m = 1,clscnt4
-                  iter_invariant(ofl:ofu,m) = dti * solution(ofl:ofu,m)
+                 do i = 1, avec_len
+                   iter_invariant_blk(i,m) = dti * solution_blk(i,m)
+                 end do
                end do
             end if
 !-----------------------------------------------------------------------
 ! ... the linear component
 !-----------------------------------------------------------------------
             if( cls_rxt_cnt(2,4) > 0 ) then
-               call linmat( ofl, ofu, lin_jac, base_sol, reaction_rates, het_rates, chnkpnts )
+               call linmat( vec_len, avec_len, lin_jac_blk, base_sol_blk, reaction_rates_blk, het_rates_blk)
             end if
 !=======================================================================
 ! the newton-raphson iteration for f(y) = 0
 !=======================================================================
-            cls_conv(ofl:ofu) = .false.
+            do i = 1, avec_len
+              cls_conv_blk(i) = .false.
+            end do
 iter_loop : do nr_iter = 1,itermax
 !-----------------------------------------------------------------------
 ! ... the non-linear component
 !-----------------------------------------------------------------------
                if( factor(nr_iter) ) then
-                  call nlnmat( ofl, ofu, sys_jac, base_sol, reaction_rates, lin_jac, dti, chnkpnts )
+                  call nlnmat( vec_len, avec_len, sys_jac_blk, base_sol_blk, reaction_rates_blk, lin_jac_blk, dti)
 !-----------------------------------------------------------------------
 ! ... factor the "system" matrix
 !-----------------------------------------------------------------------
-                  call lu_fac( ofl, ofu, sys_jac, chnkpnts )
+                  call lu_fac( vec_len, avec_len, sys_jac_blk)
                end if
 !-----------------------------------------------------------------------
 ! ... form f(y)
 !-----------------------------------------------------------------------
-               call imp_prod_loss( ofl, ofu, prod, loss, base_sol, &
-                                   reaction_rates, het_rates, chnkpnts )
+               call imp_prod_loss( vec_len, avec_len, prod_blk, loss_blk, base_sol_blk, &
+                                   reaction_rates_blk, het_rates_blk )
                do m = 1,clscnt4
-                  forcing(ofl:ofu,m) = solution(ofl:ofu,m)*dti &
-                                     - (iter_invariant(ofl:ofu,m) + prod(ofl:ofu,m) - loss(ofl:ofu,m))
+                 do i = 1, avec_len
+                   forcing_blk(i,m) = solution_blk(i,m)*dti &
+                                - (iter_invariant_blk(i,m) + prod_blk(i,m) - loss_blk(i,m))
+                 enddo
                end do
 !-----------------------------------------------------------------------
 ! ... solve for the mixing ratio at t(n+1)
 !-----------------------------------------------------------------------
-               call lu_slv( ofl, ofu, sys_jac, forcing, chnkpnts )
+               call lu_slv( vec_len, avec_len, sys_jac_blk, forcing_blk )
+
                do m = 1,clscnt4
-                  where( .not. cls_conv(ofl:ofu) )
-                     solution(ofl:ofu,m) = solution(ofl:ofu,m) + forcing(ofl:ofu,m)
-                  elsewhere
-                     forcing(ofl:ofu,m) = 0._r8
-                  endwhere
+                 do i = 1, avec_len
+                   if( .not. cls_conv_blk(i) ) then
+                     solution_blk(i,m) = solution_blk(i,m) + forcing_blk(i,m)
+                   else
+                     forcing_blk(i,m) = 0._r8
+                   endif
+                 end do
                end do
 !-----------------------------------------------------------------------
 ! ... convergence measures and test
@@ -221,28 +266,36 @@ iter_loop : do nr_iter = 1,itermax
                   do cndx = 1,clscnt4
                      pndx = permute(cndx,4)
                      bndx = clsmap(cndx,4)
-                     where( abs( solution(ofl:ofu,pndx) ) > sol_min )
-                        wrk(ofl:ofu) = abs( forcing(ofl:ofu,pndx)/solution(ofl:ofu,pndx) )
-                     elsewhere
-                        wrk(ofl:ofu) = 0._r8
-                     endwhere
-                     max_delta(cndx) = maxval( wrk(ofl:ofu) )
-                     solution(ofl:ofu,pndx) = max( 0._r8,solution(ofl:ofu,pndx) )
-                     base_sol(ofl:ofu,bndx) = solution(ofl:ofu,pndx)
-                     where( abs( forcing(ofl:ofu,pndx) ) > small )
-                        spc_conv(ofl:ofu,cndx) = abs(forcing(ofl:ofu,pndx)) <= epsilon(cndx)*abs(solution(ofl:ofu,pndx))
-                     elsewhere
-                        spc_conv(ofl:ofu,cndx) = .true.
-                     endwhere
-                     converged(cndx) = all( spc_conv(ofl:ofu,cndx) )
+                     do i = 1, avec_len
+                       if ( abs( solution_blk(i,pndx) ) > sol_min ) then
+                          wrk_blk(i) = abs( forcing_blk(i,pndx)/solution_blk(i,pndx) )
+                       else
+                        wrk_blk(i) = 0._r8
+                       endif
+                     enddo
+
+                     max_delta(cndx) = maxval( wrk_blk(1:avec_len) )
+                     do i = 1, avec_len
+                       solution_blk(i,pndx) = max( 0._r8,solution_blk(i,pndx) )
+                       base_sol_blk(i,bndx) = solution_blk(i,pndx)
+                       if ( abs( forcing_blk(i,pndx) ) > small ) then
+                         spc_conv_blk(i,cndx) = abs(forcing_blk(i,pndx)) <= epsilon(cndx)*abs(solution_blk(i,pndx))
+                       else
+                         spc_conv_blk(i,cndx) = .true.
+                       endif
+                     enddo
+                     converged(cndx) = all( spc_conv_blk(1:avec_len,cndx) )
                   end do
+
                   convergence = all( converged(:) )
                   if( convergence ) then
+                     base_sol_full(ofl:ofu,:) = base_sol_blk(1:avec_len,:)
+                     ind_prd_full(ofl:ofu,:) = ind_prd_blk(1:avec_len,:)
                      exit iter_loop
                   end if
-                  do m = ofl,ofu
-                     if( .not. cls_conv(m) ) then
-                        cls_conv(m) = all( spc_conv(m,:) )
+                  do m = 1, avec_len
+                     if( .not. cls_conv_blk(m) ) then
+                        cls_conv_blk(m) = all( spc_conv_blk(m,:) )
                      end if
                   end do
 ! SAM               else conv_chk
@@ -251,7 +304,9 @@ iter_loop : do nr_iter = 1,itermax
 ! ... limit iterate
 !-----------------------------------------------------------------------
                   do m = 1,clscnt4
-                     solution(ofl:ofu,m) = max( 0._r8,solution(ofl:ofu,m) )
+                    do i = 1, avec_len
+                      solution_blk(i,m) = max( 0._r8,solution_blk(i,m) )
+                    end do
                   end do
 !-----------------------------------------------------------------------
 ! ... transfer latest solution back to base array
@@ -259,7 +314,9 @@ iter_loop : do nr_iter = 1,itermax
                   do cndx = 1,clscnt4
                      pndx = permute(cndx,4)
                      bndx = clsmap(cndx,4)
-                     base_sol(ofl:ofu,bndx) = solution(ofl:ofu,pndx)
+                     do i = 1, avec_len
+                       base_sol_blk(i,bndx) = solution_blk(i,pndx)
+                     end do
                   end do
 ! SAM               end if conv_chk
                 end if !conv_chk
@@ -276,7 +333,7 @@ iter_loop : do nr_iter = 1,itermax
                fail_cnt = fail_cnt + 1
 !               nstep = get_nstep()
 !               write(*,'('' imp_sol: time step '',1p,g15.7,'' failed to converge @ (lchnk,lev,nstep) = '',3i6)') &
-!                              dt,lchnk,lev!,nstep
+!                              dt,lchnk,lev,nstep
                stp_con_cnt = 0
 ! SAM step_reduction : &
                if( cut_cnt < cut_limit ) then
@@ -287,19 +344,18 @@ iter_loop : do nr_iter = 1,itermax
                      dt = .1_r8 * dt
                   end if
                   do m = 1,gas_pcnst
-                     base_sol(ofl:ofu,m) = sbase_sol(ofl:ofu,m)
+                     base_sol_blk(:,m) = sbase_sol_blk(:,m)
                   end do
                   cycle time_step_loop
 ! SAM               else step_reduction
                   else !step_reduction
-!                  write(*,'('' imp_sol: step failed to converge @ (lchnk,lev,nstep,dt,time) = '',3i6,1p,2g15.7)') &
+                  write(*,*)' imp_sol: step failed to converge @ (lchnk,lev,nstep,dt,time) = ',ofl,ofu!,3i6,1p,2g15.7)') &
 !                        lchnk,lev,nstep,dt,interval_done+dt
-                  write(*,*)' imp_sol: step failed to converge @ (lchnk,lev,nstep,dt,time) = '
-                  do m = 1,clscnt4
-                     if( .not. converged(m) ) then
-                        write(*,'(1x,a8,1x,1pe10.3)') solsym(clsmap(m,4)), max_delta(m)
-                     end if
-                  end do
+!                 do m = 1,clscnt4
+!                     if( .not. converged(m) ) then
+!                        write(*,'(1x,a8,1x,1pe10.3)') solsym(clsmap(m,4)), max_delta(m)
+!                     end if
+!                  end do
 ! SM               end if step_reduction
                   end if !step_reduction
 ! SAM            end if non_conv
@@ -313,6 +369,8 @@ iter_loop : do nr_iter = 1,itermax
                if( fail_cnt > 0 ) then
                   write(*,*) 'imp_sol : @ (lchnk,lev) = '!,lchnk,lev,' failed ',fail_cnt,' times'
                end if
+               base_sol_full(ofl:ofu,:) = base_sol_blk(1:avec_len,:)
+               ind_prd_full(ofl:ofu,:) = ind_prd_blk(1:avec_len,:)
                exit time_step_loop
 ! SAM            else time_step_done
             else !time_step_done
@@ -323,7 +381,9 @@ iter_loop : do nr_iter = 1,itermax
                   stp_con_cnt = stp_con_cnt + 1
                end if
                do m = 1,gas_pcnst
-                  sbase_sol(ofl:ofu,m) = base_sol(ofl:ofu,m)
+                 do i = 1, avec_len
+                   sbase_sol_blk(i,m) = base_sol_blk(i,m)
+                 end do
                end do
                if( stp_con_cnt >= 2 ) then
                   dt = 2._r8*dt
@@ -335,8 +395,14 @@ iter_loop : do nr_iter = 1,itermax
          end do time_step_loop
          ofl = ofu + 1
          if( ofl > chnkpnts ) then
+            base_sol_full(ofl:ofu,:) = base_sol_blk(1:avec_len,:)
+            ind_prd_full(ofl:ofu,:) = ind_prd_blk(1:avec_len,:)
             exit chnkpnts_loop
          end if
+
+         base_sol_full(ofl:ofu,:) = base_sol_blk(1:avec_len,:)
+         ind_prd_full(ofl:ofu,:) = ind_prd_blk(1:avec_len,:)
+
       end do chnkpnts_loop
 
       end subroutine imp_sol

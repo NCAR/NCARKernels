@@ -14,7 +14,7 @@
           USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck
           USE chem_mods, ONLY: clscnt4, gas_pcnst, rxntot
           PRIVATE
-          PUBLIC imp_prod_loss
+          PUBLIC imp_prod_loss, imp_prod_loss_blk
 
       contains
 
@@ -35,10 +35,8 @@
 !--------------------------------------------------------------------
 
 
-
-
-      subroutine imp_prod_loss( ofl, ofu, prod, loss, y, &
-                                rxt, het_rates, chnkpnts )
+      subroutine imp_prod_loss( vec_len, avec_len, prod, loss, y, &
+                                rxt, het_rates )
 
 
       implicit none
@@ -46,15 +44,13 @@
 !--------------------------------------------------------------------
 ! ... dummy args
 !--------------------------------------------------------------------
-      integer, intent(in) :: chnkpnts
-      real(r8), dimension(chnkpnts,clscnt4), intent(out) :: &
+      integer, intent(in) :: vec_len, avec_len
+      real(r8), dimension(vec_len,clscnt4), intent(out) :: &
             prod, &
             loss
-      integer, intent(in) :: ofl
-      integer, intent(in) :: ofu
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: het_rates(chnkpnts,gas_pcnst)
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(in) :: het_rates(vec_len,gas_pcnst)
 
 
 !--------------------------------------------------------------------
@@ -66,7 +62,7 @@
 ! ... loss and production for Implicit method
 !--------------------------------------------------------------------
 
-      do k = ofl,ofu
+      do k = 1,avec_len
          loss(k,139) = (rxt(k,116)* y(k,2) +rxt(k,134)* y(k,3) +rxt(k,189)* y(k,9) &
                   +rxt(k,192)* y(k,10) +rxt(k,161)* y(k,22) +rxt(k,166)* y(k,23) &
                   +rxt(k,174)* y(k,24) +rxt(k,204)* y(k,28) +rxt(k,231)* y(k,37) &
@@ -856,7 +852,6 @@
          loss(k,27) = ( + rxt(k,430) + het_rates(k,169))* y(k,169)
          prod(k,27) = 0._r8
       end do
-
       end subroutine imp_prod_loss
 
       end module mo_prod_loss

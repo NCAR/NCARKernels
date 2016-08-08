@@ -17,7 +17,7 @@
 
       contains
 
-      subroutine linmat01( ofl, ofu, mat, y, rxt, het_rates, chnkpnts )
+      subroutine linmat01( vec_len, avec_len, mat, y, rxt, het_rates)
 !----------------------------------------------
 ! ... linear matrix entries for implicit species
 !----------------------------------------------
@@ -30,19 +30,18 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl, ofu
-      integer, intent(in) :: chnkpnts
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: het_rates(chnkpnts,gas_pcnst)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(in) :: het_rates(vec_len,gas_pcnst)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 !----------------------------------------------
 ! ... local variables
 !----------------------------------------------
       integer :: k
 
 
-      do k = ofl,ofu
+      do k = 1,avec_len
 
          mat(k,1223) = -( rxt(k,3) + rxt(k,4) + het_rates(k,1) )
 
@@ -280,7 +279,7 @@
 
       end subroutine linmat01
 
-      subroutine linmat02( ofl, ofu, mat, y, rxt, het_rates, chnkpnts )
+      subroutine linmat02( vec_len, avec_len, mat, y, rxt, het_rates )
 !----------------------------------------------
 ! ... linear matrix entries for implicit species
 !----------------------------------------------
@@ -293,19 +292,18 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl, ofu
-      integer, intent(in) :: chnkpnts
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: het_rates(chnkpnts,gas_pcnst)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(in) :: het_rates(vec_len,gas_pcnst)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 !----------------------------------------------
 ! ... local variables
 !----------------------------------------------
       integer :: k
 
 
-      do k = ofl,ofu
+      do k = 1,avec_len 
 
          mat(k,511) = -( rxt(k,27) + het_rates(k,34) )
          mat(k,580) = rxt(k,433) + rxt(k,439) + rxt(k,444)
@@ -621,7 +619,7 @@
 
       end subroutine linmat02
 
-      subroutine linmat( ofl, ofu, mat, y, rxt, het_rates, chnkpnts )
+      subroutine linmat( vec_len, avec_len, mat, y, rxt, het_rates )
 !----------------------------------------------
 ! ... linear matrix entries for implicit species
 !----------------------------------------------
@@ -634,15 +632,14 @@
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
-      integer, intent(in) :: ofl, ofu
-      integer, intent(in) :: chnkpnts
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: het_rates(chnkpnts,gas_pcnst)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      integer, intent(in) :: vec_len, avec_len
+      real(r8), intent(in) :: y(vec_len,gas_pcnst)
+      real(r8), intent(in) :: rxt(vec_len,rxntot)
+      real(r8), intent(in) :: het_rates(vec_len,gas_pcnst)
+      real(r8), intent(inout) :: mat(vec_len,nzcnt)
 
-      call linmat01( ofl, ofu, mat, y, rxt, het_rates, chnkpnts )
-      call linmat02( ofl, ofu, mat, y, rxt, het_rates, chnkpnts )
+      call linmat01( vec_len, avec_len, mat, y, rxt, het_rates )
+      call linmat02( vec_len, avec_len, mat, y, rxt, het_rates )
 
       end subroutine linmat
 

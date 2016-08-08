@@ -12,7 +12,6 @@
         USE chem_mods, ONLY: kr_externs_in_chem_mods
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
         IMPLICIT NONE
-!        include 'mpif.h' 
         
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv
@@ -27,13 +26,6 @@
         INTEGER :: lchnk
         INTEGER :: ncol
         REAL(KIND=r8) :: delt
-
-!        integer rank, size, ierror
-
-!        call MPI_INIT(ierror)
-!        call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierror)
-!        call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
-
         kgen_total_time = 0.0_kgen_dp
         
         DO kgen_repeat_counter = 0, 3
@@ -42,7 +34,7 @@
             WRITE (kgen_mpi_rank_conv, *) kgen_mpi_rank
             kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 2) + 1)
             WRITE (kgen_counter_conv, *) kgen_counter
-            kgen_filepath = "imp_sol." // TRIM(ADJUSTL(kgen_counter_conv)) // "." // TRIM(ADJUSTL(kgen_mpi_rank_conv))
+            kgen_filepath = "../data/imp_sol." // TRIM(ADJUSTL(kgen_counter_conv)) // "." // TRIM(ADJUSTL(kgen_mpi_rank_conv))
             kgen_unit = kgen_get_newunit()
             
             OPEN (UNIT=kgen_unit, FILE=kgen_filepath, STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", ACTION="READ", CONVERT="BIG_ENDIAN", IOSTAT=kgen_ierr)
@@ -75,7 +67,4 @@
         WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
         WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
         WRITE (*, *) "******************************************************************************"
-!        WRITE (*, *) rank,"/",size,kgen_total_time / 4
-        WRITE (*, *)kgen_total_time / 4
-!        call MPI_FINALIZE(ierror)
     END PROGRAM 

@@ -115,16 +115,12 @@
       logical :: cls_conv(chnkpnts)
       logical :: converged(max(1,clscnt4))
       integer :: vec_len
-      !vec_len = ncol
-      !vec_len=chnkpnts
-
-      vec_len=64  ! Optimal value for SB
-!      vec_len=32
+      vec_len = ncol
 !-----------------------------------------------------------------------
 ! ... class independent forcing
 !-----------------------------------------------------------------------
       if( cls_rxt_cnt(1,4) > 0 .or. extcnt > 0 ) then
-         call indprd( 4, ind_prd, base_sol, extfrc, reaction_rates, chnkpnts )
+         call indprd( 4, ind_prd, base_sol, extfrc, reaction_rates )
       else
          do m = 1,clscnt4
             ind_prd(:,m) = 0._r8
@@ -173,7 +169,7 @@ time_step_loop : &
 ! ... the linear component
 !-----------------------------------------------------------------------
             if( cls_rxt_cnt(2,4) > 0 ) then
-               call linmat( ofl, ofu, lin_jac, base_sol, reaction_rates, het_rates, chnkpnts )
+               call linmat( ofl, ofu, lin_jac, base_sol, reaction_rates, het_rates )
             end if
 !=======================================================================
 ! the newton-raphson iteration for f(y) = 0
@@ -184,17 +180,17 @@ iter_loop : do nr_iter = 1,itermax
 ! ... the non-linear component
 !-----------------------------------------------------------------------
                if( factor(nr_iter) ) then
-                  call nlnmat( ofl, ofu, sys_jac, base_sol, reaction_rates, lin_jac, dti, chnkpnts )
+                  call nlnmat( ofl, ofu, sys_jac, base_sol, reaction_rates, lin_jac, dti )
 !-----------------------------------------------------------------------
 ! ... factor the "system" matrix
 !-----------------------------------------------------------------------
-                  call lu_fac( ofl, ofu, sys_jac, chnkpnts )
+                  call lu_fac( ofl, ofu, sys_jac )
                end if
 !-----------------------------------------------------------------------
 ! ... form f(y)
 !-----------------------------------------------------------------------
                call imp_prod_loss( ofl, ofu, prod, loss, base_sol, &
-                                   reaction_rates, het_rates, chnkpnts )
+                                   reaction_rates, het_rates )
                do m = 1,clscnt4
                   forcing(ofl:ofu,m) = solution(ofl:ofu,m)*dti &
                                      - (iter_invariant(ofl:ofu,m) + prod(ofl:ofu,m) - loss(ofl:ofu,m))
@@ -202,7 +198,7 @@ iter_loop : do nr_iter = 1,itermax
 !-----------------------------------------------------------------------
 ! ... solve for the mixing ratio at t(n+1)
 !-----------------------------------------------------------------------
-               call lu_slv( ofl, ofu, sys_jac, forcing, chnkpnts )
+               call lu_slv( ofl, ofu, sys_jac, forcing )
                do m = 1,clscnt4
                   where( .not. cls_conv(ofl:ofu) )
                      solution(ofl:ofu,m) = solution(ofl:ofu,m) + forcing(ofl:ofu,m)

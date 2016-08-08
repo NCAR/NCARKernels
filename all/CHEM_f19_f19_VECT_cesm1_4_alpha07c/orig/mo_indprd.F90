@@ -13,13 +13,12 @@
           USE shr_kind_mod, ONLY: r8 => shr_kind_r8
 
           USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck
-          USE chem_mods, ONLY: clscnt4, gas_pcnst, rxntot, extcnt
           PRIVATE
           PUBLIC indprd
 
       contains
 
-      subroutine indprd( class, prod, y, extfrc, rxt, chnkpnts )
+      subroutine indprd( class, prod, y, extfrc, rxt )
 
 
       implicit none
@@ -28,11 +27,10 @@
 ! ... dummy arguments
 !--------------------------------------------------------------------
       integer, intent(in) :: class
-      integer, intent(in) :: chnkpnts
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(in) :: extfrc(chnkpnts,extcnt)
-      real(r8), intent(inout) :: prod(chnkpnts,clscnt4)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(in) :: extfrc(:,:)
+      real(r8), intent(inout) :: prod(:,:)
 
 !--------------------------------------------------------------------
 ! ... "independent" production for Explicit species

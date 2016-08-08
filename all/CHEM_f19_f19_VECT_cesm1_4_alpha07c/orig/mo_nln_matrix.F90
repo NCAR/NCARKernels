@@ -11,14 +11,14 @@
       module mo_nln_matrix
 
           USE shr_kind_mod, ONLY: r8 => shr_kind_r8
-          USE chem_mods, ONLY: nzcnt, gas_pcnst, rxntot
+
           USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck
           PRIVATE
           PUBLIC nlnmat
 
       contains
 
-      subroutine nlnmat01( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat01( ofl, ofu, mat, y, rxt )
 
 
 
@@ -29,10 +29,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -277,7 +276,7 @@
 
       end subroutine nlnmat01
 
-      subroutine nlnmat02( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat02( ofl, ofu, mat, y, rxt )
 
 
 
@@ -288,10 +287,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -558,7 +556,7 @@
 
       end subroutine nlnmat02
 
-      subroutine nlnmat03( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat03( ofl, ofu, mat, y, rxt )
 
 
 
@@ -569,10 +567,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -911,7 +908,7 @@
 
       end subroutine nlnmat03
 
-      subroutine nlnmat04( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat04( ofl, ofu, mat, y, rxt )
 
 
 
@@ -922,10 +919,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -1181,7 +1177,7 @@
 
       end subroutine nlnmat04
 
-      subroutine nlnmat05( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat05( ofl, ofu, mat, y, rxt )
 
 
 
@@ -1192,10 +1188,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -1484,7 +1479,7 @@
 
       end subroutine nlnmat05
 
-      subroutine nlnmat06( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat06( ofl, ofu, mat, y, rxt )
 
 
 
@@ -1495,10 +1490,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -1769,7 +1763,7 @@
 
       end subroutine nlnmat06
 
-      subroutine nlnmat07( ofl, ofu, mat, y, rxt, chnkpnts )
+      subroutine nlnmat07( ofl, ofu, mat, y, rxt )
 
 
 
@@ -1780,10 +1774,9 @@
 !----------------------------------------------
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 
 
 !----------------------------------------------
@@ -1941,7 +1934,7 @@
          mat(k,1094) = -rxt(k,408)*y(k,159)
       end do
       end subroutine nlnmat07
-      subroutine nlnmat_finit( ofl, ofu, mat, lmat, dti, chnkpnts )
+      subroutine nlnmat_finit( ofl, ofu, mat, lmat, dti )
       implicit none
 !----------------------------------------------
 ! ... dummy arguments
@@ -1949,9 +1942,8 @@
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
       real(r8), intent(in) :: dti
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: lmat(chnkpnts,nzcnt)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
+      real(r8), intent(in) :: lmat(:,:)
+      real(r8), intent(inout) :: mat(:,:)
 !----------------------------------------------
 ! ... local variables
 !----------------------------------------------
@@ -2713,7 +2705,7 @@
          mat(k,1471) = mat(k,1471) - dti
       end do
       end subroutine nlnmat_finit
-      subroutine nlnmat( ofl, ofu, mat, y, rxt, lmat, dti, chnkpnts )
+      subroutine nlnmat( ofl, ofu, mat, y, rxt, lmat, dti )
       implicit none
 !----------------------------------------------
 ! ... dummy arguments
@@ -2721,18 +2713,17 @@
       integer, intent(in) :: ofl
       integer, intent(in) :: ofu
       real(r8), intent(in) :: dti
-      integer, intent(in) :: chnkpnts ! total spatial points in chunk;
-      real(r8), intent(in) :: y(chnkpnts,gas_pcnst)
-      real(r8), intent(in) :: rxt(chnkpnts,rxntot)
-      real(r8), intent(inout) :: mat(chnkpnts,nzcnt)
-      real(r8), intent(in) :: lmat(chnkpnts,nzcnt) 
-      call nlnmat01( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat02( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat03( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat04( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat05( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat06( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat07( ofl, ofu, mat, y, rxt, chnkpnts )
-      call nlnmat_finit( ofl, ofu, mat, lmat, dti, chnkpnts )
+      real(r8), intent(in) :: lmat(:,:)
+      real(r8), intent(in) :: y(:,:)
+      real(r8), intent(in) :: rxt(:,:)
+      real(r8), intent(inout) :: mat(:,:)
+      call nlnmat01( ofl, ofu, mat, y, rxt )
+      call nlnmat02( ofl, ofu, mat, y, rxt )
+      call nlnmat03( ofl, ofu, mat, y, rxt )
+      call nlnmat04( ofl, ofu, mat, y, rxt )
+      call nlnmat05( ofl, ofu, mat, y, rxt )
+      call nlnmat06( ofl, ofu, mat, y, rxt )
+      call nlnmat07( ofl, ofu, mat, y, rxt )
+      call nlnmat_finit( ofl, ofu, mat, lmat, dti )
       end subroutine nlnmat
       end module mo_nln_matrix
