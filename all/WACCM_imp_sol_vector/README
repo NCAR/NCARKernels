@@ -1,0 +1,5 @@
+V01  : From the devel branch.  This version uses the proper array declarations that allow the compiler to vectorize the code
+V02  : From the mem_align64 branch.  This version switches the vector length to 64.
+v02.1: From the fullWeakScaling branch.  This version contains the code to re-run the weak scaling test.
+v02r4: From the real_size_4 branch.  Switches frow double to single precision.  This will be the only version with this modification.
+v03  : Contains the method suggested by John and tested by Chris to pass smaller array sizes.  New array size matches the vector length. 
