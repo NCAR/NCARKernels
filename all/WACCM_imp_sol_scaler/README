@@ -1,0 +1,2 @@
+s01: From the fullWeakScaling branch.  This version contains the code to re-run the weak scaling test.
+s02: From the extrae_work branch.  This version contatins the code to re-run the chem kernel with extrae  
