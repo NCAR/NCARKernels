@@ -15,7 +15,11 @@
         USE shr_log_mod, ONLY: kr_externs_in_shr_log_mod
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
         IMPLICIT NONE
-        
+
+#ifdef ENABLE_MPI        
+		include "mpif.h"
+#endif
+
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv
         INTEGER, PARAMETER, DIMENSION(2) :: kgen_mpi_rank_at = (/ 0, 60 /)
@@ -30,7 +34,15 @@
         INTEGER :: ncol
         REAL(KIND=r8) :: delt
         kgen_total_time = 0.0_kgen_dp
-        
+ 
+#ifdef ENABLE_MPI        
+		CALL MPI_INIT(kgen_ierr)
+		IF (kgen_ierr .NE. MPI_SUCCESS) THEN
+			PRINT *, "MPI Initialization is failed."
+			CALL MPI_ABORT(MPI_COMM_WORLD, -1, kgen_ierr)
+		END IF
+#endif       
+
         DO kgen_repeat_counter = 0, 3
             
             kgen_mpi_rank = kgen_mpi_rank_at(kgen_repeat_counter/2 + 1)
@@ -73,4 +85,9 @@
         WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
         WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
         WRITE (*, *) "******************************************************************************"
+
+#ifdef ENABLE_MPI        
+		CALL mpi_finalize(kgen_ierr)
+#endif       
+
     END PROGRAM 

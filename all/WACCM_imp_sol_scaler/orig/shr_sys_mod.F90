@@ -26,7 +26,6 @@ MODULE shr_sys_mod
     USE, INTRINSIC :: iso_fortran_env, ONLY: output_unit, error_unit
 
     USE shr_kind_mod
-!    USE shr_mpi_mod
     USE shr_log_mod, ONLY: s_logunit => shr_log_unit
 
 
@@ -153,16 +152,6 @@ SUBROUTINE shr_sys_abort(string,rc)
    call print_error_to_logs("ERROR", local_string)
 
    call shr_sys_backtrace()
-
-!   call shr_mpi_initialized(flag)
-
-!   if (flag) then
-!      if (present(rc)) then
-!         call shr_mpi_abort(trim(local_string),rc)
-!      else
-!         call shr_mpi_abort(trim(local_string))
-!      endif
-!   endif
 
   ! A compiler's abort method may print a backtrace or do other nice
   ! things, but in fact we can rarely leverage this, because MPI_Abort
