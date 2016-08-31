@@ -1,17 +1,16 @@
 # Makefile for KGEN-generated kernel
-
-FC := ifort
-FC_FLAGS := -qopt-report=5 -no-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -debug minimal  -openmp -free -no-fma -O2 -xMIC-AVX512
+#
+#
+include ../Macros
 
 ALL_OBJS := mo_gas_phase_chemdr.o mo_imp_sol.o shr_kind_mod.o chem_mods.o mo_indprd.o mo_lin_matrix.o mo_nln_matrix.o mo_lu_factor.o mo_prod_loss.o mo_lu_solve.o mo_tracname.o ppgrid.o kernel_driver.o kgen_utils.o
 
-run: build 
-	./kernel.exe
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS}   -o kernel.exe $^
 
-
+run: build 
+	./kernel.exe
 
 mo_gas_phase_chemdr.o: mo_gas_phase_chemdr.F90 mo_imp_sol.o shr_kind_mod.o chem_mods.o mo_indprd.o mo_lin_matrix.o mo_nln_matrix.o mo_lu_factor.o mo_prod_loss.o mo_lu_solve.o mo_tracname.o ppgrid.o kgen_utils.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
@@ -49,7 +48,7 @@ mo_tracname.o: mo_tracname.F90 kgen_utils.o chem_mods.o
 ppgrid.o: ppgrid.F90 kgen_utils.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
-kernel_driver.o: kernel_driver.f90 mo_gas_phase_chemdr.o mo_imp_sol.o shr_kind_mod.o chem_mods.o mo_indprd.o mo_lin_matrix.o mo_nln_matrix.o mo_lu_factor.o mo_prod_loss.o mo_lu_solve.o mo_tracname.o ppgrid.o kgen_utils.o
+kernel_driver.o: kernel_driver.F90 mo_gas_phase_chemdr.o mo_imp_sol.o shr_kind_mod.o chem_mods.o mo_indprd.o mo_lin_matrix.o mo_nln_matrix.o mo_lu_factor.o mo_prod_loss.o mo_lu_solve.o mo_tracname.o ppgrid.o kgen_utils.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 kgen_utils.o: kgen_utils.f90
