@@ -4,14 +4,19 @@ ifeq ($(ARCH),KNL)
 #  FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -debug minimal  -qopenmp -free -no-fma -O2 -xMIC-AVX512
   FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model fast -qopenmp -free -O3 -xMIC-AVX512
 endif
+
 ifeq ($(ARCH),SNB)
   FC := ifort
   FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -debug minimal  -qopenmp -free -no-fma -xAVX -O2
-
 endif
+
 ifeq ($(ARCH),HSW) 
   FC := mpiifort -D_MPI
 #  FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -debug minimal -qopenmp -free -no-fma -xCORE-AVX2 -O2 -align array64byte
   FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model fast -qopenmp -free -xCORE-AVX2 -O3 -align array64byte
 endif
 
+ifeq ($(ARCH),host)
+  FC := ifort
+  FC_FLAGS := -qopt-report=5 -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model fast -qopenmp -free -no-fma -xHost -O3
+endif
