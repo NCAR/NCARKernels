@@ -1,0 +1,5165 @@
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57075.0859375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    54280.1601562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    58824.2226562500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    55589.4921875000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            1  Avg call time (usec):    56442.24    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56688.9804687500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    57011.5703125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    53834.8398437500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    54275.6679687500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    58869.4492187500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    59450.0390625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    53161.7695312500     
+ imp_sol : Time per call (usec):    53644.5195312500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            2  Avg call time (usec):    55638.76    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56545.5976562500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    56572.5312500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    57287.7187500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57961.2929687500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    53693.0117187500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    53841.9921875000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    54421.3203125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    55197.8320312500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    58856.1875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    58875.2421875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    59584.3710937500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    60421.2812500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    53085.0390625000     
+ imp_sol : Time per call (usec):    53225.4492187500     
+ imp_sol : Time per call (usec):    53799.1210937500     
+ imp_sol : Time per call (usec):    54576.6914062500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            4  Avg call time (usec):    57039.27    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56266.7617187500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57875.1992187500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    69289.8046875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    70603.4921875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    70667.9687500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    76316.7109375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    54700.0585937500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    55121.5390625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67742.0390625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    67730.1015625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    69385.3984375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    68603.9609375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    59423.0468750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    60349.9804687500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    73691.5078125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    73675.7421875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    73373.1328125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    74231.5000000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    53682.7695312500     
+ imp_sol : Time per call (usec):    54507.6367187500     
+ imp_sol : Time per call (usec):    66411.1875000000     
+ imp_sol : Time per call (usec):    67049.1718750000     
+ imp_sol : Time per call (usec):    67032.9609375000     
+ imp_sol : Time per call (usec):    65536.7578125000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            6  Avg call time (usec):    69614.88    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    70156.3750000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    70182.5468750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    71003.7578125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    71199.8593750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    71254.5156250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    71289.7109375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    75282.7734375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    75680.8984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67143.0781250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    67114.3359375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67588.0468750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    67571.8593750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    68853.1406250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    69184.7734375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    71911.8593750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    73142.1406250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    73731.3750000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    73540.5078125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    73530.5468750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    75660.8437500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    74519.1171875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    74620.6875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    78639.2968750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    78786.9921875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67646.9687500000     
+ imp_sol : Time per call (usec):    67251.3359375000     
+ imp_sol : Time per call (usec):    67851.4062500000     
+ imp_sol : Time per call (usec):    68065.5468750000     
+ imp_sol : Time per call (usec):    67243.3515625000     
+ imp_sol : Time per call (usec):    68703.1328125000     
+ imp_sol : Time per call (usec):    71402.6953125000     
+ imp_sol : Time per call (usec):    71015.6093750000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            8  Avg call time (usec):    70038.42    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    70126.1875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    70507.3984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    72652.4062500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    72931.4140625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    74060.3750000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    74315.7656250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    132394.203125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    133355.781250000     
+ imp_sol : Time per call (usec):    133355.718750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67437.4843750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    67809.8828125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    67931.8593750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    141618.265625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    69161.5625000000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    70099.6718750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    70074.2890625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    73918.8437500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    74058.3671875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    76683.6875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    80932.3984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    93024.3359375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    109275.625000000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    110165.960937500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    110229.265625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    108764.093750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    66900.3515625000     
+ imp_sol : Time per call (usec):    67988.0000000000     
+ imp_sol : Time per call (usec):    70316.1875000000     
+ imp_sol : Time per call (usec):    69513.1875000000     
+ imp_sol : Time per call (usec):    175855.281250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    88088.7421875000     
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    90632.9921875000     
+ imp_sol : Time per call (usec):    116182.156250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    118868.492187500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    119740.875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    65415.2187500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    55294.4023437500     
+ imp_sol : Time per call (usec):    106259.734375000     
+ imp_sol : Time per call (usec):    105532.789062500     
+ imp_sol : Time per call (usec):    104906.367187500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:           10  Avg call time (usec):    70657.66    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    98760.6250000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    109036.554687500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    109431.906250000     
+ imp_sol : Time per call (usec):    109439.000000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    109945.867187500     
+ imp_sol : Time per call (usec):    109942.890625000     
+ imp_sol : Time per call (usec):    109948.226562500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    110300.062500000     
+ imp_sol : Time per call (usec):    110303.328125000     
+ imp_sol : Time per call (usec):    110301.554687500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    115741.187500000     
+ imp_sol : Time per call (usec):    115720.671875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    95042.6328125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    105275.859375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    105428.882812500     
+ imp_sol : Time per call (usec):    105427.687500000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    105060.007812500     
+ imp_sol : Time per call (usec):    105056.976562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    104945.828125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    105457.304687500     
+ imp_sol : Time per call (usec):    105457.656250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    105381.414062500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    111231.078125000     
+ imp_sol : Time per call (usec):    111220.750000000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    102630.773437500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    111476.578125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    114232.882812500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    114162.429687500     
+ imp_sol : Time per call (usec):    114160.250000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    114243.500000000     
+ imp_sol : Time per call (usec):    114244.187500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    114210.125000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    115941.554687500     
+ imp_sol : Time per call (usec):    115939.445312500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    121153.664062500     
+ imp_sol : Time per call (usec):    121155.445312500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    94297.8906250000     
+ imp_sol : Time per call (usec):    102626.179687500     
+ imp_sol : Time per call (usec):    82771.6328125000     
+ imp_sol : Time per call (usec):    82635.0390625000     
+ imp_sol : Time per call (usec):    104333.195312500     
+ imp_sol : Time per call (usec):    103997.609375000     
+ imp_sol : Time per call (usec):    103999.101562500     
+ imp_sol : Time per call (usec):    104147.476562500     
+ imp_sol : Time per call (usec):    104148.531250000     
+ imp_sol : Time per call (usec):    103914.375000000     
+ imp_sol : Time per call (usec):    102501.437500000     
+ imp_sol : Time per call (usec):    102619.632812500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:           12  Avg call time (usec):    108253.3    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    110155.664062500     
+ imp_sol : Time per call (usec):    110160.046875000     
+ imp_sol : Time per call (usec):    110152.015625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    111338.132812500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    114797.367187500     
+ imp_sol : Time per call (usec):    114804.992187500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    123275.734375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    132037.031250000     
+ imp_sol : Time per call (usec):    132040.937500000     
+ imp_sol : Time per call (usec):    132040.656250000     
+ imp_sol : Time per call (usec):    132041.171875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    133565.546875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    135478.765625000     
+ imp_sol : Time per call (usec):    135488.968750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    105255.460937500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    105925.273437500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    105886.828125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    106871.601562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    110166.960937500     
+ imp_sol : Time per call (usec):    110157.218750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    127109.976562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    126644.773437500     
+ imp_sol : Time per call (usec):    126639.929687500     
+ imp_sol : Time per call (usec):    126497.500000000     
+ imp_sol : Time per call (usec):    126644.343750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    128084.187500000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    128166.734375000     
+ imp_sol : Time per call (usec):    128177.828125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    115027.468750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    115033.140625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    115025.281250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    115670.335937500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    120023.617187500     
+ imp_sol : Time per call (usec):    120023.375000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    138207.250000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    138288.562500000     
+ imp_sol : Time per call (usec):    138187.562500000     
+ imp_sol : Time per call (usec):    138285.390625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    138328.281250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ vmr is NOT IDENTICAL(within tolerance).
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    139667.875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    139998.343750000     
+ imp_sol : Time per call (usec):    140008.609375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    104452.679687500     
+ imp_sol : Time per call (usec):    104305.828125000     
+ imp_sol : Time per call (usec):    104188.710937500     
+ imp_sol : Time per call (usec):    105730.898437500     
+ imp_sol : Time per call (usec):    103033.593750000     
+ imp_sol : Time per call (usec):    103349.046875000     
+ imp_sol : Time per call (usec):    115665.203125000     
+ imp_sol : Time per call (usec):    125215.890625000     
+ imp_sol : Time per call (usec):    125225.046875000     
+ imp_sol : Time per call (usec):    125227.656250000     
+ imp_sol : Time per call (usec):    125108.601562500     
+ imp_sol : Time per call (usec):    124496.015625000     
+ imp_sol : Time per call (usec):    123458.007812500     
+ imp_sol : Time per call (usec):    123485.554687500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:           14  Avg call time (usec):    130548.9    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ vmr is NOT IDENTICAL(within tolerance).
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    127727.867187500     
+ imp_sol : Time per call (usec):    127718.757812500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    130304.921875000     
+ imp_sol : Time per call (usec):    130305.609375000     
+ imp_sol : Time per call (usec):    130303.937500000     
+ imp_sol : Time per call (usec):    130304.320312500     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    131638.062500000     
+ imp_sol : Time per call (usec):    131639.234375000     
+ imp_sol : Time per call (usec):    131642.343750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    131857.734375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    132522.656250000     
+ imp_sol : Time per call (usec):    132514.250000000     
+ imp_sol : Time per call (usec):    132578.875000000     
+ imp_sol : Time per call (usec):    132499.578125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    134838.593750000     
+ imp_sol : Time per call (usec):    134840.484375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    121915.601562500     
+ imp_sol : Time per call (usec):    121915.312500000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    125079.367187500     
+ imp_sol : Time per call (usec):    125078.835937500     
+ imp_sol : Time per call (usec):    125080.429687500     
+ imp_sol : Time per call (usec):    125079.093750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    127127.078125000     
+ imp_sol : Time per call (usec):    127149.390625000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    127645.140625000     
+ imp_sol : Time per call (usec):    127551.351562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    127286.851562500     
+ imp_sol : Time per call (usec):    127287.828125000     
+ imp_sol : Time per call (usec):    127291.695312500     
+ imp_sol : Time per call (usec):    127287.445312500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    129860.757812500     
+ imp_sol : Time per call (usec):    129862.132812500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    136714.718750000     
+ imp_sol : Time per call (usec):    136713.171875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    136314.359375000     
+ imp_sol : Time per call (usec):    136308.265625000     
+ imp_sol : Time per call (usec):    136310.890625000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    136303.328125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    139086.375000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    139152.578125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    138854.406250000     
+ imp_sol : Time per call (usec):    138855.531250000     
+ imp_sol : Time per call (usec):    138860.000000000     
+ imp_sol : Time per call (usec):    138854.343750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    139352.734375000     
+ imp_sol : Time per call (usec):    139356.000000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    141049.843750000     
+ imp_sol : Time per call (usec):    141049.734375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    118118.109375000     
+ imp_sol : Time per call (usec):    118311.640625000     
+ imp_sol : Time per call (usec):    123785.656250000     
+ imp_sol : Time per call (usec):    123786.945312500     
+ imp_sol : Time per call (usec):    123787.351562500     
+ imp_sol : Time per call (usec):    123682.046875000     
+ imp_sol : Time per call (usec):    115520.726562500     
+ imp_sol : Time per call (usec):    115616.867187500     
+ imp_sol : Time per call (usec):    126100.992187500     
+ imp_sol : Time per call (usec):    126064.609375000     
+ imp_sol : Time per call (usec):    125844.187500000     
+ imp_sol : Time per call (usec):    125848.656250000     
+ imp_sol : Time per call (usec):    125846.054687500     
+ imp_sol : Time per call (usec):    125847.867187500     
+ imp_sol : Time per call (usec):    125711.007812500     
+ imp_sol : Time per call (usec):    125729.140625000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:           16  Avg call time (usec):    128870.4    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    130884.703125000     
+ imp_sol : Time per call (usec):    130885.414062500     
+ imp_sol : Time per call (usec):    130885.093750000     
+ imp_sol : Time per call (usec):    130884.609375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    131416.578125000     
+ imp_sol : Time per call (usec):    131453.375000000     
+ imp_sol : Time per call (usec):    131454.328125000     
+ imp_sol : Time per call (usec):    131445.109375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    138689.703125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    140591.609375000     
+ imp_sol : Time per call (usec):    140669.453125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    141504.390625000     
+ imp_sol : Time per call (usec):    141510.109375000     
+ imp_sol : Time per call (usec):    141510.453125000     
+ imp_sol : Time per call (usec):    141500.468750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    141917.859375000     
+ imp_sol : Time per call (usec):    141966.109375000     
+ imp_sol : Time per call (usec):    141915.671875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    125296.914062500     
+ imp_sol : Time per call (usec):    125109.218750000     
+ imp_sol : Time per call (usec):    125296.476562500     
+ imp_sol : Time per call (usec):    125296.328125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    127366.007812500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    128140.726562500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    128176.890625000     
+ imp_sol : Time per call (usec):    128146.328125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    135744.437500000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    135045.718750000     
+ imp_sol : Time per call (usec):    135036.984375000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    136168.328125000     
+ imp_sol : Time per call (usec):    136174.703125000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    136137.796875000     
+ imp_sol : Time per call (usec):    136175.406250000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    136045.218750000     
+ imp_sol : Time per call (usec):    136046.796875000     
+ imp_sol : Time per call (usec):    136049.171875000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    132435.921875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    136382.531250000     
+ imp_sol : Time per call (usec):    136557.125000000     
+ imp_sol : Time per call (usec):    136556.812500000     
+ imp_sol : Time per call (usec):    136560.203125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    139678.984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    141048.765625000     
+ imp_sol : Time per call (usec):    141065.718750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    147342.375000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    147332.109375000     
+ imp_sol : Time per call (usec):    147332.984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    148784.015625000     
+ imp_sol : Time per call (usec):    148785.609375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    148786.765625000     
+ imp_sol : Time per call (usec):    148786.921875000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    148916.281250000     
+ imp_sol : Time per call (usec):    148922.890625000     
+ imp_sol : Time per call (usec):    148931.218750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    118611.070312500     
+ imp_sol : Time per call (usec):    123979.781250000     
+ imp_sol : Time per call (usec):    123979.281250000     
+ imp_sol : Time per call (usec):    123980.429687500     
+ imp_sol : Time per call (usec):    123971.710937500     
+ imp_sol : Time per call (usec):    124468.117187500     
+ imp_sol : Time per call (usec):    123416.039062500     
+ imp_sol : Time per call (usec):    124218.054687500     
+ imp_sol : Time per call (usec):    133985.984375000     
+ imp_sol : Time per call (usec):    134139.906250000     
+ imp_sol : Time per call (usec):    134142.703125000     
+ imp_sol : Time per call (usec):    133833.015625000     
+ imp_sol : Time per call (usec):    133828.890625000     
+ imp_sol : Time per call (usec):    133833.765625000     
+ imp_sol : Time per call (usec):    134474.328125000     
+ imp_sol : Time per call (usec):    134474.562500000     
+ imp_sol : Time per call (usec):    134390.187500000     
+ imp_sol : Time per call (usec):    134452.671875000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:           18  Avg call time (usec):    140235.9    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    131997.437500000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ imp_sol : Time per call (usec):    132312.187500000     
+ imp_sol : Time per call (usec):    132315.968750000     
+ imp_sol : Time per call (usec):    132335.218750000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
