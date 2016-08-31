@@ -138,6 +138,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
     INTEGER, PARAMETER :: kgen_maxiter = 100
     REAL(KIND=kgen_dp) :: kgen_elapsed_time
+    real(kind=kgen_dp) :: tolerance
 
     !-----------------------------------------------------------------------      
     !        ... Get chunck latitudes and longitudes
@@ -478,7 +479,8 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
 
     
     !verify init
-    CALL kgen_init_check(check_status, verboseLevel=1)
+    tolerance=1.0e-14
+    CALL kgen_init_check(check_status, tolerance=tolerance, verboseLevel=1)
     
     !extern verify variables
     
