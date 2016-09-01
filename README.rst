@@ -92,6 +92,7 @@ That being said, we have come up with a draft of test report specification for k
 3.1.2 content of test result:
 '''''''''''''''''''''''
 
+::
       - Essential items are:
       
         * "cpu_model": cpu model name of a test system - string
