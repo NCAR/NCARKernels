@@ -1,0 +1,169 @@
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56926.8984375000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56301.6210937500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57754.3007812500     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    55526.5625000000     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            1  Avg call time (usec):    56627.34    
+ ******************************************************************************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.1.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    60479.2226562500     
+ imp_sol : Time per call (usec):    60476.6875000000     
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ 
+ ***************** Verification against '../data/imp_sol.48.0' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56564.1093750000     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ imp_sol : Time per call (usec):    56693.8867187500     
+ 
+ ***************** Verification against '../data/imp_sol.1.60' *****************
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    57796.3203125000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ imp_sol : Time per call (usec):    57938.6406250000     
+ 
+ ***************** Verification against '../data/imp_sol.48.60' ****************
+ *
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ vmr is NOT IDENTICAL(within tolerance).
+ 
+ Number of verified variables:            1
+ Number of identical variables:            0
+ Number of non-identical variables within tolerance:            1
+ Number of non-identical variables out of tolerance:            0
+ Tolerance:   9.999999824516700E-015
+ 
+ Verification PASSED
+ 
+ imp_sol : Time per call (usec):    56193.7109375000     
+ imp_sol : Time per call (usec):    56344.2304687500     
+ 
+ ******************************************************************************
+ imp_sol summary: Total number of verification cases:            4
+ imp_sol summary: # ranks:            2  Avg call time (usec):    57864.00    
+ ******************************************************************************
