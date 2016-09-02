@@ -10,10 +10,7 @@ FC := ifort
 else
 
 FC := mpiifort
-NUMPROC := 4
-MPI_DIR := /ncar/opt/intel/12.1.0.233/impi/4.0.3.008/intel64
-
-#FC_FLAGS += -I${MPI_DIR}/include -L${MPI_DIR}/lib
+NUMPROC := 2
 FC_FLAGS += -DENABLE_MPI
 
 endif

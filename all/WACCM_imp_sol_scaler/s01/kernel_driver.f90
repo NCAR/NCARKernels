@@ -15,8 +15,11 @@
         USE shr_log_mod, ONLY: kr_externs_in_shr_log_mod
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
         IMPLICIT NONE
-        include 'mpif.h'
-        
+
+#ifdef ENABLE_MPI        
+		include "mpif.h"
+#endif
+
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv
         INTEGER, PARAMETER, DIMENSION(2) :: kgen_mpi_rank_at = (/ 0, 60 /)
@@ -30,15 +33,16 @@
         INTEGER :: lchnk
         INTEGER :: ncol
         REAL(KIND=r8) :: delt
-
-        integer rank, size, ierror
-
-        call MPI_INIT(ierror)
-        call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierror)
-        call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
-
         kgen_total_time = 0.0_kgen_dp
-        
+ 
+#ifdef ENABLE_MPI        
+		CALL MPI_INIT(kgen_ierr)
+		IF (kgen_ierr .NE. MPI_SUCCESS) THEN
+			PRINT *, "MPI Initialization is failed."
+			CALL MPI_ABORT(MPI_COMM_WORLD, -1, kgen_ierr)
+		END IF
+#endif       
+
         DO kgen_repeat_counter = 0, 3
             
             kgen_mpi_rank = kgen_mpi_rank_at(kgen_repeat_counter/2 + 1)
@@ -53,8 +57,8 @@
                 CALL kgen_error_stop("FILE OPEN ERROR: " // TRIM(ADJUSTL(kgen_filepath)))
             END IF 
             
-!            WRITE (*, *) ""
-!            WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
+            WRITE (*, *) ""
+            WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
             
             
             !driver read in arguments
@@ -76,13 +80,14 @@
             
         END DO 
         
-!        WRITE (*, *) ""
-!        WRITE (*, *) "******************************************************************************"
-!        WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
-!        WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
-!        WRITE (*, *) "******************************************************************************"
-!        WRITE (*, *) rank,"/",size,kgen_total_time / 4
-        WRITE (*, *) kgen_total_time / 4
-        call MPI_FINALIZE(ierror)
+        WRITE (*, *) ""
+        WRITE (*, *) "******************************************************************************"
+        WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
+        WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
+        WRITE (*, *) "******************************************************************************"
+
+#ifdef ENABLE_MPI        
+		CALL mpi_finalize(kgen_ierr)
+#endif       
 
     END PROGRAM 
