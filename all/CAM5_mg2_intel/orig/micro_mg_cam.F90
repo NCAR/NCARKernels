@@ -158,16 +158,29 @@
            character(len=*) :: kname
            type(check_t), intent(in) ::  check
            write (*,*)
-           write (*,*) TRIM(kname),' KGENPrtCheck: Tolerance for normalized RMS: ',check%tolerance
-           write (*,*) TRIM(kname),' KGENPrtCheck: Number of variables checked: ',check%numTotal
-           write (*,*) TRIM(kname),' KGENPrtCheck: Number of Identical results: ',check%numIdentical
-           write (*,*) TRIM(kname),' KGENPrtCheck: Number of warnings detected: ',check%numWarning
-           write (*,*) TRIM(kname),' KGENPrtCheck: Number of fatal errors detected: ', check%numFatal
-           if (check%numFatal> 0) then
-                write(*,*) TRIM(kname),' KGENPrtCheck: verification FAILED'
-           else
-                write(*,*) TRIM(kname),' KGENPrtCheck: verification PASSED'
-           endif
+           WRITE (*, *) "Number of output variables: ", check%numTotal
+           WRITE (*, *) "Number of identical variables: ", check%numIdentical
+           WRITE (*, *) "Number of non-identical variables within tolerance: ", check%numWarning
+           WRITE (*, *) "Number of non-identical variables out of tolerance: ", check%numFatal
+           WRITE (*, *) "Tolerance: ", check%tolerance
+
+            WRITE (*, *) ""
+            IF (check%numFatal > 0) THEN
+                WRITE (*, *) "Verification FAILED"
+            ELSE
+                WRITE (*, *) "Verification PASSED"
+            END IF
+!
+!           write (*,*) TRIM(kname),' Tolerance:   ',check%tolerance
+!           write (*,*) TRIM(kname),' ariables checked: ',check%numTotal
+!           write (*,*) TRIM(kname),' KGENPrtCheck: Number of Identical results: ',check%numIdentical
+!           write (*,*) TRIM(kname),' KGENPrtCheck: Number of warnings detected: ',check%numWarning
+!           write (*,*) TRIM(kname),' KGENPrtCheck: Number of fatal errors detected: ', check%numFatal
+!           if (check%numFatal> 0) then
+!                write(*,*) TRIM(kname),' KGENPrtCheck: verification FAILED'
+!           else
+!                write(*,*) TRIM(kname),' KGENPrtCheck: verification PASSED'
+!           endif
         end subroutine kgen_print_check
         !===============================================================================
 
@@ -892,7 +905,8 @@ packed_frzdep)
                         END DO
                         CALL system_clock(stop_clock, rate_clock)
                         WRITE(*,*)
-                        PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                        WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+                        !PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
             ! Divide ptend by substeps.
             ! Use summed outputs to produce averages
             ! Check to make sure that the microphysics code is respecting the flags that control

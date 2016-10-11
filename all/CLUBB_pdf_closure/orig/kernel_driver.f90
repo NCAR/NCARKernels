@@ -107,11 +107,18 @@
         END DO 
         
         WRITE (*, *) ""
-        WRITE (*, *) "******************************************************************************"
-        WRITE (*, *) "pdf_closure summary: Total number of verification cases: 9"
-        WRITE (*, *) "pdf_closure summary: Average call time of all calls (usec): ", kgen_total_time / 9
-        WRITE (*, *) "******************************************************************************"
-        
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: pdf_closure"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", 9
+            WRITE (*, *) ""
+            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / REAL(9)
+        END IF
+        WRITE (*, "(A)") "****************************************************"
+
         CONTAINS
         
         !read state subroutine for kr_advance_clubb_core_real__core_rknd_dim1

@@ -401,7 +401,7 @@
                     END DO 
                 END DO  ! Loop over columns
             END DO  ! Loop over g point samples - done with gas optical depth calculations
-            PRINT *, "Elapsed time (sec): ", overall_time
+            !PRINT *, "Elapsed time (sec): ", overall_time
             overall_time=0
             tautot(1:kproma,:,:) = taut(1:kproma,:,:) + smp_tau(1:kproma,:,:) ! All-sky optical depth. Mask for 0 cloud optical depth?
             !

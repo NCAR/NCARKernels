@@ -195,18 +195,22 @@ subroutine kgen_print_check(kname, check)
    character(len=*) :: kname
    type(check_t), intent(in) ::  check
 
-   write (*,*) TRIM(kname),': Tolerance for normalized RMS: ',check%tolerance
-   !write (*,*) TRIM(kname),':',check%numFatal,'fatal errors,',check%numWarning,'warnings detected, and',check%numIdentical,'identical out of',check%numTotal,'variables checked'
-   write (*,*) TRIM(kname),': Number of variables checked: ',check%numTotal
-   write (*,*) TRIM(kname),': Number of Identical results: ',check%numIdentical
-   write (*,*) TRIM(kname),': Number of variables within tolerance(not identical): ',check%numInTol
-   write (*,*) TRIM(kname),': Number of variables out of tolerance: ', check%numOutTol
+    WRITE (*, *) ""
+    IF (check%verboseLevel > 0) THEN
+        WRITE (*, *) "Number of output variables: ", check%numTotal
+        WRITE (*, *) "Number of identical variables: ", check%numIdentical
+        WRITE (*, *) "Number of non-identical variables within tolerance: ", check%numInTol
+        WRITE (*, *) "Number of non-identical variables out of tolerance: ", check%numOutTol
+        WRITE (*, *) "Tolerance: ", check%tolerance
+    END IF
+    WRITE (*, *) ""
+    IF (check%numOutTol > 0) THEN
+        WRITE (*, *) "Verification FAILED"
+    ELSE
+        WRITE (*, *) "Verification PASSED"
+    END IF
+    WRITE (*, *) ""
 
-   if (check%numOutTol> 0) then
-        write(*,*) TRIM(kname),': Verification FAILED'
-   else
-        write(*,*) TRIM(kname),': Verification PASSED'
-   endif
 end subroutine kgen_print_check
 
 FUNCTION kgen_get_newunit() RESULT(new_unit)

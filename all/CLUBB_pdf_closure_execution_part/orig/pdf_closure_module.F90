@@ -842,7 +842,7 @@ kgenref_rt_at_ice_sat2, kgenref_chi_at_ice_sat1, kgenref_chi_at_ice_sat2, kgenre
     CALL kv_pdf_closure_integer__("hm_idx", check_status, hm_idx, kgenref_hm_idx)
     WRITE (*, *) ""
     IF (check_status%verboseLevel > 0) THEN
-        WRITE (*, *) "Number of verified variables: ", check_status%numTotal
+        WRITE (*, *) "Number of output variables: ", check_status%numTotal
         WRITE (*, *) "Number of identical variables: ", check_status%numIdentical
         WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol
         WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol

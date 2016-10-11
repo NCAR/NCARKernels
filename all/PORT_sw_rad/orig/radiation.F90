@@ -397,8 +397,9 @@ e_cld_tau_w_g = c_cld_tau_w_g, e_cld_tau_w_f = c_cld_tau_w_f, old_convert = .FAL
                             END DO
                             CALL system_clock(stop_clock, rate_clock)
                             WRITE(*,*)
-                            PRINT *, TRIM(kname), ": Total time (sec): ", (stop_clock - start_clock)/REAL(rate_clock)
-                            PRINT *, TRIM(kname), ": Elapsed time (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+                            WRITE (*, *) "rad_rrtmg_sw : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+
+
             !  if (dosw .or. dolw) then
             ! output rad inputs and resulting heating rates
             ! Compute net radiative heating tendency

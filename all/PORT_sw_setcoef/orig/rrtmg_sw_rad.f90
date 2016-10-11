@@ -587,7 +587,7 @@ selffrac, indself, forfac, forfrac, indfor)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            WRITE (*, *) "setcoef_sw : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
             !do iplon = 1, ncol         ! reference atmospheres.
             ! call setcoef_sw(nlay, pavel(iplon,:), tavel(iplon,:), pz(iplon,:), tz(iplon,:), tbound(iplon), coldry(iplon,:), wkl(
             ! iplon,:,:), &

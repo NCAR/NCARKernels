@@ -117,7 +117,8 @@
                 END DO
                 CALL system_clock(stop_clock, rate_clock)
                 WRITE(*,*)
-                PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                WRITE (*, *) "preq_hydrostatic : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+
             ! =============================================================
             ! Insert communications here: for shared memory, just a single
             ! sync is required

@@ -244,7 +244,8 @@ dflxc, hrc, lwuflxs, lwdflxs)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, TRIM(kname), ": Elapsed time (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+            WRITE (*, *) "rrtmg_lw : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+
             !
             !----------------------------------------------------------------------
             ! All longitudes: store history tape quantities

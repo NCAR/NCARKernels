@@ -115,10 +115,17 @@
         END DO
 
 !        CALL extrae_event(1000, 0_8)       
-
         WRITE (*, *) ""
-        WRITE (*, *) "******************************************************************************"
-        WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
-        WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
-        WRITE (*, *) "******************************************************************************"
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: imp_sol"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", kgen_repeat_counter
+            WRITE (*, *) ""
+            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / 4
+        END IF
+        WRITE (*, "(A)") "****************************************************"
+
     END PROGRAM 

@@ -210,7 +210,9 @@ zrefc, zrefdc, ztrac, ztradc)
                         END DO
                         CALL system_clock(stop_clock, rate_clock)
                         WRITE(*,*)
-                        PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*3000)
+                        WRITE (*, *) "reftra_sw : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*3000)
+
+
         CONTAINS
 
         ! write subroutines

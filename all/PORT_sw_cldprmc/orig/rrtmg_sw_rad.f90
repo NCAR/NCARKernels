@@ -495,7 +495,8 @@
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            WRITE (*, *) "cldprmc_sw : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+
             ! Calculate coefficients for the temperature and pressure dependence of the
             ! molecular absorption coefficients by interpolating data from stored
             !do iplon = 1, ncol         ! reference atmospheres.

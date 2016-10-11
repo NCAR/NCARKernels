@@ -97,7 +97,8 @@
                     END DO
                     CALL system_clock(stop_clock, rate_clock)
                     WRITE(*,*)
-                    PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                    WRITE (*, *) "vlaplace_sphere_wk : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         CONTAINS
 

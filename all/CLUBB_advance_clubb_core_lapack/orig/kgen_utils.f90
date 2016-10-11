@@ -186,18 +186,20 @@ subroutine kgen_print_check(kname, check)
    character(len=*) :: kname
    type(check_t), intent(in) ::  check
 
-   write (*,*)
-   write (*,*) TRIM(kname),': Tolerance for normalized RMS: ',check%tolerance
-   write (*,*) TRIM(kname),': Number of variables checked: ',check%numTotal
-   write (*,*) TRIM(kname),': Number of Identical results: ',check%numIdentical
-   write (*,*) TRIM(kname),': Number of warnings detected: ',check%numWarning
-   write (*,*) TRIM(kname),': Number of fatal errors detected: ', check%numFatal
+    WRITE (*, *) ""
+    WRITE (*, *) "Number of output variables: ", check%numTotal
+    WRITE (*, *) "Number of identical variables: ", check%numIdentical
+    WRITE (*, *) "Number of non-identical variables within tolerance: ", check%numWarning
+    WRITE (*, *) "Number of non-identical variables out of tolerance: ", check%numFatal
+    WRITE (*, *) "Tolerance: ", check%tolerance
+    WRITE (*, *) ""
+    IF (check%numFatal > 0) THEN
+        WRITE (*, *) "Verification FAILED"
+    ELSE
+        WRITE (*, *) "Verification PASSED"
+    END IF
+    WRITE (*, *) ""
 
-   if (check%numFatal> 0) then
-        write(*,*) TRIM(kname),': Verification FAILED'
-   else
-        write(*,*) TRIM(kname),': Verification PASSED'
-   endif
 end subroutine kgen_print_check
 
 end module

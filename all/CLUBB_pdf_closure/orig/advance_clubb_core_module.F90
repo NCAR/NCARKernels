@@ -1068,7 +1068,7 @@ module advance_clubb_core_module
       CALL kv_advance_clubb_core_real__core_rknd_dim2("sclrprcp_zt", check_status, sclrprcp_zt, kgenref_sclrprcp_zt)
       WRITE (*, *) ""
       IF (check_status%verboseLevel > 0) THEN
-          WRITE (*, *) "Number of verified variables: ", check_status%numTotal
+          WRITE (*, *) "Number of output variables: ", check_status%numTotal
           WRITE (*, *) "Number of identical variables: ", check_status%numIdentical
           WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol
           WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol

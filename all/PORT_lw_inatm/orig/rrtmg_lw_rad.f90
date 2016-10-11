@@ -475,7 +475,9 @@ pwvcm, inflag, iceflag, liqflag, cldfmc, taucmc, ciwpmc, clwpmc, reicmc, dgesmc,
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            WRITE (*, *) "inatm : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+
+
             !  For cloudy atmosphere, use cldprop to set cloud optical properties based on
             !  input cloud physical properties.  Select method based on choices described
             !  in cldprop.  Cloud fraction, water path, liquid droplet and ice particle

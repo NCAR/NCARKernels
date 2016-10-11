@@ -488,7 +488,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     CALL kv_gas_phase_chemdr_real__r8_dim3("vmr", check_status, vmr, kgenref_vmr)
     WRITE (*, *) ""
     IF (check_status%verboseLevel > 0) THEN
-        WRITE (*, *) "Number of verified variables: ", check_status%numTotal
+        WRITE (*, *) "Number of output variables: ", check_status%numTotal
         WRITE (*, *) "Number of identical variables: ", check_status%numIdentical
         WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol
         WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol

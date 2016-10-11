@@ -606,7 +606,8 @@
                     elapsed_time = 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
                     total_time = total_time + elapsed_time
                     WRITE(*,*)
-                    PRINT *, "advance_clubb_core : Time per call (usec): ", elapsed_time
+                    !PRINT *, "advance_clubb_core : Time per call (usec): ", elapsed_time
+                    WRITE (*, *) "advance_clubb_core : Time per call (usec): ", elapsed_time
 ! end column loop
 ! Add constant to ghost point so that output is not corrupted
 ! ------------------------------------------------- !

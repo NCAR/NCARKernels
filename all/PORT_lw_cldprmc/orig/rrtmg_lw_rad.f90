@@ -393,7 +393,8 @@
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+            WRITE (*, *) "cldprmc : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10)
+
             ! Calculate information needed by the radiative transfer routine
             ! that is specific to this atmosphere, especially some of the
             ! coefficients and indices needed to compute the optical depths

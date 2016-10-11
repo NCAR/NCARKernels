@@ -105,13 +105,20 @@
             CLOSE (UNIT=kgen_unit)
             
         END DO 
-        
+       
         WRITE (*, *) ""
-        WRITE (*, *) "******************************************************************************"
-        WRITE (*, *) "advance_windm_edsclrm summary: Total number of verification cases: 12"
-        WRITE (*, *) "advance_windm_edsclrm summary: Average call time of all calls (usec): ", kgen_total_time / 12
-        WRITE (*, *) "******************************************************************************"
-        
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: advance_windm_edsclrm"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", 12
+            WRITE (*, *) ""
+            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / REAL(12)
+        END IF
+        WRITE (*, "(A)") "****************************************************"
+
         CONTAINS
         
         !read state subroutine for kr_advance_clubb_core_real__core_rknd_dim1

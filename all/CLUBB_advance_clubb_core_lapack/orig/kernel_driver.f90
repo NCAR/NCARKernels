@@ -73,12 +73,18 @@ PROGRAM kernel_driver
             CLOSE (UNIT=kgen_unit)
         END DO
 
-PRINT *, ""
-print *, "                    Summary                                                   "
-PRINT *, "******************************************************************************"
-PRINT *, "advance_clubb_core : Total number of verification cases: 1"
-PRINT *, "advance_clubb_core : Total time for all calls (usec): ", total_time
-PRINT *, "******************************************************************************"
+        WRITE (*, *) ""
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: advance_clubb_core"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", 1
+            WRITE (*, *) ""
+            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", total_time / REAL(1)
+        END IF
+        WRITE (*, "(A)") "****************************************************"
     CONTAINS
 
         ! write subroutines

@@ -162,10 +162,17 @@ wpsclrp2, wpsclrprtp, wpsclrpthlp, wp2sclrp, rc_coef)
         END DO 
         
         WRITE (*, *) ""
-        WRITE (*, *) "******************************************************************************"
-        WRITE (*, *) "pdf_closure_part3 summary: Total number of verification cases: 12"
-        WRITE (*, *) "pdf_closure_part3 summary: Average call time of all calls (usec): ", kgen_total_time / 12
-        WRITE (*, *) "******************************************************************************"
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: pdf_closure_part3"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", 12
+            WRITE (*, *) ""
+            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / REAL(12)
+        END IF
+        WRITE (*, "(A)") "****************************************************"
         
         CONTAINS
         

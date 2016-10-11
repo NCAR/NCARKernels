@@ -693,7 +693,7 @@ work3(:, j), h2co3(:, j), hco3(:, j), co3(:, j))
                         END DO
                         CALL system_clock(stop_clock, rate_clock)
                         WRITE(*,*)
-                        PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*10)
+                        WRITE (*, *) "comp_co3terms : Time per call (usec): ", 1.0e6*(stop_clock - start_clock)/REAL(rate_clock*10) 
             !-----------------------------------------------------------------------
             !EOC
         CONTAINS

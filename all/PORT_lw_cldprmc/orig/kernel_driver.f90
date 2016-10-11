@@ -54,6 +54,18 @@ PROGRAM kernel_driver
 
             CLOSE (UNIT=kgen_unit)
         END DO
+
+        WRITE (*, *) ""
+        WRITE (*, "(A)") "****************************************************"
+        WRITE (*, "(4X,A)") "kernel execution summary: cldprmc"
+        WRITE (*, "(A)") "****************************************************"
+        IF (kgen_repeat_counter == 0) THEN
+            WRITE (*, *) "No data file is verified."
+        ELSE
+            WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", kgen_repeat_counter
+        END IF
+        WRITE (*, "(A)") "****************************************************"
+
     CONTAINS
 
         ! write subroutines
