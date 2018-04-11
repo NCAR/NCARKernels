@@ -6,7 +6,7 @@ include ./Macros
 ALL_OBJS := mo_gas_phase_chemdr.o mo_imp_sol.o shr_kind_mod.o chem_mods.o mo_indprd.o mo_lin_matrix.o mo_nln_matrix.o mo_lu_factor.o mo_prod_loss.o mo_lu_solve.o mo_tracname.o ppgrid.o kernel_driver.o kgen_utils.o kgen_extensions.o kernel_info.o
 
 build: ${ALL_OBJS}
-	${FC} ${FC_FLAGS}   -o kernel.exe $^
+	${FC} ${LD_FLAGS}   -o kernel.exe $^
 
 run: build 
 	./kernel.exe
