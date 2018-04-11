@@ -393,7 +393,6 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     !Adjust perturbation value and/or kind parameter if required.
     !CALL kgen_perturb_real( your_variable, 1.0E-15_8 )
 
-!bpd6
    if (perturb_flag .eqv. .true.) then
         call kgen_perturb_real(reaction_rates_chnks, epsilon(1.0_8))
    endif
