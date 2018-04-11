@@ -26,6 +26,15 @@ else ifeq ($(MPI),enabled)
   MPI := yes
 endif
 
+# If the ARMPL_DIR variable is set, add it to the link:
+ifneq ($(strip $(ARMPL_DIR)),)
+  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64
+endif
+
+# If the MKLROOT variable is set, add that to the link:
+ifneq ($(strip $(MKLROOT)),)
+  LD_FLAGS += -L${MKLROOT}/lib/intel64 -lmkl_rt
+endif
 
 # Note: For simplicity, we're going to ignore cross-compilation and use the "-march=native" (gnu), 
 # "-mcpu=native" /armflang) and "-xHost" (intel) compiler flags to optimize for the platform we're on.  
@@ -34,8 +43,8 @@ endif
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
-  FC_FLAGS := -convert big_endian -assume byterecl -fp-model fast -free -O3 -align array64byte -qno-opt-dynamic-align
-  LD_FLAGS := 
+  FC_FLAGS += -convert big_endian -assume byterecl -fp-model fast -free -O3 -align array64byte -qno-opt-dynamic-align
+  LD_FLAGS += 
 
   FC_FLAGS += -xHost
 endif
@@ -44,8 +53,8 @@ endif
 # ********* GNU compiler options  ************
 ifeq ($(COMPILER),gnu)
   FC := gfortran
-  FC_FLAGS := -Ofast -ffp-contract=fast -ffree-form -ffree-line-length-none
-  LD_FLAGS := 
+  FC_FLAGS += -Ofast -ffp-contract=fast -ffree-form -ffree-line-length-none
+  LD_FLAGS += 
 
   FC_FLAGS += -march=native
 endif
@@ -54,8 +63,8 @@ endif
 # ********* ARM compiler options  ************
 ifeq ($(COMPILER),arm)
   FC := armflang
-  FC_FLAGS := -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID
-  LD_FLAGS := 
+  FC_FLAGS += -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID
+  LD_FLAGS += 
 
   FC_FLAGS += -mcpu=native
 endif
