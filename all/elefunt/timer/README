@@ -1,0 +1,20 @@
+
+To build the timer library, libtimer.a, you need to do the following steps.
+
+  1) Create a 64 bit floating point function called
+     timer_clock() which returns a wall clock time in units of seconds.
+     We have already supplied a file called timer_clock.c with SUN, HP, SGI
+     support for this function. For accuracy, this timing function should ideally
+     provide the benchmarks with timings accurate to system clock tick level
+     of granularity.
+
+  2) Create a customized section in the makefile to build the function. We
+     have supplied SUN, SGI and HP sections already.
+     Things which you will need to customize are the paths for ar, the names 
+     and paths of the C and FORTRAN compilers
+     and the compiler options.
+     
+  3) Type bldit ARCH to build for the desired architecture
+     This should build the library libtimer.a.
+
+  4) Refer to the file timer.doc for timer interface information.

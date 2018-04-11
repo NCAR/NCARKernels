@@ -1,0 +1,141 @@
+
+
+NCAR ELEFUNT Benchmark
+======================
+
+ELEFUNT is a math library function accuracy tester, available as freeware
+on NETLIB, provided by Prof. Dongarra. The code provided in NCAR ELEFUNT
+focuses on five functions of the greatest interest to NCAR: ALOG, EXP, SIN,
+PWR(**), and SQRT. The double precision version DLOG, DEXP, DSIN, DPWR(**)
+and DSQRT are also studied. 
+
+In addition to the ELEFUNT accuracy tester, a performance test of these five floating
+point math functions, as well as the nearest integer function NINT,  is performed on an 
+1000000 element array.
+
+Overview
+========
+
+The NCAR ELEFUNT benchmark is intended to evaluate the quality of important
+math functions on the proposed system. 
+
+Porting Procedure
+=================
+
+The ELEFUNT benchmark is designed to run "as is" on a single
+processor of four different platforms:
+
+SUN USparc  (64 and 32 bit)
+HP Exemplar (64 and 32 bit)
+SGI Power Challenge  (64 and 32 bit)
+
+The first step in porting is to develop a native wall clock timing function
+which returns a 64 bit floating point number representing the current
+time. This function should be given the canonical name timer_clock(),
+and added, with appropriate #ifdef's, to the C routine timer_clock.c
+in the TIMER directory.
+
+The makefile in the TIMER directory should be customized
+to create a  timer library libtimer.a. The details on the use of the
+functions in the timer library, libtimer.a, can be obtained in the README 
+file located in the TIMER directory. The generic benchmark makefile
+expects the timer library to be located in $(HOME)/lib/$(ARCH)/
+
+Building and running NCAR ELEFUNT on a particular target machine is 
+accomplished using a script called bld. The bld script should be 
+run in the following way:
+
+bld ARCH >! FUN.OUT &
+
+or 
+
+run.sh ARCH >! FUN.OUT &
+
+where ARCH is one of SUN, HP, SGI. This will 
+automatically build and run the performance tester testx and both the 
+single and double precision versions of the ELEFUNT tests for the 
+selected architecture.
+
+Of course, ultimately you will want to modify the
+code and the bld script so that the benchmark can be
+run on new architectures. This should be accomplished
+by adding another "elif" branch to the bld script.
+
+NCAR ELEFUNT Test Rules 
+=======================
+
+The benchmarker is required to report the following results for
+the NCAR ELEFUNT test:
+
+Run the performance test, testfun.F, and both the single 
+and double floating point precision versions of the ELEFUNT test for 
+each math library used in these benchmarks. If only one floating point 
+length is supported on the proposed system, then only the results for that 
+precision need be reported. This can be accomplished by the following 
+procedure:
+
+1) modify the makefile so that the routine testfun.F is preprocessed with the 
+   CPP variable SINGLE_PREC_ONLY turned on. To do this add
+
+   -D SINGLE_PREC_ONLY 
+
+   to the makefile variable CPPFLAG in file Makefile.
+
+2) modify bld script to compile and run only the single precision versions 
+
+   logx,expx,powerx,sinx,sqrtx
+
+Note to Cray PVP users:
+
+Currently an apparent bug in the double precision form of the machar 
+subroutine causes a floating exception on the Cray Y-MP. Should this problem 
+also occur on other platforms, the requirements for this test will be 
+relaxed accordingly.
+
+The results consist of the FUN.OUT, and FUN.DAT files. The FUN.DAT file 
+contains three columns. The first column is the rate of function calls 
+performed in millions of function calls per second. The second column 
+contains the elapse time in seconds of each test. The third column
+contains the name of the math function studied.
+
+These tests need only be performed on a single processor of the proposed
+system. 
+
+The file FUN.OUT contains the results of the ELEFUNT accuracy tests for
+each function. On some machines, the compiler will detect an attempt to 
+use illegal arguments with certain math functions. These compiler errors 
+generally occur on purpose in the test sections "TEST OF ERROR RETURNS". They
+can be alleviated, in most cases, by commenting out lines of the form 
+Y = FUN(X). See, for example, the routine alog.F.
+
+The results of this benchmark consist of the FUN.OUT and FUN.DAT files.
+The following information should also be provided in an additional hand
+generated file named FUN.PARAMS
+
+         Vendor:
+         Computer:
+         Machine clock speed in MHz:
+         Compiler/Version:
+         Optimization level:
+         Other relevant compiler options:
+         Math Library Used:
+  
+Correctness
+===========
+
+  The FUN.OUT file will contain information about the quality of the math 
+  library functions.
+
+Returns
+=======
+
+In addition to the source files, the following files should be 
+returned from the benchmark:
+
+ FUN.OUT
+ FUN.DAT
+ FUN.PARAMS
+
+
+
+

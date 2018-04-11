@@ -1,0 +1,147 @@
+#! /bin/sh -f
+
+USAGE='usage: bldit ARCH'
+
+if test "$#" -lt 1
+then
+echo $USAGE 1>&2
+exit 2
+fi
+
+
+if [ $1 = "SUN" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "SGI" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "CRAY_PVP" ]
+then
+
+MAKENAME=gnumake
+
+elif [ $1 = "CRAY_T3E" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "HP" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "HP_IA64" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "DEC" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "IBM" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "DARWIN_INTEL" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "DARWIN_GNU" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTEL" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTELO2Precise" ]
+then
+
+MAKENAME=make
+
+
+elif [ $1 = "LINUX_INTELMIC" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_AVX2_IFORT" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_AVX2_GNU" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_AVX2_FLANG" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_INTELMICO2Precise" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_PC" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "LINUX_PGI" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_IA64" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "LINUX_ARM" ]
+then
+
+MAKENAME=gmake
+
+else
+echo "Unrecognized Architecture:" $1
+exit 1
+
+fi
+
+mkdir -p ../lib/$1
+mkdir -p ../results/$1
+
+echo '   '
+echo 'making timer library on ' $1
+
+$MAKENAME ARCH=$1 clean
+
+if [ $1 = "LINUX_INTELMIC" ]
+then
+$MAKENAME libtimer_mic.a ARCH=$1
+echo 'copying libtimer_mic.a to' ../lib/${1}
+cp libtimer_mic.a ../lib/${1}/libtimer_mic.a
+elif [ $1 = "LINUX_INTELMICO2Precise" ]
+then
+$MAKENAME libtimer_mic.a ARCH=$1
+echo 'copying libtimer_mic.a to' ../lib/${1}
+cp libtimer_mic.a ../lib/${1}/libtimer_mic.a
+
+else
+$MAKENAME libtimer.a ARCH=$1
+echo 'copying libtimer.a to' ../lib/${1}
+cp libtimer.a ../lib/${1}/libtimer.a
+fi
+
+exit 0
