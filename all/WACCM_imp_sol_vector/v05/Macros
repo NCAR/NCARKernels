@@ -1,9 +1,9 @@
 # Conditional Makefile macros for this kernel & version:
 
 # User settings (all case-insensitive):
-COMPILER = Intel       # Intel, GNU, ARM (later, PGI?)
-ARCH     = BDW         # Currently supports: HSW, BDW, SKY, KNL, TX2
-MPI      = no          # Yes/No, True/False or Enabled/Disabled
+COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
+ARCH     = bdw         # Not currently used (using xHost/native modes)
+MPI      = yes         # Yes/No, True/False or Enabled/Disabled
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
@@ -26,24 +26,18 @@ else ifeq ($(MPI),enabled)
   MPI := yes
 endif
 
+
+# Note: For simplicity, we're going to ignore cross-compilation and use the "-march=native" (gnu), 
+# "-mcpu=native" /armflang) and "-xHost" (intel) compiler flags to optimize for the platform we're on.  
+# Change in the second FC_FLAGS  setting below if that doesn't apply.
+
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
-  #FC_FLAGS := -convert big_endian -assume byterecl -fp-model source -free -no-fma -O3 -align array64byte
-  FC_FLAGS := -convert big_endian -assume byterecl -fp-model fast -free -O3 -align array64byte
+  FC_FLAGS := -convert big_endian -assume byterecl -fp-model fast -free -O3 -align array64byte -qno-opt-dynamic-align
   LD_FLAGS := 
 
-  ifeq ($(ARCH),hsw)
-    FC_FLAGS += -xCORE-AVX2
-  else ifeq ($(ARCH),bdw)
-    FC_FLAGS += -xCORE-AVX2
-  else ifeq ($(ARCH),sky)
-    FC_FLAGS += -xCORE-AVX512
-  else ifeq ($(ARCH),knl)
-    FC_FLAGS += -xMIC-AVX512
-  else 
-    FC_FLAGS += -xHost
-  endif
+  FC_FLAGS += -xHost
 endif
 
 
@@ -53,32 +47,22 @@ ifeq ($(COMPILER),gnu)
   FC_FLAGS := -Ofast -ffp-contract=fast -ffree-form -ffree-line-length-none
   LD_FLAGS := 
 
-  ifeq ($(ARCH),hsw)
-    FC_FLAGS += -march=haswell
-  else ifeq ($(ARCH),bdw)
-    FC_FLAGS += -march=broadwell
-  else ifeq ($(ARCH),sky)
-    FC_FLAGS += -march=skylake-avx512
-  else ifeq ($(ARCH),knl)
-    FC_FLAGS += -march=knl
-  else ifeq ($(ARCH),tx2)
-    FC_FLAGS += -march=thunderx2t99
-  else 
-    FC_FLAGS += -march=native
-  endif
+  FC_FLAGS += -march=native
 endif
 
 
 # ********* ARM compiler options  ************
 ifeq ($(COMPILER),arm)
   FC := armflang
-  FC_FLAGS := -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none
+  FC_FLAGS := -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID
   LD_FLAGS := 
 
-  ifeq ($(ARCH),tx2)
-    FC_FLAGS += -march=thunderx2t99
-  else 
-    FC_FLAGS += -march=native
-  endif
+  FC_FLAGS += -mcpu=native
+endif
+
+# If we're using MPI, then use ${MPIFC}
+ifeq ($(MPI),yes)
+  FC := ${MPIFC}
+  FC_FLAGS += -D_MPI
 endif
 

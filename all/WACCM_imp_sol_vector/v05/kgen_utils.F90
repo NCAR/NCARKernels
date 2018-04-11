@@ -305,6 +305,7 @@ subroutine kgen_init_random_seed
   use ifport, only: getpid
 #endif
 
+
   implicit none
   integer, allocatable :: seed(:)
   integer :: i, n, un, istat, dt(8), pid
@@ -352,6 +353,15 @@ subroutine kgen_init_random_seed
       s = mod(s * 279470273_int64, 4294967291_int64)
       lcg = int(mod(s, int(huge(0), int64)), kind(0))
    end function lcg
+
+#ifdef _NOGETPID
+    function getpid() result(pid)
+      integer :: pid
+
+      pid = 17 ! Just putting a default value for now until we get a cross-platform way of doing this
+    end function getpid
+#endif
+
 end subroutine kgen_init_random_seed
 
 subroutine kgen_init_check(check, verboseLevel, tolerance, minValue)

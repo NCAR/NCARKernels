@@ -13,10 +13,10 @@
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
 
         use kgen_extensions_mod, only: read_runtime_options
-        IMPLICIT NONE
 #ifdef _MPI 
-        include 'mpif.h'
+        use mpi
 #endif
+        IMPLICIT NONE
         
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv

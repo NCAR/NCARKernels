@@ -93,6 +93,12 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     USE mo_imp_sol, ONLY: kr_externs_out_mo_imp_sol
     USE kgen_utils_mod, ONLY: check_t, kgen_init_check, CHECK_IDENTICAL, CHECK_IN_TOL, CHECK_OUT_TOL
     USE kgen_utils_mod, ONLY: kgen_perturb_real
+
+#ifdef _MPI
+    use mpi
+#endif
+
+
     IMPLICIT NONE
 
     !-----------------------------------------------------------------------
@@ -140,6 +146,9 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     INTEGER, PARAMETER :: kgen_maxiter = 100
     REAL(KIND=kgen_dp) :: kgen_elapsed_time
     real(kind=kgen_dp) :: tolerance
+
+    ! mpi
+    integer :: iError
 
     !-----------------------------------------------------------------------      
     !        ... Get chunck latitudes and longitudes
@@ -519,13 +528,16 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     WRITE (*, *) ""
     
     !Measuring elapsed time. Please increase the value of kgen_maxiter to get improve timing measurment resolution.
+#ifdef _MPI
+    call MPI_Barrier(MPI_COMM_WORLD, iError)
+#endif
     CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock)
     DO kgen_intvar = 1, kgen_maxiter
         CALL kgen_kernel
     END DO 
     CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock)
     kgen_elapsed_time = 1.0e6*(kgen_stop_clock - kgen_start_clock)/REAL(kgen_rate_clock*kgen_maxiter)
-    WRITE (*, *) "imp_sol : Time per call (usec): ", kgen_elapsed_time
+    !WRITE (*, *) "imp_sol : Time per call (usec): ", kgen_elapsed_time
     kgen_total_time = kgen_total_time + kgen_elapsed_time
     
     CONTAINS
