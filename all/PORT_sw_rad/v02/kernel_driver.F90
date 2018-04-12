@@ -43,7 +43,7 @@ PROGRAM kernel_driver
 
 #ifdef _MPI
     use mpi
-#endif _MPI
+#endif 
 
     IMPLICIT NONE
 
