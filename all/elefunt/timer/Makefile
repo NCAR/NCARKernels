@@ -271,12 +271,12 @@ endif
 ifeq ($(ARCH),LINUX_ARM)
   FTN      = armflang
   FBASE    =  -mcpu=native -I. -I../include
-  FOPT     = -O3 -ffp-contract=fast
+  FOPT     = -O3 -ffp-contract=fast -ffixed-form
   FPREC    =
-  CPP      = /lib/cpp
+  CPP      = gfortran -E
   CPPFLAG  = -D$(ARCH) -DTIMER_LIB -P -traditional
   CC       = armclang
-  CBASE    = -DLWR_CASE_DUSCORE
+  CBASE    = -DLWR_CASE_DUSCORE -DLINUX_PC
   COPT     = -O3
   LDFLAGS  = -L${ARMPL_DIR}/lib -larmpl_lp64
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer

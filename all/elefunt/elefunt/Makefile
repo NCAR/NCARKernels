@@ -333,22 +333,17 @@ ifeq ($(ARCH),LINUX_IA64)
   VLIBS    =
 endif
 
-#FC := armflang
-#FC_FLAGS := -O3 -ffp-contract=fast -mcpu=native -ffree-form
-#LD_FLAGS := -L/opt/arm/armpl_time_limited-18.1.0_ThunderX2CN99_Ubuntu-16.04_arm-hpc-compiler_18.1_aarch64-linux/lib -larmpl_lp64
-
-
-ifeq ($(ARCH),LINUX_ARMv8)
+ifeq ($(ARCH),LINUX_ARM)
   FTN      = armflang
   FBASE    =  -mcpu=native -I. -I../include
   FOPT     = -O3 -ffp-contract=fast 
   FPREC    =
-  CPP      = /lib/cpp
+  CPP      = gfortran -E
   CPPFLAG  = -D$(ARCH) -DTIMER_LIB -P -traditional
   CC       = armclang
   CBASE    = -DLWR_CASE_DUSCORE
   COPT     = -O3
-  LDFLAGS  = -L/opt/arm/armpl_time_limited-18.1.0_ThunderX2CN99_Ubuntu-16.04_arm-hpc-compiler_18.1_aarch64-linux/lib -larmpl_lp64
+  LDFLAGS  = -L${ARMPL_DIR}/lib -larmpl_lp64
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer
   VLIBS    =
 endif

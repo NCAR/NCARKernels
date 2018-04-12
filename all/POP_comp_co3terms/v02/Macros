@@ -1,7 +1,7 @@
 # Conditional Makefile macros for this kernel & version:
 
 # User settings (all case-insensitive):
-COMPILER = gnu # Intel, GNU, ARM (later, PGI?)
+COMPILER = intel        # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
 MPI      = no          # Yes/No, True/False or Enabled/Disabled
 
