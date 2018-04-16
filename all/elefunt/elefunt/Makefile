@@ -313,7 +313,7 @@ ifeq ($(ARCH),LINUX_PC)
   CC       = cc
   CBASE    = -DLWR_CASE_DUSCORE
   COPT     = 
-  LDFLAGS  = 
+  LDFLAG   = 
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer 
   VLIBS    =
 endif
@@ -328,7 +328,7 @@ ifeq ($(ARCH),LINUX_IA64)
   CC       = ecc
   CBASE    = -DLWR_CASE_DUSCORE
   COPT     = -O3
-  LDFLAGS  = -ip
+  LDFLAG   = -ip
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer
   VLIBS    =
 endif
@@ -343,7 +343,7 @@ ifeq ($(ARCH),LINUX_ARM)
   CC       = armclang
   CBASE    = -DLWR_CASE_DUSCORE
   COPT     = -O3
-  LDFLAGS  = -L${ARMPL_DIR}/lib -larmpl_lp64
+  LDFLAG   = -L${ARMPL_DIR}/lib -larmpl_lp64
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer
   VLIBS    =
 endif
