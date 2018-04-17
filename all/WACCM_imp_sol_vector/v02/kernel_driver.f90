@@ -12,7 +12,9 @@
         USE chem_mods, ONLY: kr_externs_in_chem_mods
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
         IMPLICIT NONE
-        include 'mpif.h' 
+#ifdef _MPI 
+        include 'mpif.h'
+#endif
         
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv
@@ -28,11 +30,14 @@
         INTEGER :: ncol
         REAL(KIND=r8) :: delt
 
+        REAL :: avg_call_time, max_call_time
+#ifdef _MPI
         integer rank, size, ierror
 
         call MPI_INIT(ierror)
         call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierror)
         call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+#endif
 
         kgen_total_time = 0.0_kgen_dp
         
@@ -50,8 +55,8 @@
                 CALL kgen_error_stop("FILE OPEN ERROR: " // TRIM(ADJUSTL(kgen_filepath)))
             END IF 
             
-!            WRITE (*, *) ""
-!            WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
+            WRITE (*, *) ""
+            WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
             
             
             !driver read in arguments
@@ -69,13 +74,25 @@
             CLOSE (UNIT=kgen_unit)
             
         END DO 
-        
-!        WRITE (*, *) ""
-!        WRITE (*, *) "******************************************************************************"
-!        WRITE (*, *) "imp_sol summary: Total number of verification cases: 4"
-!        WRITE (*, *) "imp_sol summary: Average call time of all calls (usec): ", kgen_total_time / 4
-!        WRITE (*, *) "******************************************************************************"
-!        WRITE (*, *) rank,"/",size,kgen_total_time / 4
-         WRITE (*, *)kgen_total_time / 4
+
+        avg_call_time = kgen_total_time / (kgen_repeat_counter)
+#ifdef _MPI
+        call MPI_REDUCE(avg_call_time, max_call_time, 1, MPI_REAL, MPI_MAX, 0, MPI_COMM_WORLD, ierror)
+        if (rank == 0) then
+           WRITE (*, *) ""
+           WRITE (*, *) "******************************************************************************"
+           WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
+           WRITE (*, *) "imp_sol summary: # ranks: ",size," Avg call time (usec): ",avg_call_time
+           WRITE (*, *) "******************************************************************************"
+        end if
         call MPI_FINALIZE(ierror)
+#else
+        max_call_time = avg_call_time
+        WRITE (*, *) ""
+        WRITE (*, *) "******************************************************************************"
+        WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
+        WRITE (*, *) "imp_sol summary: Avg call time (usec): ",max_call_time
+        WRITE (*, *) "******************************************************************************"
+#endif
+        
     END PROGRAM 
