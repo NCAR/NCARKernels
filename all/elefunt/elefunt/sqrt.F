@@ -1,0 +1,275 @@
+C     PROGRAM TO TEST SQRT
+C
+C     DATA REQUIRED
+C
+C        NONE
+C
+C     SUBPROGRAMS REQUIRED FROM THIS PACKAGE
+C
+C        MACHAR - AN ENVIRONMENTAL INQUIRY PROGRAM PROVIDING
+C                 INFORMATION ON THE FLOATING-POINT ARITHMETIC
+C                 SYSTEM.  NOTE THAT THE CALL TO MACHAR CAN
+C                 BE DELETED PROVIDED THE FOLLOWING SIX
+C                 PARAMETERS ARE ASSIGNED THE VALUES INDICATED
+C
+C                 IBETA  - THE RADIX OF THE FLOATING-POINT SYSTEM
+C                 IT     - THE NUMBER OF BASE-IBETA DIGITS IN THE
+C                          SIGNIFICAND OF A FLOATING-POINT NUMBER
+C                 EPS    - THE SMALLEST POSITIVE FLOATING-POINT
+C                          NUMBER SUCH THAT 1.0+EPS .NE. 1.0
+C                 EPSNEG - THE SMALLEST POSITIVE FLOATING-POINT
+C                          NUMBER SUCH THAT 1.0-EPSNEG .NE. 1.0
+C                 XMIN   - THE SMALLEST NON-VANISHING FLOATING-POINT
+C                          POWER OF THE RADIX
+C                 XMAX   - THE LARGEST FINITE FLOATING-POINT NO.
+C
+C      RANDL(X) - A FUNCTION SUBPROGRAM RETURNING LOGARITHMICALLY
+C                 DISTRIBUTED RANDOM REAL NUMBERS.  IN PARTICULAR,
+C                        A * RANDL(ALOG(B/A))
+C                 IS LOGARITHMICALLY DISTRIBUTED OVER (A,B)
+C
+C        REN(K) - A FUNCTION SUBPROGRAM RETURNING RANDOM REAL
+C                 NUMBERS UNIFORMLY DISTRIBUTED OVER (0,1)
+C
+C
+C     STANDARD FORTRAN SUBPROGRAMS REQUIRED
+C
+C         ABS, ALOG, AMAX1, FLOAT, SQRT
+C
+C
+C     LATEST REVISION - AUGUST 2, 1979
+C
+C     AUTHOR - W. J. CODY
+C              ARGONNE NATIONAL LABORATORY
+C
+C
+      INTEGER I,IBETA,IEXP,IOUT,IRND,IT,J,K1,K2,K3,MACHEP,
+     1        MAXEXP,MINEXP,N,NEGEP,NGRD
+      REAL A,AIT,ALBETA,B,BETA,C,EPS,EPSNEG,ONE,RANDL,R6,R7,
+     1     SQBETA,W,X,XMAX,XMIN,XN,X1,Y,Z,ZERO
+C
+      IOUT = 6
+      CALL MACHAR(IBETA,IT,IRND,NGRD,MACHEP,NEGEP,IEXP,MINEXP,
+     1            MAXEXP,EPS,EPSNEG,XMIN,XMAX)
+      BETA = FLOAT(IBETA)
+      SQBETA = SQRT(BETA)
+      ALBETA = ALOG(BETA)
+      AIT = FLOAT(IT)
+      ONE = 1.0E0
+      ZERO = 0.0E0
+      A = ONE / SQBETA
+      B = ONE
+      N = 2000
+      XN = FLOAT(N)
+C-----------------------------------------------------------------
+C     RANDOM ARGUMENT ACCURACY TESTS
+C-----------------------------------------------------------------
+      DO 300 J = 1, 2
+         C = ALOG(B/A)
+         K1 = 0
+         K3 = 0
+         X1 = ZERO
+         R6 = ZERO
+         R7 = ZERO
+C
+         DO 200 I = 1, N
+            X = A * RANDL(C)
+            Y = X * X
+            Z = SQRT(Y)
+            W = (Z - X) / X
+            IF (W .GT. ZERO) K1 = K1 + 1
+            IF (W .LT. ZERO) K3 = K3 + 1
+            W = ABS(W)
+            IF (W .LE. R6) GO TO 120
+            R6 = W
+            X1 = X
+  120       R7 = R7 + W * W
+  200    CONTINUE
+C
+         K2 = N - K1 - K3
+         R7 = SQRT(R7/XN)
+         WRITE (IOUT,1000)
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         WRITE (IOUT,1010) N,A,B
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         WRITE (IOUT,1011) K1,K2,K3
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         WRITE (6,1020) IT,IBETA
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         W = -999.0E0
+         IF (R6 .NE. ZERO) W = ALOG(ABS(R6))/ALBETA
+         WRITE (IOUT,1021) R6,IBETA,W,X1
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         W = AMAX1(AIT+W,ZERO)
+         WRITE (IOUT,1022) IBETA,W
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         W = -999.0E0
+         IF (R7 .NE. ZERO) W = ALOG(ABS(R7))/ALBETA
+         WRITE (IOUT,1023) R7,IBETA,W
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         W = AMAX1(AIT+W,ZERO)
+         WRITE (IOUT,1022) IBETA,W
+         WRITE(IOUT,*)
+         WRITE(IOUT,*)
+
+         A = ONE
+         B = SQBETA
+  300 CONTINUE
+C-----------------------------------------------------------------
+C     SPECIAL TESTS
+C-----------------------------------------------------------------
+      WRITE (IOUT,1040)
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = XMIN
+      Y = SQRT(X)
+      WRITE (IOUT,1041) X,Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = ONE - EPSNEG
+      Y = SQRT(X)
+      WRITE (IOUT,1042) EPSNEG,Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = ONE
+      Y = SQRT(X)
+      WRITE (IOUT,1043) X,Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = ONE + EPS
+      Y = SQRT(X)
+      WRITE (IOUT,1044) EPS,Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = XMAX
+      Y = SQRT(X)
+      WRITE (IOUT,1045) X,Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+C-----------------------------------------------------------------
+C     TEST OF ERROR RETURNS
+C-----------------------------------------------------------------
+      WRITE (IOUT,1050)
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = ZERO
+      WRITE (IOUT,1051) X
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      Y = SQRT(X)
+      WRITE (IOUT,1055) Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+      X = -ONE
+      WRITE (IOUT,1052) X
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+
+#if !defined(CRAY_PVP)
+      Y = SQRT(X)
+      WRITE (IOUT,1055) Y
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+#else
+      WRITE(IOUT,*)'DISABLED FOR CRAYS'
+      WRITE(IOUT,*)
+      WRITE(IOUT,*)
+#endif
+      WRITE (IOUT,1100)
+      STOP
+ 1000 FORMAT("TEST OF SQRT(X*X) - X ")
+ 1010 FORMAT(I7," RANDOM ARGUMENTS WERE TESTED FROM THE INTERVAL ",
+     1 6X,"(",E15.4,",",E15.4,")")
+ 1011 FORMAT(" SQRT(X) WAS LARGER",I6," TIMES", 
+     1     12X," AGREED",I6," TIMES, AND ",
+     2     8X,"WAS SMALLER",I6," TIMES.")
+ 1020 FORMAT(" THERE ARE",I4," BASE",I4,
+     1    " SIGNIFICANT DIGITS IN A FLOATING-POINT NUMBER  ")
+ 1021 FORMAT(" THE MAXIMUM RELATIVE ERROR OF",E15.4," = ",I4," **",
+     1  F7.2,4X,"OCCURRED FOR X =",E17.6)
+ 1022 FORMAT(" THE ESTIMATED LOSS OF BASE",I4,
+     1  " SIGNIFICANT DIGITS IS",F7.2)
+ 1023 FORMAT(" THE ROOT MEAN SQUARE RELATIVE ERROR WAS",E15.4,
+     1    " = ",I4," **",F7.2)
+ 1040 FORMAT("TEST OF SPECIAL ARGUMENTS")
+ 1041 FORMAT(" SQRT(XMIN) = SQRT(",E15.7,") = ",E15.7)
+ 1042 FORMAT(" SQRT(1-EPSNEG) = SQRT(1-",E15.7,") = ",E15.7)
+ 1043 FORMAT(" SQRT(1.0) = SQRT(",E15.7,") = ",E15.7)
+ 1044 FORMAT(" SQRT(1+EPS) = SQRT(1+",E15.7,") = ",E15.7)
+ 1045 FORMAT(" SQRT(XMAX) = SQRT(",E15.7,") = ",E15.7)
+ 1050 FORMAT(" TEST OF ERROR RETURNS")
+ 1051 FORMAT(" SQRT WILL BE CALLED WITH THE ARGUMENT",E15.4,
+     1       " THIS SHOULD NOT TRIGGER AN ERROR MESSAGE")
+ 1052 FORMAT("SQRT WILL BE CALLED WITH THE ARGUMENT",E15.4,
+     1       " THIS SHOULD TRIGGER AN ERROR MESSAGE")
+ 1055 FORMAT(" SQRT RETURNED THE VALUE",E15.4)
+ 1100 FORMAT(" THIS CONCLUDES THE TESTS ")
+C     ---------- LAST CARD OF SQRT TEST PROGRAM ----------
+      END
+      REAL FUNCTION REN(K)
+C
+C     RANDOM NUMBER GENERATOR - BASED ON ALGORITHM 266 BY PIKE AND
+C      HILL (MODIFIED BY HANSSON), COMMUNICATIONS OF THE ACM,
+C      VOL. 8, NO. 10, OCTOBER 1965.
+C
+C     THIS SUBPROGRAM IS INTENDED FOR USE ON COMPUTERS WITH
+C      FIXED POINT WORDLENGTH OF AT LEAST 29 BITS.  IT IS
+C      BEST IF THE FLOATING POINT SIGNIFICAND HAS AT MOST
+C      29 BITS.
+C
+      INTEGER IY,J,K
+      DATA IY/100001/
+C
+      J = K
+      IY = IY * 125
+      IY = IY - (IY/2796203) * 2796203
+      REN = FLOAT(IY) / 2796203.0E0
+      RETURN
+C     ---------- LAST CARD OF REN ----------
+      END
+      REAL FUNCTION RANDL(X)
+C
+C     RETURNS PSEUDO RANDOM NUMBERS LOGARITHMICALLY DISTRIBUTED
+C     OVER (1,EXP(X)).  THUS A*RANDL(LN(B/A)) IS LOGARITHMICALLY
+C     DISTRIBUTED IN (A,B).
+C
+C     OTHER SUBROUTINES REQUIRED
+C
+C        EXP(X) - THE EXPONENTIAL ROUTINE
+C
+C        REN(K) - A FUNCTION PROGRAM RETURNING RANDOM REAL
+C                 NUMBERS UNIFORMLY DISTRIBUTED OVER (0,1).
+C                 THE ARGUMENT K IS A DUMMY.
+C
+C
+      REAL REN,X
+      INTEGER K
+      DATA K/1/
+C
+      RANDL = EXP(X*REN(K))
+      RETURN
+C     ---------- LAST CARD OF RANDL ----------
+      END

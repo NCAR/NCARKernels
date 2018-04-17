@@ -1,0 +1,143 @@
+#! /bin/sh -f
+
+USAGE='usage: bld ARCH'
+
+if test "$#" -lt 1
+then
+echo $USAGE 1>&2
+exit 2
+fi
+
+if [ $1 = "SUN" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "SGI" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "CRAY_PVP" ]
+then
+
+MAKENAME=gnumake
+
+elif [ $1 = "CRAY_T3E" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "HP" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "HP_IA64" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "DEC" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "IBM" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "DARWIN_INTEL" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "DARWIN_GNU" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTEL" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_AVX2_IFORT" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_AVX2_GNU" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_AVX2_FLANG" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTELO2Precise" ]
+then
+
+MAKENAME=make
+
+
+elif [ $1 = "LINUX_INTELMIC" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTELMICO2Precise" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTELMKL" ]
+then
+
+MAKENAME=make
+
+elif [ $1 = "LINUX_INTELMICMKL" ]
+then
+
+MAKENAME=make
+elif [ $1 = "LINUX_PC" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "LINUX_IA64" ]
+then
+
+MAKENAME=gmake
+
+elif [ $1 = "LINUX_ARM" ]
+then
+
+MAKENAME=gmake
+else
+
+echo "Unrecognized Architecture" $1
+exit 1
+
+fi
+
+echo "MAKING " $1 " VERSION:"
+
+$MAKENAME clean ARCH=$1
+
+echo '   '
+echo 'begin compilation...'
+date
+$MAKENAME testx   ARCH=$1 
+$MAKENAME alogx   ARCH=$1
+$MAKENAME expx    ARCH=$1
+$MAKENAME powerx  ARCH=$1
+$MAKENAME sinx    ARCH=$1
+$MAKENAME sqrtx   ARCH=$1
+$MAKENAME dlogx   ARCH=$1
+$MAKENAME dexpx   ARCH=$1
+$MAKENAME dpowerx ARCH=$1
+$MAKENAME dsinx   ARCH=$1
+$MAKENAME dsqrtx  ARCH=$1
+date
+echo "end compilation"
