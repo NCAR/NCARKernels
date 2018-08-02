@@ -49,6 +49,16 @@ ifeq ($(COMPILER),intel)
   FC_FLAGS += -xHost
 endif
 
+# ********* NEC compiler options  ************
+ifeq ($(COMPILER),nec)
+  FC := nfort
+  FC_FLAGS += -v -O4 -finline-functions -report-all -fdiag-vector=2 -D_NOGETPID
+  LD_FLAGS +=
+
+  FC_FLAGS +=
+  MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc
+endif
+
 
 # ********* GNU compiler options  ************
 ifeq ($(COMPILER),gnu)

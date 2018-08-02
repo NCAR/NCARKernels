@@ -653,7 +653,7 @@
             ! index for looping over ny_block dimension
             ! are any alt_co2 terms being time averaged
             integer :: iError
-                        tolerance = 2.E-14
+                        tolerance = 5.E-14
                         CALL kgen_init_check(check_status, tolerance)
                         READ(UNIT=kgen_unit) sio3_loc
                         READ(UNIT=kgen_unit) temp

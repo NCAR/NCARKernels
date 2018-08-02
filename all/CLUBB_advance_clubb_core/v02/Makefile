@@ -7,7 +7,7 @@ ALL_OBJS := clubb_intr.o advance_clubb_core_module.o clubb_precision.o grid_clas
 run: build
 
 build: ${ALL_OBJS}
-	${FC} ${LD_FLAGS}   -o kernel.exe $^
+	${FC} -o kernel.exe $^ ${LD_FLAGS}
 
 clubb_intr.o: clubb_intr.F90 advance_clubb_core_module.o clubb_precision.o grid_class.o parameters_model.o pdf_parameter_module.o stats_variables.o fill_holes.o error_code.o numerical_check.o constants_clubb.o stats_type_utilities.o stats_type.o stat_file_module.o model_flags.o variables_diagnostic_module.o parameters_tunable.o interpolation.o Skw_module.o sigma_sqd_w_module.o pdf_closure_module.o saturation.o shr_const_mod.o shr_kind_mod.o anl_erf.o array_index.o pdf_utilities.o mixing_length.o advance_helper_module.o surface_varnce_module.o T_in_K_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o stats_clubb_utilities.o ppgrid.o kgen_utils.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
