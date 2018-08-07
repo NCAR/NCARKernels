@@ -79,8 +79,8 @@ MODULE mo_taumol03
         integer, intent(in) :: indself(startCol:ncol,nlayers) ! self index array
         integer, intent(in) :: indfor(startCol:ncol,nlayers)  ! for index array
         integer, intent(in) :: indminor(startCol:ncol,nlayers) ! ka_mn2o index array
-        real(kind=wp), intent(out), dimension(startCol:ncol,nlayers) :: taug  ! kernel result
-        real(kind=wp), intent(out), dimension(startCol:ncol,nlayers) :: fracs ! kernel result
+        real(kind=wp), intent(inout), dimension(startCol:ncol,nlayers) :: taug  ! kernel result
+        real(kind=wp), intent(inout), dimension(startCol:ncol,nlayers) :: fracs ! kernel result
 
         ! Local variable
         ! ==============
@@ -277,7 +277,7 @@ MODULE mo_taumol03
                 specparm_mn2o(icol) = colh2o(icol,lay)/speccomb_mn2o(icol)
             END DO
 
-            do icol=1,ncol ! vectorizes as is 14.0.2
+            do icol=startCol,ncol ! vectorizes as is 14.0.2
                 IF (specparm_mn2o(icol) .GE. oneminus) specparm_mn2o(icol) =oneminus
             end do
 
@@ -403,8 +403,8 @@ MODULE mo_taumol03
         integer, intent(in) :: ig                    ! ig indexes into lookup tables
         integer, intent(in) :: indfor(startCol:ncol,nlayers)  ! for index array
         integer, intent(in) :: indminor(startCol:ncol,nlayers) ! ka_mn2o index array
-        real(kind=wp), intent(out), dimension(startCol:ncol,nlayers) :: taug  ! kernel result
-        real(kind=wp), intent(out), dimension(startCol:ncol,nlayers) :: fracs ! kernel result
+        real(kind=wp), intent(inout), dimension(startCol:ncol,nlayers) :: taug  ! kernel result
+        real(kind=wp), intent(inout), dimension(startCol:ncol,nlayers) :: fracs ! kernel result
 
         ! Local variable
         ! ==============
