@@ -1,0 +1,251 @@
+ 
+ 
+ ** Verification against '../data/micro_mg_tend2_0.1.0' **
+ 
+ packed_rate1ord_cw2pr_st is NOT IDENTICAL.
+          13  of          416  elements are different.
+ RMS of difference is   7.051577377493507E-019
+ Normalized RMS of difference is   1.661290057145204E-014
+ 
+ packed_tlat is NOT IDENTICAL.
+         158  of          416  elements are different.
+ RMS of difference is   2.203117731746657E-017
+ Normalized RMS of difference is   1.563022252491362E-014
+ 
+ packed_qvlat is NOT IDENTICAL.
+         124  of          416  elements are different.
+ RMS of difference is   8.819570851428822E-024
+ Normalized RMS of difference is   1.458849201992662E-014
+ 
+ packed_qctend is NOT IDENTICAL.
+          44  of          416  elements are different.
+ RMS of difference is   6.361313150125177E-024
+ Normalized RMS of difference is   5.032215464256026E-012
+ 
+ packed_qitend is NOT IDENTICAL.
+         140  of          416  elements are different.
+ RMS of difference is   7.784194993557155E-024
+ Normalized RMS of difference is   2.123988753291867E-015
+ 
+ packed_nctend is NOT IDENTICAL.
+         324  of          416  elements are different.
+ RMS of difference is   9.734048094309828E-013
+ Normalized RMS of difference is   2.942764851492498E-013
+ 
+ packed_nitend is NOT IDENTICAL.
+         287  of          416  elements are different.
+ RMS of difference is   9.943801843686936E-013
+ Normalized RMS of difference is   3.049251937286938E-012
+ 
+ packed_qrtend is NOT IDENTICAL.
+          20  of          416  elements are different.
+ RMS of difference is   9.781112571248156E-011
+ Normalized RMS of difference is    1.63969235991937     
+ 
+ packed_qstend is NOT IDENTICAL.
+         126  of          416  elements are different.
+ RMS of difference is   3.960467878741571E-024
+ Normalized RMS of difference is   5.924022798603416E-016
+ 
+ packed_nrtend is NOT IDENTICAL.
+         313  of          416  elements are different.
+ RMS of difference is   0.169515762403923     
+ Normalized RMS of difference is   0.176257181192062     
+ 
+ packed_nstend is NOT IDENTICAL.
+         291  of          416  elements are different.
+ RMS of difference is   6.250013867475074E-016
+ Normalized RMS of difference is   3.798303974916066E-016
+ 
+ packed_rel is NOT IDENTICAL.
+          21  of          416  elements are different.
+ RMS of difference is   1.500720135172645E-011
+ Normalized RMS of difference is   1.754941130080352E-012
+ 
+ rel_fn_dum is NOT IDENTICAL.
+          19  of          416  elements are different.
+ RMS of difference is   2.679587878727649E-015
+ Normalized RMS of difference is   2.824934488859822E-016
+ 
+ packed_rei is NOT IDENTICAL.
+          71  of          416  elements are different.
+ RMS of difference is   1.206277275701414E-011
+ Normalized RMS of difference is   7.541684474206895E-014
+ 
+ packed_prect is NOT IDENTICAL.
+           8  of           13  elements are different.
+ RMS of difference is   5.319610569915835E-012
+ Normalized RMS of difference is   1.370999991448763E-002
+ 
+ packed_preci is NOT IDENTICAL.
+           5  of           13  elements are different.
+ RMS of difference is   2.796636861107872E-025
+ Normalized RMS of difference is   4.052910561670959E-016
+ 
+ packed_prain is NOT IDENTICAL.
+         112  of          416  elements are different.
+ RMS of difference is   4.554323721027097E-024
+ Normalized RMS of difference is   8.048403502212482E-016
+ 
+ packed_prodsnow is NOT IDENTICAL.
+         110  of          416  elements are different.
+ RMS of difference is   4.594267477357764E-024
+ Normalized RMS of difference is   6.258361812487573E-016
+ 
+ packed_cmeout is NOT IDENTICAL.
+         119  of          416  elements are different.
+ RMS of difference is   8.745310316370318E-024
+ Normalized RMS of difference is   1.232744332987097E-014
+ 
+ packed_dei is NOT IDENTICAL.
+         328  of          416  elements are different.
+ RMS of difference is   6.120782679848740E-012
+ Normalized RMS of difference is   3.509178546655795E-014
+ 
+ packed_mu is NOT IDENTICAL.
+           4  of          416  elements are different.
+ RMS of difference is   1.344791294297806E-014
+ Normalized RMS of difference is   1.216774029040914E-015
+ 
+ packed_lambdac is NOT IDENTICAL.
+          12  of          416  elements are different.
+ RMS of difference is   2.118417500254842E-006
+ Normalized RMS of difference is   2.321507997109791E-012
+ 
+ packed_qcsevap is NOT IDENTICAL.
+           3  of          416  elements are different.
+ RMS of difference is   1.337310854968616E-023
+ Normalized RMS of difference is   1.784690356960848E-015
+ 
+ packed_qisevap is NOT IDENTICAL.
+          22  of          416  elements are different.
+ RMS of difference is   5.326594502819462E-025
+ Normalized RMS of difference is   2.685698281136228E-012
+ 
+ packed_cmei is NOT IDENTICAL.
+         119  of          416  elements are different.
+ RMS of difference is   8.745310316370318E-024
+ Normalized RMS of difference is   1.232744332987097E-014
+ 
+ packed_vtrmc is NOT IDENTICAL.
+          12  of          416  elements are different.
+ RMS of difference is   1.847653857168601E-017
+ Normalized RMS of difference is   2.011061315058332E-015
+ 
+ packed_vtrmi is NOT IDENTICAL.
+          87  of          416  elements are different.
+ RMS of difference is   2.013780998658399E-016
+ Normalized RMS of difference is   2.489683141395026E-015
+ 
+ packed_umr is NOT IDENTICAL.
+          11  of          416  elements are different.
+ RMS of difference is   0.453294927609362     
+ Normalized RMS of difference is   0.852802865422442     
+ 
+ packed_ums is NOT IDENTICAL.
+          55  of          416  elements are different.
+ RMS of difference is   2.045781233097484E-016
+ Normalized RMS of difference is   2.684416169469875E-016
+ 
+ packed_qcsedten is NOT IDENTICAL.
+          24  of          416  elements are different.
+ RMS of difference is   8.612038159443791E-024
+ Normalized RMS of difference is   1.832271029569951E-015
+ 
+ packed_qisedten is NOT IDENTICAL.
+         154  of          416  elements are different.
+ RMS of difference is   3.452827412641908E-025
+ Normalized RMS of difference is   5.473744232759735E-012
+ 
+ packed_qrsedten is NOT IDENTICAL.
+          20  of          416  elements are different.
+ RMS of difference is   9.781112571248157E-011
+ Normalized RMS of difference is    1.05566815071654     
+ 
+ packed_qssedten is NOT IDENTICAL.
+         142  of          416  elements are different.
+ RMS of difference is   1.658573998823091E-024
+ Normalized RMS of difference is   4.277369931893580E-015
+ 
+ packed_prc is NOT IDENTICAL.
+          13  of          416  elements are different.
+ RMS of difference is   3.117863752858285E-025
+ Normalized RMS of difference is   1.664206297900849E-014
+ 
+ packed_mnuccc is NOT IDENTICAL.
+           1  of          416  elements are different.
+ RMS of difference is   2.984659852640640E-074
+ Normalized RMS of difference is   2.984659852640640E-074
+ 
+ packed_berg is NOT IDENTICAL.
+          19  of          416  elements are different.
+ RMS of difference is   2.897495204768154E-025
+ Normalized RMS of difference is   1.516549400566590E-014
+ 
+ packed_melt is NOT IDENTICAL.
+          23  of          416  elements are different.
+ RMS of difference is   9.489099299849486E-026
+ Normalized RMS of difference is   6.960198267974196E-012
+ 
+ packed_homo is NOT IDENTICAL.
+           5  of          416  elements are different.
+ RMS of difference is   4.863795025728496E-058
+ Normalized RMS of difference is   4.863795025728496E-058
+ 
+ packed_prci is NOT IDENTICAL.
+         110  of          416  elements are different.
+ RMS of difference is   4.594267477357764E-024
+ Normalized RMS of difference is   6.258361812487573E-016
+ 
+ packed_meltsdt is NOT IDENTICAL.
+           2  of          416  elements are different.
+ RMS of difference is   1.916616771746712E-020
+ Normalized RMS of difference is   5.710179914952479E-016
+ 
+ packed_refl is NOT IDENTICAL.
+          71  of          416  elements are different.
+ RMS of difference is   4.610768256345317E-011
+ Normalized RMS of difference is   5.693969678619456E-013
+ 
+ packed_arefl is NOT IDENTICAL.
+          68  of          416  elements are different.
+ RMS of difference is   5.580230802523414E-012
+ Normalized RMS of difference is   5.818255712139871E-013
+ 
+ packed_areflz is NOT IDENTICAL.
+         108  of          416  elements are different.
+ RMS of difference is   3.093245236055251E-018
+ Normalized RMS of difference is   8.607984774536907E-012
+ 
+ packed_csrfl is NOT IDENTICAL.
+          71  of          416  elements are different.
+ RMS of difference is   4.610768256345317E-011
+ Normalized RMS of difference is   5.693969678619456E-013
+ 
+ packed_acsrfl is NOT IDENTICAL.
+           8  of          416  elements are different.
+ RMS of difference is   1.050906900613055E-014
+ Normalized RMS of difference is   6.618725348633229E-015
+ 
+ packed_rercld is NOT IDENTICAL.
+           6  of          416  elements are different.
+ RMS of difference is   4.277306716875096E-021
+ Normalized RMS of difference is   1.873248330693178E-016
+ 
+ packed_nfice is NOT IDENTICAL.
+          11  of          416  elements are different.
+ RMS of difference is   8.557848380461382E-013
+ Normalized RMS of difference is   8.567617527040026E-012
+ 
+ packed_qcrat is NOT IDENTICAL.
+          37  of          416  elements are different.
+ RMS of difference is   7.491235637083517E-016
+ Normalized RMS of difference is   1.313653903793973E-014
+ 
+ micro_mg_tend: Tolerance for normalized RMS:   1.000000013351432E-010
+ micro_mg_tend: Number of variables checked:           86
+ micro_mg_tend: Number of Identical results:           38
+ micro_mg_tend: Number of warnings detected:           43
+ micro_mg_tend: Number of fatal errors detected:            5
+ micro_mg_tend: Verification FAILED
+ micro_mg_tend2_0 : Total time (usec):    515.2300    

@@ -12,7 +12,11 @@
         ! Module for common mathematical functions
         ! This #ifdef is to allow the module to be compiled with no dependencies,
         ! even on shr_kind_mod.
+<<<<<<< HEAD
         USE shr_kind_mod, ONLY: r8 => shr_kind_r8
+=======
+        USE shr_kind_mod, ONLY: rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         USE shr_const_mod, ONLY: pi => shr_const_pi
         IMPLICIT NONE
         PRIVATE
@@ -29,7 +33,11 @@
         PUBLIC shr_spfn_gamma
 
         INTERFACE shr_spfn_gamma
+<<<<<<< HEAD
             MODULE PROCEDURE shr_spfn_gamma_r8
+=======
+            MODULE PROCEDURE shr_spfn_gamma_real
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         END INTERFACE 
         ! Mathematical constants
         ! sqrt(pi)
@@ -43,11 +51,19 @@
         ! Double precision
         !---------------------------------------------------------------------
         ! Machine epsilon
+<<<<<<< HEAD
         REAL(KIND=r8), parameter :: epsr8 = epsilon(1._r8)
         ! "Huge" value is returned when actual value would be infinite.
         REAL(KIND=r8), parameter :: xinfr8 = huge(1._r8)
         ! Smallest normal value.
         REAL(KIND=r8), parameter :: xminr8 = tiny(1._r8)
+=======
+        REAL(KIND=rkind_comp), parameter :: epsrkind_comp = epsilon(1._rkind_comp)
+        ! "Huge" value is returned when actual value would be infinite.
+        REAL(KIND=rkind_comp), parameter :: xinfrkind_comp = huge(1._rkind_comp)
+        ! Smallest normal value.
+        REAL(KIND=rkind_comp), parameter :: xminrkind_comp = tiny(1._rkind_comp)
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         ! Largest number that, when added to 1., yields 1.
         ! Largest argument for which erfcx > 0.
         ! Single precision
@@ -60,7 +76,11 @@
         ! For gamma/igamma
         ! Approximate value of largest acceptable argument to gamma,
         ! for IEEE double-precision.
+<<<<<<< HEAD
         REAL(KIND=r8), parameter :: xbig_gamma = 171.624_r8
+=======
+        REAL(KIND=rkind_comp), parameter :: xbig_gamma = 171.624_rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         CONTAINS
 
         ! write subroutines
@@ -76,6 +96,7 @@
 
 
 
+<<<<<<< HEAD
         elemental FUNCTION shr_spfn_gamma_r8(x) RESULT ( res )
             REAL(KIND=r8), intent(in) :: x
             REAL(KIND=r8) :: res
@@ -83,6 +104,14 @@
 !            res = shr_spfn_gamma_nonintrinsic_r8(x)
             res = gamma(x)      
         END FUNCTION shr_spfn_gamma_r8
+=======
+        elemental FUNCTION shr_spfn_gamma_real(x) RESULT ( res )
+            REAL(KIND=rkind_comp), intent(in) :: x
+            REAL(KIND=rkind_comp) :: res
+            ! No intrinsic
+            res = shr_spfn_gamma_nonintrinsic_real(x)
+        END FUNCTION shr_spfn_gamma_real
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         !------------------------------------------------------------------
         !
         ! 6 December 2006 -- B. Eaton
@@ -91,7 +120,11 @@
         ! names previously used for the single precision versions have been
         ! adopted for the new generic interfaces.  To support these interfaces
         ! there is now both a single precision version (calerf_r4) and a
+<<<<<<< HEAD
         ! double precision version (calerf_r8) of CALERF below.  These versions
+=======
+        ! double precision version (calerf_rkind_comp) of CALERF below.  These versions
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         ! are hardcoded to use IEEE arithmetic.
         !
         !------------------------------------------------------------------
@@ -216,7 +249,11 @@
         !------------------------------------------------------------------------------------------
         !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
+<<<<<<< HEAD
         pure FUNCTION shr_spfn_gamma_nonintrinsic_r8(x) RESULT ( gamma )
+=======
+        pure FUNCTION shr_spfn_gamma_nonintrinsic_real(x) RESULT ( gamma )
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
             !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             !
             ! 7 Feb 2013 -- S. Santos
@@ -312,6 +349,7 @@
             !           ARGONNE, IL 60439
             !
             !----------------------------------------------------------------------
+<<<<<<< HEAD
             REAL(KIND=r8), intent(in) :: x
             REAL(KIND=r8) :: gamma
             REAL(KIND=r8) :: fact
@@ -323,15 +361,33 @@
             REAL(KIND=r8) :: xnum
             REAL(KIND=r8) :: xden
             REAL(KIND=r8) :: ysq
+=======
+            REAL(KIND=rkind_comp), intent(in) :: x
+            REAL(KIND=rkind_comp) :: gamma
+            REAL(KIND=rkind_comp) :: fact
+            REAL(KIND=rkind_comp) :: y
+            REAL(KIND=rkind_comp) :: y1
+            REAL(KIND=rkind_comp) :: res
+            REAL(KIND=rkind_comp) :: sum
+            REAL(KIND=rkind_comp) :: z
+            REAL(KIND=rkind_comp) :: xnum
+            REAL(KIND=rkind_comp) :: xden
+            REAL(KIND=rkind_comp) :: ysq
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
             INTEGER :: n
             INTEGER :: i
             LOGICAL :: negative_odd
             ! log(2*pi)/2
+<<<<<<< HEAD
             REAL(KIND=r8), parameter :: logsqrt2pi = 0.9189385332046727417803297e0_r8
+=======
+            REAL(KIND=rkind_comp), parameter :: logsqrt2pi = 0.9189385332046727417803297e0_rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
             !----------------------------------------------------------------------
             !  NUMERATOR AND DENOMINATOR COEFFICIENTS FOR RATIONAL MINIMAX
             !     APPROXIMATION OVER (1,2).
             !----------------------------------------------------------------------
+<<<<<<< HEAD
             REAL(KIND=r8), parameter :: p(8) =        (/-1.71618513886549492533811e+0_r8, 2.47656508055759199108314e+1_r8,        &
               -3.79804256470945635097577e+2_r8, 6.29331155312818442661052e+2_r8,           8.66966202790413211295064e+2_r8,&
             -3.14512729688483675254357e+4_r8,          -3.61444134186911729807069e+4_r8, 6.64561438202405440627855e+4_r8 /)
@@ -349,24 +405,53 @@
   n = 0
   y = x
   if (y <= 0._r8) then
+=======
+            REAL(KIND=rkind_comp), parameter :: p(8) =        (/-1.71618513886549492533811e+0_rkind_comp, 2.47656508055759199108314e+1_rkind_comp,        &
+              -3.79804256470945635097577e+2_rkind_comp, 6.29331155312818442661052e+2_rkind_comp,           8.66966202790413211295064e+2_rkind_comp,&
+            -3.14512729688483675254357e+4_rkind_comp,          -3.61444134186911729807069e+4_rkind_comp, 6.64561438202405440627855e+4_rkind_comp /)
+            REAL(KIND=rkind_comp), parameter :: q(8) =        (/-3.08402300119738975254353e+1_rkind_comp, 3.15350626979604161529144e+2_rkind_comp,        &
+              -1.01515636749021914166146e+3_rkind_comp,-3.10777167157231109440444e+3_rkind_comp,           2.25381184209801510330112e+4_rkind_comp, &
+            4.75584627752788110767815e+3_rkind_comp,          -1.34659959864969306392456e+5_rkind_comp,-1.15132259675553483497211e+5_rkind_comp /)
+            !----------------------------------------------------------------------
+            !  COEFFICIENTS FOR MINIMAX APPROXIMATION OVER (12, INF).
+            !----------------------------------------------------------------------
+            REAL(KIND=rkind_comp), parameter :: c(7) =        (/-1.910444077728e-03_rkind_comp,          8.4171387781295e-04_rkind_comp,          &
+            -5.952379913043012e-04_rkind_comp,       7.93650793500350248e-04_rkind_comp,          -2.777777777777681622553e-03_rkind_comp, &
+            8.333333333333333331554247e-02_rkind_comp,           5.7083835261e-03_rkind_comp /)
+  negative_odd = .false.
+  fact = 1._rkind_comp
+  n = 0
+  y = x
+  if (y <= 0._rkind_comp) then
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                 !----------------------------------------------------------------------
                 !  ARGUMENT IS NEGATIVE
                 !----------------------------------------------------------------------
      y = -x
      y1 = aint(y)
      res = y - y1
+<<<<<<< HEAD
      if (res /= 0._r8) then
         negative_odd = (y1 /= aint(y1*0.5_r8)*2._r8)
         fact = -pi/sin(pi*res)
         y = y + 1._r8
      else
         gamma = xinfr8
+=======
+     if (res /= 0._rkind_comp) then
+        negative_odd = (y1 /= aint(y1*0.5_rkind_comp)*2._rkind_comp)
+        fact = -pi/sin(pi*res)
+        y = y + 1._rkind_comp
+     else
+        gamma = xinfrkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         return
      end if
   end if
             !----------------------------------------------------------------------
             !  ARGUMENT IS POSITIVE
             !----------------------------------------------------------------------
+<<<<<<< HEAD
   if (y < epsr8) then
                 !----------------------------------------------------------------------
                 !  ARGUMENT .LT. EPS
@@ -380,29 +465,62 @@
   elseif (y < 12._r8) then
      y1 = y
      if (y < 1._r8) then
+=======
+  if (y < epsrkind_comp) then
+                !----------------------------------------------------------------------
+                !  ARGUMENT .LT. EPS
+                !----------------------------------------------------------------------
+     if (y >= xminrkind_comp) then
+        res = 1._rkind_comp/y
+     else
+        gamma = xinfrkind_comp
+        return
+     end if
+  elseif (y < 12._rkind_comp) then
+     y1 = y
+     if (y < 1._rkind_comp) then
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                     !----------------------------------------------------------------------
                     !  0.0 .LT. ARGUMENT .LT. 1.0
                     !----------------------------------------------------------------------
         z = y
+<<<<<<< HEAD
         y = y + 1._r8
+=======
+        y = y + 1._rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
      else
                     !----------------------------------------------------------------------
                     !  1.0 .LT. ARGUMENT .LT. 12.0, REDUCE ARGUMENT IF NECESSARY
                     !----------------------------------------------------------------------
         n = int(y) - 1
+<<<<<<< HEAD
         y = y - real(n, r8)
         z = y - 1._r8
+=======
+        y = y - real(n, rkind_comp)
+        z = y - 1._rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
      end if
                 !----------------------------------------------------------------------
                 !  EVALUATE APPROXIMATION FOR 1.0 .LT. ARGUMENT .LT. 2.0
                 !----------------------------------------------------------------------
+<<<<<<< HEAD
      xnum = 0._r8
      xden = 1._r8
+=======
+     xnum = 0._rkind_comp
+     xden = 1._rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
      do i=1,8
         xnum = (xnum+P(i))*z
         xden = xden*z + Q(i)
      end do
+<<<<<<< HEAD
      res = xnum/xden + 1._r8
+=======
+     res = xnum/xden + 1._rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
      if (y1 < y) then
                     !----------------------------------------------------------------------
                     !  ADJUST RESULT FOR CASE  0.0 .LT. ARGUMENT .LT. 1.0
@@ -414,7 +532,11 @@
                     !----------------------------------------------------------------------
         do i = 1,n
            res = res*y
+<<<<<<< HEAD
            y = y + 1._r8
+=======
+           y = y + 1._rkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         end do
      end if
   else
@@ -428,10 +550,17 @@
            sum = sum/ysq + C(i)
         end do
         sum = sum/y - y + logsqrt2pi
+<<<<<<< HEAD
         sum = sum + (y-0.5_r8)*log(y)
         res = exp(sum)
      else
         gamma = xinfr8
+=======
+        sum = sum + (y-0.5_rkind_comp)*log(y)
+        res = exp(sum)
+     else
+        gamma = xinfrkind_comp
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         return
      end if
   end if
@@ -439,10 +568,17 @@
             !  FINAL ADJUSTMENTS AND RETURN
             !----------------------------------------------------------------------
   if (negative_odd)  res = -res
+<<<<<<< HEAD
   if (fact /= 1._r8) res = fact/res
   gamma = res
             ! ---------- LAST LINE OF GAMMA ----------
         END FUNCTION shr_spfn_gamma_nonintrinsic_r8
+=======
+  if (fact /= 1._rkind_comp) res = fact/res
+  gamma = res
+            ! ---------- LAST LINE OF GAMMA ----------
+        END FUNCTION shr_spfn_gamma_nonintrinsic_real
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         !! Incomplete Gamma function
         !!
         !! @author  Tianyi Fan

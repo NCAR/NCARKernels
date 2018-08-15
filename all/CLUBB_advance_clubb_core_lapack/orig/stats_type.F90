@@ -445,7 +445,7 @@
                     WRITE(*,*) "All elements of ", trim(adjustl(varname)), " are IDENTICAL."
                     !WRITE(*,*) "KERNEL: ", var
                     !WRITE(*,*) "REF.  : ", ref_var
-                    IF ( ALL( var == 0 ) ) THEN
+                    IF ( ALL( var .eqv. .FALSE. ) ) THEN
                         if(check_status%verboseLevel > 2) then
                             WRITE(*,*) "All values are zero."
                         end if
@@ -455,7 +455,7 @@
                 if(check_status%verboseLevel > 0) then
                     WRITE(*,*)
                     WRITE(*,*) trim(adjustl(varname)), " is NOT IDENTICAL."
-                    WRITE(*,*) count( var /= ref_var), " of ", size( var ), " elements are different."
+                    WRITE(*,*) count( var .neqv. ref_var), " of ", size( var ), " elements are different."
                 end if
             
                 check_status%numFatal = check_status%numFatal+1

@@ -215,14 +215,14 @@
         do j=1,np
             do i=1,np
                 elem%Dinv(1,1,i,j) = 0.2_real_kind * j
-                elem%Dinv(2,1,i,j) = 0.3_real_kind * i*j
+                elem%Dinv(1,2,i,j) = 0.3_real_kind * i*j
                 elem%Dinv(2,1,i,j) = 0.4_real_kind * i
                 elem%Dinv(2,2,i,j) = 0.5_real_kind * j
                 s(i,j) = 0.6_real_kind * i*j
                 deriv%Dvv(i,j) = 0.8_real_kind * j
                 elem%variable_hyperviscosity(i,j) = 0.9_real_kind * i*j
                 elem%tensorVisc(i,j,1,1) = 1.0_real_kind * i
-                elem%tensorVisc(i,j,2,1) = 1.1_real_kind * j
+                elem%tensorVisc(i,j,1,2) = 1.1_real_kind * j
                 elem%tensorVisc(i,j,2,1) = 1.2_real_kind * i*j
                 elem%tensorVisc(i,j,2,2) = 1.3_real_kind * i
                 elem%spheremp(i,j) = 1.4_real_kind * j

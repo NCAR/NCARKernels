@@ -143,12 +143,13 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     REAL(KIND=r8) :: kgenref_vmr(ncol,pver,gas_pcnst)
     TYPE(check_t) :: check_status
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
-    INTEGER, PARAMETER :: kgen_maxiter = 100
+    real(KIND=r8) :: start_clock,stop_clock
+    INTEGER, PARAMETER :: kgen_maxiter = 10000
     REAL(KIND=kgen_dp) :: kgen_elapsed_time
     real(kind=kgen_dp) :: tolerance
 
     ! mpi
-    integer :: iError
+    integer :: iError,rank
 
     !-----------------------------------------------------------------------      
     !        ... Get chunck latitudes and longitudes
@@ -529,13 +530,19 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
     !Measuring elapsed time. Please increase the value of kgen_maxiter to get improve timing measurment resolution.
 #ifdef _MPI
     call MPI_Barrier(MPI_COMM_WORLD, iError)
+!    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+!    call sleep(rank+1)
 #endif
     CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock)
+!    call clock(start_clock)
     DO kgen_intvar = 1, kgen_maxiter
         CALL kgen_kernel
     END DO 
     CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock)
     kgen_elapsed_time = 1.0e6*(kgen_stop_clock - kgen_start_clock)/REAL(kgen_rate_clock*kgen_maxiter)
+! Use a different timing of running on NEC Aurora
+!    call clock(stop_clock)
+!    kgen_elapsed_time = 1.0e6*(stop_clock - start_clock)/REAL(kgen_maxiter)
     !WRITE (*, *) "imp_sol : Time per call (usec): ", kgen_elapsed_time
     kgen_total_time = kgen_total_time + kgen_elapsed_time
     

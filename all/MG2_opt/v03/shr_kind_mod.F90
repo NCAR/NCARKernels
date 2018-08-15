@@ -13,7 +13,17 @@
         ! precision/kind constants add data public
         !----------------------------------------------------------------------------
         PUBLIC
+<<<<<<< HEAD
         INTEGER, parameter :: shr_kind_r8 = selected_real_kind(12) ! 8 byte real
+=======
+#if defined(USE_R4)
+        INTEGER, parameter :: rkind_comp = selected_real_kind( 6) ! 4 byte real
+        INTEGER, parameter :: rkind_io   = selected_real_kind(12) ! 8 byte real
+#else
+        INTEGER, parameter :: rkind_comp = selected_real_kind(12) ! 8 byte real
+        INTEGER, parameter :: rkind_io   = selected_real_kind(12) ! 8 byte real
+#endif
+>>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         ! 4 byte real
         ! native real
         ! 8 byte integer

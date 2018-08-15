@@ -67,8 +67,9 @@ module lapack_wrap
 
     ! External
     external ::  & 
-      sgtsvx,  & ! Single-prec. General Tridiagonal Solver eXpert
-      dgtsvx     ! Double-prec. General Tridiagonal Solver eXpert
+      sgtsvx      ! Single-prec. General Tridiagonal Solver eXpert
+    external :: & 
+      dgtsvx      ! Double-prec. General Tridiagonal Solver eXpert
 
     intrinsic :: kind
 
