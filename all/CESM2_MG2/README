@@ -1,0 +1,10 @@
+MG2 kernel extracted from CESM2
+
+This version of MG2 is generated from release-cesm2.0.0 using Intel compiler.
+
+To use the kernel, go to orig directory and run "make".
+
+There are multiple types of input data according to CESM PCOLS value. To use a specific data set,
+use make option similar to "make pcols=<size>". <size> is one of 16, 32, 64, ...
+
+Please contact Youngsung Kim(youngsun@ucar.edu) for any questions concerning this kernel.
