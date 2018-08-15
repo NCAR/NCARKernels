@@ -253,7 +253,7 @@
             USE micro_mg_utils, ONLY: size_dist_param_liq
             USE micro_mg_utils, ONLY: size_dist_param_basic
             USE micro_mg_utils, ONLY: size_dist_param_basic_vec
-            USE micro_mg_utils, ONLY: avg_diameter
+            USE micro_mg_utils, ONLY: avg_diameter, avg_diameter_func
             ! Microphysical processes.
             USE micro_mg_utils, ONLY: kk2000_liq_autoconversion
             USE micro_mg_utils, ONLY: ice_autoconversion
@@ -605,6 +605,10 @@
             ! number of sub-steps for loops over "n" (for sedimentation)
             INTEGER :: nstep
             INTEGER :: mdust
+            INTEGER :: foo,bar,cnt
+            LOGICAL :: condition(mgncol)
+            INTEGER, parameter :: vthreshold = 4
+
             !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             ! default return error message
   errstring = ' '
@@ -2173,42 +2177,62 @@
             ! reff_rain/reff_snow:
             ! calculate effective radius of rain and snow in microns for COSP using Eq. 9 of COSP v1.3 manual
   
+#if 0
   call avg_diameter(qrout, nrout, rho, rhow, drout2,mgncol*nlev)
+  do k=1,nlev
+     foo = foo + COUNT(qrout(:,k) .gt. 1.e-7_r8 .and. nrout(:,k).gt.0._r8)
+     bar = bar + mgncol
+  enddo
+  print *,'Fraction that 1st where is true: ',real(foo)/real(bar)
+#endif
+   
+  qrout2 = 0._r8
+  nrout2 = 0._r8
+  drout2 = 0._r8
+  freqr = 0._r8
+  reff_rain = 0._r8
   where (qrout .gt. 1.e-7_r8 &
        .and. nrout.gt.0._r8)
      qrout2 = qrout * precip_frac
      nrout2 = nrout * precip_frac
                 ! The avg_diameter call does the actual calculation; other diameter
                 ! outputs are just drout2 times constants.
-     ! drout2 = avg_diameter(qrout, nrout, rho, rhow)
+     drout2 = avg_diameter_func(qrout, nrout, rho, rhow)
      freqr = precip_frac
      reff_rain=1.5_r8*drout2*1.e6_r8
-  elsewhere
-     qrout2 = 0._r8
-     nrout2 = 0._r8
-     drout2 = 0._r8
-     freqr = 0._r8
-     reff_rain = 0._r8
   END WHERE 
-  call avg_diameter(qsout, nsout, rho, rhosn, drout2,mgncol*nlev)
-  where (qsout .gt. 1.e-7_r8 &
-       .and. nsout.gt.0._r8)
-     qsout2 = qsout * precip_frac
-     nsout2 = nsout * precip_frac
-                ! The avg_diameter call does the actual calculation; other diameter
-                ! outputs are just dsout2 times constants.
-     ! dsout2 = avg_diameter(qsout, nsout, rho, rhosn)
-     freqs = precip_frac
-     dsout=3._r8*rhosn/rhows*dsout2
-     reff_snow=1.5_r8*dsout2*1.e6_r8
-  elsewhere
-     dsout  = 0._r8
-     qsout2 = 0._r8
-     nsout2 = 0._r8
-     dsout2 = 0._r8
-     freqs  = 0._r8
-     reff_snow=0._r8
-  END WHERE 
+
+  dsout  = 0._r8
+  qsout2 = 0._r8
+  nsout2 = 0._r8
+  dsout2 = 0._r8
+  freqs  = 0._r8
+  reff_snow=0._r8
+  do k=1,nlev
+     condition = (qsout(:,k) .gt. 1.e-7_r8 .and. nsout(:,k).gt.0._r8)
+     cnt = COUNT(condition)
+     ! Calculate drout2 where necesary using either a vector or a scalar code
+     if (cnt > 0) then 
+       if (cnt >= vthreshold) then 
+          call avg_diameter(qsout(:,k), nsout(:,k), rho(:,k), rhosn, dsout2(:,k),mgncol)
+       else
+          do i=1,mgncol
+             if(condition(i)) then 
+               dsout2(i,k) = avg_diameter_func(qsout(i,k), nsout(i,k), rho(i,k), rhosn)
+             endif
+          enddo
+       endif
+       where (condition)
+          qsout2(:,k) = qsout(:,k) * precip_frac(:,k)
+          nsout2(:,k) = nsout(:,k) * precip_frac(:,k)
+             ! The avg_diameter call does the actual calculation; other diameter
+             ! outputs are just dsout2 times constants.
+          freqs(:,k) = precip_frac(:,k)
+          dsout(:,k)=3._r8*rhosn/rhows*dsout2(:,k)
+          reff_snow(:,k)=1.5_r8*dsout2(:,k)*1.e6_r8
+       END WHERE 
+     endif
+  enddo
             ! analytic radar reflectivity
             !--------------------------------------------------
             ! formulas from Matthew Shupe, NOAA/CERES

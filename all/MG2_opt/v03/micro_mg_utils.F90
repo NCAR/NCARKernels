@@ -50,6 +50,7 @@
         immersion_freezing, contact_freezing, snow_self_aggregation, accrete_cloud_water_snow, secondary_ice_production, &
         accrete_rain_snow, heterogeneous_rain_freezing, accrete_cloud_water_rain, self_collection_rain, accrete_cloud_ice_snow, &
         evaporate_sublimate_precip, bergeron_process_snow, ice_deposition_sublimation, avg_diameter
+        PUBLIC avg_diameter_func
         ! 8 byte real and integer
         INTEGER, parameter, public :: r8 = selected_real_kind(12)
         INTEGER, parameter, public :: i8 = selected_int_kind(18)
@@ -595,6 +596,18 @@
                diam(i) = (pi * rho_sub * n(i)/(q(i)*rho_air(i)))**(-1._r8/3._r8)
             enddo
         END SUBROUTINE avg_diameter
+
+        elemental real(r8) FUNCTION avg_diameter_func(q, n, rho_air, rho_sub)
+            ! Finds the average diameter of particles given their density, and
+            ! mass/number concentrations in the air.
+            ! Assumes that diameter follows an exponential distribution.
+            REAL(KIND=r8), intent(in) :: q ! mass mixing ratio
+            REAL(KIND=r8), intent(in) :: n ! number concentration (per volume)
+            REAL(KIND=r8), intent(in) :: rho_air ! local density of the air
+            REAL(KIND=r8), intent(in) :: rho_sub ! density of the particle substance
+  avg_diameter_func = (pi * rho_sub * n/(q*rho_air))**(-1._r8/3._r8)
+        END FUNCTION avg_diameter_func
+
 
         SUBROUTINE var_coef_r8(relvar, a, res)
             ! Finds a coefficient for process rates based on the relative variance
