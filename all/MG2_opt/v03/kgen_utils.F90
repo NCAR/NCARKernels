@@ -27,11 +27,7 @@ subroutine kgen_init_check(check, tolerance, minvalue)
   check%numWarning = 0
   check%numTotal = 0
   check%numIdentical = 0
-<<<<<<< HEAD
   check%VerboseLevel = 1
-=======
-  check%VerboseLevel = 2
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
   if(present(tolerance)) then
      check%tolerance = tolerance
   else

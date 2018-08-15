@@ -133,6 +133,22 @@ ifeq ($(ARCH),LINUX_INTEL)
   SUFF         =_host
 endif
 
+
+ifeq ($(ARCH),NEC)
+  AR           = ar
+  FTN          = nfort
+  FOPT         = -O4 -mno-vector
+  FFLAG_MACHAR = -O0
+  CPP          = cpp -traditional
+  CPPFLAGS     = -I. -DNEC -P
+  CC           = ncc
+  CBASE        = -DNEC -DLWR_CASE_USCORE
+  COPT         = -O4 -mno-vector -g
+  TIMER_LIB    = -L../timer -ltimer
+  SUFF         =_host
+endif
+
+
 ifeq ($(ARCH),LINUX_INTELO2Precise)
   AR           = ar
   FTN          = ifort

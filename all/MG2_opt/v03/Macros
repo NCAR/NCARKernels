@@ -3,11 +3,7 @@
 # User settings (all case-insensitive):
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-<<<<<<< HEAD
-MPI      = no         # Yes/No, True/False or Enabled/Disabled
-=======
 MPI      = no          # Yes/No, True/False or Enabled/Disabled
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
@@ -21,11 +17,7 @@ MPI      := $(shell echo ${MPI}      | tr '[:upper:]' '[:lower:]')
 # Zero out our key variables:
 FC := 
 FC_FLAGS := 
-<<<<<<< HEAD
 LD_FLAGS := 
-=======
-LD_FLAGS :=
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
 # Convert all 'true' MPI answers to 'yes', otherwise no:
 ifeq ($(MPI),true)
@@ -52,22 +44,17 @@ endif
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
-<<<<<<< HEAD
   FC_FLAGS += -O3 -xAVX -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
-=======
-  FC_FLAGS += -O3 -xAVX -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -DUSE_R4
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
   LD_FLAGS += 
 
   FC_FLAGS += 
 endif
 
-<<<<<<< HEAD
 # ********* NEC compiler options  ************
 ifeq ($(COMPILER),nec)
   FC := nfort
 #  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
+  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID -DNEC
 #  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
   LD_FLAGS +=
 
@@ -76,8 +63,6 @@ ifeq ($(COMPILER),nec)
 endif
 
 
-=======
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
 # ********* GNU compiler options  ************
 ifeq ($(COMPILER),gnu)

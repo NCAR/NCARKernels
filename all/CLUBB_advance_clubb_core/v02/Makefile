@@ -151,4 +151,4 @@ kgen_utils.o: kgen_utils.F90
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 clean:
-	rm -f kernel.exe *.mod ${ALL_OBJS}
+	rm -f kernel.exe *.mod *.L ${ALL_OBJS}

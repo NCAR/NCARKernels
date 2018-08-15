@@ -8,11 +8,7 @@
 
 PROGRAM kernel_driver
     USE micro_mg_cam, ONLY : micro_mg_cam_tend
-<<<<<<< HEAD
     USE shr_kind_mod, ONLY: r8 => shr_kind_r8
-=======
-    USE shr_kind_mod, ONLY: rkind_comp, rkind_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
     USE micro_mg_cam, ONLY : kgen_read_externs_micro_mg_cam
     USE micro_mg_utils, ONLY : kgen_read_externs_micro_mg_utils
     USE micro_mg2_0, ONLY : kgen_read_externs_micro_mg2_0
@@ -30,12 +26,7 @@ PROGRAM kernel_driver
     CHARACTER(LEN=16) :: kgen_counter_conv
     INTEGER, DIMENSION(1), PARAMETER :: kgen_counter_at = (/ 1 /)
     CHARACTER(LEN=1024) :: kgen_filepath
-<<<<<<< HEAD
     REAL(KIND=r8) :: dtime
-=======
-    REAL(KIND=rkind_comp) :: dtime
-    REAL(KIND=rkind_io) :: dtime_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
     DO kgen_repeat_counter = 0, 0
         kgen_counter = kgen_counter_at(mod(kgen_repeat_counter, 1)+1)
@@ -58,12 +49,7 @@ PROGRAM kernel_driver
             CALL kgen_read_externs_wv_sat_methods(kgen_unit)
 
             ! driver variables
-<<<<<<< HEAD
             READ(UNIT=kgen_unit) dtime
-=======
-            READ(UNIT=kgen_unit) dtime_io
-            dtime = real(dtime_io,kind=rkind_io)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
             call micro_mg_cam_tend(dtime, kgen_unit)
 

@@ -213,7 +213,7 @@
             REAL(KIND=wp) :: rat_o3co2_1 (kbdim,klev)
             REAL(KIND=wp) :: rat_h2och4_1(kbdim,klev)
             ! -----------------
-            INTEGER :: jl,jlBegin,simdStep=96
+            INTEGER :: jl,jlBegin,simdStep=48
             INTEGER :: ig
             INTEGER :: jk ! loop indicies
             INTEGER :: igs(kbdim, n_gpts_ts)

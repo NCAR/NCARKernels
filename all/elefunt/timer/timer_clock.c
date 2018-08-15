@@ -127,7 +127,7 @@ double timer_clock_()
 }
 #endif
 
-#if defined(SGI) || defined(DEC) || defined(IBM)
+#if defined(SGI) || defined(DEC) || defined(IBM) || defined(NEC)
 
 #include <stdio.h>
 #include <math.h>

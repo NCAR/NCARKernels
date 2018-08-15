@@ -137,6 +137,21 @@ ifeq ($(ARCH),LINUX_INTEL)
   LDFLAGS  =
 endif
 
+ifeq ($(ARCH),NEC)
+  AR       = ar
+  FTN      = nfort
+  FBASE    = -ffixed-form
+  FOPT     = -O4
+  FPREC    =
+  CPP      = cpp -traditional
+  CPPFLAGS  = -I. -DNEC -P
+  CC       = ncc
+  CBASE    = -DNEC -DLWR_CASE_USCORE
+  COPT     =
+  LDFLAGS  =
+endif
+
+
 ifeq ($(ARCH),LINUX_INTELO2Precise)
   AR       = ar
   FTN      = ifort

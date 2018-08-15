@@ -110,6 +110,7 @@ PROGRAM kernel_driver
             READ(UNIT=kgen_unit) nb_sw
             READ(UNIT=kgen_unit) kproma
             READ(UNIT=kgen_unit) ktrac
+            print *,"kproma: ",kproma
             !call kgen_read_var(tk_sfc, kgen_unit)
             call read_var_real_wp_dim1(tk_sfc, kgen_unit)
         call psrad_interface(kbdim, klev, nb_sw, kproma, ktrac, tk_sfc, kgen_unit, usecs)
