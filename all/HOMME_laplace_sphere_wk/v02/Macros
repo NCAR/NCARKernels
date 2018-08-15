@@ -53,7 +53,7 @@ endif
 # ********* NEC compiler options  ************
 ifeq ($(COMPILER),nec)
   FC := nfort
-  FC_FLAGS += -v -O0 -report-all -fextend-source -fdiag-vector=2 -D_NOGETPID
+  FC_FLAGS += -v -O4 -finline-functions -report-all -fextend-source -fdiag-vector=2 -D_NOGETPID -g -fcheck=all
   LD_FLAGS +=
 
   FC_FLAGS +=

@@ -1076,6 +1076,7 @@
                 ! water vapor self-continuum and foreign continuum is
                 ! interpolated (in temperature) separately.
                 ! Lower atmosphere loop
+!NEC$ IVDEP
                 DO lay = 1, laytrop
                     speccomb = colh2o(lay) + rat_h2oco2(lay)*colco2(lay)
                     specparm = colh2o(lay)/speccomb

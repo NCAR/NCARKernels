@@ -273,7 +273,7 @@ c
           do n=1,nfun
              write(8,20)perf(n),timex(n),fnname(n)
           end do
- 20       format(f11.6,1x,f11.6,1x,a5)
+ 20       format(f12.6,1x,f12.6,1x,a5)
           CLOSE(UNIT=8)
 
       end if

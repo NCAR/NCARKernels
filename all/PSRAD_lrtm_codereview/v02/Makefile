@@ -75,4 +75,4 @@ mo_lrtm_gas_optics.o: mo_lrtm_gas_optics.F90 mo_kind.o mo_lrtm_setup.o mo_lrtm_k
 
 
 clean:
-	rm -f kernel.exe *.mod *.o *.oo
+	rm -f kernel.exe *.mod *.L *.o *.oo

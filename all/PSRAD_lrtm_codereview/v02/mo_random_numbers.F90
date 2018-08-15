@@ -78,6 +78,7 @@
             REAL(KIND=dp), intent(  out) :: harvest(kbdim)
             INTEGER(KIND=i8) :: kiss(kproma)
             INTEGER :: jk
+!NEC$ IVDEP
             DO jk = 1, kproma
                 IF (mask(jk)) THEN
                     kiss(jk) = 69069_i8 * seed(jk,1) + 1327217885

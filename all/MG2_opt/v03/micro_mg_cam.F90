@@ -73,19 +73,11 @@
         ! added with post_proc%add_field.
         !
         !---------------------------------------------------------------------------------
-<<<<<<< HEAD
         USE shr_kind_mod, ONLY: r8 => shr_kind_r8
 #ifdef _MPI
         use mpi
 #endif
         IMPLICIT NONE
-=======
-        USE shr_kind_mod, ONLY: rkind_comp, rkind_io
-        IMPLICIT NONE
-#ifdef _MPI
-        use mpi
-#endif
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         PRIVATE
         PUBLIC kgen_read_externs_micro_mg_cam
         PUBLIC micro_mg_cam_tend
@@ -132,10 +124,6 @@
         SUBROUTINE kgen_read_externs_micro_mg_cam(kgen_unit)
             INTEGER, INTENT(IN) :: kgen_unit
             READ(UNIT=kgen_unit) num_steps
-<<<<<<< HEAD
-=======
-            print *,'kgen_read_externs_micro_mg_cam: ',num_steps
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         END SUBROUTINE kgen_read_externs_micro_mg_cam
 
         !===============================================================================
@@ -156,17 +144,10 @@
             USE micro_mg2_0, ONLY: micro_mg_tend2_0 => micro_mg_tend
             integer, intent(in) :: kgen_unit
             INTEGER*8 :: kgen_intvar, start_clock, stop_clock, rate_clock, rank_clock, sum_clock
-<<<<<<< HEAD
             INTEGER, PARAMETER :: maxiter=1000
             TYPE(check_t):: check_status
             REAL(KIND=kgen_dp) :: tolerance
             REAL(KIND=r8), intent(in) :: dtime
-=======
-            INTEGER, PARAMETER :: maxiter=100
-            TYPE(check_t):: check_status
-            REAL(KIND=kgen_dp) :: tolerance
-            REAL(KIND=rkind_comp), intent(in) :: dtime
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
             ! Local variables
             ! ice nucleation number
             ! ice nucleation number (homogeneous)
@@ -223,7 +204,6 @@
             ! qc limiter ratio (1=no limit)
             ! Object that packs columns with clouds/precip.
             ! Packed versions of inputs.
-<<<<<<< HEAD
             REAL(KIND=r8), allocatable :: packed_t(:,:)
             REAL(KIND=r8), allocatable :: packed_q(:,:)
             REAL(KIND=r8), allocatable :: packed_qc(:,:)
@@ -429,213 +409,6 @@
             REAL(KIND=r8), allocatable :: ref_reff_rain_dum(:,:)
             REAL(KIND=r8), allocatable :: reff_snow_dum(:,:)
             REAL(KIND=r8), allocatable :: ref_reff_snow_dum(:,:)
-=======
-            REAL(KIND=rkind_comp), allocatable :: packed_t(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_q(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_qc(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_nc(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_qi(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_ni(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_qr(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_nr(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_qs(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_ns(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_relvar(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_accre_enhan(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_p(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_pdel(:,:)
-            ! This is only needed for MG1.5, and can be removed when support for
-            ! that version is dropped.
-            REAL(KIND=rkind_comp), allocatable :: packed_cldn(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_liqcldf(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_icecldf(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_naai(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_npccn(:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_rndst(:,:,:)
-            REAL(KIND=rkind_comp), allocatable :: packed_nacon(:,:,:)
-            ! Optional outputs.
-            REAL(KIND=rkind_comp), pointer :: packed_tnd_qsnow(:,:)
-            REAL(KIND=rkind_comp), pointer :: packed_tnd_nsnow(:,:)
-            REAL(KIND=rkind_comp), pointer :: packed_re_ice(:,:)
-            REAL(KIND=rkind_comp), pointer :: packed_frzimm(:,:)
-            REAL(KIND=rkind_comp), pointer :: packed_frzcnt(:,:)
-            REAL(KIND=rkind_comp), pointer :: packed_frzdep(:,:)
-            ! Output field post-processing.
-            ! Packed versions of outputs.
-            REAL(KIND=rkind_comp), allocatable, target :: packed_rate1ord_cw2pr_st(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_rate1ord_cw2pr_st(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_tlat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_tlat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qvlat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qvlat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qctend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qctend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qitend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qitend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nctend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nctend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nitend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nitend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qrtend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qrtend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qstend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qstend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nrtend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nrtend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nstend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nstend(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prect(:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prect(:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_preci(:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_preci(:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nevapr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nevapr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_evapsnow(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_evapsnow(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prain(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prain(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prodsnow(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prodsnow(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_cmeout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_cmeout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qsout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qsout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_rflx(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_rflx(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_sflx(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_sflx(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qrout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qrout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qcsevap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qcsevap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qisevap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qisevap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qvres(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qvres(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_cmei(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_cmei(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_vtrmc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_vtrmc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_vtrmi(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_vtrmi(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qcsedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qcsedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qisedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qisedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qrsedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qrsedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qssedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qssedten(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_umr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_umr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_ums(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_ums(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_pra(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_pra(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_mnuccc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_mnuccc(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_mnucct(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_mnucct(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_msacwi(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_msacwi(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_psacws(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_psacws(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_bergs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_bergs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_berg(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_berg(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_melt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_melt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_homo(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_homo(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qcres(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qcres(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prci(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prci(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prai(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prai(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qires(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qires(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_mnuccr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_mnuccr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_pracs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_pracs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_meltsdt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_meltsdt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_frzrdt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_frzrdt(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_mnuccd(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_mnuccd(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nrout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nrout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nsout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nsout(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_refl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_refl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_arefl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_arefl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_areflz(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_areflz(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_frefl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_frefl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_csrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_csrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_acsrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_acsrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_fcsrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_fcsrfl(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_rercld(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_rercld(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_ncai(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_ncai(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_ncal(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_ncal(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qrout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qrout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qsout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qsout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nrout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nrout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nsout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nsout2(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_freqs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_freqs(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_freqr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_freqr(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_nfice(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_nfice(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_prer_evap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_prer_evap(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_qcrat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_qcrat(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_rel(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_rel(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_rei(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_rei(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_lambdac(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_lambdac(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_mu(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_mu(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_des(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_des(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: packed_dei(:,:)
-            REAL(KIND=rkind_comp), allocatable, target :: ref_packed_dei(:,:)
-            ! Dummy arrays for cases where we throw away the MG version and
-            ! recalculate sizes on the CAM grid to avoid time/subcolumn averaging
-            ! issues.
-            REAL(KIND=rkind_comp), allocatable :: rel_fn_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: ref_rel_fn_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: dsout2_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: ref_dsout2_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: drout_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: ref_drout_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: reff_rain_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: ref_reff_rain_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: reff_snow_dum(:,:)
-            REAL(KIND=rkind_comp), allocatable :: ref_reff_snow_dum(:,:)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
             ! Heterogeneous-only version of mnuccdo.
             ! physics buffer fields for COSP simulator
             ! MG grid-box mean flux_large_scale_cloud_rain+snow at interfaces (kg/m2/s)
@@ -756,7 +529,6 @@
                         CALL kgen_init_check(check_status, tolerance)
                         READ(UNIT=kgen_unit) mgncol
                         READ(UNIT=kgen_unit) nlev
-<<<<<<< HEAD
                         CALL kgen_read_real_r8_dim2_alloc(packed_t, kgen_unit)
                         CALL kgen_read_real_r8_dim2_alloc(packed_q, kgen_unit)
                         CALL kgen_read_real_r8_dim2_alloc(packed_qc, kgen_unit)
@@ -957,208 +729,6 @@
                         CALL kgen_read_real_r8_dim2_alloc(ref_packed_qcrat, kgen_unit)
                         READ(UNIT=kgen_unit) ref_errstring
                         CALL kgen_read_real_r8_dim2_alloc(ref_packed_prer_evap, kgen_unit)
-=======
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_t, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_q, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qi, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_ni, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_ns, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_relvar, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_accre_enhan, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_p, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_pdel, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_cldn, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_liqcldf, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_icecldf, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_rate1ord_cw2pr_st, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_naai, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_npccn, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim3_alloc(packed_rndst, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim3_alloc(packed_nacon, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_tlat, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qvlat, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qctend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qitend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nctend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nitend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qrtend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qstend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nrtend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nstend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_rel, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(rel_fn_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_rei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim1_alloc(packed_prect, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim1_alloc(packed_preci, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nevapr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_evapsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prain, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prodsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_cmeout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_dei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_mu, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_lambdac, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qsout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_des, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_rflx, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_sflx, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qrout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(reff_rain_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(reff_snow_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qcsevap, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qisevap, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qvres, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_cmei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_vtrmc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_vtrmi, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_umr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_ums, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qcsedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qisedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qrsedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qssedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_pra, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_mnuccc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_mnucct, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_msacwi, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_psacws, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_bergs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_berg, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_melt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_homo, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qcres, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prci, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prai, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qires, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_mnuccr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_pracs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_meltsdt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_frzrdt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_mnuccd, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nrout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nsout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_refl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_arefl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_areflz, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_frefl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_csrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_acsrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_fcsrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_rercld, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_ncai, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_ncal, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qrout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qsout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nrout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nsout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(drout_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(dsout2_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_freqs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_freqr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_nfice, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_qcrat, kgen_unit)
-                        READ(UNIT=kgen_unit) errstring
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_tnd_qsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_tnd_nsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_re_ice, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(packed_prer_evap, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_frzimm, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_frzcnt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_ptr(packed_frzdep, kgen_unit)
-
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_rate1ord_cw2pr_st, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_tlat, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qvlat, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qctend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qitend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nctend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nitend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qrtend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qstend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nrtend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nstend, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_rel, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_rel_fn_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_rei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim1_alloc(ref_packed_prect, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim1_alloc(ref_packed_preci, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nevapr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_evapsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prain, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prodsnow, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_cmeout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_dei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_mu, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_lambdac, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qsout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_des, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_rflx, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_sflx, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qrout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_reff_rain_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_reff_snow_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qcsevap, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qisevap, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qvres, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_cmei, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_vtrmc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_vtrmi, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_umr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_ums, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qcsedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qisedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qrsedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qssedten, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_pra, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_mnuccc, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_mnucct, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_msacwi, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_psacws, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_bergs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_berg, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_melt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_homo, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qcres, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prci, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prai, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qires, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_mnuccr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_pracs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_meltsdt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_frzrdt, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_mnuccd, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nrout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nsout, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_refl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_arefl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_areflz, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_frefl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_csrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_acsrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_fcsrfl, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_rercld, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_ncai, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_ncal, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qrout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qsout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nrout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nsout2, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_drout_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_dsout2_dum, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_freqs, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_freqr, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_nfice, kgen_unit)
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_qcrat, kgen_unit)
-                        READ(UNIT=kgen_unit) ref_errstring
-                        CALL kgen_read_real_rkind_comp_dim2_alloc(ref_packed_prer_evap, kgen_unit)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
 
                         ! call to kernel
@@ -1217,7 +787,6 @@
 		 packed_prer_evap,                                     &
                  packed_frzimm,  packed_frzcnt,  packed_frzdep   )
                         ! kernel verification for output variables
-<<<<<<< HEAD
                         CALL kgen_verify_real_r8_dim2_alloc( "packed_rate1ord_cw2pr_st", check_status, packed_rate1ord_cw2pr_st, ref_packed_rate1ord_cw2pr_st)
                         CALL kgen_verify_real_r8_dim2_alloc( "packed_tlat", check_status, packed_tlat, ref_packed_tlat)
                         CALL kgen_verify_real_r8_dim2_alloc( "packed_qvlat", check_status, packed_qvlat, ref_packed_qvlat)
@@ -1304,94 +873,6 @@
                         CALL kgen_verify_real_r8_dim2_alloc( "packed_qcrat", check_status, packed_qcrat, ref_packed_qcrat)
                         CALL kgen_verify_character( "errstring", check_status, errstring, ref_errstring)
                         CALL kgen_verify_real_r8_dim2_alloc( "packed_prer_evap", check_status, packed_prer_evap, ref_packed_prer_evap)
-=======
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_rate1ord_cw2pr_st", check_status, packed_rate1ord_cw2pr_st, ref_packed_rate1ord_cw2pr_st)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_tlat", check_status, packed_tlat, ref_packed_tlat)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qvlat", check_status, packed_qvlat, ref_packed_qvlat)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qctend", check_status, packed_qctend, ref_packed_qctend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qitend", check_status, packed_qitend, ref_packed_qitend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nctend", check_status, packed_nctend, ref_packed_nctend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nitend", check_status, packed_nitend, ref_packed_nitend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qrtend", check_status, packed_qrtend, ref_packed_qrtend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qstend", check_status, packed_qstend, ref_packed_qstend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nrtend", check_status, packed_nrtend, ref_packed_nrtend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nstend", check_status, packed_nstend, ref_packed_nstend)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_rel", check_status, packed_rel, ref_packed_rel)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "rel_fn_dum", check_status, rel_fn_dum, ref_rel_fn_dum)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_rei", check_status, packed_rei, ref_packed_rei)
-                        CALL kgen_verify_real_rkind_comp_dim1_alloc( "packed_prect", check_status, packed_prect, ref_packed_prect)
-                        CALL kgen_verify_real_rkind_comp_dim1_alloc( "packed_preci", check_status, packed_preci, ref_packed_preci)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nevapr", check_status, packed_nevapr, ref_packed_nevapr)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_evapsnow", check_status, packed_evapsnow, ref_packed_evapsnow)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prain", check_status, packed_prain, ref_packed_prain)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prodsnow", check_status, packed_prodsnow, ref_packed_prodsnow)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_cmeout", check_status, packed_cmeout, ref_packed_cmeout)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_dei", check_status, packed_dei, ref_packed_dei)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_mu", check_status, packed_mu, ref_packed_mu)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_lambdac", check_status, packed_lambdac, ref_packed_lambdac)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qsout", check_status, packed_qsout, ref_packed_qsout)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_des", check_status, packed_des, ref_packed_des)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_rflx", check_status, packed_rflx, ref_packed_rflx)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_sflx", check_status, packed_sflx, ref_packed_sflx)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qrout", check_status, packed_qrout, ref_packed_qrout)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "reff_rain_dum", check_status, reff_rain_dum, ref_reff_rain_dum)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "reff_snow_dum", check_status, reff_snow_dum, ref_reff_snow_dum)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qcsevap", check_status, packed_qcsevap, ref_packed_qcsevap)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qisevap", check_status, packed_qisevap, ref_packed_qisevap)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qvres", check_status, packed_qvres, ref_packed_qvres)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_cmei", check_status, packed_cmei, ref_packed_cmei)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_vtrmc", check_status, packed_vtrmc, ref_packed_vtrmc)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_vtrmi", check_status, packed_vtrmi, ref_packed_vtrmi)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_umr", check_status, packed_umr, ref_packed_umr)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_ums", check_status, packed_ums, ref_packed_ums)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qcsedten", check_status, packed_qcsedten, ref_packed_qcsedten)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qisedten", check_status, packed_qisedten, ref_packed_qisedten)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qrsedten", check_status, packed_qrsedten, ref_packed_qrsedten)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qssedten", check_status, packed_qssedten, ref_packed_qssedten)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_pra", check_status, packed_pra, ref_packed_pra)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prc", check_status, packed_prc, ref_packed_prc)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_mnuccc", check_status, packed_mnuccc, ref_packed_mnuccc)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_mnucct", check_status, packed_mnucct, ref_packed_mnucct)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_msacwi", check_status, packed_msacwi, ref_packed_msacwi)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_psacws", check_status, packed_psacws, ref_packed_psacws)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_bergs", check_status, packed_bergs, ref_packed_bergs)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_berg", check_status, packed_berg, ref_packed_berg)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_melt", check_status, packed_melt, ref_packed_melt)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_homo", check_status, packed_homo, ref_packed_homo)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qcres", check_status, packed_qcres, ref_packed_qcres)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prci", check_status, packed_prci, ref_packed_prci)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prai", check_status, packed_prai, ref_packed_prai)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qires", check_status, packed_qires, ref_packed_qires)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_mnuccr", check_status, packed_mnuccr, ref_packed_mnuccr)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_pracs", check_status, packed_pracs, ref_packed_pracs)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_meltsdt", check_status, packed_meltsdt, ref_packed_meltsdt)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_frzrdt", check_status, packed_frzrdt, ref_packed_frzrdt)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_mnuccd", check_status, packed_mnuccd, ref_packed_mnuccd)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nrout", check_status, packed_nrout, ref_packed_nrout)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nsout", check_status, packed_nsout, ref_packed_nsout)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_refl", check_status, packed_refl, ref_packed_refl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_arefl", check_status, packed_arefl, ref_packed_arefl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_areflz", check_status, packed_areflz, ref_packed_areflz)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_frefl", check_status, packed_frefl, ref_packed_frefl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_csrfl", check_status, packed_csrfl, ref_packed_csrfl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_acsrfl", check_status, packed_acsrfl, ref_packed_acsrfl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_fcsrfl", check_status, packed_fcsrfl, ref_packed_fcsrfl)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_rercld", check_status, packed_rercld, ref_packed_rercld)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_ncai", check_status, packed_ncai, ref_packed_ncai)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_ncal", check_status, packed_ncal, ref_packed_ncal)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qrout2", check_status, packed_qrout2, ref_packed_qrout2)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qsout2", check_status, packed_qsout2, ref_packed_qsout2)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nrout2", check_status, packed_nrout2, ref_packed_nrout2)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nsout2", check_status, packed_nsout2, ref_packed_nsout2)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "drout_dum", check_status, drout_dum, ref_drout_dum)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "dsout2_dum", check_status, dsout2_dum, ref_dsout2_dum)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_freqs", check_status, packed_freqs, ref_packed_freqs)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_freqr", check_status, packed_freqr, ref_packed_freqr)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_nfice", check_status, packed_nfice, ref_packed_nfice)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_qcrat", check_status, packed_qcrat, ref_packed_qcrat)
-                        CALL kgen_verify_character( "errstring", check_status, errstring, ref_errstring)
-                        CALL kgen_verify_real_rkind_comp_dim2_alloc( "packed_prer_evap", check_status, packed_prer_evap, ref_packed_prer_evap)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                         CALL kgen_print_check("micro_mg_tend", check_status)
 #ifdef _MPI
                         call MPI_Barrier(MPI_COMM_WORLD, info) 
@@ -1507,7 +988,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
         CONTAINS
 
         ! write subroutines
-<<<<<<< HEAD
             SUBROUTINE kgen_read_real_r8_dim2_alloc(var, kgen_unit, printvar)
                 INTEGER, INTENT(IN) :: kgen_unit
                 CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
@@ -1515,16 +995,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 LOGICAL :: is_true
                 INTEGER :: idx1,idx2
                 INTEGER, DIMENSION(2,2) :: kgen_bound
-=======
-            SUBROUTINE kgen_read_real_rkind_comp_dim2_alloc(var, kgen_unit, printvar)
-                INTEGER, INTENT(IN) :: kgen_unit
-                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
-                real(KIND=rkind_comp), INTENT(OUT), ALLOCATABLE, DIMENSION(:,:) :: var
-                LOGICAL :: is_true
-                INTEGER :: idx1,idx2
-                INTEGER, DIMENSION(2,2) :: kgen_bound
-                real(kind=rkind_io), allocatable, dimension(:,:) :: var_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
                 READ(UNIT = kgen_unit) is_true
 
@@ -1534,14 +1004,7 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     READ(UNIT = kgen_unit) kgen_bound(1, 2)
                     READ(UNIT = kgen_unit) kgen_bound(2, 2)
                     ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
-<<<<<<< HEAD
                     READ(UNIT = kgen_unit) var
-=======
-                    ALLOCATE(var_io(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
-                    READ(UNIT = kgen_unit) var_io
-                    var = REAL(var_io,kind=rkind_comp) 
-                    DEALLOCATE(var_io)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                     IF ( PRESENT(printvar) ) THEN
                         PRINT *, "** KGEN DEBUG: " // printvar // " **", var
                     END IF
@@ -1550,7 +1013,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                         PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
                     END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_read_real_r8_dim2_alloc
 
             SUBROUTINE kgen_read_real_r8_dim3_alloc(var, kgen_unit, printvar)
@@ -1560,18 +1022,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 LOGICAL :: is_true
                 INTEGER :: idx1,idx2,idx3
                 INTEGER, DIMENSION(2,3) :: kgen_bound
-=======
-            END SUBROUTINE kgen_read_real_rkind_comp_dim2_alloc
-
-            SUBROUTINE kgen_read_real_rkind_comp_dim3_alloc(var, kgen_unit, printvar)
-                INTEGER, INTENT(IN) :: kgen_unit
-                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
-                real(KIND=rkind_comp), INTENT(OUT), ALLOCATABLE, DIMENSION(:,:,:) :: var
-                LOGICAL :: is_true
-                INTEGER :: idx1,idx2,idx3
-                INTEGER, DIMENSION(2,3) :: kgen_bound
-                real(kind=rkind_io), allocatable, dimension(:,:,:) :: var_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
                 READ(UNIT = kgen_unit) is_true
 
@@ -1583,14 +1033,7 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     READ(UNIT = kgen_unit) kgen_bound(1, 3)
                     READ(UNIT = kgen_unit) kgen_bound(2, 3)
                     ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1, kgen_bound(2, 3) - kgen_bound(1, 3) + 1))
-<<<<<<< HEAD
                     READ(UNIT = kgen_unit) var
-=======
-                    ALLOCATE(var_io(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1, kgen_bound(2, 3) - kgen_bound(1, 3) + 1))
-                    READ(UNIT = kgen_unit) var_io
-                    var = REAL(var_io,kind=rkind_comp)
-                    DEALLOCATE(var_io)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                     IF ( PRESENT(printvar) ) THEN
                         PRINT *, "** KGEN DEBUG: " // printvar // " **", var
                     END IF
@@ -1599,7 +1042,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                         PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
                     END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_read_real_r8_dim3_alloc
 
             SUBROUTINE kgen_read_real_r8_dim2_ptr(var, kgen_unit, printvar)
@@ -1609,18 +1051,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 LOGICAL :: is_true
                 INTEGER :: idx1,idx2
                 INTEGER, DIMENSION(2,2) :: kgen_bound
-=======
-            END SUBROUTINE kgen_read_real_rkind_comp_dim3_alloc
-
-            SUBROUTINE kgen_read_real_rkind_comp_dim2_ptr(var, kgen_unit, printvar)
-                INTEGER, INTENT(IN) :: kgen_unit
-                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
-                real(KIND=rkind_comp), INTENT(OUT), POINTER, DIMENSION(:,:) :: var
-                LOGICAL :: is_true
-                INTEGER :: idx1,idx2
-                INTEGER, DIMENSION(2,2) :: kgen_bound
-                real(kind=rkind_io), pointer, dimension(:,:) :: var_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
                 READ(UNIT = kgen_unit) is_true
 
@@ -1630,15 +1060,7 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     READ(UNIT = kgen_unit) kgen_bound(1, 2)
                     READ(UNIT = kgen_unit) kgen_bound(2, 2)
                     ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
-<<<<<<< HEAD
                     READ(UNIT = kgen_unit) var
-=======
-                    ALLOCATE(var_io(kgen_bound(2, 1) - kgen_bound(1, 1) + 1, kgen_bound(2, 2) - kgen_bound(1, 2) + 1))
-                    READ(UNIT = kgen_unit) var_io
-                    var = REAL(var_io,kind=rkind_comp) 
-                    DEALLOCATE(var_io)
-
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                     IF ( PRESENT(printvar) ) THEN
                         PRINT *, "** KGEN DEBUG: " // printvar // " **", var
                     END IF
@@ -1647,7 +1069,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                         PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
                     END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_read_real_r8_dim2_ptr
 
             SUBROUTINE kgen_read_real_r8_dim1_alloc(var, kgen_unit, printvar)
@@ -1657,18 +1078,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 LOGICAL :: is_true
                 INTEGER :: idx1
                 INTEGER, DIMENSION(2,1) :: kgen_bound
-=======
-            END SUBROUTINE kgen_read_real_rkind_comp_dim2_ptr
-
-            SUBROUTINE kgen_read_real_rkind_comp_dim1_alloc(var, kgen_unit, printvar)
-                INTEGER, INTENT(IN) :: kgen_unit
-                CHARACTER(*), INTENT(IN), OPTIONAL :: printvar
-                real(KIND=rkind_comp), INTENT(OUT), ALLOCATABLE, DIMENSION(:) :: var
-                LOGICAL :: is_true
-                INTEGER :: idx1
-                INTEGER, DIMENSION(2,1) :: kgen_bound
-                real(kind=rkind_io), allocatable, dimension(:) :: var_io
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
                 READ(UNIT = kgen_unit) is_true
 
@@ -1676,14 +1085,7 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     READ(UNIT = kgen_unit) kgen_bound(1, 1)
                     READ(UNIT = kgen_unit) kgen_bound(2, 1)
                     ALLOCATE(var(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
-<<<<<<< HEAD
                     READ(UNIT = kgen_unit) var
-=======
-                    ALLOCATE(var_io(kgen_bound(2, 1) - kgen_bound(1, 1) + 1))
-                    READ(UNIT = kgen_unit) var_io
-                    var = REAL(var_io,kind=rkind_comp)
-                    deallocate(var_io)
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                     IF ( PRESENT(printvar) ) THEN
                         PRINT *, "** KGEN DEBUG: " // printvar // " **", var
                     END IF
@@ -1692,7 +1094,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                         PRINT *, "** KGEN DEBUG: " // printvar // " ** is NOT present"
                     END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_read_real_r8_dim1_alloc
 
 
@@ -1703,19 +1104,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 real(KIND=r8), intent(in), DIMENSION(:,:), ALLOCATABLE :: var, ref_var
                 real(KIND=r8) :: nrmsdiff, rmsdiff
                 real(KIND=r8), allocatable, DIMENSION(:,:) :: temp, temp2
-=======
-             
-            END SUBROUTINE kgen_read_real_rkind_comp_dim1_alloc
-
-
-        ! verify subroutines
-            SUBROUTINE kgen_verify_real_rkind_comp_dim2_alloc( varname, check_status, var, ref_var)
-                character(*), intent(in) :: varname
-                type(check_t), intent(inout) :: check_status
-                real(KIND=rkind_comp), intent(in), DIMENSION(:,:), ALLOCATABLE :: var, ref_var
-                real(KIND=rkind_comp) :: nrmsdiff, rmsdiff
-                real(KIND=rkind_comp), allocatable, DIMENSION(:,:) :: temp, temp2
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                 integer :: n
                 IF ( ALLOCATED(var) ) THEN
                 check_status%numTotal = check_status%numTotal + 1
@@ -1769,7 +1157,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     deallocate(temp,temp2)
                 END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_verify_real_r8_dim2_alloc
 
             SUBROUTINE kgen_verify_real_r8_dim1_alloc( varname, check_status, var, ref_var)
@@ -1778,16 +1165,6 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                 real(KIND=r8), intent(in), DIMENSION(:), ALLOCATABLE :: var, ref_var
                 real(KIND=r8) :: nrmsdiff, rmsdiff
                 real(KIND=r8), allocatable, DIMENSION(:) :: temp, temp2
-=======
-            END SUBROUTINE kgen_verify_real_rkind_comp_dim2_alloc
-
-            SUBROUTINE kgen_verify_real_rkind_comp_dim1_alloc( varname, check_status, var, ref_var)
-                character(*), intent(in) :: varname
-                type(check_t), intent(inout) :: check_status
-                real(KIND=rkind_comp), intent(in), DIMENSION(:), ALLOCATABLE :: var, ref_var
-                real(KIND=rkind_comp) :: nrmsdiff, rmsdiff
-                real(KIND=rkind_comp), allocatable, DIMENSION(:) :: temp, temp2
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
                 integer :: n
                 IF ( ALLOCATED(var) ) THEN
                 check_status%numTotal = check_status%numTotal + 1
@@ -1841,11 +1218,7 @@ packed_tnd_nsnow, packed_re_ice, packed_prer_evap, packed_frzimm, packed_frzcnt,
                     deallocate(temp,temp2)
                 END IF
                 END IF
-<<<<<<< HEAD
             END SUBROUTINE kgen_verify_real_r8_dim1_alloc
-=======
-            END SUBROUTINE kgen_verify_real_rkind_comp_dim1_alloc
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
 
             SUBROUTINE kgen_verify_character( varname, check_status, var, ref_var)
                 character(*), intent(in) :: varname

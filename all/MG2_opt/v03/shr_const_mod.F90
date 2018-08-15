@@ -10,22 +10,13 @@
     MODULE shr_const_mod
         USE kgen_utils_mod, ONLY : kgen_dp, check_t, kgen_init_check, kgen_print_check
         USE shr_kind_mod, only : shr_kind_in
-<<<<<<< HEAD
         USE shr_kind_mod, only : shr_kind_r8
         INTEGER(KIND=shr_kind_in), parameter, private :: r8 = shr_kind_r8 ! rename for local readability only
-=======
-        USE shr_kind_mod, only : rkind_comp
-!        INTEGER(KIND=shr_kind_in), parameter, private :: r8 = shr_kind_r8 ! rename for local readability only
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         !----------------------------------------------------------------------------
         ! physical constants (all data public)
         !----------------------------------------------------------------------------
         PUBLIC
-<<<<<<< HEAD
         REAL(KIND=r8), parameter :: shr_const_pi      = 3.14159265358979323846_r8 ! pi
-=======
-        REAL(KIND=rkind_comp), parameter :: shr_const_pi      = 3.14159265358979323846_rkind_comp ! pi
->>>>>>> a7fffbad15d5ecf0e3551d46686784ceb706c78a
         ! sec in calendar day ~ sec
         ! sec in siderial day ~ sec
         ! earth rot ~ rad/sec
