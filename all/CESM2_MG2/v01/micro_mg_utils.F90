@@ -42,7 +42,10 @@ module micro_mg_utils
 !
 !
 
+#if defined(_NEC)
+#else
     USE shr_spfn_mod, ONLY: gamma => shr_spfn_gamma 
+#endif
     USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck 
     USE tprof_mod, ONLY: tstart, tstop, tnull, tprnt 
     USE kgen_utils_mod, ONLY: check_t, kgen_init_check, kgen_tolerance, kgen_minvalue, CHECK_IDENTICAL, CHECK_IN_TOL, &

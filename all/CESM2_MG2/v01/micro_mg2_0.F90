@@ -113,7 +113,10 @@ module micro_mg2_0
 !
 
 
+#if defined(_NEC)
+#else
     USE shr_spfn_mod, ONLY: gamma => shr_spfn_gamma 
+#endif
 
     USE wv_sat_methods, ONLY: qsat_water => wv_sat_qsat_water, qsat_ice => wv_sat_qsat_ice 
 ! Parameters from the utilities module.
