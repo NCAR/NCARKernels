@@ -2927,7 +2927,7 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol)
   real(r8), dimension(mgncol), intent(inout) :: rercld     ! effective radius calculation for rain + cloud
   ! combined size of precip & cloud drops
 
-  real(r8) :: Atmp
+  real(r8) :: Atmp,tmp
 
   integer :: i
 
@@ -2941,8 +2941,9 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol)
      ! Add cloud drops
 
      if (lamc(i) > 0._r8) then
+        call rising_factorial(pgam(i)+1._r8, 2,tmp)
         Atmp = Atmp + &
-             ncic(i) * pi * rising_factorial(pgam(i)+1._r8, 2)/(4._r8 * lamc(i)**2._r8)
+             ncic(i) * pi * tmp/(4._r8 * lamc(i)**2._r8)
      end if
 
      if (Atmp > 0._r8) then

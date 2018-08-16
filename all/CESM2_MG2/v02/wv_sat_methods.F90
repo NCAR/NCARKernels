@@ -293,11 +293,11 @@ subroutine  wv_sat_svp_water_r8(t, es, idx)
   case(GoffGratch_idx)
      call GoffGratch_svp_water(t,es)
   case(MurphyKoop_idx)
-     es = MurphyKoop_svp_water(t)
+     call MurphyKoop_svp_water(t,es)
   case(OldGoffGratch_idx)
-     es = OldGoffGratch_svp_water(t)
+     call OldGoffGratch_svp_water(t,es)
   case(Bolton_idx)
-     es = Bolton_svp_water(t)
+     call Bolton_svp_water(t,es)
   end select
 
 end subroutine wv_sat_svp_water_r8
@@ -321,15 +321,15 @@ subroutine  wv_sat_svp_water_v8(t, es, vlen, idx)
      call GoffGratch_svp_water(t,es,vlen)
   case(MurphyKoop_idx)
      do i=1,vlen
-        es(i) = MurphyKoop_svp_water(t(i))
+        call MurphyKoop_svp_water(t(i),es(i))
      enddo
   case(OldGoffGratch_idx)
      do i=1,vlen
-        es(i) = OldGoffGratch_svp_water(t(i))
+        call OldGoffGratch_svp_water(t(i),es(i))
      enddo
   case(Bolton_idx)
      do i=1,vlen
-         es(i) = Bolton_svp_water(t(i))
+        call Bolton_svp_water(t(i),es(i))
      enddo
   end select
 
@@ -350,13 +350,13 @@ subroutine wv_sat_svp_ice_r8(t, es, idx)
 
   select case (use_idx)
   case(GoffGratch_idx)
-     es = GoffGratch_svp_ice(t)
+     call GoffGratch_svp_ice(t,es)
   case(MurphyKoop_idx)
-     es = MurphyKoop_svp_ice(t)
+     call MurphyKoop_svp_ice(t,es)
   case(OldGoffGratch_idx)
-     es = OldGoffGratch_svp_ice(t)
+     call OldGoffGratch_svp_ice(t,es)
   case(Bolton_idx)
-     es = Bolton_svp_water(t)
+     call Bolton_svp_water(t,es)
   end select
 
 end subroutine wv_sat_svp_ice_r8
@@ -379,19 +379,19 @@ subroutine wv_sat_svp_ice_v8(t, es, vlen, idx)
   select case (use_idx)
   case(GoffGratch_idx)
      do i=1,vlen
-        es(i) = GoffGratch_svp_ice(t(i))
+        call GoffGratch_svp_ice(t(i),es(i))
      enddo
   case(MurphyKoop_idx)
      do i=1,vlen
-        es(i) = MurphyKoop_svp_ice(t(i))
+        call MurphyKoop_svp_ice(t(i),es(i))
      enddo
   case(OldGoffGratch_idx)
      do i=1,vlen
-        es(i) = OldGoffGratch_svp_ice(t(i))
+        call OldGoffGratch_svp_ice(t(i),es(i))
      enddo
   case(Bolton_idx)
      do i=1,vlen
-        es(i) = Bolton_svp_water(t(i))
+        call Bolton_svp_water(t(i),es(i))
      enddo
   end select
 
@@ -433,22 +433,22 @@ subroutine GoffGratch_svp_water_v8(t, es, vlen)
 
 end subroutine GoffGratch_svp_water_v8
 
-elemental function GoffGratch_svp_ice(t) result(es)
-  real(r8), intent(in) :: t  ! Temperature in Kelvin
-  real(r8) :: es             ! SVP in Pa
+subroutine GoffGratch_svp_ice(t, es)
+  real(r8), intent(in)  :: t  ! Temperature in Kelvin
+  real(r8), intent(out) :: es             ! SVP in Pa
   ! good down to -100 C
 
   es = 10._r8**(-9.09718_r8*(h2otrip/t-1._r8)-3.56654_r8* &
        log10(h2otrip/t)+0.876793_r8*(1._r8-t/h2otrip)+ &
        log10(6.1071_r8))*100._r8
 
-end function GoffGratch_svp_ice
+end subroutine GoffGratch_svp_ice
 ! Murphy & Koop (2005)
 
 
-elemental function MurphyKoop_svp_water(t) result(es)
-  real(r8), intent(in) :: t  ! Temperature in Kelvin
-  real(r8) :: es             ! SVP in Pa
+subroutine MurphyKoop_svp_water(t, es)
+  real(r8), intent(in)  :: t  ! Temperature in Kelvin
+  real(r8), intent(out) :: es             ! SVP in Pa
   ! (good for 123 < T < 332 K)
 
   es = exp(54.842763_r8 - (6763.22_r8 / t) - (4.210_r8 * log(t)) + &
@@ -456,9 +456,9 @@ elemental function MurphyKoop_svp_water(t) result(es)
        (53.878_r8 - (1331.22_r8 / t) - (9.44523_r8 * log(t)) + &
        0.014025_r8 * t)))
 
-end function MurphyKoop_svp_water
+end subroutine MurphyKoop_svp_water
 
-elemental function MurphyKoop_svp_ice(t) result(es)
+subroutine MurphyKoop_svp_ice(t, es)
   real(r8), intent(in) :: t  ! Temperature in Kelvin
   real(r8) :: es             ! SVP in Pa
   ! (good down to 110 K)
@@ -466,7 +466,7 @@ elemental function MurphyKoop_svp_ice(t) result(es)
   es = exp(9.550426_r8 - (5723.265_r8 / t) + (3.53068_r8 * log(t)) &
        - (0.00728332_r8 * t))
 
-end function MurphyKoop_svp_ice
+end subroutine MurphyKoop_svp_ice
 ! Old CAM implementation, also labelled Goff & Gratch (1946)
 ! The water formula differs only due to compiler-dependent order of
 ! operations, so differences are roundoff level, usually 0.
@@ -479,9 +479,9 @@ end function MurphyKoop_svp_ice
 ! since it compensates for a systematic error in Goff & Gratch.
 
 
-elemental function OldGoffGratch_svp_water(t) result(es)
-  real(r8), intent(in) :: t
-  real(r8) :: es
+subroutine OldGoffGratch_svp_water(t,es)
+  real(r8), intent(in)  :: t
+  real(r8), intent(out) :: es
   real(r8) :: ps, e1, e2, f1, f2, f3, f4, f5, f
 
   ps = 1013.246_r8
@@ -496,11 +496,11 @@ elemental function OldGoffGratch_svp_water(t) result(es)
 
   es = (10.0_r8**f)*100.0_r8
   
-end function OldGoffGratch_svp_water
+end subroutine OldGoffGratch_svp_water
 
-elemental function OldGoffGratch_svp_ice(t) result(es)
+subroutine OldGoffGratch_svp_ice(t,es)
   real(r8), intent(in) :: t
-  real(r8) :: es
+  real(r8), intent(out) :: es
   real(r8) :: term1, term2, term3
 
   term1 = 2.01889049_r8/(tmelt/t)
@@ -509,7 +509,7 @@ elemental function OldGoffGratch_svp_ice(t) result(es)
 
   es = 575.185606e10_r8*exp(-(term1 + term2 + term3))
   
-end function OldGoffGratch_svp_ice
+end subroutine OldGoffGratch_svp_ice
 ! Bolton (1980)
 ! zm_conv deep convection scheme contained this SVP calculation.
 ! It appears to be from D. Bolton, 1980, Monthly Weather Review.
@@ -519,17 +519,17 @@ end function OldGoffGratch_svp_ice
 ! takes Kelvin and internally converts.
 
 
-elemental function Bolton_svp_water(t) result(es)
+subroutine Bolton_svp_water(t, es)
   real(r8),parameter :: c1 = 611.2_r8
   real(r8),parameter :: c2 = 17.67_r8
   real(r8),parameter :: c3 = 243.5_r8
 
-  real(r8), intent(in) :: t  ! Temperature in Kelvin
-  real(r8) :: es             ! SVP in Pa
+  real(r8), intent(in)  :: t  ! Temperature in Kelvin
+  real(r8), intent(out) :: es             ! SVP in Pa
 
   es = c1*exp( (c2*(t - tmelt))/((t - tmelt)+c3) )
 
-end function Bolton_svp_water
+end subroutine Bolton_svp_water
 
 !read state subroutine for kr_externs_in_wv_sat_methods 
 SUBROUTINE kr_externs_in_wv_sat_methods(kgen_unit) 
