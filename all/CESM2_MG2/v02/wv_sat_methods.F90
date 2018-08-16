@@ -61,15 +61,44 @@ integer, parameter :: initial_default_idx = GoffGratch_idx
 integer :: default_idx = initial_default_idx
 
 
+INTERFACE wv_sat_svp_water
+   MODULE PROCEDURE wv_sat_svp_water_r8
+   MODULE PROCEDURE wv_sat_svp_water_v8
+END INTERFACE wv_sat_svp_water
 PUBLIC wv_sat_svp_water 
+
+INTERFACE wv_sat_svp_ice
+   MODULE PROCEDURE wv_sat_svp_ice_r8
+   MODULE PROCEDURE wv_sat_svp_ice_v8
+END INTERFACE wv_sat_svp_ice
 PUBLIC wv_sat_svp_ice 
 ! pressure -> humidity conversion
 
+INTERFACE wv_sat_svp_to_qsat
+   MODULE PROCEDURE wv_sat_svp_to_qsat_r8
+   MODULE PROCEDURE wv_sat_svp_to_qsat_v8
+END INTERFACE wv_sat_svp_to_qsat
 PUBLIC wv_sat_svp_to_qsat 
 ! Combined qsat operations
 
+INTERFACE wv_sat_qsat_water
+   MODULE PROCEDURE wv_sat_qsat_water_r8
+   MODULE PROCEDURE wv_sat_qsat_water_v8
+END INTERFACE wv_sat_qsat_water
 PUBLIC wv_sat_qsat_water 
+
+INTERFACE wv_sat_qsat_ice
+   MODULE PROCEDURE wv_sat_qsat_ice_r8
+   MODULE PROCEDURE wv_sat_qsat_ice_v8
+END INTERFACE wv_sat_qsat_ice
 PUBLIC wv_sat_qsat_ice 
+
+INTERFACE goffgratch_svp_water
+   MODULE PROCEDURE goffgratch_svp_water_r8
+   MODULE PROCEDURE goffgratch_svp_water_v8
+END INTERFACE goffgratch_svp_water
+
+
 PUBLIC kr_externs_in_wv_sat_methods 
 PUBLIC kr_externs_out_wv_sat_methods 
 
@@ -104,11 +133,11 @@ contains
 ! Specific humidity is limited to range 0-1.
 
 
-elemental function wv_sat_svp_to_qsat(es, p) result(qs)
+subroutine  wv_sat_svp_to_qsat_r8(es, p, qs)
 
-  real(r8), intent(in) :: es  ! SVP
-  real(r8), intent(in) :: p   ! Current pressure.
-  real(r8) :: qs
+  real(r8), intent(in)  :: es  ! SVP
+  real(r8), intent(in)  :: p   ! Current pressure.
+  real(r8), intent(out) :: qs
   ! If pressure is less than SVP, set qs to maximum of 1.
 
   if ( (p - es) <= 0._r8 ) then
@@ -117,9 +146,27 @@ elemental function wv_sat_svp_to_qsat(es, p) result(qs)
      qs = epsilo*es / (p - omeps*es)
   end if
 
-end function wv_sat_svp_to_qsat
+end subroutine wv_sat_svp_to_qsat_r8
 
-elemental subroutine wv_sat_qsat_water(t, p, es, qs, idx)
+subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
+
+  integer,  intent(in) :: vlen
+  real(r8), intent(in)  :: es(vlen)  ! SVP
+  real(r8), intent(in)  :: p(vlen)   ! Current pressure.
+  real(r8), intent(out) :: qs(vlen)
+  integer :: i
+  ! If pressure is less than SVP, set qs to maximum of 1.
+  do i=1,vlen 
+     if ( (p(i) - es(i)) <= 0._r8 ) then
+        qs(i) = 1.0_r8
+     else
+        qs(i) = epsilo*es(i) / (p(i) - omeps*es(i))
+     end if
+  enddo
+
+end subroutine wv_sat_svp_to_qsat_v8
+
+subroutine wv_sat_qsat_water_r8(t, p, es, qs, idx)
   !------------------------------------------------------------------!
   ! Purpose:                                                         !
   !   Calculate SVP over water at a given temperature, and then      !
@@ -135,16 +182,43 @@ elemental subroutine wv_sat_qsat_water(t, p, es, qs, idx)
 
   integer,  intent(in), optional :: idx ! Scheme index
 
-  es = wv_sat_svp_water(t, idx)
+  call wv_sat_svp_water(t, es, idx)
 
-  qs = wv_sat_svp_to_qsat(es, p)
+  call wv_sat_svp_to_qsat(es, p, qs)
   ! Ensures returned es is consistent with limiters on qs.
 
   es = min(es, p)
 
-end subroutine wv_sat_qsat_water
+end subroutine wv_sat_qsat_water_r8
 
-elemental subroutine wv_sat_qsat_ice(t, p, es, qs, idx)
+subroutine wv_sat_qsat_water_v8(t, p, es, qs, vlen, idx)
+  !------------------------------------------------------------------!
+  ! Purpose:                                                         !
+  !   Calculate SVP over water at a given temperature, and then      !
+  !   calculate and return saturation specific humidity.             !
+  !------------------------------------------------------------------!
+  ! Inputs
+
+  integer,  intent(in) :: vlen
+  real(r8), intent(in) :: t(vlen)    ! Temperature
+  real(r8), intent(in) :: p(vlen)    ! Pressure
+  ! Outputs
+  real(r8), intent(out) :: es(vlen)  ! Saturation vapor pressure
+  real(r8), intent(out) :: qs(vlen)  ! Saturation specific humidity
+
+  integer,  intent(in), optional :: idx ! Scheme index
+  integer :: i
+
+  call wv_sat_svp_water(t, es, vlen, idx)
+  call wv_sat_svp_to_qsat(es, p, qs, vlen)
+  do i=1,vlen
+     ! Ensures returned es is consistent with limiters on qs.
+     es(i) = min(es(i), p(i))
+  enddo
+
+end subroutine wv_sat_qsat_water_v8
+
+subroutine wv_sat_qsat_ice_r8(t, p, es, qs, idx)
   !------------------------------------------------------------------!
   ! Purpose:                                                         !
   !   Calculate SVP over ice at a given temperature, and then        !
@@ -160,14 +234,41 @@ elemental subroutine wv_sat_qsat_ice(t, p, es, qs, idx)
 
   integer,  intent(in), optional :: idx ! Scheme index
 
-  es = wv_sat_svp_ice(t, idx)
+  call wv_sat_svp_ice(t, es, idx)
 
-  qs = wv_sat_svp_to_qsat(es, p)
+  call wv_sat_svp_to_qsat(es, p, qs)
   ! Ensures returned es is consistent with limiters on qs.
 
   es = min(es, p)
 
-end subroutine wv_sat_qsat_ice
+end subroutine wv_sat_qsat_ice_r8
+
+subroutine wv_sat_qsat_ice_v8(t, p, es, qs, vlen, idx)
+  !------------------------------------------------------------------!
+  ! Purpose:                                                         !
+  !   Calculate SVP over ice at a given temperature, and then        !
+  !   calculate and return saturation specific humidity.             !
+  !------------------------------------------------------------------!
+  ! Inputs
+
+  integer,  intent(in) :: vlen
+  real(r8), intent(in) :: t(vlen)    ! Temperature
+  real(r8), intent(in) :: p(vlen)    ! Pressure
+  ! Outputs
+  real(r8), intent(out) :: es(vlen)  ! Saturation vapor pressure
+  real(r8), intent(out) :: qs(vlen)  ! Saturation specific humidity
+
+  integer,  intent(in), optional :: idx ! Scheme index
+  integer :: i
+
+  call wv_sat_svp_ice(t, es, vlen, idx)
+  call wv_sat_svp_to_qsat(es, p, qs, vlen)
+  do i=1,vlen
+     ! Ensures returned es is consistent with limiters on qs.
+     es(i) = min(es(i), p(i))
+  enddo
+
+end subroutine wv_sat_qsat_ice_v8
 
 
 !---------------------------------------------------------------------
@@ -175,10 +276,10 @@ end subroutine wv_sat_qsat_ice
 !---------------------------------------------------------------------
 
 
-elemental function wv_sat_svp_water(t, idx) result(es)
+subroutine  wv_sat_svp_water_r8(t, es, idx)
   real(r8), intent(in) :: t
   integer,  intent(in), optional :: idx
-  real(r8) :: es
+  real(r8), intent(out) :: es
 
   integer :: use_idx
 
@@ -190,7 +291,7 @@ elemental function wv_sat_svp_water(t, idx) result(es)
 
   select case (use_idx)
   case(GoffGratch_idx)
-     es = GoffGratch_svp_water(t)
+     call GoffGratch_svp_water(t,es)
   case(MurphyKoop_idx)
      es = MurphyKoop_svp_water(t)
   case(OldGoffGratch_idx)
@@ -199,12 +300,45 @@ elemental function wv_sat_svp_water(t, idx) result(es)
      es = Bolton_svp_water(t)
   end select
 
-end function wv_sat_svp_water
+end subroutine wv_sat_svp_water_r8
 
-elemental function wv_sat_svp_ice(t, idx) result(es)
+subroutine  wv_sat_svp_water_v8(t, es, vlen, idx)
+  integer,  intent(in) :: vlen
+  real(r8), intent(in) :: t(vlen)
+  integer,  intent(in), optional :: idx
+  real(r8), intent(out) :: es(vlen)
+  integer :: i
+  integer :: use_idx
+
+  if (present(idx)) then
+     use_idx = idx
+  else
+     use_idx = default_idx
+  end if
+
+  select case (use_idx)
+  case(GoffGratch_idx)
+     call GoffGratch_svp_water(t,es,vlen)
+  case(MurphyKoop_idx)
+     do i=1,vlen
+        es(i) = MurphyKoop_svp_water(t(i))
+     enddo
+  case(OldGoffGratch_idx)
+     do i=1,vlen
+        es(i) = OldGoffGratch_svp_water(t(i))
+     enddo
+  case(Bolton_idx)
+     do i=1,vlen
+         es(i) = Bolton_svp_water(t(i))
+     enddo
+  end select
+
+end subroutine wv_sat_svp_water_v8
+
+subroutine wv_sat_svp_ice_r8(t, es, idx)
   real(r8), intent(in) :: t
   integer,  intent(in), optional :: idx
-  real(r8) :: es
+  real(r8), intent(out) :: es
 
   integer :: use_idx
 
@@ -225,8 +359,43 @@ elemental function wv_sat_svp_ice(t, idx) result(es)
      es = Bolton_svp_water(t)
   end select
 
-end function wv_sat_svp_ice
+end subroutine wv_sat_svp_ice_r8
 
+subroutine wv_sat_svp_ice_v8(t, es, vlen, idx)
+  integer,  intent(in) :: vlen
+  real(r8), intent(in) :: t(vlen)
+  integer,  intent(in), optional :: idx
+  real(r8), intent(out) :: es(vlen)
+  integer :: i
+
+  integer :: use_idx
+
+  if (present(idx)) then
+     use_idx = idx
+  else
+     use_idx = default_idx
+  end if
+
+  select case (use_idx)
+  case(GoffGratch_idx)
+     do i=1,vlen
+        es(i) = GoffGratch_svp_ice(t(i))
+     enddo
+  case(MurphyKoop_idx)
+     do i=1,vlen
+        es(i) = MurphyKoop_svp_ice(t(i))
+     enddo
+  case(OldGoffGratch_idx)
+     do i=1,vlen
+        es(i) = OldGoffGratch_svp_ice(t(i))
+     enddo
+  case(Bolton_idx)
+     do i=1,vlen
+        es(i) = Bolton_svp_water(t(i))
+     enddo
+  end select
+
+end subroutine wv_sat_svp_ice_v8
 
 !---------------------------------------------------------------------
 ! SVP METHODS
@@ -234,9 +403,9 @@ end function wv_sat_svp_ice
 ! Goff & Gratch (1946)
 
 
-elemental function GoffGratch_svp_water(t) result(es)
-  real(r8), intent(in) :: t  ! Temperature in Kelvin
-  real(r8) :: es             ! SVP in Pa
+subroutine GoffGratch_svp_water_r8(t, es)
+  real(r8), intent(in)  :: t  ! Temperature in Kelvin
+  real(r8), intent(out) :: es             ! SVP in Pa
   ! uncertain below -70 C
 
   es = 10._r8**(-7.90298_r8*(tboil/t-1._r8)+ &
@@ -245,7 +414,24 @@ elemental function GoffGratch_svp_water(t) result(es)
        8.1328e-3_r8*(10._r8**(-3.49149_r8*(tboil/t-1._r8))-1._r8)+ &
        log10(1013.246_r8))*100._r8
 
-end function GoffGratch_svp_water
+end subroutine GoffGratch_svp_water_r8
+
+subroutine GoffGratch_svp_water_v8(t, es, vlen)
+  integer :: vlen
+  real(r8), intent(in)  :: t(vlen)  ! Temperature in Kelvin
+  real(r8), intent(out) :: es(vlen) ! SVP in Pa
+  integer :: i
+  ! uncertain below -70 C
+
+  do i=1,vlen
+     es(i) = 10._r8**(-7.90298_r8*(tboil/t(i)-1._r8)+ &
+       5.02808_r8*log10(tboil/t(i))- &
+       1.3816e-7_r8*(10._r8**(11.344_r8*(1._r8-t(i)/tboil))-1._r8)+ &
+       8.1328e-3_r8*(10._r8**(-3.49149_r8*(tboil/t(i)-1._r8))-1._r8)+ &
+       log10(1013.246_r8))*100._r8
+  enddo
+
+end subroutine GoffGratch_svp_water_v8
 
 elemental function GoffGratch_svp_ice(t) result(es)
   real(r8), intent(in) :: t  ! Temperature in Kelvin
