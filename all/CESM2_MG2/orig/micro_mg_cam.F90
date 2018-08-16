@@ -351,7 +351,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     COMMON / state / kgen_mpirank, kgen_openmptid, kgen_kernelinvoke, kgen_evalstage, kgen_warmupstage, kgen_mainstage 
       
     TYPE(check_t) :: check_status 
-    INTEGER*8 :: kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
+    INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
+    INTEGER, PARAMETER :: maxiter = 100
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_tlat 
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_qvlat 
@@ -1995,7 +1996,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             IF (kgen_mainstage) THEN 
                   
                 !verify init 
-                CALL kgen_init_check(check_status, tolerance=1.D-14, verboseLevel=1) 
+                CALL kgen_init_check(check_status, tolerance=5.D-10, verboseLevel=1) 
                   
                 !extern verify variables 
                   
@@ -2125,6 +2126,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 END IF   
                 WRITE (*, *) "" 
                 CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
+            do kgen_intvar=1,maxiter
             call micro_mg_tend2_0( &
                  mgncol,         nlev,           dtime/num_steps,&
                  packed_t,               packed_q,               &
@@ -2181,8 +2183,9 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                  packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,&
                  packed_prer_evap,                                     &
                  packed_frzimm,  packed_frzcnt,  packed_frzdep   )
+            enddo
             CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock) 
-            kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock) 
+            kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 
             WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure 
             END IF   
             IF (kgen_warmupstage) THEN 

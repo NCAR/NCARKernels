@@ -38,8 +38,8 @@
         !OPEN (UNIT=kgen_unit_list, FILE="../data/pcols" // PCOLSSIZE // "/kgen_statefile.lst", STATUS="OLD", IOSTAT=kgen_ierr_list) 
         OPEN (UNIT=kgen_unit_list, FILE=STATEFILE, STATUS="OLD", IOSTAT=kgen_ierr_list) 
         IF (kgen_ierr_list .NE. 0) THEN 
-            CALL SYSTEM("ls -1 micro_mg_tend2_0.*.*.* > kgen_statefile.lst") 
-            CALL SLEEP(1) 
+!            CALL SYSTEM("ls -1 micro_mg_tend2_0.*.*.* > kgen_statefile.lst") 
+!            CALL SLEEP(1) 
             kgen_unit_list = kgen_get_newunit() 
             OPEN (UNIT=kgen_unit_list, FILE="kgen_statefile.lst", STATUS="OLD", IOSTAT=kgen_ierr_list) 
         END IF   
@@ -140,9 +140,9 @@
             WRITE (*, "(4X, A36, A1, I6)") "Total number of verification cases   ", ":", kgen_case_count 
             WRITE (*, "(4X, A36, A1, I6)") "Number of verification-passed cases ", ":", kgen_count_verified 
             WRITE (*, *) "" 
-            WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / DBLE(kgen_case_count) 
-            WRITE (*, "(4X, A, E10.3)") "Minimum call time (usec): ", kgen_min_time 
-            WRITE (*, "(4X, A, E10.3)") "Maximum call time (usec): ", kgen_max_time 
+            WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_total_time / DBLE(kgen_case_count) 
+            WRITE (*, "(4X, A, E12.4)") "Minimum call time (usec): ", kgen_min_time 
+            WRITE (*, "(4X, A, E12.4)") "Maximum call time (usec): ", kgen_max_time 
         END IF   
         WRITE (*, "(A)") "****************************************************" 
     END PROGRAM   
