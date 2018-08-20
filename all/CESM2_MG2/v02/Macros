@@ -3,7 +3,7 @@
 # User settings (all case-insensitive):
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = no         # Yes/No, True/False or Enabled/Disabled
+MPI      = yes          # Yes/No, True/False or Enabled/Disabled
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
@@ -54,7 +54,7 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
 #  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
+  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID -D_NEC
 #  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
   LD_FLAGS +=
 

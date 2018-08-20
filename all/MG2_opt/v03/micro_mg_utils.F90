@@ -177,6 +177,11 @@
             MODULE PROCEDURE var_coef_integer
             MODULE PROCEDURE var_coef_vec_integer
         END INTERFACE var_coef
+
+        INTERFACE calc_ab
+            MODULE PROCEDURE calc_ab_r8
+            MODULE PROCEDURE calc_ab_v8
+        END INTERFACE calc_ab
         !==========================================================================
             PUBLIC kgen_read_externs_micro_mg_utils
 
@@ -413,7 +418,7 @@
 
         ! Calculate correction due to latent heat for evaporation/sublimation
 
-        SUBROUTINE calc_ab(t, qv, xxl,ab)
+        SUBROUTINE calc_ab_r8(t, qv, xxl,ab)
             REAL(KIND=r8), intent(in) :: t ! Temperature
             REAL(KIND=r8), intent(in) :: qv ! Saturation vapor pressure
             REAL(KIND=r8), intent(in) :: xxl ! Latent heat
@@ -421,7 +426,22 @@
             REAL(KIND=r8) :: dqsdt
             dqsdt = xxl*qv / (rv * t**2)
             ab = 1._r8 + dqsdt*xxl/cpp
-        END SUBROUTINE calc_ab
+        END SUBROUTINE calc_ab_r8
+
+        SUBROUTINE calc_ab_v8(t, qv, xxl,ab,vlen)
+            INTEGER, intent(in) :: vlen
+            REAL(KIND=r8), intent(in) :: t(vlen) ! Temperature
+            REAL(KIND=r8), intent(in) :: qv(vlen) ! Saturation vapor pressure
+            REAL(KIND=r8), intent(in) :: xxl ! Latent heat
+            REAL(KIND=r8), intent(out) :: ab(vlen)
+            REAL(KIND=r8) :: dqsdt(vlen)
+            integer :: i
+            do i=1,vlen
+               dqsdt(i) = xxl*qv(i) / (rv * t(i)**2)
+               ab(i) = 1._r8 + dqsdt(i)*xxl/cpp
+            enddo
+        END SUBROUTINE calc_ab_v8
+        
         ! get cloud droplet size distribution parameters
 
         SUBROUTINE size_dist_param_liq_line(props, qcic, ncic, rho, pgam, lamc)
@@ -693,7 +713,7 @@
             REAL(KIND=r8), dimension(mgncol), intent(out) :: berg !bergeron enhancement (cell-ave value)
             !INTERNAL VARS:
             !===============================================
-            REAL(KIND=r8) :: ab
+            REAL(KIND=r8) :: ab(mgncol)
             REAL(KIND=r8) :: epsi
             REAL(KIND=r8) :: qiic
             REAL(KIND=r8) :: niic
@@ -701,22 +721,30 @@
             REAL(KIND=r8) :: n0i
             INTEGER :: i
             INTEGER :: cnt
+            logical, dimension(mgncol) :: mask
 !  cnt = 0
+!  vectorized version of calc_ab
+!  call calc_ab(t, qvi, xxls,ab,mgncol)
+
 !NEC$ IVDEP
+!  mask = (qi >= qsmall)
+!  cnt  = COUNT(mask)
+!  print *,'ICE_deposition_sublimation: ',real(cnt)/real(mgncol)
+  
   do i=1,mgncol
   if (qi(i)>=qsmall) then
                 !GET IN-CLOUD qi, ni
                 !===============================================
      qiic = qi(i)/icldm(i)
      niic = ni(i)/icldm(i)
-     call calc_ab(t(i), qvi(i), xxls,ab)
+     call calc_ab(t(i),qvi(i),xxls,ab(i))
                 !Compute linearized condensational heating correction
                 !Get slope and intercept of gamma distn for ice.
      call size_dist_param_basic(mg_ice_props, qiic, niic, lami, n0i)
                 !Get depletion timescale=1/eps
      epsi = 2._r8*pi*n0i*rho(i)*Dv(i)/(lami*lami)
                 !Compute deposition/sublimation
-     vap_dep(i) = epsi/ab*(qv(i) - qvi(i))
+     vap_dep(i) = epsi/ab(i)*(qv(i) - qvi(i))
                 !Make this a grid-averaged quantity
      vap_dep(i)=vap_dep(i)*icldm(i)
                 !Split into deposition or sublimation.
@@ -730,7 +758,7 @@
                 !sublimation occurs @ any T. Not so for berg.
      if (t(i) < tmelt) then
                     !Compute bergeron rate assuming cloud for whole step.
-        berg(i) = max(epsi/ab*(qvl(i) - qvi(i)), 0._r8)
+        berg(i) = max(epsi/ab(i)*(qvl(i) - qvi(i)), 0._r8)
      else !T>frz !T>frz
         berg(i)=0._r8
      end if !T<frz !T<frz
@@ -741,7 +769,6 @@
      ice_sublim(i)=0._r8
   end if !qi>qsmall !qi>qsmall
   enddo
-!  print *,'ICE_deposition_sublimation: ',cnt,mgncol
         END SUBROUTINE ice_deposition_sublimation
         !========================================================================
         ! autoconversion of cloud liquid water to rain

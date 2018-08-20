@@ -3,7 +3,7 @@
 # User settings (all case-insensitive):
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = no         # Yes/No, True/False or Enabled/Disabled
+MPI      = yes          # Yes/No, True/False or Enabled/Disabled
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
@@ -44,7 +44,7 @@ endif
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
-  FC_FLAGS += -O3 -xAVX -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
+  FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
   LD_FLAGS += 
 
   FC_FLAGS += 
@@ -54,9 +54,9 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
 #  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
+  FC_FLAGS += -v -O4 -ftrace -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID -D_NEC
 #  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  LD_FLAGS +=
+  LD_FLAGS += -ftrace
 
   FC_FLAGS +=
   MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc
