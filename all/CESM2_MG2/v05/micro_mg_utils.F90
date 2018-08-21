@@ -285,13 +285,13 @@ subroutine rising_factorial_int(x, n, res)
   integer, intent(in) :: n
   real(r8), intent(out) :: res
 
-  integer :: j
+  integer :: i
   real(r8) :: factor
 
   res = 1._r8
   factor = x
 
-  do j = 1, n
+  do i = 1, n
      res = res * factor
      factor = factor + 1._r8
   end do
@@ -307,13 +307,25 @@ subroutine rising_factorial_vint(x, n, res,vlen)
   integer :: i,j
   real(r8) :: factor(vlen)
 
-  res = 1._r8
+  res    = 1._r8
   factor = x
 
-  do j = 1, n
-     res = res * factor
-     factor = factor + 1._r8
-  end do
+  if (n == 3) then 
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+  elseif (n==2) then 
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+  else
+    do i = 1, n
+       res = res * factor
+       factor = factor + 1._r8
+    enddo
+  endif
 
 end subroutine rising_factorial_vint
 
@@ -413,14 +425,9 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
   real(r8), dimension(mgncol), intent(out) :: pgam
   real(r8), dimension(mgncol), intent(out) :: lamc
   type(mghydrometeorprops) :: props_loc
-  integer :: i
-  real(r8) :: tmpA(mgncol), pgamp1(mgncol)
-  real(r8) :: tmp
-  logical :: condition(mgncol)
-  integer :: cnt
+  integer :: i, cnt
+  real(r8) :: tmp(mgncol),pgamp1(mgncol)
 
-  condition = (qcic(i) > qsmall)
-  cnt = COUNT(condition)
   do i=1,mgncol
      if (qcic(i) > qsmall) then
         ! Local copy of properties that can be modified.
@@ -432,36 +439,32 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
         pgam(i) = 1._r8/(pgam(i)**2) - 1._r8
         pgam(i) = max(pgam(i), 2._r8)
         pgamp1(i) = pgam(i)+1._r8
-     else
-        pgamp1(i) = 1.0_r8
      endif
-    
   enddo
-!  print *,'param_liq: ',cnt,mgncol
-  if(cnt>0) then 
-    if (props_loc%eff_dim == 3._r8) then
-       call rising_factorial(pgamp1, 3,tmpA,mgncol)
-    else
-       call rising_factorial(pgamp1, props_loc%eff_dim,tmpA,mgncol)
-    end if
-  endif
 #if 0
-#endif
+  cnt = COUNT(qcic>qsmall)
+  if(cnt>0) then 
+     if (props_loc%eff_dim == 3._r8) then
+        call rising_factorial(pgamp1,3,tmp,mgncol)
+     else
+        call rising_factorial(pgamp1, props_loc%eff_dim,tmp,mgncol)
+     endif
+  endif
+  do i=1,mgncol
+     if (qcic(i) > qsmall) then
+#else
   do i=1,mgncol
      if (qcic(i) > qsmall) then
         if (props_loc%eff_dim == 3._r8) then
-           call rising_factorial(pgamp1(i), 3,tmp)
+           call rising_factorial(pgam(i)+1._r8, 3,tmp(i))
         else
-           call rising_factorial(pgamp1(i), props_loc%eff_dim,tmp)
+           call rising_factorial(pgam(i)+1._r8, props_loc%eff_dim,tmp(i))
         end if
-        if (tmpA(i) .ne. tmp) then 
-           print *,'props_loc%eff_diam: ',props_loc%eff_dim 
-           print *,' i: ',i,' tmpA(i): ',tmpA(i),' tmp: ',tmp
-        endif
+#endif
         ! Set coefficient for use in size_dist_param_basic.
         ! The 3D case is so common and optimizable that we specialize
         ! it:
-        props_loc%shape_coef = pi / 6._r8 * props_loc%rho * tmp
+        props_loc%shape_coef = pi / 6._r8 * props_loc%rho * tmp(i)
         ! Limit to between 2 and 50 microns mean size.
         props_loc%lambda_bounds(1) = (pgam(i)+1._r8)*1._r8/50.e-6_r8
         props_loc%lambda_bounds(2) = (pgam(i)+1._r8)*1._r8/2.e-6_r8
@@ -676,10 +679,8 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
   real(r8) :: niic(mgncol)
   real(r8) :: lami(mgncol)
   real(r8) :: n0i(mgncol)
-  integer :: i, cnt
-  
-!  cnt = COUNT(qi >=qsmall) 
-!  print *,' ice_deposition_sublimation: ', cnt,mgncol
+  integer :: i
+
 !!NEC$ IVDEP
 !  do i=1,mgncol
 !    !Compute linearized condensational heating correction
@@ -982,7 +983,9 @@ subroutine immersion_freezing(microp_uniform, t, pgam, lamc, &
   real(r8) :: tmp
 
   if (.not. microp_uniform) then
-     call  var_coef(relvar, 2,dum,mgncol)
+     do i=1,mgncol
+        call  var_coef(relvar(i), 2,dum(i))
+     enddo
   else
      dum = 1._r8
   end if
@@ -1512,12 +1515,13 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   real(r8), dimension(mgncol), intent(out) :: am_evp_st ! Fractional area where rain evaporates.
 
   real(r8) :: qclr   ! water vapor mixing ratio in clear air
-  real(r8) :: ab     ! correction to account for latent heat
+  real(r8) :: abr(mgncol),abs(mgncol)     ! correction to account for latent heat
   real(r8) :: eps    ! 1/ sat relaxation timescale
 
   real(r8), dimension(mgncol) :: dum
 
   integer :: i
+  logical, dimension(mgncol) :: cond1,cond2,cond3
 
   am_evp_st = 0._r8
   ! set temporary cloud fraction to zero if cloud water + ice is very small
@@ -1530,30 +1534,36 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         dum(i) = lcldm(i)
      end if
   enddo
+#if 0
+  cond1 = (precip_frac > dum)
+  cond2 = cond1 .and. (qric >= qsmall)
+  cond3 = cond1 .and. (qsic >= qsmall)
+  print *,'evaporate_sublimate_precip: mgncol: ',mgncol
+  print *,'evaporate_sublimate_precip: COND2: ',COUNT(cond2)
+  print *,'evaporate_sublimate_precip: COND3: ',COUNT(cond3)
+  print *,'evaporate_sublimate_precip: COND4: ',COUNT(cond3 .or. cond2)
+#endif
   do i=1,mgncol
   ! only calculate if there is some precip fraction > cloud fraction
 
      if (precip_frac(i) > dum(i)) then
 
-        if (qric(i) >= qsmall .or. qsic(i) >= qsmall) then
+        ! evaporation of rain
+        if (qric(i) >= qsmall) then
            am_evp_st(i) = precip_frac(i) - dum(i)
            ! calculate q for out-of-cloud region
 
            qclr=(q(i)-dum(i)*qvl(i))/(1._r8-dum(i))
-        end if
-        ! evaporation of rain
-
-        if (qric(i) >= qsmall) then
 
            !ab = calc_ab(t(i), qvl(i), xxlv)
-           call calc_ab(t(i), qvl(i), xxlv, ab)
+           call calc_ab(t(i), qvl(i), xxlv, abr(i))
            eps = 2._r8*pi*n0r(i)*rho(i)*Dv(i)* &
                 (f1r/(lamr(i)*lamr(i))+ &
                 f2r*(arn(i)*rho(i)/mu(i))**0.5_r8* &
                 sc(i)**(1._r8/3._r8)*gamma_half_br_plus5/ &
                 (lamr(i)**(5._r8/2._r8+br/2._r8)))
 
-           pre(i) = eps*(qclr-qvl(i))/ab
+           pre(i) = eps*(qclr-qvl(i))/abr(i)
            ! only evaporate in out-of-cloud region
            ! and distribute across precip_frac
 
@@ -1562,17 +1572,21 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         else
            pre(i) = 0._r8
         end if
-        ! sublimation of snow
 
+        ! sublimation of snow
         if (qsic(i) >= qsmall) then
+           am_evp_st(i) = precip_frac(i) - dum(i)
+           ! calculate q for out-of-cloud region
+
+           qclr=(q(i)-dum(i)*qvl(i))/(1._r8-dum(i))
            ! ab = calc_ab(t(i), qvi(i), xxls)
-           call calc_ab(t(i), qvi(i), xxls, ab)
+           call calc_ab(t(i), qvi(i), xxls, abs(i))
            eps = 2._r8*pi*n0s(i)*rho(i)*Dv(i)* &
                 (f1s/(lams(i)*lams(i))+ &
                 f2s*(asn(i)*rho(i)/mu(i))**0.5_r8* &
                 sc(i)**(1._r8/3._r8)*gamma_half_bs_plus5/ &
                 (lams(i)**(5._r8/2._r8+bs/2._r8)))
-           prds(i) = eps*(qclr-qvi(i))/ab
+           prds(i) = eps*(qclr-qvi(i))/abs(i)
            ! only sublimate in out-of-cloud region and distribute over precip_frac
 
            prds(i)=min(prds(i)*am_evp_st(i),0._r8)

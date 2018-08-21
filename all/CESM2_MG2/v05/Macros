@@ -54,9 +54,9 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
 #  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  FC_FLAGS += -v -O2 -ftrace -report-all -mno-vector-fma -fdiag-vector=2 -fextend-source -D_NOGETPID -D_NEC
+  FC_FLAGS += -v -O4 -finline-functions -report-all -mno-vector-fma -fdiag-vector=2 -fextend-source -D_NOGETPID -D_NEC
 #  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  LD_FLAGS += -ftrace
+  LD_FLAGS +=
 
   FC_FLAGS +=
   MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc

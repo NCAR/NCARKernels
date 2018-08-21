@@ -39,7 +39,7 @@ shr_const_mod.o: shr_const_mod.F90 kgen_utils.o tprof_mod.o shr_kind_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 kernel_driver.o: kernel_driver.F90 micro_mg_cam.o micro_mg2_0.o micro_mg_utils.o wv_sat_methods.o shr_spfn_mod.o shr_kind_mod.o shr_const_mod.o kgen_utils.o tprof_mod.o
-	${FC} ${FC_FLAGS} -D STATEFILE='"../data/pcols${pcols}/kgen_statefile.lst"' -c -o $@ $<
+	${FC} ${FC_FLAGS} -D STATEFILE='"../data.72cores/pcols${pcols}/kgen_statefile.lst"' -c -o $@ $<
 
 kgen_utils.o: kgen_utils.f90
 	${FC} ${FC_FLAGS} -c -o $@ $<
