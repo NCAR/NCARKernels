@@ -288,7 +288,7 @@ subroutine micro_mg_tend ( &
     USE micro_mg_utils, ONLY: mg_liq_props, mg_ice_props, mg_rain_props, mg_snow_props 
   ! Size calculation functions.
 
-    USE micro_mg_utils, ONLY: size_dist_param_liq, size_dist_param_basic, avg_diameter, avg_diameter_vec
+    USE micro_mg_utils, ONLY: size_dist_param_liq, size_dist_param_basic, avg_diameter, avg_diameter_vec 
   ! Microphysical processes.
 
     USE micro_mg_utils, ONLY: ice_deposition_sublimation, sb2001v2_liq_autoconversion, sb2001v2_accre_cld_water_rain, &
@@ -623,8 +623,11 @@ subroutine micro_mg_tend ( &
 
   real(r8) :: faloutc(nlev)
   real(r8) :: faloutnc(nlev)
+
   real(r8) :: falouti(nlev)
+  real(r8) :: falouti2D(mgncol,nlev)
   real(r8) :: faloutni(nlev)
+  real(r8) :: faloutni2D(mgncol,nlev)
 
   real(r8) :: faloutr(nlev)
   real(r8) :: faloutnr(nlev)
@@ -634,8 +637,10 @@ subroutine micro_mg_tend ( &
   real(r8) :: faltndc
   real(r8) :: faltndnc
   real(r8) :: faltndi
-  real(r8) :: faltndni
+  real(r8) :: faltndi1D(mgncol)
+  real(r8) :: faltndni1D(mgncol)
   real(r8) :: faltndqie
+  real(r8) :: faltndqie1D(mgncol)
   real(r8) :: faltndqce
 
   real(r8) :: faltndr
@@ -679,13 +684,14 @@ subroutine micro_mg_tend ( &
   integer i, k, n
   ! number of sub-steps for loops over "n" (for sedimentation)
 
-  integer nstep
+  integer nstep,nstepMax
   integer mdust
   ! Varaibles to scale fall velocity between small and regular ice regimes.
 
   real(r8) :: irad
   real(r8) :: ifrac
   real(r8) :: rnstep
+  real(r8) tmpk1(nlev),tmpk2(nlev)
   !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! Return error message
 
@@ -768,8 +774,8 @@ subroutine micro_mg_tend ( &
   call qsat_ice(t, p, esi, qvi,mgncol*nlev)
   do k=1,nlev
      !IDEA what if we pushed the K loop into this routines
-!     call qsat_water(t(:,k), p(:,k), esl(:,k), qvl(:,k),mgncol)
-!     call qsat_ice(t(:,k), p(:,k), esi(:,k), qvi(:,k),mgncol)
+  !   call qsat_water(t(:,k), p(:,k), esl(:,k), qvl(:,k),mgncol)
+  !   call qsat_ice(t(:,k), p(:,k), esi(:,k), qvi(:,k),mgncol)
      do i=1,mgncol
         ! make sure when above freezing that esi=esl, not active yet
 
@@ -2094,43 +2100,49 @@ subroutine micro_mg_tend ( &
   ! for sedimentation calculations
   !-------------------------------------------------------------------
 
-
+  nstepMax = 0
   do i=1,mgncol
-     nstep = 1 + int(max( &
-          maxval( fi(i,:)*pdel_inv(i,:)), &
-          maxval(fni(i,:)*pdel_inv(i,:))) &
-          * deltat)
+     tmpk1 = fi(i,:)*pdel_inv(i,:)*deltat
+     tmpk2 = fni(i,:)*pdel_inv(i,:)*deltat
+     nstep = 1 + int(max(maxval( tmpk1), maxval(tmpk2)))
+     nstepMax = max(nstepMax,nstep)
+  enddo
+!  print *,'nstepMax: ',nstepMax,
+
+
+!  nstepMax = 1
      ! loop over sedimentation sub-time step to ensure stability
      !==============================================================
 
   !   PRINT *,'i: ',i,'nstep: ',nstep
-     rnstep = 1._r8/real(nstep)
+     rnstep = 1._r8/real(nstepMax)
 
-     do n = 1,nstep
+     do n = 1,nstepMax
 
         if (do_cldice) then
-           falouti  = fi(i,:)  * dumi(i,:)
-           faloutni = fni(i,:) * dumni(i,:)
+           falouti2D  = fi(:,:)  * dumi(:,:)
+           faloutni2D = fni(:,:) * dumni(:,:)
         else
-           falouti  = 0._r8
-           faloutni = 0._r8
+           falouti2D  = 0._r8
+           faloutni2D = 0._r8
         end if
         ! top of model
 
 
         k = 1
         ! add fallout terms to microphysical tendencies
-
-        faltndi = falouti(k)/pdel(i,k)
-        faltndni = faloutni(k)/pdel(i,k)
-        qitend(i,k) = qitend(i,k)-faltndi*rnstep
-        nitend(i,k) = nitend(i,k)-faltndni*rnstep
+  do i=1,mgncol
+        faltndi1D(i) = falouti2D(i,k)*pdel_inv(i,k)
+        faltndni1D(i) = faloutni2D(i,k)*pdel_inv(i,k)
+        qitend(i,k) = qitend(i,k)-faltndi1D(i)*rnstep
+        nitend(i,k) = nitend(i,k)-faltndni1D(i)*rnstep
         ! sedimentation tendency for output
 
-        qisedten(i,k)=qisedten(i,k)-faltndi*rnstep
+        qisedten(i,k)=qisedten(i,k)-faltndi1D(i)*rnstep
 
-        dumi(i,k) = dumi(i,k)-faltndi*deltat*rnstep
-        dumni(i,k) = dumni(i,k)-faltndni*deltat*rnstep
+        dumi(i,k) = dumi(i,k)-faltndi1D(i)*deltat*rnstep
+        dumni(i,k) = dumni(i,k)-faltndni1D(i)*deltat*rnstep
+  enddo
 
         do k = 2,nlev
            ! for cloud liquid and ice, if cloud fraction increases with height
@@ -2140,52 +2152,57 @@ subroutine micro_mg_tend ( &
            ! note: this is not an issue with precip, since we assume max overlap
 
 
-           dum1=icldm(i,k)/icldm(i,k-1)
-           dum1=min(dum1,1._r8)
+  do i=1,mgncol
+           dum1A(i)=icldm(i,k)/icldm(i,k-1)
+           dum1A(i)=min(dum1A(i),1._r8)
 
-           faltndqie=(falouti(k)-falouti(k-1))/pdel(i,k)
-           faltndi=(falouti(k)-dum1*falouti(k-1))/pdel(i,k)
-           faltndni=(faloutni(k)-dum1*faloutni(k-1))/pdel(i,k)
+           faltndqie1D(i)=(falouti2D(i,k)-falouti2D(i,k-1))*pdel_inv(i,k)
+           faltndi1D(i)=(falouti2D(i,k)-dum1A(i)*falouti2D(i,k-1))*pdel_inv(i,k)
+           faltndni1D(i)=(faloutni2D(i,k)-dum1A(i)*faloutni2D(i,k-1))*pdel_inv(i,k)
            ! add fallout terms to eulerian tendencies
 
 
-           qitend(i,k) = qitend(i,k)-faltndi*rnstep
-           nitend(i,k) = nitend(i,k)-faltndni*rnstep
+           qitend(i,k) = qitend(i,k)-faltndi1D(i)*rnstep
+           nitend(i,k) = nitend(i,k)-faltndni1D(i)*rnstep
            ! sedimentation tendency for output
 
-           qisedten(i,k)=qisedten(i,k)-faltndi*rnstep
+           qisedten(i,k)=qisedten(i,k)-faltndi1D(i)*rnstep
            ! add terms to to evap/sub of cloud water
 
 
-           qvlat(i,k)=qvlat(i,k)-(faltndqie-faltndi)*rnstep
+           qvlat(i,k)=qvlat(i,k)-(faltndqie1D(i)-faltndi1D(i))*rnstep
            ! for output
-           qisevap(i,k)=qisevap(i,k)-(faltndqie-faltndi)*rnstep
+           qisevap(i,k)=qisevap(i,k)-(faltndqie1D(i)-faltndi1D(i))*rnstep
 
-           tlat(i,k)=tlat(i,k)+(faltndqie-faltndi)*xxls*rnstep
+           tlat(i,k)=tlat(i,k)+(faltndqie1D(i)-faltndi1D(i))*xxls*rnstep
 
-           dumi(i,k) = dumi(i,k)-faltndi*deltat*rnstep
-           dumni(i,k) = dumni(i,k)-faltndni*deltat*rnstep
+           dumi(i,k) = dumi(i,k)-faltndi1D(i)*deltat*rnstep
+           dumni(i,k) = dumni(i,k)-faltndni1D(i)*deltat*rnstep
+   enddo
 
         end do
         ! Ice flux
 
         do k = 1,nlev
-          iflx(i,k+1) = iflx(i,k+1) + falouti(k) / g * rnstep
+     do i=1,mgncol
+          iflx(i,k+1) = iflx(i,k+1) + falouti2D(i,k) / g * rnstep
+     enddo
         end do
         ! units below are m/s
         ! sedimentation flux at surface is added to precip flux at surface
         ! to get total precip (cloud + precip water) rate
 
 
-        prect(i) = prect(i)+falouti(nlev)/g*rnstep/1000._r8
-        preci(i) = preci(i)+falouti(nlev)/g*rnstep/1000._r8
+      do i=1,mgncol
+        prect(i) = prect(i)+falouti2D(i,nlev)/g*rnstep/1000._r8
+        preci(i) = preci(i)+falouti2D(i,nlev)/g*rnstep/1000._r8
+      enddo
 
      end do
      ! calculate number of split time steps to ensure courant stability criteria
      ! for sedimentation calculations
      !-------------------------------------------------------------------
 
-  enddo
   do i=1,mgncol
      nstep = 1 + int(max( &
           maxval( fc(i,:)*pdel_inv(i,:)), &
@@ -2814,7 +2831,7 @@ subroutine micro_mg_tend ( &
      nrout2 = nrout * precip_frac
      ! The avg_diameter call does the actual calculation; other diameter
      ! outputs are just drout2 times constants.
-     ! drout2 = avg_diameter(qrout, nrout, rho, rhow)
+!     drout2 = avg_diameter(qrout, nrout, rho, rhow)
      freqr = precip_frac
 
      reff_rain=1.5_r8*drout2*1.e6_r8
@@ -2834,7 +2851,7 @@ subroutine micro_mg_tend ( &
      nsout2 = nsout * precip_frac
      ! The avg_diameter call does the actual calculation; other diameter
      ! outputs are just dsout2 times constants.
-     ! dsout2 = avg_diameter(qsout, nsout, rho, rhosn)
+!     dsout2 = avg_diameter(qsout, nsout, rho, rhosn)
      freqs = precip_frac
 
      dsout=3._r8*rhosn/rhows*dsout2

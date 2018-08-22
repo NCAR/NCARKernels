@@ -60,6 +60,7 @@ module micro_mg_utils
     &immersion_freezing, contact_freezing, snow_self_aggregation, accrete_cloud_water_snow, secondary_ice_production, &
     &accrete_rain_snow, heterogeneous_rain_freezing, accrete_cloud_water_rain, self_collection_rain, accrete_cloud_ice_snow, &
     &evaporate_sublimate_precip, bergeron_process_snow 
+    PUBLIC avg_diameter_vec
 ! 8 byte real and integer
 
 integer, parameter, public :: r8 = selected_real_kind(12)
@@ -307,15 +308,25 @@ subroutine rising_factorial_vint(x, n, res,vlen)
   integer :: i,j
   real(r8) :: factor(vlen)
 
-  do j=1,vlen
-    res(j) = 1._r8
-    factor(j) = x(j)
+  res    = 1._r8
+  factor = x
 
+  if (n == 3) then 
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+  elseif (n==2) then 
+    res    = res * factor
+    factor = factor + 1._r8
+    res    = res * factor
+  else
     do i = 1, n
-       res(j) = res(j) * factor(j)
-       factor(j) = factor(j) + 1._r8
-    end do
-  enddo
+       res = res * factor
+       factor = factor + 1._r8
+    enddo
+  endif
 
 end subroutine rising_factorial_vint
 
@@ -415,8 +426,8 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
   real(r8), dimension(mgncol), intent(out) :: pgam
   real(r8), dimension(mgncol), intent(out) :: lamc
   type(mghydrometeorprops) :: props_loc
-  integer :: i
-  real(r8) :: tmp(mgncol)
+  integer :: i, cnt
+  real(r8) :: tmp(mgncol),pgamp1(mgncol)
 
   do i=1,mgncol
      if (qcic(i) > qsmall) then
@@ -428,8 +439,21 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
         pgam(i) = 1.0_r8 - 0.7_r8 * exp(-0.008_r8*1.e-6_r8*ncic(i)*rho(i))
         pgam(i) = 1._r8/(pgam(i)**2) - 1._r8
         pgam(i) = max(pgam(i), 2._r8)
+        pgamp1(i) = pgam(i)+1._r8
      endif
   enddo
+#if 0
+  cnt = COUNT(qcic>qsmall)
+  if(cnt>0) then 
+     if (props_loc%eff_dim == 3._r8) then
+        call rising_factorial(pgamp1,3,tmp,mgncol)
+     else
+        call rising_factorial(pgamp1, props_loc%eff_dim,tmp,mgncol)
+     endif
+  endif
+  do i=1,mgncol
+     if (qcic(i) > qsmall) then
+#else
   do i=1,mgncol
      if (qcic(i) > qsmall) then
         if (props_loc%eff_dim == 3._r8) then
@@ -437,6 +461,7 @@ subroutine size_dist_param_liq_vect(props, qcic, ncic, rho, pgam, lamc, mgncol)
         else
            call rising_factorial(pgam(i)+1._r8, props_loc%eff_dim,tmp(i))
         end if
+#endif
         ! Set coefficient for use in size_dist_param_basic.
         ! The 3D case is so common and optimizable that we specialize
         ! it:
@@ -556,6 +581,25 @@ real(r8) elemental function avg_diameter(q, n, rho_air, rho_sub)
   avg_diameter = (pi * rho_sub * n/(q*rho_air))**(-1._r8/3._r8)
 
 end function avg_diameter
+
+subroutine  avg_diameter_vec(q, n, rho_air, rho_sub, avg_diameter, vlen)
+  ! Finds the average diameter of particles given their density, and
+  ! mass/number concentrations in the air.
+  ! Assumes that diameter follows an exponential distribution.
+  integer,  intent(in) :: vlen
+  real(r8), intent(in) :: q(vlen)         ! mass mixing ratio
+  real(r8), intent(in) :: n(vlen)         ! number concentration (per volume)
+  real(r8), intent(in) :: rho_air(vlen)   ! local density of the air
+  real(r8), intent(in) :: rho_sub   ! density of the particle substance
+  real(r8), intent(out) :: avg_diameter(vlen)
+  integer :: i
+
+  do i=1,vlen
+      avg_diameter(i) = (pi * rho_sub * n(i)/(q(i)*rho_air(i)))**(-1._r8/3._r8)
+  enddo
+
+end subroutine avg_diameter_vec
+
 
 subroutine var_coef_r8(relvar, a, res)
   ! Finds a coefficient for process rates based on the relative variance
@@ -1497,6 +1541,7 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   real(r8), dimension(mgncol) :: dum
 
   integer :: i
+  logical, dimension(mgncol) :: cond1,cond2,cond3
 
   am_evp_st = 0._r8
   ! set temporary cloud fraction to zero if cloud water + ice is very small
@@ -1509,15 +1554,22 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         dum(i) = lcldm(i)
      end if
   enddo
+#if 0
+  cond1 = (precip_frac > dum)
+  cond2 = cond1 .and. (qric >= qsmall)
+  cond3 = cond1 .and. (qsic >= qsmall)
+  print *,'evaporate_sublimate_precip: mgncol: ',mgncol
+  print *,'evaporate_sublimate_precip: COND2: ',COUNT(cond2)
+  print *,'evaporate_sublimate_precip: COND3: ',COUNT(cond3)
+  print *,'evaporate_sublimate_precip: COND4: ',COUNT(cond3 .or. cond2)
+#endif
   do i=1,mgncol
   ! only calculate if there is some precip fraction > cloud fraction
 
      if (precip_frac(i) > dum(i)) then
 
         ! evaporation of rain
-
         if (qric(i) >= qsmall) then
-
            am_evp_st(i) = precip_frac(i) - dum(i)
            ! calculate q for out-of-cloud region
 
@@ -1540,10 +1592,9 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         else
            pre(i) = 0._r8
         end if
+
         ! sublimation of snow
-
         if (qsic(i) >= qsmall) then
-
            am_evp_st(i) = precip_frac(i) - dum(i)
            ! calculate q for out-of-cloud region
 
