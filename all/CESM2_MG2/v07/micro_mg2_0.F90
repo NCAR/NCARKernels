@@ -2166,6 +2166,12 @@ subroutine micro_mg_tend ( &
 
 
   NEC_BEGIN("sedim#1")
+#if 1
+  call UpdateTendencies(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv,pdel, &
+                       qitend,nitend,qisedten,dumi,dumni,prect,iflx, &
+                       xxlx=xxls,qxsevap=qisevap,tlat=tlat,qvlat=qvlat, &
+                       xcldm=icldm,preci=preci)
+#else
   do i=1,mgncol
      nstep = 1 + int(max( &
           maxval( fi(i,:)*pdel_inv(i,:)), &
@@ -2257,8 +2263,14 @@ subroutine micro_mg_tend ( &
      !-------------------------------------------------------------------
 
   enddo
+#endif
   NEC_END("sedim#1")
   NEC_BEGIN("sedim#2")
+#if 1
+  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv,pdel, &
+                       qctend,nctend,qcsedten,dumc,dumnc,prect,lflx, &
+                       xxlx=xxlv,qxsevap=qcsevap,tlat=tlat,qvlat=qvlat,xcldm=lcldm)
+#else
   do i=1,mgncol
      nstep = 1 + int(max( &
           maxval( fc(i,:)*pdel_inv(i,:)), &
@@ -2323,8 +2335,13 @@ subroutine micro_mg_tend ( &
 
      end do
   enddo
+#endif
   NEC_END("sedim#2")
   NEC_BEGIN("sedim#3")
+#if 1
+  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv,pdel, &
+                       qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
+#else
   do i=1,mgncol
      ! calculate number of split time steps to ensure courant stability criteria
      ! for sedimentation calculations
@@ -2383,8 +2400,13 @@ subroutine micro_mg_tend ( &
 
      end do
   enddo
+#endif
   NEC_END("sedim#3")
   NEC_BEGIN("sedim#4")
+#if 1
+  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv,pdel, &
+                       qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
+#else
   do i=1,mgncol
      ! calculate number of split time steps to ensure courant stability criteria
      ! for sedimentation calculations
@@ -2445,6 +2467,7 @@ subroutine micro_mg_tend ( &
      end do   !! nstep loop
 
   enddo
+#endif
   NEC_END("sedim#4")
   ! end sedimentation
   !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -3081,6 +3104,126 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol)
      end if
   enddo
 end subroutine calc_rercld
+subroutine UpdateTendencies(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel,qxtend,nxtend, &
+                              qxsedten,dumx,dumnx,prect,xflx,xxlx,qxsevap,xcldm,tlat,qvlat,preci)
+
+   integer, intent(in)               :: mgncol,nlev
+   logical, intent(in)               :: do_cldice
+   real(r8),intent(in)               :: deltat
+   real(r8), intent(in)              :: fx(mgncol,nlev)
+   real(r8), intent(in)              :: fnx(mgncol,nlev)
+   real(r8), intent(in)              :: pdelInv(mgncol,nlev)
+   real(r8), intent(in)              :: pdel(mgncol,nlev)
+   real(r8), intent(inout)           :: qxtend(mgncol,nlev)
+   real(r8), intent(inout)           :: nxtend(mgncol,nlev)
+   real(r8), intent(inout)           :: qxsedten(mgncol,nlev)
+   real(r8), intent(inout)           :: dumx(mgncol,nlev)
+   real(r8), intent(inout)           :: dumnx(mgncol,nlev)
+   real(r8), intent(inout)           :: prect(mgncol)
+   real(r8), intent(inout)           :: xflx(mgncol,nlev)
+   real(r8), intent(in)   , optional :: xxlx
+   real(r8), intent(inout), optional :: qxsevap(mgncol,nlev)
+   real(r8), intent(in)   , optional :: xcldm(mgncol,nlev)
+   real(r8), intent(inout), optional :: tlat(mgncol,nlev)
+   real(r8), intent(inout), optional :: qvlat(mgncol,nlev)
+   real(r8), intent(inout), optional :: preci(mgncol)
+   integer :: i,k,n,nstep
+   real(r8) :: faltndx,faltndnx,rnstep,dum1,faltndqxe
+   real(r8) :: faloutx(nlev),faloutnx(nlev)
+
+   do i=1,mgncol
+     nstep = 1 + int(max( &
+          maxval( fx(i,:)*pdelInv(i,:)), &
+          maxval(fnx(i,:)*pdelInv(i,:))) &
+          * deltat)
+     ! loop over sedimentation sub-time step to ensure stability
+     !==============================================================
+     rnstep = 1._r8/real(nstep)
+     do n = 1,nstep
+
+        if (do_cldice) then
+           faloutx  = fx(i,:)  * dumx(i,:)
+           faloutnx = fnx(i,:) * dumnx(i,:)
+        else
+           faloutx  = 0._r8
+           faloutnx = 0._r8
+        end if
+        ! top of model
+
+
+        k = 1
+        ! add fallout terms to microphysical tendencies
+
+        faltndx = faloutx(k)/pdel(i,k)
+        faltndnx = faloutnx(k)/pdel(i,k)
+        qxtend(i,k) = qxtend(i,k)-faltndx*rnstep
+        nxtend(i,k) = nxtend(i,k)-faltndnx*rnstep
+        ! sedimentation tendency for output
+
+        qxsedten(i,k)=qxsedten(i,k)-faltndx*rnstep
+
+        dumx(i,k)  = dumx(i,k)-faltndx*deltat*rnstep
+        dumnx(i,k) = dumnx(i,k)-faltndnx*deltat*rnstep
+
+        do k = 2,nlev
+           ! for cloud liquid and ice, if cloud fraction increases with height
+           ! then add flux from above to both vapor and cloud water of current level
+           ! this means that flux entering clear portion of cell from above evaporates
+           ! instantly
+           ! note: this is not an issue with precip, since we assume max overlap
+
+
+           if(present(xcldm)) then 
+              dum1=xcldm(i,k)/xcldm(i,k-1)
+              dum1=min(dum1,1._r8)
+           else
+              dum1=1.0
+           endif
+           faltndqxe=(faloutx(k)-faloutx(k-1))/pdel(i,k)
+           faltndx=(faloutx(k)-dum1*faloutx(k-1))/pdel(i,k)
+           faltndnx=(faloutnx(k)-dum1*faloutnx(k-1))/pdel(i,k)
+           ! add fallout terms to eulerian tendencies
+
+
+           qxtend(i,k) = qxtend(i,k)-faltndx*rnstep
+           nxtend(i,k) = nxtend(i,k)-faltndnx*rnstep
+           ! sedimentation tendency for output
+
+           qxsedten(i,k)=qxsedten(i,k)-faltndx*rnstep
+           ! add terms to to evap/sub of cloud water
+
+
+           ! for output
+           if(present(qxsevap)) qxsevap(i,k)=qxsevap(i,k)-(faltndqxe-faltndx)*rnstep
+
+           if(present(qvlat)) qvlat(i,k)=qvlat(i,k)-(faltndqxe-faltndx)*rnstep
+           if(present(tlat))  tlat(i,k)=tlat(i,k)+(faltndqxe-faltndx)*xxlx*rnstep
+
+           dumx(i,k) = dumx(i,k)-faltndx*deltat*rnstep
+           dumnx(i,k) = dumnx(i,k)-faltndnx*deltat*rnstep
+
+        end do
+        do k = 1,nlev
+          xflx(i,k+1) = xflx(i,k+1) + faloutx(k) / g * rnstep
+        end do
+        ! units below are m/s
+        ! sedimentation flux at surface is added to precip flux at surface
+        ! to get total precip (cloud + precip water) rate
+
+        prect(i) = prect(i)+faloutx(nlev)/g*rnstep/1000._r8
+
+        if(present(preci)) preci(i) = preci(i)+faloutx(nlev)/g*rnstep/1000._r8
+
+
+     end do
+     ! calculate number of split time steps to ensure courant stability criteria
+     ! for sedimentation calculations
+     !-------------------------------------------------------------------
+
+  enddo
+
+end subroutine UpdateTendencies
+
 !========================================================================
 !UTILITIES
 !========================================================================
