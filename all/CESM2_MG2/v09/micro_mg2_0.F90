@@ -2177,25 +2177,25 @@ subroutine micro_mg_tend ( &
 
 
   NEC_BEGIN("sedim#1")
-  call UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv,pdel, &
+  call UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv, &
                        qitend,nitend,qisedten,dumi,dumni,prect,iflx, &
                        xxlx=xxls,qxsevap=qisevap,tlat=tlat,qvlat=qvlat, &
                        xcldm=icldm,preci=preci)
   NEC_END("sedim#1")
   NEC_BEGIN("sedim#2")
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv,pdel, &
+  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv, &
                        qctend,nctend,qcsedten,dumc,dumnc,prect,lflx, &
                        xxlx=xxlv,qxsevap=qcsevap,tlat=tlat,qvlat=qvlat,xcldm=lcldm)
   NEC_END("sedim#2")
   NEC_BEGIN("sedim#3")
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv,pdel, &
+  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
                        qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
   NEC_END("sedim#3")
   NEC_BEGIN("sedim#4")
 !  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv,pdel, &
 !                       qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
 !  print *,'preci: ', preci
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv,pdel, &
+  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv, &
                        qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
 !  stop
   NEC_END("sedim#4")
@@ -2953,7 +2953,7 @@ subroutine UpdateTendencies(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel,qxt
 
 end subroutine UpdateTendencies
 
-subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel,qxtend,nxtend, &
+subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxtend,nxtend, &
                               qxsedten,dumx,dumnx,prect,xflx,xxlx,qxsevap,xcldm,tlat,qvlat,preci)
 
    integer, intent(in)               :: mgncol,nlev
@@ -2962,7 +2962,6 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel
    real(r8), intent(in)              :: fx(mgncol,nlev)
    real(r8), intent(in)              :: fnx(mgncol,nlev)
    real(r8), intent(in)              :: pdelInv(mgncol,nlev)
-   real(r8), intent(in)              :: pdel(mgncol,nlev)
    real(r8), intent(inout)           :: qxtend(mgncol,nlev)
    real(r8), intent(inout)           :: nxtend(mgncol,nlev)
    real(r8), intent(inout)           :: qxsedten(mgncol,nlev)
@@ -2991,19 +2990,6 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel
    tmp2 = fnx*pdelInv*deltat
    iters = 1 + max(maxval(tmp1,dim=2),maxval(tmp2,dim=2))
    nstepMax = maxval(iters)
-!   print *,'iters: ',iters
-#if 0
-   nstepMax = 0
-   do i=1,mgncol
-      tmpk1 = fx(i,:)*pdelInv(i,:)*deltat
-      tmpk2 = fnx(i,:)*pdelInv(i,:)*deltat
-      ! Why is this using int and  not something more precise like ceil
-      ! nstep = ceil(max(maxval(tmpk1),maxval(tmpk2)))
-      nstep = 1 + int(max(maxval(tmpk1),maxval(tmpk2)))
-      nstepMax = max(nstepMax,nstep)
-!      print *,'nstep : ',nstep
-   enddo
-#endif
      present_tlat  = present(tlat)
      present_qvlat = present(qvlat)
      ! loop over sedimentation sub-time step to ensure stability
@@ -3029,8 +3015,8 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel
         !---------------------------------------------
         do i=1,mgncol
            if(n > iters(i)) then 
-              faloutx(i,:) = 0._r8
-              faloutnx(i,:) = 0._r8
+             faloutx(i,:) = 0._r8
+             faloutnx(i,:) = 0._r8
            endif
         enddo
 
@@ -3038,8 +3024,8 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel
         k = 1
         ! add fallout terms to microphysical tendencies
 
-        faltndx = faloutx(:,k)/pdel(:,k)
-        faltndnx = faloutnx(:,k)/pdel(:,k)
+        faltndx = faloutx(:,k)*pdelInv(:,k)
+        faltndnx = faloutnx(:,k)*pdelInv(:,k)
         qxtend(:,k) = qxtend(:,k)-faltndx*rnstep
         nxtend(:,k) = nxtend(:,k)-faltndnx*rnstep
         ! sedimentation tendency for output
@@ -3063,13 +3049,13 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel
            else
               dum1=1.0
            endif
-           faltndx=(faloutx(:,k)-dum1*faloutx(:,k-1))/pdel(:,k)
-           faltndnx=(faloutnx(:,k)-dum1*faloutnx(:,k-1))/pdel(:,k)
+           faltndx=(faloutx(:,k)-dum1*faloutx(:,k-1))*pdelInv(:,k)
+           faltndnx=(faloutnx(:,k)-dum1*faloutnx(:,k-1))*pdelInv(:,k)
            ! faltndqxe  = (faloutx(:,k)-faloutx(:,k-1))/pdel(:,k)
            !(faltndqxe-faltndx) == (faloutx(:,k) - faloutx(:,k-1) - faloutx(:,k)  + dum1*faloutx(:,k-1)  )/pdel(:,k)
            !(faltndqxe-faltndx) == ( (dum1-1.)*faloutx(:,k-1))/pdel(:,k)
            ! faltnqxe2 = 
-           faltndqxe2 = (dum1-1._r8)*faloutx(:,k-1)/pdel(:,k)
+           faltndqxe2 = (dum1-1._r8)*faloutx(:,k-1)*pdelInv(:,k)
            ! add fallout terms to eulerian tendencies
             
 
