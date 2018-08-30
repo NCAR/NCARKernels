@@ -628,23 +628,23 @@ subroutine micro_mg_tend ( &
   real(r8) :: fs(mgncol,nlev)
   real(r8) :: fns(mgncol,nlev)
 
-  real(r8) :: faloutc(nlev)
-  real(r8) :: faloutc2D(mgncol,nlev)
-  real(r8) :: faloutnc(nlev)
-  real(r8) :: faloutnc2D(mgncol,nlev)
-  real(r8) :: falouti(nlev)
-  real(r8) :: falouti2D(mgncol,nlev)
-  real(r8) :: faloutni(nlev)
-  real(r8) :: faloutni2D(mgncol,nlev)
+!  real(r8) :: faloutc(nlev)
+!  real(r8) :: faloutc2D(mgncol,nlev)
+!  real(r8) :: faloutnc(nlev)
+!  real(r8) :: faloutnc2D(mgncol,nlev)
+!  real(r8) :: falouti(nlev)
+!  real(r8) :: falouti2D(mgncol,nlev)
+!  real(r8) :: faloutni(nlev)
+!  real(r8) :: faloutni2D(mgncol,nlev)
 
-  real(r8) :: faloutr(nlev)
-  real(r8) :: faloutr2D(mgncol,nlev)
-  real(r8) :: faloutnr(nlev)
-  real(r8) :: faloutnr2D(mgncol,nlev)
-  real(r8) :: falouts(nlev)
-  real(r8) :: falouts2D(mgncol,nlev)
-  real(r8) :: faloutns(nlev)
-  real(r8) :: faloutns2D(mgncol,nlev)
+!  real(r8) :: faloutr(nlev)
+!  real(r8) :: faloutr2D(mgncol,nlev)
+!  real(r8) :: faloutnr(nlev)
+!  real(r8) :: faloutnr2D(mgncol,nlev)
+!  real(r8) :: falouts(nlev)
+!  real(r8) :: falouts2D(mgncol,nlev)
+!  real(r8) :: faloutns(nlev)
+!  real(r8) :: faloutns2D(mgncol,nlev)
 
   real(r8) :: faltndc
   real(r8) :: faltndnc
@@ -2982,6 +2982,7 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
    real(r8) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol)
    real(r8) :: tmpk1(nlev),tmpk2(nlev)
    real(r8) :: tmp1(mgncol,nlev),tmp2(mgncol,nlev)
+   real(r8) :: mask(mgncol)
    integer  :: iters(mgncol)
    logical  :: present_tlat,present_qvlat 
 
@@ -2990,22 +2991,13 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
    tmp2 = fnx*pdelInv*deltat
    iters = 1 + max(maxval(tmp1,dim=2),maxval(tmp2,dim=2))
    nstepMax = maxval(iters)
-     present_tlat  = present(tlat)
-     present_qvlat = present(qvlat)
+   present_tlat  = present(tlat)
+   present_qvlat = present(qvlat)
      ! loop over sedimentation sub-time step to ensure stability
      !==============================================================
      !rnstep = 1._r8/real(nstepMax)
      rnstep(:) = 1._r8/real(iters)
      do n = 1,nstepMax
-
-        if (do_cldice) then
-           faloutx  = fx(:,:)  * dumx(:,:)
-           faloutnx = fnx(:,:) * dumnx(:,:)
-        else
-           faloutx  = 0._r8
-           faloutnx = 0._r8
-        end if
-
 
         !---------------------------------------------
         ! mask out any additional changes to points 
@@ -3013,12 +3005,29 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
         ! This code modification makes this 
         ! reproduces existing answer
         !---------------------------------------------
+        mask=1._r8
+        where(n>iters) 
+          mask=0._r8
+        end where 
+
+        if (do_cldice) then
+           do k=1,nlev
+              faloutx(:,k)  = fx(:,k)  * dumx(:,k)  * mask
+              faloutnx(:,k) = fnx(:,k) * dumnx(:,k) * mask
+           enddo
+        else
+           faloutx  = 0._r8
+           faloutnx = 0._r8
+        end if
+
+#if 0
         do i=1,mgncol
            if(n > iters(i)) then 
              faloutx(i,:) = 0._r8
              faloutnx(i,:) = 0._r8
            endif
         enddo
+#endif
 
         ! top of model
         k = 1
@@ -3049,13 +3058,13 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
            else
               dum1=1.0
            endif
-           faltndx=(faloutx(:,k)-dum1*faloutx(:,k-1))*pdelInv(:,k)
-           faltndnx=(faloutnx(:,k)-dum1*faloutnx(:,k-1))*pdelInv(:,k)
+           faltndx(:)=(faloutx(:,k)-dum1(:)*faloutx(:,k-1))*pdelInv(:,k)
+           faltndnx(:)=(faloutnx(:,k)-dum1(:)*faloutnx(:,k-1))*pdelInv(:,k)
            ! faltndqxe  = (faloutx(:,k)-faloutx(:,k-1))/pdel(:,k)
            !(faltndqxe-faltndx) == (faloutx(:,k) - faloutx(:,k-1) - faloutx(:,k)  + dum1*faloutx(:,k-1)  )/pdel(:,k)
            !(faltndqxe-faltndx) == ( (dum1-1.)*faloutx(:,k-1))/pdel(:,k)
            ! faltnqxe2 = 
-           faltndqxe2 = (dum1-1._r8)*faloutx(:,k-1)*pdelInv(:,k)
+           faltndqxe2(:) = (dum1(:)-1._r8)*faloutx(:,k-1)*pdelInv(:,k)
            ! add fallout terms to eulerian tendencies
             
 
