@@ -3,8 +3,8 @@
 !Generated at : 2018-08-07 15:55:26 
 !KGEN version : 0.7.3 
   
-#define NEC_BEGIN(x) !call ftrace_region_begin(x)
-#define NEC_END(x) !call ftrace_region_end(x)
+#define NEC_BEGIN(x) call ftrace_region_begin(x)
+#define NEC_END(x) call ftrace_region_end(x)
 
 
 
