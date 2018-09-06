@@ -31,7 +31,12 @@ module ppgrid
 
    PARAMETER (pver      = 66)
 
-   integer,parameter ::  veclen=768    ! vector length
+!   integer,parameter ::  veclen=128    ! vector length
+   integer,parameter ::  veclen=256    ! vector length
+!   integer,parameter ::  veclen=512    ! vector length
+!   integer,parameter ::  veclen=768    ! vector length
+!   integer,parameter ::  veclen=1024   ! vector length
+!   integer,parameter ::  veclen=1536   ! vector length
    
 !
 ! start, end indices for chunks owned by a given MPI task

@@ -111,6 +111,7 @@
                 use mpi
 #endif
             integer, intent(in) :: kgen_unit
+            integer, parameter :: maxiter=100
 
             ! read interface
             !interface kgen_read_var
@@ -344,14 +345,14 @@
 #endif
 
             CALL system_clock(start_clock, rate_clock)
-            ! DO kgen_intvar=1,100
-            DO kgen_intvar=1,100
+            ! DO kgen_intvar=1,maxiter
+            DO kgen_intvar=1,maxiter
                 CALL lrtm(kproma, kbdim, klev, pm_fl_vr, pm_sfc, tk_fl_vr, tk_hl_vr, tk_sfc, wkl_vr, wx_vr, col_dry_vr, zsemiss, cld_frc_vr, cld_tau_lw_vr, aer_tau_lw_vr, rnseeds, lw_strat, n_gpts_ts, flx_uplw_vr, flx_dnlw_vr, flx_uplw_clr_vr, flx_dnlw_clr_vr)
             END DO
             CALL system_clock(stop_clock, rate_clock)
             WRITE(*,*)
-            PRINT *, "Elapsed time (sec): ", (stop_clock - start_clock)/REAL(rate_clock*100)
-            usecs = REAL(stop_clock - start_clock)/REAL(rate_clock*100)
+            PRINT *, "Elapsed time (usec): ", 1.E6*(stop_clock - start_clock)/REAL(rate_clock*maxiter)
+            usecs = 1.E6*REAL(stop_clock - start_clock)/REAL(rate_clock*maxiter)
             !
             ! Reset random seeds so SW doesn't depend on what's happened in LW but is also independent
             !

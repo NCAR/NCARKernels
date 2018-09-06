@@ -352,7 +352,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 100
+    INTEGER, PARAMETER :: maxiter = 500
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_tlat 
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_qvlat 
@@ -2126,6 +2126,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 END IF   
                 WRITE (*, *) "" 
                 CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
+            !call ftrace_region_begin('micro_mg_tend2_0')
             do kgen_intvar=1,maxiter
             call micro_mg_tend2_0( &
                  mgncol,         nlev,           dtime/num_steps,&
@@ -2184,6 +2185,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                  packed_prer_evap,                                     &
                  packed_frzimm,  packed_frzcnt,  packed_frzdep   )
             enddo
+            !call ftrace_region_end('micro_mg_tend2_0')
+
             CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock) 
             kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 
             WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure 

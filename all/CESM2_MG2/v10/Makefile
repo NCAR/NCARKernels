@@ -15,7 +15,7 @@ ALL_OBJS := micro_mg_cam.o micro_mg2_0.o micro_mg_utils.o wv_sat_methods.o shr_s
 run: build
 
 build: ${ALL_OBJS}
-	${FC} ${FC_FLAGS} -o kernel.exe $^  
+	${FC} ${LD_FLAGS} -o kernel.exe $^  
 
 micro_mg_cam.o: micro_mg_cam.F90 micro_mg2_0.o micro_mg_utils.o wv_sat_methods.o shr_spfn_mod.o shr_kind_mod.o shr_const_mod.o kgen_utils.o tprof_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<

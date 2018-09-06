@@ -3,7 +3,7 @@
 # User settings (all case-insensitive):
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = no         # Yes/No, True/False or Enabled/Disabled
+MPI      = yes         # Yes/No, True/False or Enabled/Disabled
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
@@ -53,7 +53,7 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
   FC_FLAGS += -v -O4 -finline-functions -report-all -fdiag-vector=2 -D_NOGETPID
-  LD_FLAGS +=
+  LD_FLAGS += -proginf
 
   FC_FLAGS +=
   MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc

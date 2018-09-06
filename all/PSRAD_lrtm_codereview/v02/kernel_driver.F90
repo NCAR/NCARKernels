@@ -114,7 +114,7 @@ PROGRAM kernel_driver
             !call kgen_read_var(tk_sfc, kgen_unit)
             call read_var_real_wp_dim1(tk_sfc, kgen_unit)
         call psrad_interface(kbdim, klev, nb_sw, kproma, ktrac, tk_sfc, kgen_unit, usecs)
-            write(*,*) "Current time : ", usecs
+            write(*,*) "Current time (usec): ", usecs
             clock_total = clock_total + usecs
             CLOSE (UNIT=kgen_unit)
         END DO
@@ -128,7 +128,7 @@ PROGRAM kernel_driver
          endif
          call MPI_Finalize(iError)
 #else
-            write(*,*) "Total time : ", clock_total 
+            write(*,*) "Total time (usec): ", clock_total 
 #endif
 
     CONTAINS
