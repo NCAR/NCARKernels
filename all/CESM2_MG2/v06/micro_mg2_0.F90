@@ -912,13 +912,13 @@ subroutine micro_mg_tend ( &
   sadsnow = 0._r8
   deffi = 50._r8
 
-  qrout2 = 0._r8
-  nrout2 = 0._r8
-  drout2 = 0._r8
-  qsout2 = 0._r8
-  nsout2 = 0._r8
-  dsout = 0._r8
-  dsout2 = 0._r8
+!  qrout2 = 0._r8
+!  nrout2 = 0._r8
+!  drout2 = 0._r8
+!  qsout2 = 0._r8
+!  nsout2 = 0._r8
+!  dsout = 0._r8
+!  dsout2 = 0._r8
 
   freqr = 0._r8
   freqs = 0._r8

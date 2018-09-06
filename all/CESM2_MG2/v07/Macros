@@ -45,7 +45,10 @@ endif
 ifeq ($(COMPILER),intel)
   FC := ifort
 #  FC_FLAGS += -O2 -xHost -ftz -fp-model source
-  FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
+# original flags
+#  FC_FLAGS += -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -qopt-report -xCORE_AVX2 -no-fma -O2 -debug minimal -free
+# new flags
+  FC_FLAGS += -O3 -xHost -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
   LD_FLAGS += 
 
   FC_FLAGS += 
