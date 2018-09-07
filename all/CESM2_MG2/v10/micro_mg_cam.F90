@@ -1996,7 +1996,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             IF (kgen_mainstage) THEN 
                   
                 !verify init 
-                CALL kgen_init_check(check_status, tolerance=5.D-10, verboseLevel=0) 
+                CALL kgen_init_check(check_status, tolerance=8.D-8, verboseLevel=0) 
                   
                 !extern verify variables 
                   
