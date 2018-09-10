@@ -1,0 +1,7 @@
+CSLAM kernel extracted from CESM2
+
+This kernel is generated from an experimental configuration based on cesm2 using Intel compiler.
+
+To use the kernel, first untar/unzip data files in "data" subdirectory by running a command similar to "tar -xvzf cslam.134.0.1.tar" in "data" directory, and go to orig directory and run "make".
+
+Please contact Youngsung Kim(youngsun@ucar.edu) for any questions concerning this kernel.
