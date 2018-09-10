@@ -353,884 +353,797 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
     INTEGER, PARAMETER :: maxiter = 500
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_tlat 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qvlat 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qctend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qitend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nctend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nitend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qrtend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qstend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nrtend 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nstend 
-    REAL(KIND=rkind_comp), dimension(mgncol) :: kgenref_packed_prect 
-    REAL(KIND=rkind_comp), dimension(mgncol) :: kgenref_packed_preci 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nevapr 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_am_evp_st 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_evapsnow 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prain 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prodsnow 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_cmeout 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qsout 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev+1) :: kgenref_packed_cflx 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev+1) :: kgenref_packed_iflx 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev+1) :: kgenref_packed_rflx 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev+1) :: kgenref_packed_sflx 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qrout 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qcsevap 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qisevap 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qvres 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_cmei 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_vtrmc 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_vtrmi 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qcsedten 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qisedten 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qrsedten 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qssedten 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_umr 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_ums 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_pra 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prc 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_mnuccc 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_mnucct 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_msacwi 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_psacws 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_bergs 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_berg 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_melt 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_homo 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qcres 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prci 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prai 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qires 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_mnuccr 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_pracs 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_meltsdt 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_frzrdt 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_mnuccd 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nrout 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nsout 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_refl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_arefl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_areflz 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_frefl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_csrfl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_acsrfl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_fcsrfl 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_rercld 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_ncai 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_ncal 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qrout2 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qsout2 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nrout2 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nsout2 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_freqs 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_freqr 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_nfice 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_prer_evap 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_qcrat 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_rel 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_rei 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_sadice 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_sadsnow 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_lambdac 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_mu 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_des 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_packed_dei 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_rel_fn_dum 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_dsout2_dum 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_drout_dum 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_reff_rain_dum 
-    REAL(KIND=rkind_comp), dimension(mgncol,nlev) :: kgenref_reff_snow_dum 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qvlat 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qctend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qitend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nctend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nitend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qrtend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qstend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nrtend 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nstend 
+    REAL(KIND=rkind_io), dimension(mgncol) :: kgenref_packed_prect 
+    REAL(KIND=rkind_io), dimension(mgncol) :: kgenref_packed_preci 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nevapr 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_am_evp_st 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_evapsnow 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prain 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prodsnow 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_cmeout 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qsout 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev+1) :: kgenref_packed_cflx 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev+1) :: kgenref_packed_iflx 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev+1) :: kgenref_packed_rflx 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev+1) :: kgenref_packed_sflx 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qrout 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qcsevap 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qisevap 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qvres 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_cmei 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_vtrmc 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_vtrmi 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qcsedten 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qisedten 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qrsedten 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qssedten 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_umr 
+
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_ums 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_pra 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prc 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_mnuccc 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_mnucct 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_msacwi 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_psacws 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_bergs 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_berg 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_melt 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_homo 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qcres 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prci 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prai 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qires 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_mnuccr 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_pracs 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_meltsdt 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_frzrdt 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_mnuccd 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nrout 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nsout 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_refl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_arefl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_areflz 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_frefl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_csrfl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_acsrfl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_fcsrfl 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rercld 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_ncai 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_ncal 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qrout2 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qsout2 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nrout2 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nsout2 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_freqs 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_freqr 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_nfice 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_prer_evap 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qcrat 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rel 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rei 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_sadice 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_sadsnow 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_lambdac 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_mu 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_des 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_dei 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_rel_fn_dum 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_dsout2_dum 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_drout_dum 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_reff_rain_dum 
+    REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_reff_snow_dum 
     CHARACTER(LEN=128) :: kgenref_errstring 
-    real(kind=rkind_io), dimension(mgncol,nlev) :: tmpA
+    real(kind=rkind_io), dimension(mgncol,nlev)   :: tmpA
+    real(kind=rkind_io), dimension(mgncol) :: tmpB
+    real(kind=rkind_io), dimension(mgncol,nlev+1) :: tmpC
       
     !local input variables 
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmpA; packed_t = real(tmpA,kind=rkind_comp)
-        CALL kgen_array_sumcheck("packed_t", kgen_array_sum, DBLE(SUM(packed_t, mask=(packed_t .eq. packed_t))), .TRUE.) 
+        CALL kgen_array_sumcheck("packed_t", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmpA; packed_q  = real(tmpA,kind=rkind_comp)
-        CALL kgen_array_sumcheck("packed_q", kgen_array_sum, DBLE(SUM(packed_q, mask=(packed_q .eq. packed_q))), .TRUE.) 
+        CALL kgen_array_sumcheck("packed_q", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmpA; packed_qc = real(tmpA,kind=rkind_comp)
-        CALL kgen_array_sumcheck("packed_qc", kgen_array_sum, DBLE(SUM(packed_qc, mask=(packed_qc .eq. packed_qc))), .TRUE.) 
+        CALL kgen_array_sumcheck("packed_qc", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nc 
-        CALL kgen_array_sumcheck("packed_nc", kgen_array_sum, DBLE(SUM(packed_nc, mask=(packed_nc .eq. packed_nc))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nc = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nc", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qi 
-        CALL kgen_array_sumcheck("packed_qi", kgen_array_sum, DBLE(SUM(packed_qi, mask=(packed_qi .eq. packed_qi))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA ;packed_qi = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qi", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_ni 
-        CALL kgen_array_sumcheck("packed_ni", kgen_array_sum, DBLE(SUM(packed_ni, mask=(packed_ni .eq. packed_ni))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_ni   = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_ni", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qr 
-        CALL kgen_array_sumcheck("packed_qr", kgen_array_sum, DBLE(SUM(packed_qr, mask=(packed_qr .eq. packed_qr))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qr  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nr 
-        CALL kgen_array_sumcheck("packed_nr", kgen_array_sum, DBLE(SUM(packed_nr, mask=(packed_nr .eq. packed_nr))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nr  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qs 
-        CALL kgen_array_sumcheck("packed_qs", kgen_array_sum, DBLE(SUM(packed_qs, mask=(packed_qs .eq. packed_qs))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qs  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qs", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_ns 
-        CALL kgen_array_sumcheck("packed_ns", kgen_array_sum, DBLE(SUM(packed_ns, mask=(packed_ns .eq. packed_ns))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_ns  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_ns", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_relvar 
-        CALL kgen_array_sumcheck("packed_relvar", kgen_array_sum, DBLE(SUM(packed_relvar, mask=(packed_relvar .eq. &
-        &packed_relvar))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_relvar  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_relvar", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_accre_enhan 
-        CALL kgen_array_sumcheck("packed_accre_enhan", kgen_array_sum, DBLE(SUM(packed_accre_enhan, mask=(packed_accre_enhan .eq. &
-        &packed_accre_enhan))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_accre_enhan  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_accre_enhan", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_p 
-        CALL kgen_array_sumcheck("packed_p", kgen_array_sum, DBLE(SUM(packed_p, mask=(packed_p .eq. packed_p))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_p  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_p", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_pdel 
-        CALL kgen_array_sumcheck("packed_pdel", kgen_array_sum, DBLE(SUM(packed_pdel, mask=(packed_pdel .eq. packed_pdel))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_pdel  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_pdel", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_cldn 
-        CALL kgen_array_sumcheck("packed_cldn", kgen_array_sum, DBLE(SUM(packed_cldn, mask=(packed_cldn .eq. packed_cldn))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_cldn  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_cldn", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_liqcldf 
-        CALL kgen_array_sumcheck("packed_liqcldf", kgen_array_sum, DBLE(SUM(packed_liqcldf, mask=(packed_liqcldf .eq. &
-        &packed_liqcldf))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_liqcldf  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_liqcldf", kgen_array_sum, DBLE(SUM(tmpA, mask=.true.)), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_icecldf 
-        CALL kgen_array_sumcheck("packed_icecldf", kgen_array_sum, DBLE(SUM(packed_icecldf, mask=(packed_icecldf .eq. &
-        &packed_icecldf))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_icecldf  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_icecldf", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     CALL kr_micro_mg_cam_tend_pack_real__rkind_comp_dim2(packed_qsatfac, kgen_unit, "packed_qsatfac", .FALSE.) 
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_naai 
-        CALL kgen_array_sumcheck("packed_naai", kgen_array_sum, DBLE(SUM(packed_naai, mask=(packed_naai .eq. packed_naai))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_naai  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_naai", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_npccn 
-        CALL kgen_array_sumcheck("packed_npccn", kgen_array_sum, DBLE(SUM(packed_npccn, mask=(packed_npccn .eq. packed_npccn))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_npccn  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_npccn", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     CALL kr_micro_mg_cam_tend_pack_real__rkind_comp_dim3(packed_rndst, kgen_unit, "packed_rndst", .FALSE.) 
     CALL kr_micro_mg_cam_tend_pack_real__rkind_comp_dim3(packed_nacon, kgen_unit, "packed_nacon", .FALSE.) 
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_tnd_qsnow 
-        CALL kgen_array_sumcheck("packed_tnd_qsnow", kgen_array_sum, DBLE(SUM(packed_tnd_qsnow, mask=(packed_tnd_qsnow .eq. &
-        &packed_tnd_qsnow))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_tnd_qsnow  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_tnd_qsnow", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_tnd_nsnow 
-        CALL kgen_array_sumcheck("packed_tnd_nsnow", kgen_array_sum, DBLE(SUM(packed_tnd_nsnow, mask=(packed_tnd_nsnow .eq. &
-        &packed_tnd_nsnow))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_tnd_nsnow  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_tnd_nsnow", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_re_ice 
-        CALL kgen_array_sumcheck("packed_re_ice", kgen_array_sum, DBLE(SUM(packed_re_ice, mask=(packed_re_ice .eq. &
-        &packed_re_ice))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_re_ice  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_re_ice", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_frzimm 
-        CALL kgen_array_sumcheck("packed_frzimm", kgen_array_sum, DBLE(SUM(packed_frzimm, mask=(packed_frzimm .eq. &
-        &packed_frzimm))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_frzimm  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_frzimm", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_frzcnt 
-        CALL kgen_array_sumcheck("packed_frzcnt", kgen_array_sum, DBLE(SUM(packed_frzcnt, mask=(packed_frzcnt .eq. &
-        &packed_frzcnt))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_frzcnt = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_frzcnt", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_frzdep 
-        CALL kgen_array_sumcheck("packed_frzdep", kgen_array_sum, DBLE(SUM(packed_frzdep, mask=(packed_frzdep .eq. &
-        &packed_frzdep))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_frzdep = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_frzdep", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
+        packed_frzdep = real(tmpA,kind=rkind_comp)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_rate1ord_cw2pr_st 
-        CALL kgen_array_sumcheck("packed_rate1ord_cw2pr_st", kgen_array_sum, DBLE(SUM(packed_rate1ord_cw2pr_st, &
-        &mask=(packed_rate1ord_cw2pr_st .eq. packed_rate1ord_cw2pr_st))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_rate1ord_cw2pr_st = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_rate1ord_cw2pr_st", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
+
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_tlat 
-        CALL kgen_array_sumcheck("packed_tlat", kgen_array_sum, DBLE(SUM(packed_tlat, mask=(packed_tlat .eq. packed_tlat))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_tlat  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_tlat", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qvlat 
-        CALL kgen_array_sumcheck("packed_qvlat", kgen_array_sum, DBLE(SUM(packed_qvlat, mask=(packed_qvlat .eq. packed_qvlat))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qvlat = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qvlat", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qctend 
-        CALL kgen_array_sumcheck("packed_qctend", kgen_array_sum, DBLE(SUM(packed_qctend, mask=(packed_qctend .eq. &
-        &packed_qctend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qctend  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qctend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qitend 
-        CALL kgen_array_sumcheck("packed_qitend", kgen_array_sum, DBLE(SUM(packed_qitend, mask=(packed_qitend .eq. &
-        &packed_qitend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qitend  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qitend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nctend 
-        CALL kgen_array_sumcheck("packed_nctend", kgen_array_sum, DBLE(SUM(packed_nctend, mask=(packed_nctend .eq. &
-        &packed_nctend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nctend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nctend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nitend 
-        CALL kgen_array_sumcheck("packed_nitend", kgen_array_sum, DBLE(SUM(packed_nitend, mask=(packed_nitend .eq. &
-        &packed_nitend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nitend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nitend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qrtend 
-        CALL kgen_array_sumcheck("packed_qrtend", kgen_array_sum, DBLE(SUM(packed_qrtend, mask=(packed_qrtend .eq. &
-        &packed_qrtend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qrtend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qrtend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qstend 
-        CALL kgen_array_sumcheck("packed_qstend", kgen_array_sum, DBLE(SUM(packed_qstend, mask=(packed_qstend .eq. &
-        &packed_qstend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qstend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qstend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nrtend 
-        CALL kgen_array_sumcheck("packed_nrtend", kgen_array_sum, DBLE(SUM(packed_nrtend, mask=(packed_nrtend .eq. &
-        &packed_nrtend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nrtend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nrtend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nstend 
-        CALL kgen_array_sumcheck("packed_nstend", kgen_array_sum, DBLE(SUM(packed_nstend, mask=(packed_nstend .eq. &
-        &packed_nstend))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nstend = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nstend", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prect 
-        CALL kgen_array_sumcheck("packed_prect", kgen_array_sum, DBLE(SUM(packed_prect, mask=(packed_prect .eq. packed_prect))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpB; packed_prect = real(tmpB,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_prect", kgen_array_sum, DBLE(SUM(tmpB, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_preci 
-        CALL kgen_array_sumcheck("packed_preci", kgen_array_sum, DBLE(SUM(packed_preci, mask=(packed_preci .eq. packed_preci))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpB; packed_preci = real(tmpB,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_preci", kgen_array_sum, DBLE(SUM(tmpB, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nevapr 
-        CALL kgen_array_sumcheck("packed_nevapr", kgen_array_sum, DBLE(SUM(packed_nevapr, mask=(packed_nevapr .eq. &
-        &packed_nevapr))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nevapr = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nevapr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_am_evp_st 
-        CALL kgen_array_sumcheck("packed_am_evp_st", kgen_array_sum, DBLE(SUM(packed_am_evp_st, mask=(packed_am_evp_st .eq. &
-        &packed_am_evp_st))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_am_evp_st = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_am_evp_st", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_evapsnow 
-        CALL kgen_array_sumcheck("packed_evapsnow", kgen_array_sum, DBLE(SUM(packed_evapsnow, mask=(packed_evapsnow .eq. &
-        &packed_evapsnow))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_evapsnow = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_evapsnow", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prain 
-        CALL kgen_array_sumcheck("packed_prain", kgen_array_sum, DBLE(SUM(packed_prain, mask=(packed_prain .eq. packed_prain))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prain = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_prain", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prodsnow 
-        CALL kgen_array_sumcheck("packed_prodsnow", kgen_array_sum, DBLE(SUM(packed_prodsnow, mask=(packed_prodsnow .eq. &
-        &packed_prodsnow))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prodsnow = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_prodsnow", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_cmeout 
-        CALL kgen_array_sumcheck("packed_cmeout", kgen_array_sum, DBLE(SUM(packed_cmeout, mask=(packed_cmeout .eq. &
-        &packed_cmeout))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_cmeout = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_cmeout", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qsout 
-        CALL kgen_array_sumcheck("packed_qsout", kgen_array_sum, DBLE(SUM(packed_qsout, mask=(packed_qsout .eq. packed_qsout))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qsout = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qsout", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_cflx 
-        CALL kgen_array_sumcheck("packed_cflx", kgen_array_sum, DBLE(SUM(packed_cflx, mask=(packed_cflx .eq. packed_cflx))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpC; packed_cflx = real(tmpC,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_cflx", kgen_array_sum, DBLE(SUM(tmpC, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_iflx 
-        CALL kgen_array_sumcheck("packed_iflx", kgen_array_sum, DBLE(SUM(packed_iflx, mask=(packed_iflx .eq. packed_iflx))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpC; packed_iflx = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_iflx", kgen_array_sum, DBLE(SUM(tmpC, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_rflx 
-        CALL kgen_array_sumcheck("packed_rflx", kgen_array_sum, DBLE(SUM(packed_rflx, mask=(packed_rflx .eq. packed_rflx))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpC; packed_rflx = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_rflx", kgen_array_sum, DBLE(SUM(tmpC, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_sflx 
-        CALL kgen_array_sumcheck("packed_sflx", kgen_array_sum, DBLE(SUM(packed_sflx, mask=(packed_sflx .eq. packed_sflx))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpC; packed_sflx = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_sflx", kgen_array_sum, DBLE(SUM(tmpC, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qrout 
-        CALL kgen_array_sumcheck("packed_qrout", kgen_array_sum, DBLE(SUM(packed_qrout, mask=(packed_qrout .eq. packed_qrout))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qrout = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qrout", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qcsevap 
-        CALL kgen_array_sumcheck("packed_qcsevap", kgen_array_sum, DBLE(SUM(packed_qcsevap, mask=(packed_qcsevap .eq. &
-        &packed_qcsevap))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qcsevap = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qcsevap", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qisevap 
-        CALL kgen_array_sumcheck("packed_qisevap", kgen_array_sum, DBLE(SUM(packed_qisevap, mask=(packed_qisevap .eq. &
-        &packed_qisevap))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qisevap = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qisevap", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qvres 
-        CALL kgen_array_sumcheck("packed_qvres", kgen_array_sum, DBLE(SUM(packed_qvres, mask=(packed_qvres .eq. packed_qvres))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qvres = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qvres", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_cmei 
-        CALL kgen_array_sumcheck("packed_cmei", kgen_array_sum, DBLE(SUM(packed_cmei, mask=(packed_cmei .eq. packed_cmei))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_cmei = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_cmei", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_vtrmc 
-        CALL kgen_array_sumcheck("packed_vtrmc", kgen_array_sum, DBLE(SUM(packed_vtrmc, mask=(packed_vtrmc .eq. packed_vtrmc))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_vtrmc = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_vtrmc", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_vtrmi 
-        CALL kgen_array_sumcheck("packed_vtrmi", kgen_array_sum, DBLE(SUM(packed_vtrmi, mask=(packed_vtrmi .eq. packed_vtrmi))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_vtrmi = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_vtrmi", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qcsedten 
-        CALL kgen_array_sumcheck("packed_qcsedten", kgen_array_sum, DBLE(SUM(packed_qcsedten, mask=(packed_qcsedten .eq. &
-        &packed_qcsedten))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qcsedten = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qcsedten", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qisedten 
-        CALL kgen_array_sumcheck("packed_qisedten", kgen_array_sum, DBLE(SUM(packed_qisedten, mask=(packed_qisedten .eq. &
-        &packed_qisedten))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qisedten = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qisedten", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qrsedten 
-        CALL kgen_array_sumcheck("packed_qrsedten", kgen_array_sum, DBLE(SUM(packed_qrsedten, mask=(packed_qrsedten .eq. &
-        &packed_qrsedten))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qrsedten = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qrsedten", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qssedten 
-        CALL kgen_array_sumcheck("packed_qssedten", kgen_array_sum, DBLE(SUM(packed_qssedten, mask=(packed_qssedten .eq. &
-        &packed_qssedten))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qssedten = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qssedten", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_umr 
-        CALL kgen_array_sumcheck("packed_umr", kgen_array_sum, DBLE(SUM(packed_umr, mask=(packed_umr .eq. packed_umr))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_umr = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_umr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_ums 
-        CALL kgen_array_sumcheck("packed_ums", kgen_array_sum, DBLE(SUM(packed_ums, mask=(packed_ums .eq. packed_ums))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_ums = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_ums", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_pra 
-        CALL kgen_array_sumcheck("packed_pra", kgen_array_sum, DBLE(SUM(packed_pra, mask=(packed_pra .eq. packed_pra))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_pra = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_pra", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prc 
-        CALL kgen_array_sumcheck("packed_prc", kgen_array_sum, DBLE(SUM(packed_prc, mask=(packed_prc .eq. packed_prc))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prc = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_prc", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_mnuccc 
-        CALL kgen_array_sumcheck("packed_mnuccc", kgen_array_sum, DBLE(SUM(packed_mnuccc, mask=(packed_mnuccc .eq. &
-        &packed_mnuccc))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_mnuccc = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_mnuccc", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_mnucct 
-        CALL kgen_array_sumcheck("packed_mnucct", kgen_array_sum, DBLE(SUM(packed_mnucct, mask=(packed_mnucct .eq. &
-        &packed_mnucct))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_mnucct = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_mnucct", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_msacwi 
-        CALL kgen_array_sumcheck("packed_msacwi", kgen_array_sum, DBLE(SUM(packed_msacwi, mask=(packed_msacwi .eq. &
-        &packed_msacwi))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_msacwi = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_msacwi", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_psacws 
-        CALL kgen_array_sumcheck("packed_psacws", kgen_array_sum, DBLE(SUM(packed_psacws, mask=(packed_psacws .eq. &
-        &packed_psacws))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_psacws = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_psacws", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_bergs 
-        CALL kgen_array_sumcheck("packed_bergs", kgen_array_sum, DBLE(SUM(packed_bergs, mask=(packed_bergs .eq. packed_bergs))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_bergs = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_bergs", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_berg 
-        CALL kgen_array_sumcheck("packed_berg", kgen_array_sum, DBLE(SUM(packed_berg, mask=(packed_berg .eq. packed_berg))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_berg = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_berg", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_melt 
-        CALL kgen_array_sumcheck("packed_melt", kgen_array_sum, DBLE(SUM(packed_melt, mask=(packed_melt .eq. packed_melt))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_melt = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_melt", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_homo 
-        CALL kgen_array_sumcheck("packed_homo", kgen_array_sum, DBLE(SUM(packed_homo, mask=(packed_homo .eq. packed_homo))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_homo = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_homo", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qcres 
-        CALL kgen_array_sumcheck("packed_qcres", kgen_array_sum, DBLE(SUM(packed_qcres, mask=(packed_qcres .eq. packed_qcres))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qcres = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_qcres", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prci 
-        CALL kgen_array_sumcheck("packed_prci", kgen_array_sum, DBLE(SUM(packed_prci, mask=(packed_prci .eq. packed_prci))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prci = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_prci", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prai 
-        CALL kgen_array_sumcheck("packed_prai", kgen_array_sum, DBLE(SUM(packed_prai, mask=(packed_prai .eq. packed_prai))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prai = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_prai", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qires 
-        CALL kgen_array_sumcheck("packed_qires", kgen_array_sum, DBLE(SUM(packed_qires, mask=(packed_qires .eq. packed_qires))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qires = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qires", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_mnuccr 
-        CALL kgen_array_sumcheck("packed_mnuccr", kgen_array_sum, DBLE(SUM(packed_mnuccr, mask=(packed_mnuccr .eq. &
-        &packed_mnuccr))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_mnuccr = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_mnuccr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_pracs 
-        CALL kgen_array_sumcheck("packed_pracs", kgen_array_sum, DBLE(SUM(packed_pracs, mask=(packed_pracs .eq. packed_pracs))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_pracs = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_pracs", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_meltsdt 
-        CALL kgen_array_sumcheck("packed_meltsdt", kgen_array_sum, DBLE(SUM(packed_meltsdt, mask=(packed_meltsdt .eq. &
-        &packed_meltsdt))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_meltsdt = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_meltsdt", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_frzrdt 
-        CALL kgen_array_sumcheck("packed_frzrdt", kgen_array_sum, DBLE(SUM(packed_frzrdt, mask=(packed_frzrdt .eq. &
-        &packed_frzrdt))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_frzrdt = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_frzrdt", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_mnuccd 
-        CALL kgen_array_sumcheck("packed_mnuccd", kgen_array_sum, DBLE(SUM(packed_mnuccd, mask=(packed_mnuccd .eq. &
-        &packed_mnuccd))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_mnuccd = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_mnuccd", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nrout 
-        CALL kgen_array_sumcheck("packed_nrout", kgen_array_sum, DBLE(SUM(packed_nrout, mask=(packed_nrout .eq. packed_nrout))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_nrout = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_nrout", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nsout 
-        CALL kgen_array_sumcheck("packed_nsout", kgen_array_sum, DBLE(SUM(packed_nsout, mask=(packed_nsout .eq. packed_nsout))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_nsout = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nsout", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_refl 
-        CALL kgen_array_sumcheck("packed_refl", kgen_array_sum, DBLE(SUM(packed_refl, mask=(packed_refl .eq. packed_refl))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_refl = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_refl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_arefl 
-        CALL kgen_array_sumcheck("packed_arefl", kgen_array_sum, DBLE(SUM(packed_arefl, mask=(packed_arefl .eq. packed_arefl))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_arefl = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_arefl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_areflz 
-        CALL kgen_array_sumcheck("packed_areflz", kgen_array_sum, DBLE(SUM(packed_areflz, mask=(packed_areflz .eq. &
-        &packed_areflz))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_areflz = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_areflz", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_frefl 
-        CALL kgen_array_sumcheck("packed_frefl", kgen_array_sum, DBLE(SUM(packed_frefl, mask=(packed_frefl .eq. packed_frefl))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_frefl = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_frefl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_csrfl 
-        CALL kgen_array_sumcheck("packed_csrfl", kgen_array_sum, DBLE(SUM(packed_csrfl, mask=(packed_csrfl .eq. packed_csrfl))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_csrfl = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_csrfl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_acsrfl 
-        CALL kgen_array_sumcheck("packed_acsrfl", kgen_array_sum, DBLE(SUM(packed_acsrfl, mask=(packed_acsrfl .eq. &
-        &packed_acsrfl))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_acsrfl = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_acsrfl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_fcsrfl 
-        CALL kgen_array_sumcheck("packed_fcsrfl", kgen_array_sum, DBLE(SUM(packed_fcsrfl, mask=(packed_fcsrfl .eq. &
-        &packed_fcsrfl))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_fcsrfl = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_fcsrfl", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_rercld 
-        CALL kgen_array_sumcheck("packed_rercld", kgen_array_sum, DBLE(SUM(packed_rercld, mask=(packed_rercld .eq. &
-        &packed_rercld))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA;packed_rercld = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_rercld", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_ncai 
-        CALL kgen_array_sumcheck("packed_ncai", kgen_array_sum, DBLE(SUM(packed_ncai, mask=(packed_ncai .eq. packed_ncai))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_ncai = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_ncai", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_ncal 
-        CALL kgen_array_sumcheck("packed_ncal", kgen_array_sum, DBLE(SUM(packed_ncal, mask=(packed_ncal .eq. packed_ncal))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_ncal = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_ncal", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qrout2 
-        CALL kgen_array_sumcheck("packed_qrout2", kgen_array_sum, DBLE(SUM(packed_qrout2, mask=(packed_qrout2 .eq. &
-        &packed_qrout2))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qrout2 = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_qrout2", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qsout2 
-        CALL kgen_array_sumcheck("packed_qsout2", kgen_array_sum, DBLE(SUM(packed_qsout2, mask=(packed_qsout2 .eq. &
-        &packed_qsout2))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qsout2 = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_qsout2", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nrout2 
-        CALL kgen_array_sumcheck("packed_nrout2", kgen_array_sum, DBLE(SUM(packed_nrout2, mask=(packed_nrout2 .eq. &
-        &packed_nrout2))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nrout2 = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nrout2", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nsout2 
-        CALL kgen_array_sumcheck("packed_nsout2", kgen_array_sum, DBLE(SUM(packed_nsout2, mask=(packed_nsout2 .eq. &
-        &packed_nsout2))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nsout2 = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nsout2", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_freqs 
-        CALL kgen_array_sumcheck("packed_freqs", kgen_array_sum, DBLE(SUM(packed_freqs, mask=(packed_freqs .eq. packed_freqs))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_freqs = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_freqs", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_freqr 
-        CALL kgen_array_sumcheck("packed_freqr", kgen_array_sum, DBLE(SUM(packed_freqr, mask=(packed_freqr .eq. packed_freqr))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_freqr = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_freqr", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_nfice 
-        CALL kgen_array_sumcheck("packed_nfice", kgen_array_sum, DBLE(SUM(packed_nfice, mask=(packed_nfice .eq. packed_nfice))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_nfice = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_nfice", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_prer_evap 
-        CALL kgen_array_sumcheck("packed_prer_evap", kgen_array_sum, DBLE(SUM(packed_prer_evap, mask=(packed_prer_evap .eq. &
-        &packed_prer_evap))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_prer_evap  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_prer_evap", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_qcrat 
-        CALL kgen_array_sumcheck("packed_qcrat", kgen_array_sum, DBLE(SUM(packed_qcrat, mask=(packed_qcrat .eq. packed_qcrat))), &
-        &.TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_qcrat = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_qcrat", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_rel 
-        CALL kgen_array_sumcheck("packed_rel", kgen_array_sum, DBLE(SUM(packed_rel, mask=(packed_rel .eq. packed_rel))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_rel = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_rel", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_rei 
-        CALL kgen_array_sumcheck("packed_rei", kgen_array_sum, DBLE(SUM(packed_rei, mask=(packed_rei .eq. packed_rei))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_rei = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_rei", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_sadice 
-        CALL kgen_array_sumcheck("packed_sadice", kgen_array_sum, DBLE(SUM(packed_sadice, mask=(packed_sadice .eq. &
-        &packed_sadice))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_sadice = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_sadice", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_sadsnow 
-        CALL kgen_array_sumcheck("packed_sadsnow", kgen_array_sum, DBLE(SUM(packed_sadsnow, mask=(packed_sadsnow .eq. &
-        &packed_sadsnow))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_sadsnow  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_sadsnow", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_lambdac 
-        CALL kgen_array_sumcheck("packed_lambdac", kgen_array_sum, DBLE(SUM(packed_lambdac, mask=(packed_lambdac .eq. &
-        &packed_lambdac))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_lambdac  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_lambdac", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_mu 
-        CALL kgen_array_sumcheck("packed_mu", kgen_array_sum, DBLE(SUM(packed_mu, mask=(packed_mu .eq. packed_mu))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_mu = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("packed_mu", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_des 
-        CALL kgen_array_sumcheck("packed_des", kgen_array_sum, DBLE(SUM(packed_des, mask=(packed_des .eq. packed_des))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_des = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_des", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) packed_dei 
-        CALL kgen_array_sumcheck("packed_dei", kgen_array_sum, DBLE(SUM(packed_dei, mask=(packed_dei .eq. packed_dei))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; packed_dei = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("packed_dei", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) rel_fn_dum 
-        CALL kgen_array_sumcheck("rel_fn_dum", kgen_array_sum, DBLE(SUM(rel_fn_dum, mask=(rel_fn_dum .eq. rel_fn_dum))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; rel_fn_dum = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("rel_fn_dum", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) dsout2_dum 
-        CALL kgen_array_sumcheck("dsout2_dum", kgen_array_sum, DBLE(SUM(dsout2_dum, mask=(dsout2_dum .eq. dsout2_dum))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; dsout2_dum  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("dsout2_dum", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) drout_dum 
-        CALL kgen_array_sumcheck("drout_dum", kgen_array_sum, DBLE(SUM(drout_dum, mask=(drout_dum .eq. drout_dum))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; drout_dum = real(tmpA,kind=rkind_comp) 
+        CALL kgen_array_sumcheck("drout_dum", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) reff_rain_dum 
-        CALL kgen_array_sumcheck("reff_rain_dum", kgen_array_sum, DBLE(SUM(reff_rain_dum, mask=(reff_rain_dum .eq. &
-        &reff_rain_dum))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; reff_rain_dum  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("reff_rain_dum", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
-        READ (UNIT = kgen_unit) reff_snow_dum 
-        CALL kgen_array_sumcheck("reff_snow_dum", kgen_array_sum, DBLE(SUM(reff_snow_dum, mask=(reff_snow_dum .eq. &
-        &reff_snow_dum))), .TRUE.) 
+        READ (UNIT = kgen_unit) tmpA; reff_snow_dum  = real(tmpA,kind=rkind_comp)
+        CALL kgen_array_sumcheck("reff_snow_dum", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.)
     END IF   
     READ (UNIT = kgen_unit) errstring 
       
@@ -1997,7 +1910,11 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             IF (kgen_mainstage) THEN 
                   
                 !verify init 
-                CALL kgen_init_check(check_status, tolerance=5.D-10, verboseLevel=0) 
+#ifdef USE_R4
+                CALL kgen_init_check(check_status, tolerance=8.D-7, verboseLevel=0) 
+#else
+                CALL kgen_init_check(check_status, tolerance=5.D-10, verboseLevel=1) 
+#endif
                   
                 !extern verify variables 
                   
@@ -2352,6 +2269,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 REAL(KIND=8) :: kgen_array_sum 
                 INTEGER :: idx1, idx2 
                 INTEGER, DIMENSION(2,2) :: kgen_bound 
+                REAL(KIND=rkind_io), allocatable,  DIMENSION(:,:) :: var_io
+     
                   
                 READ (UNIT = kgen_unit) kgen_istrue 
                 IF (kgen_istrue) THEN 
@@ -2364,12 +2283,15 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     READ (UNIT = kgen_unit) kgen_bound(1, 2) 
                     READ (UNIT = kgen_unit) kgen_bound(2, 2) 
                     ALLOCATE (var(kgen_bound(1,1):kgen_bound(2,1), kgen_bound(1,2):kgen_bound(2,2))) 
-                    READ (UNIT = kgen_unit) var 
-                    CALL kgen_array_sumcheck(printname, kgen_array_sum, DBLE(SUM(var, mask=(var .eq. var))), .TRUE.) 
+                    ALLOCATE (var_io(kgen_bound(1,1):kgen_bound(2,1), kgen_bound(1,2):kgen_bound(2,2))) 
+                    READ (UNIT = kgen_unit) var_io;var = real(var_io,kind=rkind_comp) 
+                    CALL kgen_array_sumcheck(printname, kgen_array_sum, DBLE(SUM(var_io, mask=.TRUE.)), .TRUE.) 
                     IF (PRESENT( printvar ) .AND. printvar) THEN 
-                        WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // ")) = ", DBLE(SUM(var, mask=(var .eq. var))) 
+                        WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // ")) = ", DBLE(SUM(var, mask=.TRUE.)) 
                     END IF   
+                    deallocate(var_io)
                 END IF   
+         
             END SUBROUTINE kr_micro_mg_cam_tend_pack_real__rkind_comp_dim2 
               
             !read state subroutine for kr_micro_mg_cam_tend_pack_real__rkind_comp_dim3 
@@ -2382,6 +2304,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 REAL(KIND=8) :: kgen_array_sum 
                 INTEGER :: idx1, idx2, idx3 
                 INTEGER, DIMENSION(2,3) :: kgen_bound 
+                REAL(KIND=rkind_io), ALLOCATABLE, DIMENSION(:,:,:) :: var_io
                   
                 READ (UNIT = kgen_unit) kgen_istrue 
                 IF (kgen_istrue) THEN 
@@ -2397,11 +2320,14 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     READ (UNIT = kgen_unit) kgen_bound(2, 3) 
                     ALLOCATE (var(kgen_bound(1,1):kgen_bound(2,1), kgen_bound(1,2):kgen_bound(2,2), &
                     &kgen_bound(1,3):kgen_bound(2,3))) 
-                    READ (UNIT = kgen_unit) var 
-                    CALL kgen_array_sumcheck(printname, kgen_array_sum, DBLE(SUM(var, mask=(var .eq. var))), .TRUE.) 
+                    ALLOCATE (var_io(kgen_bound(1,1):kgen_bound(2,1), kgen_bound(1,2):kgen_bound(2,2), &
+                    &kgen_bound(1,3):kgen_bound(2,3))) 
+                    READ (UNIT = kgen_unit) var_io; var = REAL(var_io,kind=rkind_comp) 
+                    CALL kgen_array_sumcheck(printname, kgen_array_sum, DBLE(SUM(var_io, mask=.TRUE.)), .TRUE.) 
                     IF (PRESENT( printvar ) .AND. printvar) THEN 
-                        WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // ")) = ", DBLE(SUM(var, mask=(var .eq. var))) 
+                        WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // ")) = ", DBLE(SUM(var_io, mask=.TRUE.)) 
                     END IF   
+                    DEALLOCATE(var_io)
                 END IF   
             END SUBROUTINE kr_micro_mg_cam_tend_pack_real__rkind_comp_dim3 
               
@@ -2409,7 +2335,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             RECURSIVE SUBROUTINE kv_micro_mg_cam_tend_pack_real__rkind_comp_dim2(varname, check_status, var, kgenref_var) 
                 CHARACTER(LEN=*), INTENT(IN) :: varname 
                 TYPE(check_t), INTENT(INOUT) :: check_status 
-                REAL(KIND=rkind_comp), INTENT(IN), DIMENSION(:,:) :: var, kgenref_var 
+                REAL(KIND=rkind_comp), INTENT(IN), DIMENSION(:,:) :: var
+                REAL(KIND=rkind_io),   INTENT(IN), DIMENSION(:,:) ::  kgenref_var 
                 INTEGER :: check_result 
                 LOGICAL :: is_print = .FALSE. 
                   
@@ -2488,7 +2415,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             RECURSIVE SUBROUTINE kv_micro_mg_cam_tend_pack_real__rkind_comp_dim1(varname, check_status, var, kgenref_var) 
                 CHARACTER(LEN=*), INTENT(IN) :: varname 
                 TYPE(check_t), INTENT(INOUT) :: check_status 
-                REAL(KIND=rkind_comp), INTENT(IN), DIMENSION(:) :: var, kgenref_var 
+                REAL(KIND=rkind_comp), INTENT(IN), DIMENSION(:) :: var 
+                REAL(KIND=rkind_io), INTENT(IN), DIMENSION(:) :: kgenref_var 
                 INTEGER :: check_result 
                 LOGICAL :: is_print = .FALSE. 
                   
@@ -2617,6 +2545,7 @@ SUBROUTINE kr_externs_in_micro_mg_cam(kgen_unit)
     REAL(KIND=8) :: kgen_array_sum 
       
     READ (UNIT = kgen_unit) num_steps 
+!    print *,'kr_externs_in_micro_mg_cam: num_steps: ',num_steps
 END SUBROUTINE kr_externs_in_micro_mg_cam 
   
 !read state subroutine for kr_externs_out_micro_mg_cam 

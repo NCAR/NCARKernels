@@ -11,7 +11,6 @@
 
 MODULE shr_const_mod
 
-    USE shr_kind_mod 
     USE kgen_utils_mod, ONLY: kgen_dp, kgen_array_sumcheck 
     USE tprof_mod, ONLY: tstart, tstop, tnull, tprnt 
     USE shr_kind_mod, ONLY: rkind_comp

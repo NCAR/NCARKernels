@@ -77,7 +77,9 @@
                     CALL kr_externs_in_wv_sat_methods(kgen_unit) 
                       
                     !callsite part 
+                    ! print *,'just before call to micro_mg_cam_tend_pack'
                     CALL micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtime, nlev, mgncol) 
+                    ! print *,'just after the call to micro_mg_cam_tend_pack'
                     REWIND (UNIT=kgen_unit) 
                     kgen_evalstage = .FALSE. 
                     kgen_warmupstage = .TRUE. 
@@ -86,12 +88,14 @@
                       
                     !driver read in arguments 
                     READ (UNIT = kgen_unit) dtime_io;dtime=real(dtime_io,kind=rkind_comp) 
+                    ! print *,'dtime_io: ',dtime_io
                     READ (UNIT = kgen_unit) nlev 
                     READ (UNIT = kgen_unit) mgncol 
                       
                     !extern input variables 
                     CALL kr_externs_in_micro_mg_cam(kgen_unit) 
                     CALL kr_externs_in_micro_mg2_0(kgen_unit) 
+                    ! print *,'after second call to kr_externs_in_micro_mg2_0'
                     CALL kr_externs_in_micro_mg_utils(kgen_unit) 
                     CALL kr_externs_in_wv_sat_methods(kgen_unit) 
                       
@@ -106,15 +110,19 @@
                       
                       
                     !driver read in arguments 
-                    READ (UNIT = kgen_unit) dtime;dtime=real(dtime_io,kind=rkind_comp)
+                    READ (UNIT = kgen_unit) dtime_io;dtime=real(dtime_io,kind=rkind_comp)
                     READ (UNIT = kgen_unit) nlev 
                     READ (UNIT = kgen_unit) mgncol 
                       
                     !extern input variables 
                     CALL kr_externs_in_micro_mg_cam(kgen_unit) 
+                    !stop 'after call to kr_externs_in_micro_mg_cam'
                     CALL kr_externs_in_micro_mg2_0(kgen_unit) 
+                    !stop 'after call to kr_externs_in_micro_mg2_0'
                     CALL kr_externs_in_micro_mg_utils(kgen_unit) 
+                    !stop 'after call to kr_externs_in_micro_mg_utils'
                     CALL kr_externs_in_wv_sat_methods(kgen_unit) 
+                    !stop 'after call to kr_externs_in_wv_sat_methods'
                       
                     !callsite part 
                     CALL micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtime, nlev, mgncol) 

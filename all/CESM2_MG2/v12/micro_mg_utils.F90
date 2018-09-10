@@ -118,7 +118,11 @@ real(rkind_comp), parameter, public :: pi = 3.14159265358979323846_rkind_comp
 real(rkind_comp), parameter, public :: omsm   = 1._rkind_comp - 1.e-5_rkind_comp
 ! Smallest mixing ratio considered in microphysics.
 
+#ifdef USE_R4
+real(rkind_comp), parameter, public :: qsmall = 1.e-5_rkind_comp
+#else
 real(rkind_comp), parameter, public :: qsmall = 1.e-18_rkind_comp
+#endif
 ! minimum allowed cloud fraction
 
 real(rkind_comp), parameter, public :: mincld = 0.0001_rkind_comp
@@ -1746,13 +1750,21 @@ SUBROUTINE kr_externs_in_micro_mg_utils(kgen_unit)
     CALL kr_micro_mg_utils_mghydrometeorprops(mg_rain_props, kgen_unit, "mg_rain_props", .FALSE.) 
     CALL kr_micro_mg_utils_mghydrometeorprops(mg_snow_props, kgen_unit, "mg_snow_props", .FALSE.) 
     READ (UNIT = kgen_unit) tmp; rv  = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: rv: ',rv
     READ (UNIT = kgen_unit) tmp; cpp = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: cpp: ',cpp
     READ (UNIT = kgen_unit) tmp; tmelt = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: tmelt: ',tmelt
     READ (UNIT = kgen_unit) tmp; xxlv  = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: xxlv: ',xxlv
     READ (UNIT = kgen_unit) tmp; xxls  = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: xxls: ',xxls
     READ (UNIT = kgen_unit) tmp; gamma_bs_plus3  = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: gamma_bs_plus3: ',gamma_bs_plus3
     READ (UNIT = kgen_unit) tmp; gamma_half_br_plus5 = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: gamma_half_br_plus5: ',gamma_half_br_plus5
     READ (UNIT = kgen_unit) tmp; gamma_half_bs_plus5 = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg_utils: gamma_half_bs_plus5: ',gamma_half_bs_plus5
 END SUBROUTINE kr_externs_in_micro_mg_utils 
   
 !read state subroutine for kr_externs_out_micro_mg_utils 
@@ -1792,7 +1804,7 @@ RECURSIVE SUBROUTINE kr_micro_mg_utils_mghydrometeorprops(var, kgen_unit, printn
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmp2; var%lambda_bounds = real(tmp2,kind=rkind_comp)
-        print *,'tmp2: ',tmp2
+        !print *,'tmp2: ',tmp2
         CALL kgen_array_sumcheck(printname // "%lambda_bounds", kgen_array_sum, DBLE(SUM(var%lambda_bounds, &
         &mask=(var%lambda_bounds .eq. var%lambda_bounds))), .TRUE.) 
         IF (PRESENT( printvar ) .AND. printvar) THEN 

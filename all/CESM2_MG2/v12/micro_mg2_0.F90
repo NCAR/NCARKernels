@@ -3149,9 +3149,13 @@ SUBROUTINE kr_externs_in_micro_mg2_0(kgen_unit)
     real(kind=rkind_io) :: tmp
       
     READ (UNIT = kgen_unit) nccons 
+!    print *,'kr_externs_in_micro_mg2_0: nccons: ',nccons
     READ (UNIT = kgen_unit) nicons 
-    READ (UNIT = kgen_unit) ncnst 
-    READ (UNIT = kgen_unit) ninst 
+!    print *,'kr_externs_in_micro_mg2_0: nicons: ',nicons
+    READ (UNIT = kgen_unit) tmp; ncnst = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_micro_mg2_0: ncnst: ',ncnst
+    READ (UNIT = kgen_unit) tmp; ninst = real(tmp,kind=rkind_comp) 
+!    print *,'kr_externs_in_micro_mg2_0: ninst: ',ninst
     READ (UNIT = kgen_unit) tmp; dcs   = real(tmp,kind=rkind_comp)
     READ (UNIT = kgen_unit) tmp; g     = real(tmp,kind=rkind_comp) 
     READ (UNIT = kgen_unit) tmp; r     = real(tmp,kind=rkind_comp)
@@ -3179,7 +3183,7 @@ SUBROUTINE kr_externs_in_micro_mg2_0(kgen_unit)
     READ (UNIT = kgen_unit) tmp; xxlv_squared   = real(tmp,kind=rkind_comp)
     READ (UNIT = kgen_unit) tmp; xxls_squared   = real(tmp,kind=rkind_comp)
     READ (UNIT = kgen_unit) micro_mg_precip_frac_method 
-    READ (UNIT = kgen_unit) micro_mg_berg_eff_factor 
+    READ (UNIT = kgen_unit) tmp; micro_mg_berg_eff_factor = real(tmp,kind=rkind_comp) 
     READ (UNIT = kgen_unit) allow_sed_supersat 
     READ (UNIT = kgen_unit) do_sb_physics 
 END SUBROUTINE kr_externs_in_micro_mg2_0 

@@ -558,11 +558,17 @@ SUBROUTINE kr_externs_in_wv_sat_methods(kgen_unit)
     REAL(kind=rkind_io) :: tmp
       
     READ (UNIT = kgen_unit) tmp; tmelt   = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_wv_sat_methods: tboil: ',tmelt
     READ (UNIT = kgen_unit) tmp; h2otrip = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_wv_sat_methods: h2otrip: ',h2otrip
     READ (UNIT = kgen_unit) tmp; tboil   = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_wv_sat_methods: tboil: ',tboil
     READ (UNIT = kgen_unit) tmp; epsilo  = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_wv_sat_methods: epsilo: ',epsilo
     READ (UNIT = kgen_unit) tmp; omeps   = real(tmp,kind=rkind_comp)
+!    print *,'kr_externs_in_wv_sat_methods: omeps: ',omeps
     READ (UNIT = kgen_unit) default_idx 
+!    print *,'kr_externs_in_wv_sat_methods: default_idx: ',default_idx
 END SUBROUTINE kr_externs_in_wv_sat_methods 
   
 !read state subroutine for kr_externs_out_wv_sat_methods 
