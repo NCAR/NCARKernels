@@ -1,0 +1,94 @@
+# Conditional Makefile macros for this kernel & version:
+
+# User settings (all case-insensitive):
+COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
+ARCH     = bdw         # Not currently used (using xHost/native modes)
+MPI      = yes          # Yes/No, True/False or Enabled/Disabled
+
+# ******************************************************************
+# Provide system aliases that MIGHT need to be modified by the end user:
+MPIFC = mpif90         # Could be mpif90 (default), or mpiifort, etc
+
+# Convert all above vars to lower case:
+COMPILER := $(shell echo ${COMPILER} | tr '[:upper:]' '[:lower:]')
+ARCH     := $(shell echo ${ARCH}     | tr '[:upper:]' '[:lower:]')
+MPI      := $(shell echo ${MPI}      | tr '[:upper:]' '[:lower:]')
+
+# Zero out our key variables:
+FC := 
+FC_FLAGS := 
+LD_FLAGS := 
+
+# Convert all 'true' MPI answers to 'yes', otherwise no:
+ifeq ($(MPI),true)
+  MPI := yes
+else ifeq ($(MPI),enabled)
+  MPI := yes
+endif
+
+# If the ARMPL_DIR variable is set, add it to the link:
+ifneq ($(strip $(ARMPL_DIR)),)
+  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64
+endif
+
+# If the MKLROOT variable is set, add that to the link:
+ifneq ($(strip $(MKLROOT)),)
+  LD_FLAGS += -L${MKLROOT}/lib/intel64 -lmkl_rt
+endif
+
+
+# Note: For simplicity, we're going to ignore cross-compilation and use the "-march=native" (gnu), 
+# "-mcpu=native" /armflang) and "-xHost" (intel) compiler flags to optimize for the platform we're on.  
+# Change in the second FC_FLAGS  setting below if that doesn't apply.
+
+# ********* Intel compiler options  ************
+ifeq ($(COMPILER),intel)
+  FC := ifort
+# original flags
+  FC_FLAGS += -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -qopt-report -xCORE_AVX2 -no-fma -O2 -debug minimal -free -DUSE_R4
+# new flags
+#  FC_FLAGS += -O3 -xHost -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast
+  LD_FLAGS += 
+
+  FC_FLAGS += 
+endif
+
+# ********* NEC compiler options  ************
+ifeq ($(COMPILER),nec)
+  FC := nfort
+#  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
+  FC_FLAGS += -v -O4 -report-all -mno-vector-fma -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID -D_NEC
+#  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
+  LD_FLAGS +=
+
+  FC_FLAGS +=
+  MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc
+endif
+
+
+
+# ********* GNU compiler options  ************
+ifeq ($(COMPILER),gnu)
+  FC := gfortran
+  FC_FLAGS += -O1 -ffp-contract=fast -ffree-form -ffree-line-length-none
+  LD_FLAGS += 
+
+  FC_FLAGS += -march=native
+endif
+
+
+# ********* ARM compiler options  ************
+ifeq ($(COMPILER),arm)
+  FC := armflang
+  FC_FLAGS += -O0 -ffree-form -ffree-line-length-none -D_NOGETPID  # Currently fails to validate on Arm, so -O0 set
+  LD_FLAGS += 
+
+  FC_FLAGS += -mcpu=native
+endif
+
+# If we're using MPI, then use ${MPIFC}
+ifeq ($(MPI),yes)
+  FC := ${MPIFC}
+  FC_FLAGS += -D_MPI
+endif
+
