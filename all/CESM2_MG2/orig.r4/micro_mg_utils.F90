@@ -105,7 +105,11 @@ real(rkind_comp), parameter, public :: pi = 3.14159265358979323846_rkind_comp
 real(rkind_comp), parameter, public :: omsm   = 1._rkind_comp - 1.e-5_rkind_comp
 ! Smallest mixing ratio considered in microphysics.
 
+#ifdef USE_R4
+real(rkind_comp), parameter, public :: qsmall = 1.e-10_rkind_comp
+#else
 real(rkind_comp), parameter, public :: qsmall = 1.e-18_rkind_comp
+#endif
 ! minimum allowed cloud fraction
 
 real(rkind_comp), parameter, public :: mincld = 0.0001_rkind_comp

@@ -116,7 +116,6 @@ module micro_mg2_0
 !
 !
 
-
 #if defined(__NEC__)
 #else
     USE shr_spfn_mod, ONLY: gamma => shr_spfn_gamma 
