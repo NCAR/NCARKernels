@@ -417,18 +417,17 @@ contains
                 !maxval_patch = MAXVAL(fcube(i-1:i+1,j-1:j+1))
                 minval_patch = fcube(i-1,j-1)
                 maxval_patch = fcube(i-1,j-1)
-!!!!DIR$ SIMD
+!DIR$ SIMD
                 do itmp2=j-1,j+1
                    minval_patch = min(minval_patch,fcube(i-1,itmp2),fcube(i,itmp2),fcube(i+1,itmp2))
                    maxval_patch = max(maxval_patch,fcube(i-1,itmp2),fcube(i,itmp2),fcube(i+1,itmp2))
                 enddo
-!DIR$ SIMD
 
                 min_phi=1.0_r8
                 !rck restructured loop
 
                 extrema_value(1:4) = fcube(i,j)
-!!!DIR$ SIMD
+!DIR$ SIMD
                 do vertex=1,4
                   do itmp1=1,irecons-1
                     extrema_value(vertex) = extrema_value(vertex) + &
