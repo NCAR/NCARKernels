@@ -40,6 +40,9 @@ endif
 # "-mcpu=native" /armflang) and "-xHost" (intel) compiler flags to optimize for the platform we're on.  
 # Change in the second FC_FLAGS  setting below if that doesn't apply.
 
+# Set up the default VECLEN length:
+FC_FLAGS += -D _VECLEN=16 # Best for BDW and Arm; change to 8 on SKX
+
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
@@ -54,6 +57,7 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
   FC_FLAGS += -v -O4 -finline-functions -report-all -fdiag-vector=2 -D_NOGETPID
+  FC_FLAGS += -D _VECLEN=768 # Best?  Check w/ John - maybe 256 works too.  Depends on # of cores?
   LD_FLAGS += -proginf
 
   FC_FLAGS +=
