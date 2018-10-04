@@ -28,7 +28,7 @@ endif
 
 # If the ARMPL_DIR variable is set, add it to the link:
 ifneq ($(strip $(ARMPL_DIR)),)
-  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64
+  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64 -lamath
 endif
 
 # If the MKLROOT variable is set, add that to the link:
@@ -50,6 +50,7 @@ ifeq ($(COMPILER),intel)
   FC_FLAGS += -xHost
 endif
 
+
 # ********* NEC compiler options  ************
 ifeq ($(COMPILER),nec)
   FC := nfort
@@ -57,8 +58,20 @@ ifeq ($(COMPILER),nec)
   LD_FLAGS +=
 
   FC_FLAGS +=
-  MPIFC = mpinfort         # Could be mpif90 (default), or mpiifort, etc
+  MPIFC = mpinfort
 endif
+
+
+# ********* Cray compiler options  ************
+ifeq ($(COMPILER),cray)
+  FC := ftn
+  FC_FLAGS += -O3
+  LD_FLAGS +=
+
+  FC_FLAGS +=
+  MPIFC = ftn
+endif
+
 
 # ********* GNU compiler options  ************
 ifeq ($(COMPILER),gnu)
@@ -73,7 +86,7 @@ endif
 # ********* ARM compiler options  ************
 ifeq ($(COMPILER),arm)
   FC := armflang
-  FC_FLAGS += -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID
+  FC_FLAGS += -O3 -fstack-arrays -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID -fno-omit-frame-pointer
   LD_FLAGS += 
 
   FC_FLAGS += -mcpu=native

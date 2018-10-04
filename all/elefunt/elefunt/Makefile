@@ -359,7 +359,7 @@ ifeq ($(ARCH),LINUX_ARM)
   CC       = armclang
   CBASE    = -DLWR_CASE_DUSCORE
   COPT     = -O3
-  LDFLAG   = -L${ARMPL_DIR}/lib -larmpl_lp64
+  LDFLAG   = -L${ARMPL_DIR}/lib -larmpl_lp64 -lamath
   TIMER_LIB  = -L../lib/$(O_DIR) -ltimer
   VLIBS    =
 endif
