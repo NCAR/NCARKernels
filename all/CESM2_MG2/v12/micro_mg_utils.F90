@@ -649,9 +649,13 @@ subroutine  avg_diameter_vec(q, n, rho_air, rho_sub, avg_diameter, vlen)
    real(rkind_comp), intent(in) :: rho_sub   ! density of the particle substance
    real(rkind_comp), intent(out) :: avg_diameter(vlen)
    integer :: i
+   real(rkind_comp) :: den
  
    do i=1,vlen
-       avg_diameter(i) = (pi * rho_sub * n(i)/(q(i)*rho_air(i)))**(-1._rkind_comp/3._rkind_comp)
+       !original 
+       !avg_diameter(i) = (pi * rho_sub * n(i)/(q(i)*rho_air(i)))**(-1._rkind_comp/3._rkind_comp)
+       !modified
+       avg_diameter(i) = ((q(i)*rho_air(i))/(pi * rho_sub * n(i)))**(1._rkind_comp/3._rkind_comp)
    enddo
  
 end subroutine avg_diameter_vec
@@ -1804,13 +1808,17 @@ RECURSIVE SUBROUTINE kr_micro_mg_utils_mghydrometeorprops(var, kgen_unit, printn
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmp2; var%lambda_bounds = real(tmp2,kind=rkind_comp)
-        !print *,'tmp2: ',tmp2
+!        print *,'tmp2: ',tmp2
+!        print *,'var%lambda_bounds: ',var%lambda_bounds
+!        stop 'kr_micro_mg_utils_mghydrometeorprops'
+#if 0
         CALL kgen_array_sumcheck(printname // "%lambda_bounds", kgen_array_sum, DBLE(SUM(var%lambda_bounds, &
         &mask=(var%lambda_bounds .eq. var%lambda_bounds))), .TRUE.) 
         IF (PRESENT( printvar ) .AND. printvar) THEN 
             WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // "%lambda_bounds)) = ", DBLE(SUM(var%lambda_bounds, &
             &mask=(var%lambda_bounds .eq. var%lambda_bounds))) 
         END IF   
+#endif
     END IF   
       
     READ (UNIT = kgen_unit) tmp; var%min_mean_mass = real(tmp,kind=rkind_comp)
