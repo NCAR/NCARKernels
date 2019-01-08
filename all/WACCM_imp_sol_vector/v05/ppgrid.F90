@@ -31,13 +31,14 @@ module ppgrid
 
    PARAMETER (pver      = 66)
 
-!   integer,parameter ::  veclen=128    ! vector length
-   integer,parameter ::  veclen=256    ! vector length
-!   integer,parameter ::  veclen=512    ! vector length
-!   integer,parameter ::  veclen=768    ! vector length
-!   integer,parameter ::  veclen=1024   ! vector length
-!   integer,parameter ::  veclen=1536   ! vector length
-   
+  ! Changed VECLEN to be set in the compiler flags, since it differs from architecture to architecture.
+  ! Default, when unspecified, is 16 (Intel BDW best)
+#ifndef _VECLEN
+   integer,parameter :: veclen=16
+#else
+   integer, parameter :: veclen=_VECLEN
+#endif
+
 !
 ! start, end indices for chunks owned by a given MPI task
 ! (set in phys_grid_init).

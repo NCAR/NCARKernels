@@ -2669,6 +2669,11 @@ subroutine micro_mg_tend ( &
   ! calculate effective radius of rain and snow in microns for COSP using Eq. 9 of COSP v1.3 manual
 
 !  print *,'where #1: count: ',count(qrout .gt. 1.e-7_rkind_comp .and. nrout.gt.0._rkind_comp), mgncol*nlev
+  
+  ! necessary to prevent divide by zero in aerage_diameter_vec
+
+  ! avoid divide by zero in avg_diameter_vec
+  where(nrout .eq. 0._rkind_comp) nrout=1e-34_rkind_comp
   call avg_diameter_vec(qrout,nrout,rho,rhow,drout2,mgncol*nlev)
   where (qrout .gt. 1.e-7_rkind_comp &
        .and. nrout.gt.0._rkind_comp)
@@ -2688,7 +2693,8 @@ subroutine micro_mg_tend ( &
      reff_rain = 0._rkind_comp
   end where
 
-!  print *,'where #2: count: ',count(qsout .gt. 1.e-7_rkind_comp .and. nsout.gt.0._rkind_comp), mgncol*nlev
+  ! avoid divide by zero in avg_diameter_vec
+  where(nsout .eq. 0._rkind_comp) nsout = 1.e-34_rkind_comp
   call avg_diameter_vec(qsout, nsout, rho, rhosn,dsout2,mgncol*nlev)
   where (qsout .gt. 1.e-7_rkind_comp &
        .and. nsout.gt.0._rkind_comp)
@@ -2865,7 +2871,7 @@ subroutine UpdateTendencies(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel,qxt
    real(rkind_comp), intent(inout)           :: dumx(mgncol,nlev)
    real(rkind_comp), intent(inout)           :: dumnx(mgncol,nlev)
    real(rkind_comp), intent(inout)           :: prect(mgncol)
-   real(rkind_comp), intent(inout)           :: xflx(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: xflx(mgncol,nlev+1)
    real(rkind_comp), intent(in)   , optional :: xxlx
    real(rkind_comp), intent(inout), optional :: qxsevap(mgncol,nlev)
    real(rkind_comp), intent(in)   , optional :: xcldm(mgncol,nlev)
@@ -2983,7 +2989,7 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
    real(rkind_comp), intent(inout)           :: dumx(mgncol,nlev)
    real(rkind_comp), intent(inout)           :: dumnx(mgncol,nlev)
    real(rkind_comp), intent(inout)           :: prect(mgncol)
-   real(rkind_comp), intent(inout)           :: xflx(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: xflx(mgncol,nlev+1)
    real(rkind_comp), intent(in)   , optional :: xxlx
    real(rkind_comp), intent(inout), optional :: qxsevap(mgncol,nlev)
    real(rkind_comp), intent(in)   , optional :: xcldm(mgncol,nlev)

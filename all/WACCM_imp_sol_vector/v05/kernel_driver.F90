@@ -13,6 +13,7 @@
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
 
         use kgen_extensions_mod, only: read_runtime_options
+        use ppgrid, only : veclen
 #ifdef _MPI 
         use mpi
 #endif
@@ -87,6 +88,7 @@
            WRITE (*, *) ""
            WRITE (*, *) "******************************************************************************"
            WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
+           WRITE (*,*) " imp_sol vector length : ", veclen
            WRITE (*, *) "imp_sol summary: # ranks: ",size," Avg call time (usec): ",avg_call_time
            WRITE (*, *) "******************************************************************************"
         end if
@@ -96,6 +98,7 @@
         WRITE (*, *) ""
         WRITE (*, *) "******************************************************************************"
         WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
+        WRITE (*,*) " imp_sol vector length : ", veclen
         WRITE (*, *) "imp_sol summary: Avg call time (usec): ",max_call_time
         WRITE (*, *) "******************************************************************************"
 #endif
