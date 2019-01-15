@@ -82,6 +82,9 @@ module micro_mg_cam
     PRIVATE 
     SAVE 
 
+#ifdef _MPI
+    include 'mpif.h'
+#endif
 
 integer :: num_steps ! Number of MG substeps
 
@@ -353,6 +356,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
     INTEGER, PARAMETER :: maxiter = 500
+    REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_qvlat 
@@ -445,9 +449,16 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_reff_rain_dum 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_reff_snow_dum 
     CHARACTER(LEN=128) :: kgenref_errstring 
+    integer :: myrank, mpisize, info
     real(kind=rkind_io), dimension(mgncol,nlev)   :: tmpA
     real(kind=rkind_io), dimension(mgncol) :: tmpB
     real(kind=rkind_io), dimension(mgncol,nlev+1) :: tmpC
+ 
+#ifdef _MPI
+!    call mpi_init(info)
+    call mpi_comm_rank(mpi_comm_world, myrank, info)
+    call mpi_comm_size(mpi_comm_world, mpisize, info)
+#endif
       
     !local input variables 
     READ (UNIT = kgen_unit) kgen_istrue 
@@ -2024,25 +2035,30 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 CALL kv_micro_mg_cam_tend_pack_real__rkind_comp_dim2("reff_rain_dum", check_status, reff_rain_dum, kgenref_reff_rain_dum) 
                 CALL kv_micro_mg_cam_tend_pack_real__rkind_comp_dim2("reff_snow_dum", check_status, reff_snow_dum, kgenref_reff_snow_dum) 
                 CALL kv_micro_mg_cam_tend_pack_character_128_("errstring", check_status, errstring, kgenref_errstring) 
-                WRITE (*, *) "" 
+                if(myrank==0) WRITE (*, *) "" 
                 IF (check_status%verboseLevel > 0) THEN 
+                    if(myrank==0) then
                     WRITE (*, *) "Number of output variables: ", check_status%numTotal 
                     WRITE (*, *) "Number of identical variables: ", check_status%numIdentical 
                     WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol 
                     WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol 
                     WRITE (*, *) "Tolerance: ", kgen_tolerance 
+                    endif
                 END IF   
-                WRITE (*, *) "" 
+                if(myrank==0) WRITE (*, *) "" 
                 IF (check_status%numOutTol > 0) THEN 
-                    WRITE (*, *) "Verification FAILED" 
+                    if(myrank==0) WRITE (*, *) "Verification FAILED" 
                     check_status%Passed = .FALSE. 
                     kgen_isverified = .FALSE. 
                 ELSE 
-                    WRITE (*, *) "Verification PASSED" 
+                    if(myrank==0) WRITE (*, *) "Verification PASSED" 
                     check_status%Passed = .TRUE. 
                     kgen_isverified = .TRUE. 
                 END IF   
                 WRITE (*, *) "" 
+#ifdef _MPI
+                call MPI_Barrier(MPI_COMM_WORLD,info)
+#endif
                 CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
             !call ftrace_region_begin('micro_mg_tend2_0')
             do kgen_intvar=1,maxiter
@@ -2107,13 +2123,18 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 
             CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock) 
             kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 
-            WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure 
+#ifdef _MPI
+            call MPI_AllReduce(kgen_measure,gkgen_measure,1,MPI_REAL8,MPI_MAX,MPI_COMM_WORLD,info)
+            if(myrank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", gkgen_measure
+            kgen_measure=gkgen_measure
+#else
+            WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure
+#endif
             END IF   
             IF (kgen_warmupstage) THEN 
             END IF   
             IF (kgen_evalstage) THEN 
             END IF   
-
 
    ! Divide ptend by substeps.
 
