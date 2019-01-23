@@ -357,7 +357,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 100
+    !INTEGER, PARAMETER :: maxiter = 100
+    INTEGER, PARAMETER :: maxiter = 1
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=r8), dimension(mgncol,nlev) :: kgenref_packed_tlat 
@@ -2145,8 +2146,11 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #ifdef _MPI
                 call MPI_Barrier(MPI_COMM_WORLD,info)
 #endif
+
                 CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
             do kgen_intvar=1,maxiter
+
+
             call micro_mg_tend2_0( &
                  mgncol,         nlev,           dtime/num_steps,&
                  packed_t,               packed_q,               &
@@ -2203,6 +2207,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                  packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,&
                  packed_prer_evap,                                     &
                  packed_frzimm,  packed_frzcnt,  packed_frzdep   )
+
             enddo
             CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock) 
             kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 

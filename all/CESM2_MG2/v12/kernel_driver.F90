@@ -14,7 +14,11 @@
         USE micro_mg_utils, ONLY: kr_externs_in_micro_mg_utils 
         USE wv_sat_methods, ONLY: kr_externs_in_wv_sat_methods 
         IMPLICIT NONE 
-          
+
+#ifdef _MPI
+        include 'mpif.h'
+#endif
+
         LOGICAL :: kgen_isverified 
         INTEGER :: kgen_ierr_list, kgen_unit_list 
         INTEGER :: kgen_ierr, kgen_unit, kgen_case_count, kgen_count_verified 
@@ -29,11 +33,20 @@
         REAL(KIND=rkind_io)   :: dtime_io
         INTEGER :: nlev 
         INTEGER :: mgncol 
+        integer :: info, myrank
         kgen_total_time = 0.0_kgen_dp 
         kgen_min_time = HUGE(0.0_kgen_dp) 
         kgen_max_time = 0.0_kgen_dp 
         kgen_case_count = 0 
         kgen_count_verified = 0 
+
+#ifdef _MPI
+    call mpi_init(info)
+    call mpi_comm_rank(mpi_comm_world, myrank, info)
+#else
+    myrank=0
+#endif
+
           
         kgen_unit_list = kgen_get_newunit() 
         !OPEN (UNIT=kgen_unit_list, FILE="../data/pcols" // PCOLSSIZE // "/kgen_statefile.lst", STATUS="OLD", IOSTAT=kgen_ierr_list) 
@@ -45,8 +58,8 @@
             OPEN (UNIT=kgen_unit_list, FILE="kgen_statefile.lst", STATUS="OLD", IOSTAT=kgen_ierr_list) 
         END IF   
         IF (kgen_ierr_list .NE. 0) THEN 
-            WRITE (*, *) "" 
-            WRITE (*, *) "ERROR: ""kgen_statefile.lst"" is not found in current directory." 
+            if(myrank==0) WRITE (*, *) "" 
+            if(myrank==0) WRITE (*, *) "ERROR: ""kgen_statefile.lst"" is not found in current directory." 
             STOP 
         END IF   
         DO WHILE ( kgen_ierr_list .EQ. 0 ) 
@@ -57,8 +70,8 @@
                 OPEN (UNIT=kgen_unit, FILE=TRIM(ADJUSTL(kgen_filepath)), STATUS="OLD", ACCESS="STREAM", FORM="UNFORMATTED", &
                 &ACTION="READ", CONVERT="BIG_ENDIAN", IOSTAT=kgen_ierr) 
                 IF (kgen_ierr == 0) THEN 
-                    WRITE (*, *) "" 
-                    WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' &
+                    if(myrank==0) WRITE (*, *) "" 
+                    if(myrank==0) WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' &
                     &*****************" 
                     kgen_evalstage = .TRUE. 
                     kgen_warmupstage = .FALSE. 
@@ -139,6 +152,7 @@
           
         CLOSE (UNIT=kgen_unit_list) 
           
+      if(myrank==0) then 
         WRITE (*, *) "" 
         WRITE (*, "(A)") "****************************************************" 
         WRITE (*, "(4X,A)") "kernel execution summary: micro_mg_tend2_0" 
@@ -154,6 +168,10 @@
             WRITE (*, "(4X, A, E12.4)") "Maximum call time (usec): ", kgen_max_time 
         END IF   
         WRITE (*, "(A)") "****************************************************" 
+      endif
+#ifdef _MPI
+      call MPI_finalize(info)
+#endif
     END PROGRAM   
     BLOCK DATA KGEN 
         INTEGER :: kgen_mpirank = 0, kgen_openmptid = 0, kgen_kernelinvoke = 0 
