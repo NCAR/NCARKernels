@@ -32,6 +32,7 @@ type check_t
     integer :: numIdentical
     integer :: numInTol
     integer :: VerboseLevel
+    integer :: rank
 end type check_t
 
 public kgen_dp, check_t, kgen_init_check, kgen_tolerance, kgen_minvalue, kgen_print_check, kgen_perturb_real
@@ -292,8 +293,9 @@ subroutine kgen_perturb_real8_dim3(var, pertlim)
     deallocate(rndm_seed)
 end subroutine
 
-subroutine kgen_init_check(check, verboseLevel, tolerance, minValue)
+subroutine kgen_init_check(check, rank, verboseLevel, tolerance, minValue)
   type(check_t), intent(inout) :: check
+  integer, intent(in), optional :: rank
   integer, intent(in), optional :: verboseLevel
   real(kind=kgen_dp), intent(in), optional :: tolerance
   real(kind=kgen_dp), intent(in), optional :: minValue
@@ -303,6 +305,7 @@ subroutine kgen_init_check(check, verboseLevel, tolerance, minValue)
   check%numInTol = 0
   check%numTotal = 0
   check%numIdentical = 0
+   
 
   if(present(verboseLevel)) then
      check%verboseLevel = verboseLevel
@@ -319,6 +322,11 @@ subroutine kgen_init_check(check, verboseLevel, tolerance, minValue)
   else
       kgen_minvalue = 1.0D-15
   end if
+  if(present(rank)) then 
+      check%rank = rank
+  else
+      check%rank = 0
+  endif
 end subroutine kgen_init_check
 
 subroutine kgen_print_check(kname, check)

@@ -1923,9 +1923,9 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                   
                 !verify init 
 #ifdef USE_R4
-                CALL kgen_init_check(check_status, tolerance=8.D-7, verboseLevel=1) 
+                CALL kgen_init_check(check_status, rank=myrank, tolerance=8.D-7, verboseLevel=1) 
 #else
-                CALL kgen_init_check(check_status, tolerance=5.0D-7, verboseLevel=1) 
+                CALL kgen_init_check(check_status, rank=myrank, tolerance=5.0D-7, verboseLevel=1) 
 #endif
                   
                 !extern verify variables 
@@ -2036,9 +2036,9 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 CALL kv_micro_mg_cam_tend_pack_real__rkind_comp_dim2("reff_rain_dum", check_status, reff_rain_dum, kgenref_reff_rain_dum) 
                 CALL kv_micro_mg_cam_tend_pack_real__rkind_comp_dim2("reff_snow_dum", check_status, reff_snow_dum, kgenref_reff_snow_dum) 
                 CALL kv_micro_mg_cam_tend_pack_character_128_("errstring", check_status, errstring, kgenref_errstring) 
-                if(myrank==0) WRITE (*, *) "" 
+                if(check_status%rank==0) WRITE (*, *) "" 
                 IF (check_status%verboseLevel > 0) THEN 
-                    if(myrank==0) then
+                    if(check_status%rank==0) then
                     WRITE (*, *) "Number of output variables: ", check_status%numTotal 
                     WRITE (*, *) "Number of identical variables: ", check_status%numIdentical 
                     WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol 
@@ -2046,17 +2046,17 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     WRITE (*, *) "Tolerance: ", kgen_tolerance 
                     endif
                 END IF   
-                if(myrank==0) WRITE (*, *) "" 
+                if(check_status%rank==0) WRITE (*, *) "" 
                 IF (check_status%numOutTol > 0) THEN 
-                    if(myrank==0) WRITE (*, *) "Verification FAILED for (" // TRIM(filename) //")"
+                    if(check_status%rank==0) WRITE (*, *) "Verification FAILED for (" // TRIM(filename) //")"
                     check_status%Passed = .FALSE. 
                     kgen_isverified = .FALSE. 
                 ELSE 
-                    if(myrank==0) WRITE (*, *) " Verification PASSED for (" // TRIM(filename) //")" 
+                    if(check_status%rank==0) WRITE (*, *) " Verification PASSED for (" // TRIM(filename) //")" 
                     check_status%Passed = .TRUE. 
                     kgen_isverified = .TRUE. 
                 END IF   
-                WRITE (*, *) "" 
+                if(check_status%rank==0) WRITE (*, *) "" 
 #ifdef _MPI
                 call MPI_Barrier(MPI_COMM_WORLD,info)
 #endif
@@ -2126,10 +2126,10 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 
 #ifdef _MPI
             call MPI_AllReduce(kgen_measure,gkgen_measure,1,MPI_REAL8,MPI_MAX,MPI_COMM_WORLD,info)
-            if(myrank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", gkgen_measure
+            if(check_status%rank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", gkgen_measure
             kgen_measure=gkgen_measure
 #else
-            WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure
+            if(check_status%rank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure
 #endif
             END IF   
             IF (kgen_warmupstage) THEN 
@@ -2372,7 +2372,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 IF (ALL(var == kgenref_var)) THEN 
                     check_status%numIdentical = check_status%numIdentical + 1 
                     IF (check_status%verboseLevel > 1) THEN 
-                        WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
+                        if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
                     END IF   
                     check_result = CHECK_IDENTICAL 
                 ELSE 
@@ -2392,43 +2392,49 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     IF (rmsdiff > kgen_tolerance) THEN 
                         check_status%numOutTol = check_status%numOutTol + 1 
                         IF (check_status%verboseLevel > 1) THEN 
-                            WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
+                            if(check_status%rank) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
                         END IF   
                         check_result = CHECK_OUT_TOL 
                     ELSE 
                         check_status%numInTol = check_status%numInTol + 1 
                         IF (check_status%verboseLevel > 1) THEN 
-                            WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
+                            if(check_status%rank) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
                         END IF   
                         check_result = CHECK_IN_TOL 
                     END IF   
                 END IF   
                 IF (check_result == CHECK_IDENTICAL) THEN 
                     IF (check_status%verboseLevel > 2) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", 0 
                         WRITE (*, *) "Normalized RMS of difference is ", 0 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_OUT_TOL) THEN 
                     IF (check_status%verboseLevel > 0) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", rmsdiff 
                         WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_IN_TOL) THEN 
                     IF (check_status%verboseLevel > 1) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", rmsdiff 
                         WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 END IF   
                   
@@ -2453,7 +2459,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 IF (ALL(var == kgenref_var)) THEN 
                     check_status%numIdentical = check_status%numIdentical + 1 
                     IF (check_status%verboseLevel > 1) THEN 
-                        WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
+                        if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
                     END IF   
                     check_result = CHECK_IDENTICAL 
                 ELSE 
@@ -2473,43 +2479,49 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     IF (rmsdiff > kgen_tolerance) THEN 
                         check_status%numOutTol = check_status%numOutTol + 1 
                         IF (check_status%verboseLevel > 0) THEN 
-                            WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
+                            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
                         END IF   
                         check_result = CHECK_OUT_TOL 
                     ELSE 
                         check_status%numInTol = check_status%numInTol + 1 
                         IF (check_status%verboseLevel > 1) THEN 
-                            WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
+                            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
                         END IF   
                         check_result = CHECK_IN_TOL 
                     END IF   
                 END IF   
                 IF (check_result == CHECK_IDENTICAL) THEN 
                     IF (check_status%verboseLevel > 2) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", 0 
                         WRITE (*, *) "Normalized RMS of difference is ", 0 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_OUT_TOL) THEN 
                     IF (check_status%verboseLevel > 0) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", rmsdiff 
                         WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_IN_TOL) THEN 
                     IF (check_status%verboseLevel > 1) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
                         WRITE (*, *) "RMS of difference is ", rmsdiff 
                         WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 END IF   
                   
@@ -2530,30 +2542,36 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 IF (var == kgenref_var) THEN 
                     check_status%numIdentical = check_status%numIdentical + 1 
                     IF (check_status%verboseLevel > 1) THEN 
-                        WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
+                        if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL." 
                     END IF   
                     check_result = CHECK_IDENTICAL 
                 ELSE 
                     check_status%numOutTol = check_status%numOutTol + 1 
                     IF (check_status%verboseLevel > 1) THEN 
-                        WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL." 
+                        if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL." 
                     END IF   
                     check_result = CHECK_OUT_TOL 
                 END IF   
                 IF (check_result == CHECK_IDENTICAL) THEN 
                     IF (check_status%verboseLevel > 2) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) "NOT IMPLEMENTED" 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_OUT_TOL) THEN 
                     IF (check_status%verboseLevel > 0) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) "NOT IMPLEMENTED" 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 ELSE IF (check_result == CHECK_IN_TOL) THEN 
                     IF (check_status%verboseLevel > 1) THEN 
+                        if(check_status%rank==0) then 
                         WRITE (*, *) "NOT IMPLEMENTED" 
                         WRITE (*, *) "" 
+                        endif
                     END IF   
                 END IF   
                   

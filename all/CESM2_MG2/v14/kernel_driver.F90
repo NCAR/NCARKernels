@@ -172,6 +172,7 @@
               WRITE (*,"(4X,A)") "kernel: CESM2_MG2: FAILED verification"
             endif
             WRITE (*, "(4X,A19,I3)") "number of columns: ",PCOLSSIZE
+            WRITE (*, "(4X,A19,I3)") "number of mpi ranks: ",mpisize
             WRITE (*, *) "" 
             WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_avg_time
 

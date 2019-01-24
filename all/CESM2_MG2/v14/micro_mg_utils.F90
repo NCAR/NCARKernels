@@ -1852,7 +1852,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
     IF (var%rho == kgenref_var%rho) THEN 
         dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1 
         IF (check_status%verboseLevel > 2) THEN 
-            WRITE (*, *) trim(adjustl(varname)), "%rho is IDENTICAL." 
+            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%rho is IDENTICAL." 
         END IF   
         check_result = CHECK_IDENTICAL 
     ELSE 
@@ -1860,13 +1860,13 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         IF (diff_rho <= kgen_tolerance) THEN 
             dtype_check_status%numInTol = dtype_check_status%numInTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%rho is NOT IDENTICAL(within tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%rho is NOT IDENTICAL(within tolerance)." 
             END IF   
             check_result = CHECK_IN_TOL 
         ELSE 
             dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%rho is NOT IDENTICAL(out of tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%rho is NOT IDENTICAL(out of tolerance)." 
             END IF   
             check_result = CHECK_OUT_TOL 
         END IF   
@@ -1875,13 +1875,17 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         CONTINUE 
     ELSE IF (check_result == CHECK_OUT_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_rho 
             WRITE (*, *) "" 
+            endif
         END IF   
     ELSE IF (check_result == CHECK_IN_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_rho 
             WRITE (*, *) "" 
+            endif
         END IF   
     END IF   
       
@@ -1889,7 +1893,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
     IF (var%eff_dim == kgenref_var%eff_dim) THEN 
         dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1 
         IF (check_status%verboseLevel > 2) THEN 
-            WRITE (*, *) trim(adjustl(varname)), "%eff_dim is IDENTICAL." 
+            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%eff_dim is IDENTICAL." 
         END IF   
         check_result = CHECK_IDENTICAL 
     ELSE 
@@ -1897,13 +1901,13 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         IF (diff_eff_dim <= kgen_tolerance) THEN 
             dtype_check_status%numInTol = dtype_check_status%numInTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%eff_dim is NOT IDENTICAL(within tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%eff_dim is NOT IDENTICAL(within tolerance)." 
             END IF   
             check_result = CHECK_IN_TOL 
         ELSE 
             dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%eff_dim is NOT IDENTICAL(out of tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%eff_dim is NOT IDENTICAL(out of tolerance)." 
             END IF   
             check_result = CHECK_OUT_TOL 
         END IF   
@@ -1912,13 +1916,17 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         CONTINUE 
     ELSE IF (check_result == CHECK_OUT_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_eff_dim 
             WRITE (*, *) "" 
+            endif
         END IF   
     ELSE IF (check_result == CHECK_IN_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_eff_dim 
             WRITE (*, *) "" 
+            endif
         END IF   
     END IF   
       
@@ -1926,7 +1934,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
     IF (var%shape_coef == kgenref_var%shape_coef) THEN 
         dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1 
         IF (check_status%verboseLevel > 2) THEN 
-            WRITE (*, *) trim(adjustl(varname)), "%shape_coef is IDENTICAL." 
+            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%shape_coef is IDENTICAL." 
         END IF   
         check_result = CHECK_IDENTICAL 
     ELSE 
@@ -1934,13 +1942,13 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         IF (diff_shape_coef <= kgen_tolerance) THEN 
             dtype_check_status%numInTol = dtype_check_status%numInTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%shape_coef is NOT IDENTICAL(within tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%shape_coef is NOT IDENTICAL(within tolerance)." 
             END IF   
             check_result = CHECK_IN_TOL 
         ELSE 
             dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%shape_coef is NOT IDENTICAL(out of tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%shape_coef is NOT IDENTICAL(out of tolerance)." 
             END IF   
             check_result = CHECK_OUT_TOL 
         END IF   
@@ -1949,13 +1957,17 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         CONTINUE 
     ELSE IF (check_result == CHECK_OUT_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_shape_coef 
             WRITE (*, *) "" 
+            endif
         END IF   
     ELSE IF (check_result == CHECK_IN_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) "Difference is ", diff_shape_coef 
             WRITE (*, *) "" 
+            endif
         END IF   
     END IF   
       
@@ -1963,7 +1975,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
     IF (ALL(var%lambda_bounds == kgenref_var%lambda_bounds)) THEN 
         dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1 
         IF (check_status%verboseLevel > 2) THEN 
-            WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is IDENTICAL." 
+            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is IDENTICAL." 
         END IF   
         check_result = CHECK_IDENTICAL 
     ELSE 
@@ -1982,13 +1994,13 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         IF (nrmsdiff_lambda_bounds > kgen_tolerance) THEN 
             dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is NOT IDENTICAL(out of tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is NOT IDENTICAL(out of tolerance)." 
             END IF   
             check_result = CHECK_OUT_TOL 
         ELSE 
             dtype_check_status%numInTol = dtype_check_status%numInTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is NOT IDENTICAL(within tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%lambda_bounds is NOT IDENTICAL(within tolerance)." 
             END IF   
             check_result = CHECK_IN_TOL 
         END IF   
@@ -1997,6 +2009,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         CONTINUE 
     ELSE IF (check_result == CHECK_OUT_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) count( var%lambda_bounds /= kgenref_var%lambda_bounds), " of ", size( var%lambda_bounds ), " elements &
             &are different." 
             WRITE (*, *) "Average - kernel ", sum(var%lambda_bounds)/real(size(var%lambda_bounds)) 
@@ -2004,9 +2017,11 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
             WRITE (*, *) "RMS of difference is ", rmsdiff_lambda_bounds 
             WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff_lambda_bounds 
             WRITE (*, *) "" 
+            endif
         END IF   
     ELSE IF (check_result == CHECK_IN_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then 
             WRITE (*, *) count( var%lambda_bounds /= kgenref_var%lambda_bounds), " of ", size( var%lambda_bounds ), " elements &
             &are different." 
             WRITE (*, *) "Average - kernel ", sum(var%lambda_bounds)/real(size(var%lambda_bounds)) 
@@ -2014,6 +2029,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
             WRITE (*, *) "RMS of difference is ", rmsdiff_lambda_bounds 
             WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff_lambda_bounds 
             WRITE (*, *) "" 
+            endif
         END IF   
     END IF   
       
@@ -2021,7 +2037,7 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
     IF (var%min_mean_mass == kgenref_var%min_mean_mass) THEN 
         dtype_check_status%numIdentical = dtype_check_status%numIdentical + 1 
         IF (check_status%verboseLevel > 2) THEN 
-            WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is IDENTICAL." 
+            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is IDENTICAL." 
         END IF   
         check_result = CHECK_IDENTICAL 
     ELSE 
@@ -2029,13 +2045,13 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         IF (diff_min_mean_mass <= kgen_tolerance) THEN 
             dtype_check_status%numInTol = dtype_check_status%numInTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is NOT IDENTICAL(within tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is NOT IDENTICAL(within tolerance)." 
             END IF   
             check_result = CHECK_IN_TOL 
         ELSE 
             dtype_check_status%numOutTol = dtype_check_status%numOutTol + 1 
             IF (check_status%verboseLevel > 1) THEN 
-                WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is NOT IDENTICAL(out of tolerance)." 
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), "%min_mean_mass is NOT IDENTICAL(out of tolerance)." 
             END IF   
             check_result = CHECK_OUT_TOL 
         END IF   
@@ -2044,13 +2060,17 @@ RECURSIVE SUBROUTINE kv_micro_mg_utils_mghydrometeorprops(varname, check_status,
         CONTINUE 
     ELSE IF (check_result == CHECK_OUT_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then
             WRITE (*, *) "Difference is ", diff_min_mean_mass 
             WRITE (*, *) "" 
+            endif
         END IF   
     ELSE IF (check_result == CHECK_IN_TOL) THEN 
         IF (check_status%verboseLevel > 2) THEN 
+            if(check_status%rank==0) then
             WRITE (*, *) "Difference is ", diff_min_mean_mass 
             WRITE (*, *) "" 
+            endif
         END IF   
     END IF   
       
