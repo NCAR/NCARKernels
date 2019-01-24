@@ -1925,7 +1925,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #ifdef USE_R4
                 CALL kgen_init_check(check_status, rank=myrank, tolerance=8.D-7, verboseLevel=1) 
 #else
-                CALL kgen_init_check(check_status, rank=myrank, tolerance=5.0D-7, verboseLevel=1) 
+                CALL kgen_init_check(check_status, rank=myrank, tolerance=8.0D-7, verboseLevel=1) 
 #endif
                   
                 !extern verify variables 
