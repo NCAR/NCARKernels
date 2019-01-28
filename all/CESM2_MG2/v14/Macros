@@ -56,9 +56,9 @@ ifeq ($(COMPILER),intel)
      # FC_FLAGS += -qno-opt-dynamic-align  -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source    -qopt-report -xCORE_AVX2 -no-fma  -O0 -g -check uninit -check bounds -check pointers -fpe0 -check noarg_temp_created
      FC_FLAGS += -qno-opt-dynamic-align  -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source    -qopt-report -xCORE_AVX2 -no-fma  -O0 -g -check uninit -check bounds -check pointers -fpe0 -check noarg_temp_created
   else
-     # FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
-     FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
      # FC_FLAGS += -O2 -xCORE-AVX2 -no-fma -ftz -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model source -qopt-report=5
+      FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
+     #FC_FLAGS += -O3 -xCORE-AVX2 -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
   endif
   LD_FLAGS += 
 
