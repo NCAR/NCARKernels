@@ -584,7 +584,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, 
         ELSE
             ALLOCATE (buf1(SIZE(var,dim=1),SIZE(var,dim=2),SIZE(var,dim=3)))
             ALLOCATE (buf2(SIZE(var,dim=1),SIZE(var,dim=2),SIZE(var,dim=3)))
-            n = COUNT(var /= kgenref_var)
+            n = SIZE(var)
             WHERE ( ABS(kgenref_var) > check_status%minvalue )
                 buf1 = ((var-kgenref_var)/kgenref_var)**2
                 buf2 = (var-kgenref_var)**2
@@ -594,7 +594,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, 
             END WHERE 
             nrmsdiff = SQRT(SUM(buf1)/REAL(n))
             rmsdiff = SQRT(SUM(buf2)/REAL(n))
-            IF (nrmsdiff > check_status%tolerance) THEN
+            IF (rmsdiff > check_status%tolerance) THEN
                 check_status%numOutTol = check_status%numOutTol + 1
                 IF (check_status%verboseLevel > 0) THEN
                     if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
@@ -602,7 +602,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, 
                 check_result = CHECK_OUT_TOL
             ELSE
                 check_status%numInTol = check_status%numInTol + 1
-                IF (check_status%verboseLevel > 0) THEN
+                IF (check_status%verboseLevel > 1) THEN
                     if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
                 END IF 
                 check_result = CHECK_IN_TOL
