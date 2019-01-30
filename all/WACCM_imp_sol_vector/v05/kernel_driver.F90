@@ -13,12 +13,15 @@
         USE mo_tracname, ONLY: kr_externs_in_mo_tracname
 
         use kgen_extensions_mod, only: read_runtime_options
-        use ppgrid, only : veclen
+        use ppgrid, only : veclen, nSystems
 #ifdef _MPI 
         use mpi
 #endif
         IMPLICIT NONE
         
+        INTEGER :: kgen_case_count
+        LOGICAL :: kgen_isverified
+        INTEGER :: kgen_count_verified
         INTEGER :: kgen_mpi_rank
         CHARACTER(LEN=16) :: kgen_mpi_rank_conv
         INTEGER, PARAMETER, DIMENSION(2) :: kgen_mpi_rank_at = (/ 0, 60 /)
@@ -26,7 +29,7 @@
         CHARACTER(LEN=16) :: kgen_counter_conv
         INTEGER, PARAMETER, DIMENSION(2) :: kgen_counter_at = (/ 1, 48 /)
         CHARACTER(LEN=1024) :: kgen_filepath
-        REAL(KIND=kgen_dp) :: kgen_total_time
+        REAL(KIND=kgen_dp) :: kgen_total_time, kgen_avg_time, kgen_max_time, kgen_avg_rate
         REAL(KIND=8) :: kgen_array_sum
         
         INTEGER :: lchnk
@@ -34,14 +37,20 @@
         REAL(KIND=r8) :: delt
 
         REAL :: avg_call_time, max_call_time
+        integer myrank, mpisize, ierror
+
 #ifdef _MPI
-        integer rank, size, ierror
 
         call MPI_INIT(ierror)
-        call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierror)
-        call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+        call MPI_COMM_SIZE(MPI_COMM_WORLD, mpisize, ierror)
+        call MPI_COMM_RANK(MPI_COMM_WORLD, myrank, ierror)
+#else
+        myrank=0
+        mpisize=1
 #endif
 
+        kgen_count_verified = 0
+        kgen_case_count = 0
         call read_runtime_options
 
         kgen_total_time = 0.0_kgen_dp
@@ -60,8 +69,10 @@
                 CALL kgen_error_stop("FILE OPEN ERROR: " // TRIM(ADJUSTL(kgen_filepath)))
             END IF 
             
+            if(myrank==0) then 
             WRITE (*, *) ""
             WRITE (*, *) "***************** Verification against '" // trim(adjustl(kgen_filepath)) // "' *****************"
+            endif
             
             
             !driver read in arguments
@@ -74,33 +85,51 @@
             CALL kr_externs_in_chem_mods(kgen_unit)
             CALL kr_externs_in_mo_tracname(kgen_unit)
             
+            kgen_case_count = kgen_case_count + 1
             !callsite part
-            CALL gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
+            CALL gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, ncol, delt, kgen_filepath, myrank)
             CLOSE (UNIT=kgen_unit)
-
+            if(kgen_isverified) then 
+                kgen_count_verified = kgen_count_verified + 1
+            endif
+!            print *,'kgen_total_time: ', kgen_total_time
             
         END DO 
 
-        avg_call_time = kgen_total_time / (kgen_repeat_counter)
+        kgen_avg_time = kgen_total_time / real(kgen_case_count,kind=kgen_dp)
 #ifdef _MPI
-        call MPI_REDUCE(avg_call_time, max_call_time, 1, MPI_REAL, MPI_MAX, 0, MPI_COMM_WORLD, ierror)
-        if (rank == 0) then
+        call MPI_ALLREDUCE(kgen_avg_time, kgen_max_time, 1, MPI_REAL8, MPI_MAX, MPI_COMM_WORLD, ierror)
+#else
+        kgen_max_time=kgen_avg_time  
+#endif
+
+        kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(nSystems,kind=kgen_dp)/kgen_max_time
+        if (myrank == 0) then
            WRITE (*, *) ""
-           WRITE (*, *) "******************************************************************************"
-           WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
-           WRITE (*,*) " imp_sol vector length : ", veclen
-           WRITE (*, *) "imp_sol summary: # ranks: ",size," Avg call time (usec): ",avg_call_time
+           WRITE (*, "(A)") "****************************************************"
+           WRITE (*, "(4X,A)") "kernel execution summary: WACCM_imp_sol_vector"
+           WRITE (*, "(A)") "****************************************************"
+           WRITE (*, *) ""
+           WRITE (*, "(4X,A,i2)") "Total number of verification cases: ",kgen_case_count
+           WRITE (*, "(4X,A,i2)") "Number of verification-passed cases: ",kgen_count_verified
+           WRITE (*, *) ""
+           if(kgen_count_verified == kgen_case_count) then 
+              WRITE (*,"(4X,A)") "kernel: WACCM_imp_sol_vector: PASSED verification"
+           else
+              WRITE (*,"(4X,A)") "kernel: WACCM_imp_sol_vector: FAILED verification"
+           endif
+           WRITE (*, "(4X,A26,I3)") "number of linear systems: ",nSystems
+           WRITE (*, "(4X,A26,I3)") " vector length : ", veclen
+           WRITE (*, "(4X,A26,I3)") "number of mpi ranks: ",mpisize
+           WRITE (*, *) ""
+           WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_max_time
+           WRITE (*, "(4X, A, F12.2)") "Average System solves per sec: ", kgen_avg_rate
            WRITE (*, *) "******************************************************************************"
         end if
+
+
+#ifdef _MPI
         call MPI_FINALIZE(ierror)
-#else
-        max_call_time = avg_call_time
-        WRITE (*, *) ""
-        WRITE (*, *) "******************************************************************************"
-        WRITE (*, *) "imp_sol summary: Total number of verification cases: ",kgen_repeat_counter
-        WRITE (*,*) " imp_sol vector length : ", veclen
-        WRITE (*, *) "imp_sol summary: Avg call time (usec): ",max_call_time
-        WRITE (*, *) "******************************************************************************"
 #endif
         
     END PROGRAM 

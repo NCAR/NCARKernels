@@ -32,6 +32,8 @@ module ppgrid
    PARAMETER (pver      = 66)
 
    integer,parameter ::  veclen=16     ! vector length
+
+   integer,parameter,public :: nSystems = 858 ! total number of linear systems 
    
 !
 ! start, end indices for chunks owned by a given MPI task

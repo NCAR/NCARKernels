@@ -38,6 +38,7 @@ module ppgrid
 #else
    integer, parameter :: veclen=_VECLEN
 #endif
+   integer,parameter,public :: nSystems = 858 ! total number of linear systems
 
 !
 ! start, end indices for chunks owned by a given MPI task

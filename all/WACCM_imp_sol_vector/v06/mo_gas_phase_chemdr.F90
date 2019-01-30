@@ -74,7 +74,7 @@ contains
 
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
+SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, ncol, delt,filename,rank)
 
     !-----------------------------------------------------------------------
     !     ... Chem_solver advances the volumetric mixing ratio
@@ -103,13 +103,15 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
 
     IMPLICIT NONE
 
+    LOGICAL, INTENT(OUT) :: kgen_isverified
     !-----------------------------------------------------------------------
     !        ... Dummy arguments
     !-----------------------------------------------------------------------
     INTEGER, INTENT(INOUT) :: lchnk
     INTEGER, INTENT(INOUT) :: ncol
     REAL(KIND=rkind_comp), INTENT(INOUT) :: delt
-
+    CHARACTER(len=*) :: filename
+    INTEGER, INTENT(IN) :: rank
 
 
     !-----------------------------------------------------------------------
@@ -517,32 +519,36 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
 #if defined(USE_R4)
     tolerance=1.0e-7
 #else
-    tolerance=1.0e-14
+    tolerance=1.0e-13
 #endif
-    print *,'tolerance is set at: ',tolerance 
-    CALL kgen_init_check(check_status, tolerance=tolerance, verboseLevel=1)
+    CALL kgen_init_check(check_status, rank, tolerance=tolerance, verboseLevel=1)
+    if(check_status%rank==0) print *,'tolerance is set at: ',tolerance 
     
     !extern verify variables
     
     !local verify variables
     CALL kv_gas_phase_chemdr_real__r8_dim3("vmr", check_status, vmr, kgenref_vmr)
-    WRITE (*, *) ""
+    if(check_status%rank==0) WRITE (*, *) ""
     IF (check_status%verboseLevel > 0) THEN
+        if(check_status%rank==0) then 
         WRITE (*, *) "Number of verified variables: ", check_status%numTotal
         WRITE (*, *) "Number of identical variables: ", check_status%numIdentical
         WRITE (*, *) "Number of non-identical variables within tolerance: ", check_status%numInTol
         WRITE (*, *) "Number of non-identical variables out of tolerance: ", check_status%numOutTol
         WRITE (*, *) "Tolerance: ", check_status%tolerance
+        endif
     END IF 
-    WRITE (*, *) ""
+    if(check_status%rank==0) WRITE (*, *) ""
     IF (check_status%numOutTol > 0) THEN
-        WRITE (*, *) "Verification FAILED"
+        if(check_status%rank==0) WRITE (*, *) "Verification FAILED for (" // TRIM(filename) // ")"
         check_status%Passed = .FALSE.
+        kgen_isverified = .FALSE.
     ELSE
-        WRITE (*, *) "Verification PASSED"
+        if(check_status%rank==0) WRITE (*, *) "Verification PASSED for (" // TRIM(filename) // ")"
         check_status%Passed = .TRUE.
+        kgen_isverified = .TRUE.
     END IF 
-    WRITE (*, *) ""
+    if(check_status%rank==0) WRITE (*, *) ""
     
     !Measuring elapsed time. Please increase the value of kgen_maxiter to get improve timing measurment resolution.
 #ifdef _MPI
@@ -582,7 +588,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
         IF (ALL(var == kgenref_var)) THEN
             check_status%numIdentical = check_status%numIdentical + 1
             IF (check_status%verboseLevel > 1) THEN
-                WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
+                if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is IDENTICAL."
             END IF 
             check_result = CHECK_IDENTICAL
         ELSE
@@ -601,43 +607,49 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, lchnk, ncol, delt)
             IF (nrmsdiff > check_status%tolerance) THEN
                 check_status%numOutTol = check_status%numOutTol + 1
                 IF (check_status%verboseLevel > 0) THEN
-                    WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
+                    if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)."
                 END IF 
                 check_result = CHECK_OUT_TOL
             ELSE
                 check_status%numInTol = check_status%numInTol + 1
                 IF (check_status%verboseLevel > 0) THEN
-                    WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
+                    if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)."
                 END IF 
                 check_result = CHECK_IN_TOL
             END IF 
         END IF 
         IF (check_result == CHECK_IDENTICAL) THEN
             IF (check_status%verboseLevel > 2) THEN
+                if(check_status%rank==0) then 
                 WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different."
                 WRITE (*, *) "Average - kernel ", sum(var)/real(size(var))
                 WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                 WRITE (*, *) "RMS of difference is ", 0
                 WRITE (*, *) "Normalized RMS of difference is ", 0
                 WRITE (*, *) ""
+                endif
             END IF 
         ELSE IF (check_result == CHECK_OUT_TOL) THEN
             IF (check_status%verboseLevel > 0) THEN
+                if(check_status%rank==0) then 
                 WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different."
                 WRITE (*, *) "Average - kernel ", sum(var)/real(size(var))
                 WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                 WRITE (*, *) "RMS of difference is ", rmsdiff
                 WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
                 WRITE (*, *) ""
+                endif
             END IF 
         ELSE IF (check_result == CHECK_IN_TOL) THEN
             IF (check_status%verboseLevel > 1) THEN
+                if(check_status%rank==0) then 
                 WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different."
                 WRITE (*, *) "Average - kernel ", sum(var)/real(size(var))
                 WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var))
                 WRITE (*, *) "RMS of difference is ", rmsdiff
                 WRITE (*, *) "Normalized RMS of difference is ", nrmsdiff
                 WRITE (*, *) ""
+                endif
             END IF 
         END IF 
         
