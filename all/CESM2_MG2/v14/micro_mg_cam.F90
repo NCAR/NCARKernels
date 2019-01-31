@@ -1923,9 +1923,9 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                   
                 !verify init 
 #ifdef USE_R4
-                CALL kgen_init_check(check_status, rank=myrank, tolerance=8.D-7, verboseLevel=1) 
+                CALL kgen_init_check(check_status, rank=myrank, tolerance=9.D-5, verboseLevel=1) 
 #else
-                CALL kgen_init_check(check_status, rank=myrank, tolerance=8.0D-7, verboseLevel=1) 
+                CALL kgen_init_check(check_status, rank=myrank, tolerance=9.0D-7, verboseLevel=1) 
 #endif
                   
                 !extern verify variables 
@@ -2392,13 +2392,13 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                     IF (rmsdiff > kgen_tolerance) THEN 
                         check_status%numOutTol = check_status%numOutTol + 1 
                         IF (check_status%verboseLevel > 1) THEN 
-                            if(check_status%rank) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
+                            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(out of tolerance)." 
                         END IF   
                         check_result = CHECK_OUT_TOL 
                     ELSE 
                         check_status%numInTol = check_status%numInTol + 1 
                         IF (check_status%verboseLevel > 1) THEN 
-                            if(check_status%rank) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
+                            if(check_status%rank==0) WRITE (*, *) trim(adjustl(varname)), " is NOT IDENTICAL(within tolerance)." 
                         END IF   
                         check_result = CHECK_IN_TOL 
                     END IF   
