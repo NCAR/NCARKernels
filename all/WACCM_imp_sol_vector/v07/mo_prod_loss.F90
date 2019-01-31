@@ -3,7 +3,7 @@
 !Generated at : 2016-03-01 11:27:41
 !KGEN version : 0.6.2
 
-#define _NEWINDEX 1
+!#define _NEWINDEX 1
 
 
 

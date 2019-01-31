@@ -147,7 +147,7 @@ SUBROUTINE gas_phase_chemdr(kgen_unit, kgen_total_time, kgen_isverified, lchnk, 
     TYPE(check_t) :: check_status
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock
     real(KIND=r8) :: start_clock,stop_clock
-    INTEGER, PARAMETER :: kgen_maxiter = 100
+    INTEGER, PARAMETER :: kgen_maxiter = 5000
     REAL(KIND=kgen_dp) :: kgen_elapsed_time
     real(kind=kgen_dp) :: tolerance
 

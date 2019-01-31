@@ -38,7 +38,7 @@ module ppgrid
 #else
    integer, parameter :: veclen=_VECLEN
 #endif
-   integer, parameter,public :: blklen=8
+   integer, parameter,public :: blklen=16
    integer,parameter,public  :: nSystems = 858 ! total number of linear systems
 
 !
