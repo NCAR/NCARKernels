@@ -2020,7 +2020,6 @@ module clubb_intr
       !call to kgen kernel 
 
 
-   print *,'ncol: ',ncol
    do i=1,ncol   ! loop over columns
 
       !  Set time_elapsed to host model time step, this is for 
