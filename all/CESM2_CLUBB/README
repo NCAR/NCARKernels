@@ -1,6 +1,6 @@
 CESM2 CLUBB kernel extracted from CESM2
 
-This version of MG2 is generated from cesm2_1_alpha01d using Intel compiler.
+This kernel is generated from cesm2_1_alpha01d using Intel compiler.
 
 To use the kernel, go to orig directory and run "make clean" and "make run".
 
