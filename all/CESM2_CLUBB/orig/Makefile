@@ -10,7 +10,7 @@ PCOLS ?=16
 FC_0 := mpif90
 FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -xCORE_AVX2 -no-fma -O2 -debug minimal -free -fpp -D_MPI -mkl
 # Uncomment below if you like to replicate the kernel extraction environment.
-# NOTE: the environment is valid only if you are using this kernel on the same computing system that the kernel was extracted from.
+# NOTE: the environment is valid only if you are using this kernel on the same computing system that the kernel was extracted from. This kernel is extracted on Cheyenne cluster(Intel Broadwell CPU) of NCAR.
 #PRERUN_BUILD := module purge;module try-load ncarenv/1.2;module try-load ncarcompilers/0.4.1;module try-load intel/17.0.1;module try-load mkl/2017.0.1;module try-load impi/2017.1.132; 
 #PRERUN_RUN := module purge;module try-load ncarenv/1.2;module try-load ncarcompilers/0.4.1;module try-load intel/17.0.1;module try-load mkl/2017.0.1;module try-load impi/2017.1.132; 
 
