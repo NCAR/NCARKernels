@@ -2629,7 +2629,7 @@ module clubb_intr
    IF (kgen_mainstage) THEN 
          
        !verify init 
-       CALL kgen_init_verify(tolerance=1.D-14, minvalue=1.D-14, verboseLevel=1) 
+       CALL kgen_init_verify(tolerance=9.D-7, minvalue=1.D-14, verboseLevel=1) 
        CALL kgen_init_check(check_status, rank=kgen_mpirank) 
          
        !extern verify variables 

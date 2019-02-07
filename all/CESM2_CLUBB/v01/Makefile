@@ -10,13 +10,18 @@ PCOLS ?=16
 #FC_0 := mpif90
 #FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -xCORE_AVX2 -no-fma -O2 -debug minimal -free -fpp -D_MPI -mkl
 FC_0 := ifort
-FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -xCORE_AVX2 -no-fma -O2 -debug minimal -free -fpp -mkl
+FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -xCORE_AVX2 -no-fma -O2 -debug minimal -free -fpp
+FC_FLAGS := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -xCORE_AVX2 -no-fma -O2 -debug minimal -fpp
 # Uncomment below if you like to replicate the kernel extraction environment.
 # NOTE: the environment is valid only if you are using this kernel on the same computing system that the kernel was extracted from.
 #PRERUN_BUILD := module purge;module try-load ncarenv/1.2;module try-load ncarcompilers/0.4.1;module try-load intel/17.0.1;module try-load mkl/2017.0.1;module try-load impi/2017.1.132; 
 #PRERUN_RUN := module purge;module try-load ncarenv/1.2;module try-load ncarcompilers/0.4.1;module try-load intel/17.0.1;module try-load mkl/2017.0.1;module try-load impi/2017.1.132; 
 
-ALL_OBJS := clubb_intr.o shr_kind_mod.o ppgrid.o ref_pres.o physics_types.o physconst.o shr_const_mod.o scamMod.o camsrfexch.o constituents.o clubb_api_module.o stats_variables.o clubb_precision.o parameter_indices.o parameters_tunable.o constants_clubb.o grid_class.o error_code.o model_flags.o interpolation.o stats_clubb_utilities.o parameters_model.o pdf_parameter_module.o advance_clubb_core_module.o fill_holes.o numerical_check.o stats_type_utilities.o stats_type.o stat_file_module.o variables_diagnostic_module.o Skx_module.o sigma_sqd_w_module.o pdf_closure_module.o calc_roots.o saturation.o anl_erf.o array_index.o pdf_utilities.o T_in_K_module.o mixing_length.o surface_varnce_module.o advance_helper_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o cam_abortutils.o shr_sys_mod.o shr_abort_mod.o shr_log_mod.o shr_mpi_mod.o shr_infnan_mod.o kernel_driver.o kgen_utils.o tprof_mod.o
+LAPACK_OBJS = dgtsvx.o dgtsv.o dgbsvx.o dgbsv.o xerbla.o lsame.o dlangt.o dgtcon.o dlacpy.o dlamch.o  dcopy.o dlacn2.o dgttrs.o  dgtts2.o disnan.o ilaenv.o dgtrfs.o dgttrf.o dlassq.o dgbtrf.o dasum.o dgemm.o dswap.o idamax.o dgbtrs.o dger.o  dgemv.o dtbsv.o dtrsm.o dscal.o dlantb.o dlangb.o dgbcon.o dgbrfs.o dgbequ.o dlaqgb.o dlagtm.o dgbtf2.o dlaisnan.o iparmq.o ieeeck.o  daxpy.o dlaswp.o dgbmv.o dlatbs.o ddot.o drscl.o dlabad.o
+
+ALL_OBJS := clubb_intr.o shr_kind_mod.o ppgrid.o ref_pres.o physics_types.o physconst.o shr_const_mod.o scamMod.o camsrfexch.o constituents.o clubb_api_module.o stats_variables.o clubb_precision.o parameter_indices.o parameters_tunable.o constants_clubb.o grid_class.o error_code.o model_flags.o interpolation.o stats_clubb_utilities.o parameters_model.o pdf_parameter_module.o advance_clubb_core_module.o fill_holes.o numerical_check.o stats_type_utilities.o stats_type.o stat_file_module.o variables_diagnostic_module.o Skx_module.o sigma_sqd_w_module.o pdf_closure_module.o calc_roots.o saturation.o anl_erf.o array_index.o pdf_utilities.o T_in_K_module.o mixing_length.o surface_varnce_module.o advance_helper_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o cam_abortutils.o shr_sys_mod.o shr_abort_mod.o shr_log_mod.o shr_mpi_mod.o shr_infnan_mod.o kernel_driver.o kgen_utils.o tprof_mod.o $(LAPACK_OBJS)
+
+
 
 build: ${ALL_OBJS}
 	${PRERUN_BUILD}${FC_0} ${FC_FLAGS_SET_0} -o kernel.exe $^
@@ -26,6 +31,9 @@ run: build
 
 clubb_intr.o: clubb_intr.F90 shr_kind_mod.o ppgrid.o ref_pres.o physics_types.o physconst.o shr_const_mod.o scamMod.o camsrfexch.o constituents.o clubb_api_module.o stats_variables.o clubb_precision.o parameter_indices.o parameters_tunable.o constants_clubb.o grid_class.o error_code.o model_flags.o interpolation.o stats_clubb_utilities.o parameters_model.o pdf_parameter_module.o advance_clubb_core_module.o fill_holes.o numerical_check.o stats_type_utilities.o stats_type.o stat_file_module.o variables_diagnostic_module.o Skx_module.o sigma_sqd_w_module.o pdf_closure_module.o calc_roots.o saturation.o anl_erf.o array_index.o pdf_utilities.o T_in_K_module.o mixing_length.o surface_varnce_module.o advance_helper_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o cam_abortutils.o shr_sys_mod.o shr_abort_mod.o shr_log_mod.o shr_mpi_mod.o shr_infnan_mod.o kgen_utils.o tprof_mod.o
 	${PRERUN_BUILD}${FC_0} ${FC_FLAGS_SET_0} -c -o $@ $<
+
+%.o: %.f
+	${FC} ${FC_FLAGS} -c $< -o $@
 
 shr_kind_mod.o: shr_kind_mod.F90 kgen_utils.o tprof_mod.o
 	${PRERUN_BUILD}${FC_0} ${FC_FLAGS_SET_0} -c -o $@ $<
