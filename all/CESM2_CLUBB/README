@@ -1,10 +1,20 @@
-MG2 kernel extracted from CESM2
+CESM2 CLUBB kernel extracted from CESM2
 
-This version of MG2 is generated from release-cesm2.0.0 using Intel compiler.
+This version of MG2 is generated from cesm2_1_alpha01d using Intel compiler.
 
-To use the kernel, go to orig directory and run "make".
+To use the kernel, go to orig directory and run "make clean" and "make run".
 
 There are multiple types of input data according to CESM PCOLS value. To use a specific data set,
-use make option similar to "make pcols=<size>". <size> is one of 16, 32, 64, ...
+use make option similar to "make run pcols=<size>". <size> is one of 16 and 192. Default pcols is 16.
+
+The kernel assumes that MPI is installed on system and "mpif90" command is available.
+Compiler options are based on Intel compiler that was used for kernel extraction. To compiler the
+kernel with other compiler, please change compiler options accordingly.
+
+"_MPI" macro in compiler options enables MPI framework in the kernel.
+
+Program entry of the kernel is inside of "kernel_driver.f90"
+
+"clubb_intr.F90" contains a call to kernel code block.
 
 Please contact Youngsung Kim(youngsun@ucar.edu) for any questions concerning this kernel.
