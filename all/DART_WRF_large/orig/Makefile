@@ -16,7 +16,7 @@ include ./Macros
 ALL_OBJS := assim_tools_mod.o types_mod.o mpi_utilities_mod.o utilities_mod.o ensemble_manager_mod.o time_manager_mod.o cov_cutoff_mod.o location_mod.o sampling_error_correction_mod.o reg_factor_mod.o adaptive_inflate_mod.o random_seq_mod.o kernel_driver.o kgen_utils.o tprof_mod.o
 
 build: ${ALL_OBJS}
-	${FC} ${FC_FLAGS} -o kernel.exe $^  
+	${FC} ${FC_FLAGS} ${LD_FLAGS} -o kernel.exe $^  
 
 assim_tools_mod.o: assim_tools_mod.f90 types_mod.o mpi_utilities_mod.o utilities_mod.o ensemble_manager_mod.o time_manager_mod.o cov_cutoff_mod.o location_mod.o sampling_error_correction_mod.o reg_factor_mod.o adaptive_inflate_mod.o random_seq_mod.o kgen_utils.o tprof_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<

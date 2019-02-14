@@ -217,7 +217,7 @@ END SUBROUTINE kr_externs_out_cov_cutoff_mod
 SUBROUTINE kv_externs_cov_cutoff_mod(check_status) 
     TYPE(check_t), INTENT(INOUT) :: check_status 
       
-    CALL kv_cov_cutoff_mod_logical__("namelist_initialized", check_status, namelist_initialized, kgenref_namelist_initialized) 
+    !CALL kv_cov_cutoff_mod_logical__("namelist_initialized", check_status, namelist_initialized, kgenref_namelist_initialized) 
 END SUBROUTINE kv_externs_cov_cutoff_mod 
   
 !verify state subroutine for kv_cov_cutoff_mod_logical__ 

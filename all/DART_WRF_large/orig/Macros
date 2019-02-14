@@ -2,7 +2,6 @@
 
 # User settings (all case-insensitive):
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
-#COMPILER = gnu        # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
 MPI      = no          # Yes/No, True/False or Enabled/Disabled
 DEBUG    = no
@@ -36,7 +35,7 @@ endif
 
 # If the ARMPL_DIR variable is set, add it to the link:
 ifneq ($(strip $(ARMPL_DIR)),)
-  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64
+  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64 -lamath -lsimdmath
 endif
 
 # If the MKLROOT variable is set, add that to the link:
@@ -82,7 +81,8 @@ endif
 # ********* GNU compiler options  ************
 ifeq ($(COMPILER),gnu)
   FC := gfortran
-  FC_FLAGS += -O1 -ffp-contract=fast -ffree-form -ffree-line-length-none
+  FC_FLAGS += -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -cpp
+
   LD_FLAGS +=
 
   #FC_FLAGS += -march=native
@@ -93,7 +93,7 @@ endif
 # ********* ARM compiler options  ************
 ifeq ($(COMPILER),arm)
   FC := armflang
-  FC_FLAGS += -O0 -ffree-form -ffree-line-length-none -D_NOGETPID  # Currently fails to validate on Arm, so -O0 set
+  FC_FLAGS += -O3 -cpp -ffree-form -ffree-line-length-none -D_NOGETPID 
   LD_FLAGS += 
 
   FC_FLAGS += -mcpu=native
