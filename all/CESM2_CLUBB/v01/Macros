@@ -1,13 +1,17 @@
 # Conditional Makefile macros for this kernel & version:
 
 # User settings (all case-insensitive):
-COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
-ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = yes          # Yes/No, True/False or Enabled/Disabled
+COMPILER          = intel    # Intel, GNU, ARM (later, PGI?)
+ARCH              = bdw      # Not currently used (using xHost/native modes)
+MPI               = yes      # Yes/No, True/False or Enabled/Disabled
+
 
 # ******************************************************************
 # Provide system aliases that MIGHT need to be modified by the end user:
 MPIFC = mpif90         # Could be mpif90 (default), or mpiifort, etc
+
+# Compile the LAPACK rountes from the provided source code.
+LAPACKSRC := yes
 
 # Convert all above vars to lower case:
 COMPILER := $(shell echo ${COMPILER} | tr '[:upper:]' '[:lower:]')
@@ -31,10 +35,6 @@ ifneq ($(strip $(ARMPL_DIR)),)
   LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64
 endif
 
-# If the MKLROOT variable is set, add that to the link:
-ifneq ($(strip $(MKLROOT)),)
-  LD_FLAGS += -L${MKLROOT}/lib/intel64 -lmkl_rt
-endif
 
 
 # Note: For simplicity, we're going to ignore cross-compilation and use the "-march=native" (gnu), 
@@ -44,8 +44,13 @@ endif
 # ********* Intel compiler options  ************
 ifeq ($(COMPILER),intel)
   FC := ifort
-  FC_FLAGS += -fpp -qno-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -assume realloc_lhs -xCORE-AVX2 -O3
-  LD_FLAGS += 
+  #FC_FLAGS += -qno-opt-dynamic-align -fp-model source -convert big_endian -assume byterecl -ftz -assume realloc_lhs -xCORE-AVX2 -O3
+  FC_FLAGS += -qno-opt-dynamic-align -fp-model fast -convert big_endian -assume byterecl -ftz -assume realloc_lhs -xCORE-AVX2 -O3
+  # If the MKLROOT variable is set, add that to the link:
+  ifneq ($(strip $(MKLROOT)),)
+    LD_FLAGS += -L${MKLROOT}/lib/intel64 -lmkl_rt
+    LAPACKSRC := no
+  endif
 
   FC_FLAGS += 
 endif

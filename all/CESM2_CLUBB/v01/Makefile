@@ -3,7 +3,7 @@
 include ./Macros
 
 # 16 or 192
-PCOLS ?=16
+pcols ?=16
 
 .PHONY: .FORCE
 
@@ -25,8 +25,9 @@ LAPACK_OBJS = dgtsvx.o dgtsv.o dgbsvx.o dgbsv.o xerbla.o lsame.o dlangt.o dgtcon
 
 ALL_OBJS := clubb_intr.o shr_kind_mod.o ppgrid.o ref_pres.o physics_types.o physconst.o shr_const_mod.o scamMod.o camsrfexch.o constituents.o clubb_api_module.o stats_variables.o clubb_precision.o parameter_indices.o parameters_tunable.o constants_clubb.o grid_class.o error_code.o model_flags.o interpolation.o stats_clubb_utilities.o parameters_model.o pdf_parameter_module.o advance_clubb_core_module.o fill_holes.o numerical_check.o stats_type_utilities.o stats_type.o stat_file_module.o variables_diagnostic_module.o Skx_module.o sigma_sqd_w_module.o pdf_closure_module.o calc_roots.o saturation.o anl_erf.o array_index.o pdf_utilities.o T_in_K_module.o mixing_length.o surface_varnce_module.o advance_helper_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o cam_abortutils.o shr_sys_mod.o shr_abort_mod.o shr_log_mod.o shr_mpi_mod.o shr_infnan_mod.o kernel_driver.o kgen_utils.o tprof_mod.o
 
-ALL_OBJS += $(LAPACK_OBJS)
-
+ifeq ($(LAPACKSRC),yes)
+  ALL_OBJS += $(LAPACK_OBJS)
+endif
 
 build: ${ALL_OBJS}
 	${FC} ${LD_FLAGS} -o kernel.exe $^
@@ -41,7 +42,7 @@ shr_kind_mod.o: shr_kind_mod.F90 kgen_utils.o tprof_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 ppgrid.o: .FORCE kgen_utils.o tprof_mod.o
-	${FC} ${FC_FLAGS} -D PCOLS=${PCOLS} -c -o $@ ppgrid.F90
+	${FC} ${FC_FLAGS} -D PCOLS=${pcols} -c -o $@ ppgrid.F90
 
 ref_pres.o: ref_pres.F90 kgen_utils.o tprof_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
@@ -215,7 +216,7 @@ shr_infnan_mod.o: shr_infnan_mod.F90 kgen_utils.o tprof_mod.o
 	${FC} ${FC_FLAGS} -c -o $@ $<
 
 kernel_driver.o: .FORCE clubb_intr.o shr_kind_mod.o ppgrid.o ref_pres.o physics_types.o physconst.o shr_const_mod.o scamMod.o camsrfexch.o constituents.o clubb_api_module.o stats_variables.o clubb_precision.o parameter_indices.o parameters_tunable.o constants_clubb.o grid_class.o error_code.o model_flags.o interpolation.o stats_clubb_utilities.o parameters_model.o pdf_parameter_module.o advance_clubb_core_module.o fill_holes.o numerical_check.o stats_type_utilities.o stats_type.o stat_file_module.o variables_diagnostic_module.o Skx_module.o sigma_sqd_w_module.o pdf_closure_module.o calc_roots.o saturation.o anl_erf.o array_index.o pdf_utilities.o T_in_K_module.o mixing_length.o surface_varnce_module.o advance_helper_module.o advance_xm_wpxp_module.o mono_flux_limiter.o diffusion.o mean_adv.o clip_semi_implicit.o lapack_wrap.o pos_definite_module.o clip_explicit.o sponge_layer_damping.o advance_xp2_xpyp_module.o advance_wp2_wp3_module.o advance_windm_edsclrm_module.o cam_abortutils.o shr_sys_mod.o shr_abort_mod.o shr_log_mod.o shr_mpi_mod.o shr_infnan_mod.o kgen_utils.o tprof_mod.o
-	${FC} ${FC_FLAGS} -D STATEFILE='"../data/pcols${PCOLS}/kgen_statefile.lst"' -c -o $@ kernel_driver.f90
+	${FC} ${FC_FLAGS} -D PCOLS=${pcols} -D STATEFILE='"../data/pcols${pcols}/kgen_statefile.lst"' -c -o $@ kernel_driver.F90
 
 kgen_utils.o: kgen_utils.f90
 	${FC} ${FC_FLAGS} -c -o $@ $<

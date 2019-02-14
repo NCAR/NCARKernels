@@ -422,8 +422,8 @@ module clubb_intr
       INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
       LOGICAL :: kgen_evalstage, kgen_warmupstage, kgen_mainstage 
       COMMON / state / kgen_mpirank, kgen_openmptid, kgen_kernelinvoke, kgen_evalstage, kgen_warmupstage, kgen_mainstage 
-      INTEGER, PARAMETER :: KGEN_MAXITER = 1 
-      INTEGER, PARAMETER :: CACHE_CONTROL_LENGTH=1024 
+      INTEGER, PARAMETER :: KGEN_MAXITER = 10
+      INTEGER, PARAMETER :: CACHE_CONTROL_LENGTH=1024*1024 
       INTEGER, DIMENSION(CACHE_CONTROL_LENGTH) :: kgen_cache_control 
         
       TYPE(check_t) :: check_status 
@@ -2014,7 +2014,7 @@ module clubb_intr
         
       !Uncomment following call statement to turn on perturbation experiment. 
       !Adjust perturbation value and/or kind parameter if required. 
-      !CALL kgen_perturb_real( your_variable, 1.0E-15_8 ) 
+      CALL kgen_perturb_real( state1%q, 1.0E-15_r8 ) 
         
         
       !call to kgen kernel 

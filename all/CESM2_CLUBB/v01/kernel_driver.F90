@@ -38,6 +38,7 @@
         INTEGER :: kgen_ierr, kgen_unit, kgen_case_count, kgen_count_verified 
         CHARACTER(LEN=1024) :: kgen_filepath 
         REAL(KIND=kgen_dp) :: kgen_measure, kgen_total_time, kgen_min_time, kgen_max_time 
+        REAL(KIND=kgen_dp) :: kgen_avg_time, kgen_avg_rate
         REAL(KIND=8) :: kgen_array_sum 
         INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
         INTEGER :: myrank, mpisize 
@@ -215,6 +216,8 @@
             WRITE (*, "(A)") "****************************************************" 
             WRITE (*, "(4X,A)") "kernel execution summary: clubb_tend_cam" 
             WRITE (*, "(A)") "****************************************************" 
+            kgen_avg_time = kgen_total_time / real(kgen_case_count,kind=kgen_dp)
+            kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(PCOLS,kind=kgen_dp)/kgen_avg_time
             IF (kgen_case_count == 0) THEN 
                 WRITE (*, *) "No data file is verified." 
             ELSE 
@@ -227,11 +230,11 @@
                     WRITE (*, "(4X,A)") "kernel: clubb_tend_cam: FAILED verification" 
                 END IF   
                 WRITE (*, *) "" 
-                WRITE (*, "(4X,A19,I3)") "number of processes: ", mpisize 
+                WRITE (*, "(4X,A19,I3)") "number of columns: ",PCOLS
+                WRITE (*, "(4X,A19,I3)") "number of mpi ranks: ", mpisize 
                 WRITE (*, *) "" 
-                WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / DBLE(kgen_case_count) 
-                WRITE (*, "(4X, A, E10.3)") "Minimum call time (usec): ", kgen_min_time 
-                WRITE (*, "(4X, A, E10.3)") "Maximum call time (usec): ", kgen_max_time 
+                WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_avg_time
+                WRITE (*, "(4X, A, F12.2)") "Average columns per sec : ", kgen_avg_rate
             END IF   
             WRITE (*, "(A)") "****************************************************" 
         END IF   
