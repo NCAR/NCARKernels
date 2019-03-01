@@ -266,11 +266,47 @@ module variables_diagnostic_module
       CALL kr_kgen_variables_diagnostic_module_subp3(tau_zt, kgen_unit, "tau_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp5(wpedsclrp, kgen_unit, "wpedsclrp", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp5(sclrpthvp, kgen_unit, "sclrpthvp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(sclrpthvp)) THEN 
+        DEALLOCATE (sclrpthvp) 
+      END IF   
+      allocate(sclrpthvp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(wpsclrp2, kgen_unit, "wpsclrp2", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(wpsclrp2)) THEN 
+        DEALLOCATE (wpsclrp2) 
+      END IF   
+      allocate(wpsclrp2(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(sclrprcp, kgen_unit, "sclrprcp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(sclrprcp)) THEN 
+        DEALLOCATE (sclrprcp) 
+      END IF   
+      allocate(sclrprcp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(wpsclrprtp, kgen_unit, "wpsclrprtp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(wpsclrprtp)) THEN 
+        DEALLOCATE (wpsclrprtp) 
+      END IF   
+      allocate(wpsclrprtp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(wpsclrpthlp, kgen_unit, "wpsclrpthlp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(wpsclrpthlp)) THEN 
+        DEALLOCATE (wpsclrpthlp) 
+      END IF   
+      allocate(wpsclrpthlp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(wp2sclrp, kgen_unit, "wp2sclrp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(wp2sclrp)) THEN 
+        DEALLOCATE (wp2sclrp) 
+      END IF   
+      allocate(wp2sclrp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp3(wp2_zt, kgen_unit, "wp2_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp3(up2_zt, kgen_unit, "up2_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp3(rtpthlp_zt, kgen_unit, "rtpthlp_zt", .FALSE.) 
@@ -316,7 +352,19 @@ module variables_diagnostic_module
       CALL kr_kgen_variables_diagnostic_module_subp3(kgenref_tau_zt, kgen_unit, "kgenref_tau_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp5(kgenref_wpedsclrp, kgen_unit, "kgenref_wpedsclrp", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp5(kgenref_sclrpthvp, kgen_unit, "kgenref_sclrpthvp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(kgenref_sclrpthvp)) THEN 
+        DEALLOCATE (kgenref_sclrpthvp) 
+      END IF   
+      allocate(kgenref_sclrpthvp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp5(kgenref_sclrprcp, kgen_unit, "kgenref_sclrprcp", .FALSE.) 
+      ! Need to allocate this for GNU, even though it's not used:
+      IF (ALLOCATED(kgenref_sclrprcp)) THEN 
+        DEALLOCATE (kgenref_sclrprcp) 
+      END IF   
+      allocate(kgenref_sclrprcp(33,0))
+
       CALL kr_kgen_variables_diagnostic_module_subp3(kgenref_wp2_zt, kgen_unit, "kgenref_wp2_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp3(kgenref_up2_zt, kgen_unit, "kgenref_up2_zt", .FALSE.) 
       CALL kr_kgen_variables_diagnostic_module_subp3(kgenref_rtpthlp_zt, kgen_unit, "kgenref_rtpthlp_zt", .FALSE.) 
@@ -462,7 +510,7 @@ module variables_diagnostic_module
           IF (PRESENT( printvar ) .AND. printvar) THEN 
               WRITE (*, *) "KGEN DEBUG: DBLE(SUM(" // printname // ")) = ", DBLE(SUM(var, mask=(var .eq. var))) 
           END IF   
-      END IF   
+  endif
   END SUBROUTINE kr_kgen_variables_diagnostic_module_subp5 
     
   !verify state subroutine for kv_kgen_variables_diagnostic_module_subp2 
@@ -570,7 +618,7 @@ module variables_diagnostic_module
       INTEGER :: n 
       real(KIND=core_rknd) :: nrmsdiff, rmsdiff 
       real(KIND=core_rknd), ALLOCATABLE :: buf1(:,:), buf2(:,:) 
-        
+
       IF (ALLOCATED(var)) THEN 
           check_status%numTotal = check_status%numTotal + 1 
             
