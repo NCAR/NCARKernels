@@ -4,7 +4,7 @@
 COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 #COMPILER = gnu        # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = yes         # Yes/No, True/False or Enabled/Disabled
+MPI      = no         # Yes/No, True/False or Enabled/Disabled
 DEBUG    = no
 
 # ******************************************************************
@@ -60,7 +60,7 @@ ifeq ($(COMPILER),intel)
       FC_FLAGS += -O3 -xCORE-AVX2 -no-fma -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
      #FC_FLAGS += -O3 -xCORE-AVX2 -ftz -fast-transcendentals -no-prec-sqrt -no-prec-div -qoverride-limits -no-inline-max-total-size -inline-factor=200 -fp-model fast -qopt-report=5
   endif
-  LD_FLAGS += 
+  LD_FLAGS +=
 
   FC_FLAGS += 
 endif
@@ -69,7 +69,7 @@ endif
 ifeq ($(COMPILER),nec)
   FC := nfort
 #  FC_FLAGS += -v -O2 -report-all -mno-vector-fma -mvector-dependency-test -floop-unroll -freciprocal-math -fnamed-noalias -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
-  FC_FLAGS += -v -O4 -mno-vector-fma -finline-functions -report-all -fdiag-vector=2 -fextend-source -D_NOGETPID -DUSE_R4
+  FC_FLAGS += -v -O4 -mno-vector-fma -finline-functions -report-all -fdiag-vector=2 -fextend-source -D_NOGETPID
 #  FC_FLAGS += -v -O4 -report-all -finline-functions -fdiag-vector=2 -fextend-source -D_NOGETPID
   LD_FLAGS +=
 

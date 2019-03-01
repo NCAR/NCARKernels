@@ -35,6 +35,9 @@ module clubb_intr
     IMPLICIT NONE 
 
     PRIVATE 
+#ifdef _MPI 
+  include "mpif.h" 
+#endif 
     SAVE 
   ! ----------------- !
   ! Public interfaces !
@@ -123,9 +126,6 @@ module clubb_intr
 
   PUBLIC kr_externs_in_clubb_intr 
   PUBLIC kr_externs_out_clubb_intr 
-#ifdef _MPI 
-  include "mpif.h" 
-#endif 
     
   PUBLIC kv_externs_clubb_intr 
   REAL(KIND=r8), allocatable, dimension(:,:,:) :: kgenref_out_zt, kgenref_out_zm, kgenref_out_radzt, kgenref_out_radzm, &
