@@ -34,7 +34,7 @@ endif
 
 # If the ARMPL_DIR variable is set, add it to the link:
 ifneq ($(strip $(ARMPL_DIR)),)
-  LD_LIBS += -L${ARMPL_DIR}/lib -larmpl_lp64
+  LD_FLAGS += -L${ARMPL_DIR}/lib -larmpl_lp64 -lamath -lsimdmath
 endif
 
 
@@ -72,7 +72,6 @@ endif
 ifeq ($(COMPILER),gnu)
   FC := gfortran
   FC_FLAGS += -O3 -ffp-contract=fast -ffree-line-length-none
-  # FC_FLAGS += -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none
   LD_FLAGS += 
 
   FC_FLAGS += -march=native
@@ -82,7 +81,7 @@ endif
 # ********* ARM compiler options  ************
 ifeq ($(COMPILER),arm)
   FC := armflang
-  FC_FLAGS += -O3 -ffp-contract=fast -ffree-form -ffree-line-length-none -D_NOGETPID
+  FC_FLAGS += -O3 -ffp-contract=fast -ffree-line-length-none -D_NOGETPID
   LD_FLAGS += 
 
   FC_FLAGS += -mcpu=native
