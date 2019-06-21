@@ -1,0 +1,41 @@
+CESM2 CLUBB kernel extracted from CESM2
+
+This kernel is generated from cesm2_2_beta02 using Intel compiler on NCAR Cheyenne Cluster.
+Some of CESM configurations are :
+  Machine     : cheyenne
+  Curr Date   : Thu Jun 20 12:00:20 2019
+  grid        : a%1.9x2.5_l%1.9x2.5_oi%gx1v7_r%r05_g%gland4_w%ww3a_m%gx1v7
+  compset     : 1850_CAM60_CLM50%BGC-CROP_CICE_POP2%ECO_MOSART_CISM2%NOEVOLVE_WW3_SESP_BGC%BDRD
+  run type    : startup, continue_run = FALSE (inittype = TRUE)
+  stop option : ndays, stop_n = 5
+  run length  : 5 days (4.95833333333 for ocean)
+
+  component       comp_pes    root_pe   tasks  x threads instances (stride)
+  ---------        ------     -------   ------   ------  ---------  ------
+  cpl = cpl        288         0        288    x 1       1      (1     )
+  atm = cam        288         0        288    x 1       1      (1     )
+  lnd = clm        144         0        144    x 1       1      (1     )
+  ice = cice       108         144      108    x 1       1      (1     )
+  ocn = pop        288         288      288    x 1       1      (1     )
+  rof = mosart     40          0        40     x 1       1      (1     )
+  glc = cism       36          0        36     x 1       1      (1     )
+  wav = ww         36          252      36     x 1       1      (1     )
+  esp = sesp       1           0        1      x 1       1      (1     )
+
+  total pes active           : 576
+  mpi tasks per node               : 36
+
+This kernel uses Intel MKL Math library.
+
+To run the kernel on a single process, go to orig directory and run "make clean build run".
+
+To run the kernel on multiple processes using mpi, go to orig directory and run "make MPI=1 run".
+Note that mpi library should be available during compilation and execution.
+To change the number of processes, specify it on make command line similar to "make MPI=1 NPROCS=4 run"
+To use different mpi library than Intel MPI, please modify FC_0 in Makefile.
+
+Program entry of the kernel is inside of "kernel_driver.f90"
+
+"clubb_intr.F90" contains a call to kernel code block.
+
+Please contact Youngsung Kim(youngsun@ucar.edu) for any questions concerning this kernel.
