@@ -1,0 +1,47 @@
+CESM2 SILHS kernel extracted from CESM2
+
+This kernel is generated from "https://svn-ccsm-models.cgd.ucar.edu/cam1/branches/subcol_SILHS_UWM_v2/" using Intel compiler on NCAR Cheyenne Cluster.
+
+Some of CESM configurations are :
+
+  Machine     : cheyenne
+  Caseroot    : /glade/scratch/youngsun/subcol_SILHS_UWM_test
+  Timeroot    : /glade/scratch/youngsun/subcol_SILHS_UWM_test/Tools
+  User        : youngsun
+  Curr Date   : Tue Jul  9 12:32:07 2019
+  grid        : a%1.9x2.5_l%1.9x2.5_oi%1.9x2.5_r%r05_g%gland4_w%null_z%null_m%gx1v6
+  compset     : 2000_CAM60_CLM50%SP_CICE%PRES_DOCN%DOM_MOSART_CISM2%NOEVOLVE_SWAV_SIAC_SESP
+  run type    : startup, continue_run = FALSE (inittype = TRUE)
+  stop option : nmonths, stop_n = 14
+  run length  : 424 days (423.979166667 for ocean)
+
+  component       comp_pes    root_pe   tasks  x threads instances (stride)
+  ---------        ------     -------   ------   ------  ---------  ------
+  cpl = cpl        864         0        864    x 1       1      (1     )
+  atm = cam        864         0        864    x 1       1      (1     )
+  lnd = clm        864         0        864    x 1       1      (1     )
+  ice = cice       864         0        864    x 1       1      (1     )
+  ocn = docn       864         0        864    x 1       1      (1     )
+  rof = mosart     864         0        864    x 1       1      (1     )
+  glc = cism       864         0        864    x 1       1      (1     )
+  wav = swav       864         0        864    x 1       1      (1     )
+  iac = siac       1           0        1      x 1       1      (1     )
+  esp = sesp       1           0        1      x 1       1      (1     )
+
+  total pes active           : 864
+  mpi tasks per node               : 36
+
+This kernel uses three BLAS functions, which are included in this kernel.
+
+To run the kernel on a single process, go to orig directory and run "make clean run".
+
+To run the kernel on multiple processes using mpi, go to orig directory and run "make clean run MPI=1".
+Note that mpi library should be available during compilation and execution.
+To change the number of processes, specify it on make command line similar to "make run MPI=1 NPROCS=4"
+To use different mpi library than Intel MPI, please modify FC_0 in Makefile.
+
+Program entry of the kernel is inside of "kernel_driver.f90"
+
+"subcol_SILHS.F90" contains a call to kernel code block.
+
+Please contact Youngsung Kim(youngsun@ucar.edu) for any questions concerning this kernel.
