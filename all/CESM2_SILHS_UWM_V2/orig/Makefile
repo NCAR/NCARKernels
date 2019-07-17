@@ -17,7 +17,8 @@ ifdef MPI
 
 else
     FC_0 := ifort
-    FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -no-fma -O2 -debug minimal -free -fpp
+    #FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -no-fma -O2 -debug minimal -free -fpp
+    FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model fast -no-fma -O3 -debug minimal -free -fpp
     RUN_PREFIX :=
 
 endif

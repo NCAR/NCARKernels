@@ -157,7 +157,7 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
       INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
       LOGICAL :: kgen_evalstage, kgen_warmupstage, kgen_mainstage 
       COMMON / state / kgen_mpirank, kgen_openmptid, kgen_kernelinvoke, kgen_evalstage, kgen_warmupstage, kgen_mainstage 
-      INTEGER, PARAMETER :: KGEN_MAXITER = 1 
+      INTEGER, PARAMETER :: KGEN_MAXITER = 1000 
         
       TYPE(check_t) :: check_status 
       INTEGER*8 :: kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
@@ -185,6 +185,8 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
       CALL kr_subcol_gen_silhs_real__r8_dim3(corr_cholesky_mtx_2, kgen_unit, "corr_cholesky_mtx_2", .FALSE.) 
       READ (UNIT = kgen_unit) iter 
       READ (UNIT = kgen_unit) num_subcols 
+      print *,'nz: ',pverp-top_lev+1
+      print *,'num_subcols: ',num_subcols
       CALL kr_kgen_subcol_gen_silhs_subp1(pdf_params, kgen_unit, "pdf_params", .FALSE.) 
       READ (UNIT = kgen_unit) kgen_istrue 
       IF (kgen_istrue) THEN 
@@ -278,7 +280,7 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
          IF (kgen_mainstage) THEN 
                
              !verify init 
-             CALL kgen_init_verify(tolerance=1.D-14, minvalue=1.D-14, verboseLevel=1) 
+             CALL kgen_init_verify(tolerance=1.D-12, minvalue=1.D-14, verboseLevel=2) 
              CALL kgen_init_check(check_status, rank=kgen_mpirank) 
                
              !extern verify variables 
