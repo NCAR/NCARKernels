@@ -59,6 +59,7 @@
           
         kgen_unit_list = kgen_get_newunit() 
         OPEN (UNIT=kgen_unit_list, FILE=STATEFILE, STATUS="OLD", IOSTAT=kgen_ierr_list)
+        WRITE(*, *) "Opening (" // STATEFILE // ")" 
         IF (kgen_ierr_list .NE. 0) THEN
             WRITE(*, *) "kgen_statefile is not opened correctly. Please check that " // STATEFILE // " is a correct path." 
             STOP

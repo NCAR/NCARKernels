@@ -157,7 +157,7 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
       INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
       LOGICAL :: kgen_evalstage, kgen_warmupstage, kgen_mainstage 
       COMMON / state / kgen_mpirank, kgen_openmptid, kgen_kernelinvoke, kgen_evalstage, kgen_warmupstage, kgen_mainstage 
-      INTEGER, PARAMETER :: KGEN_MAXITER = 1000 
+      INTEGER, PARAMETER :: KGEN_MAXITER = 100 
         
       TYPE(check_t) :: check_status 
       INTEGER*8 :: kgen_start_clock, kgen_stop_clock, kgen_rate_clock 

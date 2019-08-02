@@ -9,6 +9,8 @@ FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -f
 
 MPI ?=
 
+pcols ?= 144
+
 ifdef MPI
     FC_0 := mpiifort
     FC_FLAGS_SET_0 := -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -no-fma -O2 -debug minimal -free -fpp -D_MPI
@@ -134,7 +136,7 @@ xerbla.o: xerbla.f
 	${FC_0} -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -no-fma -O2 -debug minimal -c -o $@ $<
 
 kernel_driver.o: kernel_driver.f90 subcol_SILHS.o silhs_api_module.o pdf_parameter_module.o clubb_precision.o hydromet_pdf_parameter_module.o latin_hypercube_driver_module.o parameters_silhs.o constants_clubb.o pdf_utilities.o math_utilities.o mt95.o generate_uniform_sample_module.o latin_hypercube_arrays.o silhs_importance_sample_module.o array_index.o error_code.o fill_holes.o grid_class.o stats_variables.o stats_type_utilities.o stats_type.o stat_file_module.o transform_to_pdf_module.o matrix_operations.o output_2D_samples_module.o clubb_api_module.o corr_varnce_module.o ppgrid.o ref_pres.o shr_kind_mod.o variables_diagnostic_module.o kgen_utils.o tprof_mod.o
-	${FC_0} ${FC_FLAGS_SET_0}  -D STATEFILE='"../data/kgen_statefile.lst"' -c -o $@ $<
+	${FC_0} ${FC_FLAGS_SET_0}  -D STATEFILE='"../data/spcols${pcols}/kgen_statefile.lst"' -c -o $@ $<
 
 kgen_utils.o: kgen_utils.f90
 	${FC_0} ${FC_FLAGS_SET_0} -c -o $@ $<
