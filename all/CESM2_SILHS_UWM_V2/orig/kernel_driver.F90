@@ -31,7 +31,9 @@
         INTEGER :: kgen_ierr_list, kgen_unit_list 
         INTEGER :: kgen_ierr, kgen_unit, kgen_case_count, kgen_count_verified 
         CHARACTER(LEN=1024) :: kgen_filepath 
-        REAL(KIND=kgen_dp) :: kgen_measure, kgen_total_time, kgen_min_time, kgen_max_time 
+        REAL(KIND=kgen_dp) :: kgen_measure
+        REAL(KIND=kgen_dp) :: kgen_total_time, kgen_avg_time
+        REAL(KIND=kgen_dp) :: kgen_total_rate, kgen_avg_rate
         REAL(KIND=8) :: kgen_array_sum 
         INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
         INTEGER :: myrank, mpisize 
@@ -52,8 +54,6 @@
 #endif 
           
         kgen_total_time = 0.0_kgen_dp 
-        kgen_min_time = HUGE(0.0_kgen_dp) 
-        kgen_max_time = 0.0_kgen_dp 
         kgen_case_count = 0 
         kgen_count_verified = 0 
           
@@ -165,8 +165,8 @@
                     !callsite part 
                     CALL subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filepath) 
                     kgen_total_time = kgen_total_time + kgen_measure 
-                    kgen_min_time = MIN( kgen_min_time, kgen_measure ) 
-                    kgen_max_time = MAX( kgen_max_time, kgen_measure ) 
+                    !kgen_min_time = MIN( kgen_min_time, kgen_measure ) 
+                    !kgen_max_time = MAX( kgen_max_time, kgen_measure ) 
                     IF (kgen_isverified) THEN 
                         kgen_count_verified = kgen_count_verified + 1 
                     END IF   
@@ -182,6 +182,8 @@
             WRITE (*, "(A)") "****************************************************" 
             WRITE (*, "(4X,A)") "kernel execution summary: gensilhs" 
             WRITE (*, "(A)") "****************************************************" 
+            kgen_avg_time = kgen_total_time / DBLE(kgen_case_count)
+            kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(SPCOLSSIZE,kind=kgen_dp)/kgen_avg_time
             IF (kgen_case_count == 0) THEN 
                 WRITE (*, *) "No data file is verified." 
             ELSE 
@@ -193,12 +195,11 @@
                 ELSE 
                     WRITE (*, "(4X,A)") "kernel: gensilhs: FAILED verification" 
                 END IF   
+                WRITE (*, "(4X,A19,I3)") "number of columns: ",SPCOLSSIZE
+                WRITE (*, "(4X,A19,I3)") "number of mpi ranks: ",mpisize
                 WRITE (*, *) "" 
-                WRITE (*, "(4X,A19,I3)") "number of processes: ", mpisize 
-                WRITE (*, *) "" 
-                WRITE (*, "(4X, A, E10.3)") "Average call time (usec): ", kgen_total_time / DBLE(kgen_case_count) 
-                WRITE (*, "(4X, A, E10.3)") "Minimum call time (usec): ", kgen_min_time 
-                WRITE (*, "(4X, A, E10.3)") "Maximum call time (usec): ", kgen_max_time 
+                WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_avg_time
+                WRITE (*, "(4X, A, F12.2)") "Average columns per sec : ", kgen_avg_rate
             END IF   
             WRITE (*, "(A)") "****************************************************" 
         END IF   
