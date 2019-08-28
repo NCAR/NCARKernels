@@ -50,7 +50,7 @@ module latin_hypercube_driver_module
 
       USE array_index, ONLY: iipdf_chi 
 
-      USE transform_to_pdf_module, ONLY: transform_uniform_sample_to_pdf 
+      USE transform_to_pdf_module, ONLY: transform_uniform_sample_to_pdf
 
       USE output_2d_samples_module, ONLY: output_2d_lognormal_dist_file, output_2d_uniform_dist_file 
 
@@ -137,6 +137,14 @@ module latin_hypercube_driver_module
     real( kind = core_rknd ), dimension(nz,num_samples,(pdf_dim+d_uniform_extra)) :: &
       X_u_all_levs ! Sample drawn from uniform distribution
 
+    real( kind = core_rknd ), dimension(pdf_dim+d_uniform_extra, nz,num_samples) :: &
+      X_u_all_levs_tmp ! Sample drawn from uniform distribution
+
+    real( kind = core_rknd ), dimension(pdf_dim, nz,num_samples) :: &
+      X_nl_all_levs_tmp ! Sample drawn from uniform distribution
+     
+
+
     integer :: &
       k_lh_start, & ! Height for preferentially sampling within cloud
       k, sample, i  ! Loop iterators
@@ -148,6 +156,8 @@ module latin_hypercube_driver_module
     ! Precipitation fraction in a component of the PDF, for each sample
 
     real( kind = core_rknd ), dimension(num_samples) :: precip_frac_i
+    real( kind = core_rknd ) cloud_frac_1_tmp(nz),cloud_frac_2_tmp(nz)
+    integer :: pdf_dim2
     ! ---- Begin Code ----
 
 
@@ -164,6 +174,7 @@ module latin_hypercube_driver_module
     ! Compute k_lh_start, the starting vertical grid level 
     !   for None sampling
 
+    !DBG print *,'generate_silhs_sample: point #1'
 
     k_lh_start = compute_k_lh_start( nz, rcm, pdf_params )
     if ( .not. l_calc_weights_all_levs_itime ) then
@@ -173,10 +184,12 @@ module latin_hypercube_driver_module
            ( iter, pdf_dim, d_uniform_extra, num_samples, sequence_length, & ! Intent(in)
              pdf_params(k_lh_start), hydromet_pdf_params(k_lh_start), &          ! Intent(in)
              X_u_all_levs(k_lh_start,:,:), lh_sample_point_weights(1,:)  )             ! Intent(out)
+    !DBG print *,'generate_silhs_sample: point #2'
                           
       forall ( k = 2:nz )
         lh_sample_point_weights(k,:) = lh_sample_point_weights(1,:)
       end forall
+    !DBG print *,'generate_silhs_sample: point #3'
       ! Generate uniform sample at other grid levels 
       !   by vertically correlating them
       
@@ -184,11 +197,13 @@ module latin_hypercube_driver_module
            ( nz, pdf_dim, d_uniform_extra, num_samples, &     ! Intent(in)
              k_lh_start, delta_zm, rcm, Lscale, rho_ds_zt, &      ! Intent(in)
              X_u_all_levs )                                       ! Intent(inout)
+    !DBG print *,'generate_silhs_sample: point #4'
     
     end if
     
     do k = 1, nz
     
+      ! print *,'generate_silhs_sample: point #5'
       if ( l_calc_weights_all_levs_itime ) then
         ! moved inside the loop to apply importance sampling for each layer
         ! 
@@ -197,6 +212,7 @@ module latin_hypercube_driver_module
             pdf_params(k), hydromet_pdf_params(k), &          ! Intent(in)
             X_u_all_levs(k,:,:), lh_sample_point_weights(k,:) )             ! Intent(out)
       end if
+      ! print *,'generate_silhs_sample: point #6'
       ! Determine mixture component for all levels
            
       where ( in_mixt_comp_1( X_u_all_levs(k,:,pdf_dim+1), pdf_params(k)%mixt_frac ) )
@@ -222,11 +238,16 @@ module latin_hypercube_driver_module
 
     end do ! k = 1 .. nz
 
+    !DBG print *,'generate_silhs_sample: point #7'
     call stats_accumulate_uniform_lh( nz, num_samples, l_in_precip, X_mixt_comp_all_levs, &
                                       X_u_all_levs(:,:,iiPDF_chi), pdf_params, &
                                       lh_sample_point_weights, k_lh_start )
+    !DBG print *,'generate_silhs_sample: point #8'
     ! Check to ensure uniform variates are in the appropriate range
 
+    
+    !!$acc parallel 
+    !!$acc loop collapse(2)
     do sample=1, num_samples
       do k=1, nz
         do i=1, pdf_dim+d_uniform_extra
@@ -238,8 +259,21 @@ module latin_hypercube_driver_module
         end do
       end do
     end do
+    !!$acc end parallel
     ! Sample loop
 
+    !DBG print *,'generate_silhs_sample: point #9: pdf_dim,d_uniform_sample_to_pdf:',pdf_dim,d_uniform_extra
+    cloud_frac_1_tmp(:) = pdf_params(:)%cloud_frac_1
+    cloud_frac_2_tmp(:) = pdf_params(:)%cloud_frac_2
+    pdf_dim2 = pdf_dim + d_uniform_extra
+    do k=1,nz
+    do sample = 1, num_samples
+       X_u_all_levs_tmp(:,k,sample) = X_u_all_levs(k,sample,:)
+       X_nl_all_levs_tmp(:,k,sample) = X_nl_all_levs(k,sample,:)
+    enddo
+    enddo
+    !$acc parallel 
+    !$acc loop collapse(2)
     do k = 1, nz
       ! Generate LH sample, represented by X_u and X_nl, for level k
       do sample = 1, num_samples, 1
@@ -250,13 +284,25 @@ module latin_hypercube_driver_module
                mu1(:,k), mu2(:,k), sigma1(:,k), sigma2(:,k), & ! In
                corr_cholesky_mtx_1(:,:,k), & ! In
                corr_cholesky_mtx_2(:,:,k), & ! In
-               X_u_all_levs(k,sample,:), X_mixt_comp_all_levs(k,sample), & ! In
+               !X_u_all_levs(k,sample,:), X_mixt_comp_all_levs(k,sample), & ! In
+               X_u_all_levs_tmp(:,k,sample), X_mixt_comp_all_levs(k,sample), & ! In
                pdf_params(k)%cloud_frac_1, pdf_params(k)%cloud_frac_2, & ! In
+               !cloud_frac_1_tmp(k), cloud_frac_2_tmp(k), & ! In
                l_in_precip(k,sample), & ! In
-               X_nl_all_levs(k,sample,:) ) ! Out
+               !X_nl_all_levs(k,sample,:) ) ! Out
+               X_nl_all_levs_tmp(:,k,sample) ) ! Out
       end do ! sample = 1, num_samples, 1
     end do ! k = 1, nz
+    !$acc end parallel 
+    do k=1,nz
+    do sample = 1, num_samples
+       X_u_all_levs(k,sample,:)  = X_u_all_levs_tmp(:,k,sample)
+       X_nl_all_levs(k,sample,:) = X_nl_all_levs_tmp(:,k,sample)
+    enddo
+    enddo
+ !    stop 'after ACC parallel region'
 
+    !DBG print *,'generate_silhs_sample: point #10'
     if ( l_output_2D_lognormal_dist ) then
       ! Eric Raut removed lh_rt and lh_thl from call to output_2D_lognormal_dist_file
       ! because they are no longer generated in generate_silhs_sample.

@@ -49,11 +49,13 @@ module array_index
     iiPDF_eta = -1, &
     iiPDF_w   = -1
 !$omp threadprivate(iiPDF_chi, iiPDF_eta, iiPDF_w)
+!$acc declare create(iiPDF_chi, iiPDF_eta, iiPDF_w)
 
 !$omp threadprivate(iiPDF_rr, iiPDF_rs, iiPDF_ri, iiPDF_rg)
 
   INTEGER, public :: iipdf_ncn = -1 
 !$omp threadprivate(iiPDF_Nr, iiPDF_Ns, iiPDF_Ni, iiPDF_Ng, iiPDF_Ncn)
+!$acc declare create(iiPDF_Ncn)
 
   PRIVATE 
 !===============================================================================

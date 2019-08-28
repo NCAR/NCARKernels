@@ -22,7 +22,61 @@ module transform_to_pdf_module
 
   contains
 !-------------------------------------------------------------------------------
+#if 0
+  subroutine test( pdf_dim, d_uniform_extra, pdf_dim2,  & ! In
+                   mu1, mu2, sigma1, sigma2, & ! In
+                   corr_Cholesky_mtx_1, & ! In
+                   corr_Cholesky_mtx_2, & ! In
+                   X_u_one_lev, X_mixt_comp_one_lev, & ! In
+               cloud_frac_1, cloud_frac_2, & ! In
+               l_in_precip_one_lev, & ! In
+               X_nl_one_lev ) ! Out
 
+    !$acc routine vector
+
+    USE array_index, ONLY: iipdf_chi, iipdf_eta, iipdf_w
+
+    USE clubb_precision, ONLY: core_rknd 
+
+    integer, intent(in) :: &
+      pdf_dim, &  ! `d' Number of variates (normally 3 + microphysics specific variables)
+      d_uniform_extra, & ! Number of variates included in uniform sample only (often 2)
+      pdf_dim2
+
+    real( kind = core_rknd ), dimension(pdf_dim), intent(in) :: &
+      mu1,    & ! Means of the hydrometeors, 1st comp. (chi, eta, w, <hydrometeors>)  [units vary]
+      mu2,    & ! Means of the hydrometeors, 2nd comp. (chi, eta, w, <hydrometeors>)  [units vary]
+      sigma1, & ! Stdevs of the hydrometeors, 1st comp. (chi, eta, w, <hydrometeors>) [units vary]
+      sigma2    ! Stdevs of the hydrometeors, 2nd comp. (chi, eta, w, <hydrometeors>) [units vary]
+
+    real( kind = core_rknd ), dimension(pdf_dim,pdf_dim), intent(in) :: &
+      corr_Cholesky_mtx_1, & ! Correlations Cholesky matrix (1st comp.)  [-]
+      corr_Cholesky_mtx_2    ! Correlations Cholesky matrix (2nd comp.)  [-]
+
+    real( kind = core_rknd ), intent(in), dimension(pdf_dim2) :: &
+      X_u_one_lev ! Sample drawn from uniform distribution from a particular grid level
+
+    integer, intent(in) :: &
+      X_mixt_comp_one_lev ! Whether we're in the 1st or 2nd mixture component
+
+    real( kind = core_rknd ), intent(in) :: &
+      cloud_frac_1, & ! Cloud fraction (1st PDF component)    [-]
+      cloud_frac_2    ! Cloud fraction (2nd PDF component)    [-]
+
+    logical, intent(in) :: &
+      l_in_precip_one_lev ! Whether we are in precipitation (T/F)
+
+    real( kind = core_rknd ), intent(out), dimension(pdf_dim) :: &
+      X_nl_one_lev ! Sample that is transformed ultimately to normal-lognormal
+    ! Local Variables
+
+
+    integer :: i
+    i = max( iiPDF_chi, iiPDF_eta, iiPDF_w )
+    !DBG print *,'i:= ',i
+
+  end subroutine test
+#endif
   subroutine transform_uniform_sample_to_pdf &
              ( pdf_dim, d_uniform_extra, & ! In
                mu1, mu2, sigma1, sigma2, & ! In
@@ -32,6 +86,7 @@ module transform_to_pdf_module
                cloud_frac_1, cloud_frac_2, & ! In
                l_in_precip_one_lev, & ! In
                X_nl_one_lev ) ! Out
+   !$acc routine vector
 ! Description:
 !   This subroutine transforms a uniform sample to a sample from CLUBB's PDF.
 ! References:
@@ -59,7 +114,7 @@ module transform_to_pdf_module
 
     integer, intent(in) :: &
       pdf_dim, &  ! `d' Number of variates (normally 3 + microphysics specific variables)
-      d_uniform_extra ! Number of variates included in uniform sample only (often 2)
+      d_uniform_extra  ! Number of variates included in uniform sample only (often 2)
 
     real( kind = core_rknd ), dimension(pdf_dim,pdf_dim), intent(in) :: &
       corr_Cholesky_mtx_1, & ! Correlations Cholesky matrix (1st comp.)  [-]
@@ -112,6 +167,7 @@ module transform_to_pdf_module
 
 
     i = max( iiPDF_chi, iiPDF_eta, iiPDF_w )
+    !DBG print *,'i:= ',i
     l_d_variable_lognormal(1:i) = .false. ! The 1st 3 variates
     l_d_variable_lognormal(i+1:pdf_dim) = .true.  ! Hydrometeors
     !---------------------------------------------------------------------------
@@ -122,13 +178,13 @@ module transform_to_pdf_module
     ! to reduce the condition number of the matrices. Sigma' is the correlation
     ! matrix. This code deals directly with the correlation matrix. Hence we don't
     ! need any rescaling here.
+    !DBG print *,'transform_uniform_sample_to_pdf: point #1'
 
-
+  
     l_Sigma1_scaling = .false.
     l_Sigma2_scaling = .false.
     Sigma1_scaling = one
     Sigma2_scaling = one
-
     if ( X_mixt_comp_one_lev == 1 ) then
 
       Sigma1_Cholesky = zero ! Initialize the variance to zero
@@ -151,6 +207,7 @@ module transform_to_pdf_module
     end if ! X_mixt_comp_one_lev == 1
     ! Compute the new set of sample points using the update variance matrices
     ! for this level
+    !DBG print *,'transform_uniform_sample_to_pdf: point #2'
 
     call sample_points( pdf_dim, d_uniform_extra, &  ! intent(in)
                         mu1, mu2, &  ! intent(in)
@@ -161,6 +218,7 @@ module transform_to_pdf_module
                         Sigma1_scaling, Sigma2_scaling, & ! intent(in)
                         l_Sigma1_scaling, l_Sigma2_scaling, & ! intent(in)
                         X_nl_one_lev ) ! intent(out)
+    !DBG print *,'transform_uniform_sample_to_pdf: point #3'
     ! Zero precipitation hydrometeors if not in precipitation
 
     if ( .not. l_in_precip_one_lev ) then
@@ -174,11 +232,13 @@ module transform_to_pdf_module
     ! closure under extreme conditions.  This code forces the sample point
     ! values of chi to be saturated or unsaturated to match the condition
     ! enforced by the clipping of PDF component cloud fraction.
+    !DBG print *,'transform_uniform_sample_to_pdf: point #4'
 
     if ( l_clip_extreme_chi_sample_pts ) then
 
        if ( X_mixt_comp_one_lev == 1 ) then
           ! The sample is from the 1st PDF component.
+    !DBG print *,'transform_uniform_sample_to_pdf: point #5'
 
 
           if ( cloud_frac_1 < epsilon( cloud_frac_1 ) ) then
@@ -200,10 +260,12 @@ module transform_to_pdf_module
              endif ! X_nl_one_lev(iiPDF_chi) <= zero
 
           endif ! cloud_frac_1
+    !DBG print *,'transform_uniform_sample_to_pdf: point #6'
 
        elseif ( X_mixt_comp_one_lev == 2 ) then
           ! The sample is from the 2nd PDF component.
 
+    !DBG print *,'transform_uniform_sample_to_pdf: point #7'
 
           if ( cloud_frac_2 < epsilon( cloud_frac_2 ) ) then
              ! Cloud fraction in the 2nd PDF component is 0.
@@ -226,15 +288,16 @@ module transform_to_pdf_module
           endif ! cloud_frac_2
 
        endif ! X_mixt_comp_one_lev
+    !DBG print *,'transform_uniform_sample_to_pdf: point #8'
 
     endif ! l_clip_extreme_chi_sample_pts
-
 
     return
   end subroutine transform_uniform_sample_to_pdf
 !---------------------------------------------------------------------------------------------------
 
   subroutine zero_precip_hydromets( pdf_dim, X_nl_one_lev )
+      !$acc routine vector
   ! Description:
   !   Sets the sample values of the precipitating hydrometeors to zero
   ! References:
@@ -283,6 +346,7 @@ module transform_to_pdf_module
                             Sigma1_scaling, Sigma2_scaling, &
                             l_Sigma1_scaling, l_Sigma2_scaling, &
                             X_nl_one_lev )
+      !$acc routine vector
 ! Description:
 !   Generates n random samples from a d-dim Gaussian-mixture PDF.
 !   Uses Latin hypercube method.
@@ -334,6 +398,7 @@ module transform_to_pdf_module
     ! ---- Begin Code ----
     ! Generate n samples of a d-variate Gaussian mixture
     ! by transforming Latin hypercube points, X_u_one_lev.
+    integer :: i
 
 
     call gaus_mixt_points( pdf_dim, d_uniform_extra, mu1, mu2, &  ! intent(in)
@@ -344,9 +409,19 @@ module transform_to_pdf_module
                            X_nl_one_lev ) ! intent(out)
     ! Convert lognormal variates (e.g. Ncn and rr) to lognormal
 
+    
+#if 1
+    !$acc loop seq
+    do i=1,pdf_dim 
+       if(l_d_variable_lognormal(i)) then 
+          X_nl_one_lev(i) = exp( X_nl_one_lev(i) )
+       endif
+    enddo
+#else
     where ( l_d_variable_lognormal )
       X_nl_one_lev(:) = exp( X_nl_one_lev(:) )
     end where
+#endif
 
     return
   end subroutine sample_points
@@ -359,6 +434,7 @@ module transform_to_pdf_module
                                l_Sigma1_scaling, l_Sigma2_scaling, & ! Intent(in)
                                X_u_one_lev, X_mixt_comp_one_lev, & ! Intent(in)
                                X_nl_one_lev ) ! Intent(out)
+     !$acc routine vector 
 ! Description:
 !   Generates n random samples from a d-dimensional Gaussian-mixture PDF.
 !   Uses Latin hypercube method.
@@ -415,34 +491,41 @@ module transform_to_pdf_module
 #ifdef _MKL
     call vdcdfnorminv( pdf_dim, X_u_one_lev, std_normal )
 #else
+    !DBG print *,'gaus_mixt_points: before ltqnorm()'
     do ivar = 1, pdf_dim
       std_normal(ivar) = ltqnorm( X_u_one_lev(ivar) )
     end do
+    !DBG print *,'gaus_mixt_points: after ltqnorm()'
 #endif
       ! Determine which mixture fraction we are in.
 
 
     if ( X_mixt_comp_one_lev == 1 ) then
 
+      !DBG print *,'gaus_mixt_points: before multiply_cholesky()'
       call multiply_Cholesky &
           ( pdf_dim, std_normal, & ! In
             mu1, Sigma1_Cholesky, &  ! In
             Sigma1_scaling, l_Sigma1_scaling, & ! In
             X_nl_one_lev(1:pdf_dim) ) ! Out
+      !DBG print *,'gaus_mixt_points: after multiply_cholesky()'
 
     else if ( X_mixt_comp_one_lev == 2 ) then
 
+      !DBG print *,'gaus_mixt_points: before multiply_cholesky()'
       call multiply_Cholesky &
            ( pdf_dim, std_normal, & ! In
              mu2, Sigma2_Cholesky, &  ! In
              Sigma2_scaling, l_Sigma2_scaling, & ! In
              X_nl_one_lev(1:pdf_dim) ) ! Out
+      !DBG print *,'gaus_mixt_points: after multiply_cholesky()'
 
     else
-      print *, X_mixt_comp_one_lev
+      !DBG print *, X_mixt_comp_one_lev
       stop "Error determining mixture component in gaus_mixt_points"
 
     end if ! X_mixt_comp_one_lev
+    !DBG print *,'gaus_mixt_points: after multiply_Cholesky()'
 
     return
   end subroutine gaus_mixt_points
@@ -450,6 +533,7 @@ module transform_to_pdf_module
 !-----------------------------------------------------------------------
 
   function ltqnorm( p_core_rknd )
+     !$acc routine vector 
 ! Description:
 !   This function is ported to Fortran from the same function written in Matlab,
 !    see the following description of this function.  Hongli Jiang, 2/17/2004
@@ -622,6 +706,7 @@ module transform_to_pdf_module
   subroutine multiply_Cholesky( pdf_dim, std_normal, mu, Sigma_Cholesky, &
                                   Sigma_scaling, l_scaled, &
                                   nonstd_normal )
+     !$acc routine vector
 ! Description:
 !   Computes the nonstd_normal from the Cholesky factorization of Sigma,
 !   std_normal, and mu.
@@ -636,6 +721,7 @@ module transform_to_pdf_module
     implicit none
 
     external :: dtrmv ! BLAS upper/lower triangular multiplication subroutine
+!$acc routine(dtrmv)
     ! Parameters
 
     integer, parameter :: &
@@ -677,10 +763,11 @@ module transform_to_pdf_module
 
     if ( kind( 0.0_core_rknd ) == kind( 0.0D0 ) ) then
       ! core_rknd is double precision
-
+      !DBG print *,'multiply_Cholesky: before call to dtrmv'
       call dtrmv( 'Lower', 'N', 'N', pdf_dim, Sigma_Cholesky, pdf_dim, & ! In
                   Sigma_times_std_normal, & ! In/out
                   incx ) ! In
+      !DBG print *,'multiply_Cholesky: after call to dtrmv'
 
     else if ( kind( 0.0_core_rknd ) == kind( 0.0 ) ) then
       ! core_rknd is single precision

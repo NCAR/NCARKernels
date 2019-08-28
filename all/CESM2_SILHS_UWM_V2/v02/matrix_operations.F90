@@ -31,6 +31,7 @@ module matrix_operations
 ! References:
 !   None
 !-----------------------------------------------------------------------
+     !$acc routine vector
 
 
       USE clubb_precision, ONLY: core_rknd 
