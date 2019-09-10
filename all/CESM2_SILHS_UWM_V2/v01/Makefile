@@ -24,7 +24,7 @@ MPI ?=
 #
 #endif
 
-ALL_OBJS := subcol_SILHS.o silhs_api_module.o pdf_parameter_module.o clubb_precision.o hydromet_pdf_parameter_module.o latin_hypercube_driver_module.o parameters_silhs.o constants_clubb.o pdf_utilities.o math_utilities.o mt95.o generate_uniform_sample_module.o latin_hypercube_arrays.o silhs_importance_sample_module.o array_index.o error_code.o fill_holes.o grid_class.o stats_variables.o stats_type_utilities.o stats_type.o stat_file_module.o transform_to_pdf_module.o matrix_operations.o output_2D_samples_module.o clubb_api_module.o corr_varnce_module.o ppgrid.o ref_pres.o shr_kind_mod.o variables_diagnostic_module.o kernel_driver.o kgen_utils.o tprof_mod.o dtrmv.o lsame.o xerbla.o
+ALL_OBJS := subcol_SILHS.o silhs_api_module.o pdf_parameter_module.o clubb_precision.o hydromet_pdf_parameter_module.o latin_hypercube_driver_module.o parameters_silhs.o constants_clubb.o pdf_utilities.o math_utilities.o mt95.o generate_uniform_sample_module.o latin_hypercube_arrays.o silhs_importance_sample_module.o array_index.o error_code.o fill_holes.o grid_class.o stats_variables.o stats_type_utilities.o stats_type.o stat_file_module.o transform_to_pdf_module.o matrix_operations.o output_2D_samples_module.o clubb_api_module.o corr_varnce_module.o ppgrid.o ref_pres.o shr_kind_mod.o variables_diagnostic_module.o kernel_driver.o kgen_utils.o tprof_mod.o dtrmv.o strmv.o lsame.o xerbla.o
 
 build: ${ALL_OBJS}
 	${FC} ${FC_FLAGS} -o kernel.exe $^  
@@ -127,6 +127,9 @@ variables_diagnostic_module.o: variables_diagnostic_module.F90 kgen_utils.o tpro
 
 dtrmv.o: dtrmv.f lsame.o
 	${FC} ${FC_FLAGS_LOW} -c -o $@ $<
+
+strmv.o: strmv.f lsame.o xerbla.o
+	${FC} -qno-opt-dynamic-align -convert big_endian -assume byterecl -ftz -traceback -assume realloc_lhs -fp-model source -no-fma -O2 -debug minimal -c -o $@ $<
 
 lsame.o: lsame.f
 	${FC} ${FC_FLAGS_LOW} -c -o $@ $<
