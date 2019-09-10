@@ -59,7 +59,7 @@
 *
 *  =====================================================================
       SUBROUTINE xerbla( SRNAME, INFO )
-*$acc routine vector
+*$acc routine seq
 *
 *  -- Reference BLAS level1 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --

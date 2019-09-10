@@ -104,7 +104,8 @@ ifeq ($(COMPILER),pgi-gpu)
   FC := pgf90
   ifeq ($(DEBUG),yes) 
      # FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=all  # provides lots of information about code optimizations
-     FC_FLAGS += -g -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:managed -traceback
+     #FC_FLAGS += -g -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,:managed -traceback
+     FC_FLAGS += -g -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,:managed -traceback
      FC_FLAGS_LOW := $(FC_FLAGS)
   else
      # FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=all  # provides lots of information about code optimizations
@@ -114,7 +115,9 @@ ifeq ($(COMPILER),pgi-gpu)
      #    -ta=tesla:cc50,managed :  call to cuDeviceTotalMem returned error 101: Invalid device
      #    -ta=tesla:cc60,managed :  call to cuDeviceTotalMem returned error 101: Invalid device
      #    -ta=tesla:cc70,managed :  hangs 
-     FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,managed
+     #FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,managed
+     FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70
+     #FC_FLAGS += -r8 -O2 -tp=skylake-64 -Minfo=accel -ta=tesla:cc70,managed
      FC_FLAGS_LOW := $(FC_FLAGS)
   endif
   LD_FLAGS +=

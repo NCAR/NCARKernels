@@ -146,7 +146,7 @@
 *>
 *  =====================================================================
       SUBROUTINE dtrmv(UPLO,TRANS,DIAG,N,A,LDA,X,INCX)
-*$acc routine vector
+*$acc routine seq
 *
 *  -- Reference BLAS level2 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --

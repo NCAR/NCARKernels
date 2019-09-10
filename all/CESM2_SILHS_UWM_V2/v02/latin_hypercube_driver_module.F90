@@ -272,7 +272,7 @@ module latin_hypercube_driver_module
        X_nl_all_levs_tmp(:,k,sample) = X_nl_all_levs(k,sample,:)
     enddo
     enddo
-    !$acc parallel 
+    !$acc parallel
     !$acc loop collapse(2)
     do k = 1, nz
       ! Generate LH sample, represented by X_u and X_nl, for level k
@@ -293,7 +293,7 @@ module latin_hypercube_driver_module
                X_nl_all_levs_tmp(:,k,sample) ) ! Out
       end do ! sample = 1, num_samples, 1
     end do ! k = 1, nz
-    !$acc end parallel 
+    !$acc end parallel
     do k=1,nz
     do sample = 1, num_samples
        X_u_all_levs(k,sample,:)  = X_u_all_levs_tmp(:,k,sample)
