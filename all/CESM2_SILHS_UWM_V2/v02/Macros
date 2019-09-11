@@ -93,7 +93,7 @@ endif
 # ********* PGI compiler options  ************
 ifeq ($(COMPILER),pgi)
   FC := pgf90
-  FC_FLAGS += -O2 -tp=haswell-64 -fast 
+  FC_FLAGS += -O2 -tp=skylake-64 -fast 
   FC_FLAGS_LOW := $(FC_FLAGS)
   LD_FLAGS +=
   FC_FLAGS +=
@@ -115,9 +115,11 @@ ifeq ($(COMPILER),pgi-gpu)
      #    -ta=tesla:cc50,managed :  call to cuDeviceTotalMem returned error 101: Invalid device
      #    -ta=tesla:cc60,managed :  call to cuDeviceTotalMem returned error 101: Invalid device
      #    -ta=tesla:cc70,managed :  hangs 
+     # FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,maxregcount:30
+     #   GP100
      #FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,managed
-     FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70
-     #FC_FLAGS += -r8 -O2 -tp=skylake-64 -Minfo=accel -ta=tesla:cc70,managed
+     #   V100
+     FC_FLAGS += -O2 -tp=skylake-64 -Minfo=accel -ta=tesla:cc70,managed
      FC_FLAGS_LOW := $(FC_FLAGS)
   endif
   LD_FLAGS +=

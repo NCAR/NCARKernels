@@ -174,7 +174,6 @@ module latin_hypercube_driver_module
     ! Compute k_lh_start, the starting vertical grid level 
     !   for None sampling
 
-    !DBG print *,'generate_silhs_sample: point #1'
 
     k_lh_start = compute_k_lh_start( nz, rcm, pdf_params )
     if ( .not. l_calc_weights_all_levs_itime ) then
@@ -184,12 +183,10 @@ module latin_hypercube_driver_module
            ( iter, pdf_dim, d_uniform_extra, num_samples, sequence_length, & ! Intent(in)
              pdf_params(k_lh_start), hydromet_pdf_params(k_lh_start), &          ! Intent(in)
              X_u_all_levs(k_lh_start,:,:), lh_sample_point_weights(1,:)  )             ! Intent(out)
-    !DBG print *,'generate_silhs_sample: point #2'
                           
       forall ( k = 2:nz )
         lh_sample_point_weights(k,:) = lh_sample_point_weights(1,:)
       end forall
-    !DBG print *,'generate_silhs_sample: point #3'
       ! Generate uniform sample at other grid levels 
       !   by vertically correlating them
       
@@ -197,7 +194,6 @@ module latin_hypercube_driver_module
            ( nz, pdf_dim, d_uniform_extra, num_samples, &     ! Intent(in)
              k_lh_start, delta_zm, rcm, Lscale, rho_ds_zt, &      ! Intent(in)
              X_u_all_levs )                                       ! Intent(inout)
-    !DBG print *,'generate_silhs_sample: point #4'
     
     end if
     
@@ -238,11 +234,9 @@ module latin_hypercube_driver_module
 
     end do ! k = 1 .. nz
 
-    !DBG print *,'generate_silhs_sample: point #7'
     call stats_accumulate_uniform_lh( nz, num_samples, l_in_precip, X_mixt_comp_all_levs, &
                                       X_u_all_levs(:,:,iiPDF_chi), pdf_params, &
                                       lh_sample_point_weights, k_lh_start )
-    !DBG print *,'generate_silhs_sample: point #8'
     ! Check to ensure uniform variates are in the appropriate range
 
     
@@ -262,7 +256,6 @@ module latin_hypercube_driver_module
     !!$acc end parallel
     ! Sample loop
 
-    !DBG print *,'generate_silhs_sample: point #9: pdf_dim,d_uniform_sample_to_pdf:',pdf_dim,d_uniform_extra
     cloud_frac_1_tmp(:) = pdf_params(:)%cloud_frac_1
     cloud_frac_2_tmp(:) = pdf_params(:)%cloud_frac_2
     pdf_dim2 = pdf_dim + d_uniform_extra
@@ -302,7 +295,6 @@ module latin_hypercube_driver_module
     enddo
  !    stop 'after ACC parallel region'
 
-    !DBG print *,'generate_silhs_sample: point #10'
     if ( l_output_2D_lognormal_dist ) then
       ! Eric Raut removed lh_rt and lh_thl from call to output_2D_lognormal_dist_file
       ! because they are no longer generated in generate_silhs_sample.

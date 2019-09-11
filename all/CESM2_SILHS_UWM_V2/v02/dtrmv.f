@@ -260,9 +260,11 @@
 *
           IF (lsame(uplo,'U')) THEN
               IF (incx.EQ.1) THEN
+                  !$acc loop seq
                   DO 20 j = 1,n
                       IF (x(j).NE.zero) THEN
                           temp = x(j)
+                          !$acc loop seq
                           DO 10 i = 1,j - 1
                               x(i) = x(i) + temp*a(i,j)
    10                     CONTINUE
@@ -271,10 +273,12 @@
    20             CONTINUE
               ELSE
                   jx = kx
+                          !$acc loop seq
                   DO 40 j = 1,n
                       IF (x(jx).NE.zero) THEN
                           temp = x(jx)
                           ix = kx
+                          !$acc loop seq
                           DO 30 i = 1,j - 1
                               x(ix) = x(ix) + temp*a(i,j)
                               ix = ix + incx
@@ -286,9 +290,11 @@
               END IF
           ELSE
               IF (incx.EQ.1) THEN
+                          !$acc loop seq
                   DO 60 j = n,1,-1
                       IF (x(j).NE.zero) THEN
                           temp = x(j)
+                          !$acc loop seq
                           DO 50 i = n,j + 1,-1
                               x(i) = x(i) + temp*a(i,j)
    50                     CONTINUE
@@ -298,10 +304,12 @@
               ELSE
                   kx = kx + (n-1)*incx
                   jx = kx
+                          !$acc loop seq
                   DO 80 j = n,1,-1
                       IF (x(jx).NE.zero) THEN
                           temp = x(jx)
                           ix = kx
+                          !$acc loop seq
                           DO 70 i = n,j + 1,-1
                               x(ix) = x(ix) + temp*a(i,j)
                               ix = ix - incx
@@ -319,9 +327,11 @@
 *
           IF (lsame(uplo,'U')) THEN
               IF (incx.EQ.1) THEN
+                          !$acc loop seq
                   DO 100 j = n,1,-1
                       temp = x(j)
                       IF (nounit) temp = temp*a(j,j)
+                          !$acc loop seq
                       DO 90 i = j - 1,1,-1
                           temp = temp + a(i,j)*x(i)
    90                 CONTINUE
@@ -329,10 +339,12 @@
   100             CONTINUE
               ELSE
                   jx = kx + (n-1)*incx
+                          !$acc loop seq
                   DO 120 j = n,1,-1
                       temp = x(jx)
                       ix = jx
                       IF (nounit) temp = temp*a(j,j)
+                          !$acc loop seq
                       DO 110 i = j - 1,1,-1
                           ix = ix - incx
                           temp = temp + a(i,j)*x(ix)
@@ -343,9 +355,11 @@
               END IF
           ELSE
               IF (incx.EQ.1) THEN
+                          !$acc loop seq
                   DO 140 j = 1,n
                       temp = x(j)
                       IF (nounit) temp = temp*a(j,j)
+                          !$acc loop seq
                       DO 130 i = j + 1,n
                           temp = temp + a(i,j)*x(i)
   130                 CONTINUE
@@ -353,10 +367,12 @@
   140             CONTINUE
               ELSE
                   jx = kx
+                          !$acc loop seq
                   DO 160 j = 1,n
                       temp = x(jx)
                       ix = jx
                       IF (nounit) temp = temp*a(j,j)
+                          !$acc loop seq
                       DO 150 i = j + 1,n
                           ix = ix + incx
                           temp = temp + a(i,j)*x(ix)

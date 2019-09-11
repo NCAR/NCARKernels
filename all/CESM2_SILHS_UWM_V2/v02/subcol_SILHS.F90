@@ -188,21 +188,18 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
       print *,'nz: ',pverp-top_lev+1
       print *,'num_subcols: ',num_subcols
       CALL kr_kgen_subcol_gen_silhs_subp1(pdf_params, kgen_unit, "pdf_params", .FALSE.) 
-      !DBG print *,'point #1'
       READ (UNIT = kgen_unit) kgen_istrue 
       IF (kgen_istrue) THEN 
           READ (UNIT = kgen_unit) kgen_array_sum 
           READ (UNIT = kgen_unit) rho_ds_zt 
           CALL kgen_array_sumcheck("rho_ds_zt", kgen_array_sum, DBLE(SUM(rho_ds_zt, mask=(rho_ds_zt .eq. rho_ds_zt))), .TRUE.) 
       END IF   
-      !DBG print *,'point #2'
       READ (UNIT = kgen_unit) kgen_istrue 
       IF (kgen_istrue) THEN 
           READ (UNIT = kgen_unit) kgen_array_sum 
           READ (UNIT = kgen_unit) delta_zm 
           CALL kgen_array_sumcheck("delta_zm", kgen_array_sum, DBLE(SUM(delta_zm, mask=(delta_zm .eq. delta_zm))), .TRUE.) 
       END IF   
-      !DBG print *,'point #3'
       READ (UNIT = kgen_unit) kgen_istrue 
       IF (kgen_istrue) THEN 
           READ (UNIT = kgen_unit) kgen_array_sum 
@@ -210,25 +207,21 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
           CALL kgen_array_sumcheck("rcm_in", kgen_array_sum, DBLE(SUM(rcm_in, mask=(rcm_in .eq. rcm_in))), .TRUE.) 
       END IF   
       READ (UNIT = kgen_unit) l_calc_weights_all_levs_itime 
-      !DBG print *,'point #4'
       CALL kr_subcol_gen_silhs_real__r8_dim3(x_nl_all_levs_raw, kgen_unit, "x_nl_all_levs_raw", .FALSE.) 
       CALL kr_subcol_gen_silhs_real__r8_dim2(lh_sample_point_weights, kgen_unit, "lh_sample_point_weights", .FALSE.) 
       CALL kr_subcol_gen_silhs_integer___dim2(x_mixt_comp_all_levs, kgen_unit, "x_mixt_comp_all_levs", .FALSE.) 
-      !DBG print *,'point #5'
         
       !extern output variables 
       CALL kr_externs_out_mt95(kgen_unit) 
       CALL kr_externs_out_generate_uniform_sample_module(kgen_unit) 
       CALL kr_externs_out_error_code(kgen_unit) 
       CALL kr_externs_out_output_2d_samples_module(kgen_unit) 
-      !DBG print *,'point #6'
         
       !local output variables 
       CALL kr_subcol_gen_silhs_real__r8_dim3(kgenref_x_nl_all_levs_raw, kgen_unit, "kgenref_x_nl_all_levs_raw", .FALSE.) 
       CALL kr_subcol_gen_silhs_real__r8_dim2(kgenref_lh_sample_point_weights, kgen_unit, "kgenref_lh_sample_point_weights", &
       &.FALSE.) 
       CALL kr_subcol_gen_silhs_integer___dim2(kgenref_x_mixt_comp_all_levs, kgen_unit, "kgenref_x_mixt_comp_all_levs", .FALSE.) 
-      !DBG print *,'point #7'
 
 
       ! Determine num of columns and which chunk we're working on and what timestep
@@ -284,19 +277,16 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
                 hydromet_pdf_params, &                             ! In
                 X_nl_all_levs_raw, X_mixt_comp_all_levs, &         ! Out
                 lh_sample_point_weights)                           ! Out
-         !DBG print *,'point #8'
          IF (kgen_mainstage) THEN 
                
              !verify init 
              CALL kgen_init_verify(tolerance=1.D-12, minvalue=1.D-14, verboseLevel=2) 
              CALL kgen_init_check(check_status, rank=kgen_mpirank) 
                
-         !DBG print *,'point #9'
              !extern verify variables 
              CALL kv_externs_mt95(check_status) 
              CALL kv_externs_generate_uniform_sample_module(check_status) 
              CALL kv_externs_output_2d_samples_module(check_status) 
-         !DBG print *,'point #10'
                
              !local verify variables 
              CALL kv_subcol_gen_silhs_real__r8_dim3("x_nl_all_levs_raw", check_status, x_nl_all_levs_raw, &
@@ -308,7 +298,6 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
              IF (check_status%rank == 0) THEN 
                  WRITE (*, *) "" 
              END IF   
-         !DBG print *,'point #11'
              IF (kgen_verboseLevel > 0) THEN 
                  IF (check_status%rank == 0) THEN 
                      WRITE (*, *) "Number of output variables: ", check_status%numTotal 
@@ -342,7 +331,6 @@ SUBROUTINE subcol_gen_silhs(kgen_unit, kgen_measure, kgen_isverified, kgen_filep
              call mpi_barrier(mpi_comm_world, kgen_ierr) 
 #endif 
                
-         !DBG print *,'point #12'
              CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
              DO kgen_intvar = 1, KGEN_MAXITER 
          call generate_silhs_sample_api &
