@@ -1,10 +1,10 @@
 # Conditional Makefile macros for this kernel & version:
 
 # User settings (all case-insensitive):
-#COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
+COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
 #COMPILER = gnu       # Intel, GNU, ARM (later, PGI?)
 #COMPILER = pgi
-COMPILER = pgi-gpu
+#COMPILER = pgi-gpu
 ARCH     = bdw         # Not currently used (using xHost/native modes)
 MPI      = no          # Yes/No, True/False or Enabled/Disabled
 DEBUG    = no
@@ -119,7 +119,7 @@ ifeq ($(COMPILER),pgi-gpu)
      #   GP100
      #FC_FLAGS += -O2 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc60,managed
      #   V100
-     FC_FLAGS += -O2 -tp=skylake-64 -Minfo=accel -ta=tesla:cc70,managed
+     FC_FLAGS += -O3 -fast -tp=skylake-64 -Minfo=all -ta=tesla:cc70,maxregcount:72,managed
      FC_FLAGS_LOW := $(FC_FLAGS)
   endif
   LD_FLAGS +=

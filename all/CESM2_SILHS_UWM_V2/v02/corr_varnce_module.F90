@@ -107,6 +107,7 @@ module corr_varnce_module
       REAL(KIND=8) :: kgen_array_sum 
         
       READ (UNIT = kgen_unit) pdf_dim 
+      print *,'kr_externs_in_corr_varnce_module: pdf_dim: ',pdf_dim
   END SUBROUTINE kr_externs_in_corr_varnce_module 
     
 end module corr_varnce_module

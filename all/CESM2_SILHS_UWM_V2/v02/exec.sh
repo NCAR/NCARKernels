@@ -16,5 +16,6 @@ ulimit -s unlimited
 module list
 
 echo $LD_LIBRARY_PATH
+#nvprof --print-gpu-trace ./kernel.exe
 nvvp ./kernel.exe
 

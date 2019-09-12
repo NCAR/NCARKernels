@@ -144,7 +144,6 @@ module latin_hypercube_driver_module
       X_nl_all_levs_tmp ! Sample drawn from uniform distribution
      
 
-
     integer :: &
       k_lh_start, & ! Height for preferentially sampling within cloud
       k, sample, i  ! Loop iterators
