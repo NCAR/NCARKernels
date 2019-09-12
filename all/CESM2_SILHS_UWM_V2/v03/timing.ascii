@@ -1,0 +1,84 @@
+     1x Skylake core, Intel compiler, no MKL
+----------------------------------------------------
+****************************************************
+    kernel execution summary: gensilhs
+****************************************************
+    Total number of verification cases  :    14
+    Number of verification-passed cases :     8
+ 
+    kernel: gensilhs: FAILED verification
+    number of columns: 144
+    number of mpi ranks  1
+ 
+    Average call time (usec):   0.9439E+04
+    Average columns per sec :     15255.21
+****************************************************
+
+     1x Skylake core, Intel compiler, with MKL
+----------------------------------------------------
+****************************************************
+    kernel execution summary: gensilhs
+****************************************************
+    Total number of verification cases  :    14
+    Number of verification-passed cases :     4
+ 
+    kernel: gensilhs: FAILED verification
+    number of columns: 144
+    number of mpi ranks  1
+ 
+    Average call time (usec):   0.2844E+04
+    Average columns per sec :     50638.15
+****************************************************
+
+
+     1x Skylake core, PGI compiler
+----------------------------------------------------
+****************************************************
+    kernel execution summary: gensilhs
+****************************************************
+    Total number of verification cases  :    14
+    Number of verification-passed cases :     5
+ 
+    kernel: gensilhs: FAILED verification
+    number of columns: 144
+    number of mpi ranks  1
+ 
+    Average call time (usec):   0.6924E+04
+    Average columns per sec :     20798.29
+****************************************************
+
+
+  1x Sklake core + 1 v100  GPU, PGI compiler OpenACC
+     -ta=tesla:cc70,managed
+-------------------------------------------------------
+****************************************************
+    kernel execution summary: gensilhs
+****************************************************
+    Total number of verification cases  :    14
+    Number of verification-passed cases :     5
+ 
+    kernel: gensilhs: FAILED verification
+    number of columns: 144
+    number of mpi ranks  1
+ 
+    Average call time (usec):   0.1167E+05
+    Average columns per sec :     12338.30
+****************************************************
+
+
+  1x Sklake core + 1 v100  GPU, PGI compiler OpenACC
+     -ta=tesla:cc60,managed
+-------------------------------------------------------
+****************************************************
+    kernel execution summary: gensilhs
+****************************************************
+    Total number of verification cases  :    14
+    Number of verification-passed cases :     5
+ 
+    kernel: gensilhs: FAILED verification
+    number of columns: 144
+    number of mpi ranks  1
+ 
+    Average call time (usec):   0.1416E+05
+    Average columns per sec :     10170.09
+****************************************************
