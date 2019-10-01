@@ -23,7 +23,7 @@ module transform_to_pdf_module
   contains
 !-------------------------------------------------------------------------------
   subroutine transform_uniform_sample_to_pdf &
-             ( pdf_dim, d_uniform_extra, & ! In
+             ( pdf_dim, d_uniform_extra, nz, & ! In
                mu1, mu2, sigma1, sigma2, & ! In
                corr_Cholesky_mtx_1, & ! In
                corr_Cholesky_mtx_2, & ! In
@@ -31,7 +31,7 @@ module transform_to_pdf_module
                cloud_frac_1, cloud_frac_2, & ! In
                l_in_precip_one_lev, & ! In
                X_nl_one_lev ) ! Out
-   !$acc routine vector
+   !!$acc routine vector
 ! Description:
 !   This subroutine transforms a uniform sample to a sample from CLUBB's PDF.
 ! References:
@@ -58,38 +58,39 @@ module transform_to_pdf_module
     ! Input Variables
 
     integer, intent(in) :: &
-      pdf_dim, &  ! `d' Number of variates (normally 3 + microphysics specific variables)
-      d_uniform_extra  ! Number of variates included in uniform sample only (often 2)
+      pdf_dim, &         ! `d' Number of variates (normally 3 + microphysics specific variables)
+      d_uniform_extra, & ! Number of variates included in uniform sample only (often 2)
+      nz                 !  Number of vertical dimensions
 
-    real( kind = core_rknd ), dimension(pdf_dim,pdf_dim), intent(in) :: &
+    real( kind = core_rknd ), dimension(pdf_dim,pdf_dim,nz), intent(in) :: &
       corr_Cholesky_mtx_1, & ! Correlations Cholesky matrix (1st comp.)  [-]
       corr_Cholesky_mtx_2    ! Correlations Cholesky matrix (2nd comp.)  [-]
 
-    real( kind = core_rknd ), dimension(pdf_dim), intent(in) :: &
+    real( kind = core_rknd ), dimension(pdf_dim,nz), intent(in) :: &
       mu1,    & ! Means of the hydrometeors, 1st comp. (chi, eta, w, <hydrometeors>)  [units vary]
       mu2,    & ! Means of the hydrometeors, 2nd comp. (chi, eta, w, <hydrometeors>)  [units vary]
       sigma1, & ! Stdevs of the hydrometeors, 1st comp. (chi, eta, w, <hydrometeors>) [units vary]
       sigma2    ! Stdevs of the hydrometeors, 2nd comp. (chi, eta, w, <hydrometeors>) [units vary]
 
-    real( kind = core_rknd ), intent(in), dimension(pdf_dim+d_uniform_extra) :: &
+    real( kind = core_rknd ), intent(in), dimension(pdf_dim+d_uniform_extra,nz) :: &
       X_u_one_lev ! Sample drawn from uniform distribution from a particular grid level
 
-    integer, intent(in) :: &
+    integer, dimension(nz), intent(in) :: &
       X_mixt_comp_one_lev ! Whether we're in the 1st or 2nd mixture component
 
-    real( kind = core_rknd ), intent(in) :: &
+    real( kind = core_rknd ), dimension(nz), intent(in) :: &
       cloud_frac_1, & ! Cloud fraction (1st PDF component)    [-]
       cloud_frac_2    ! Cloud fraction (2nd PDF component)    [-]
 
-    logical, intent(in) :: &
+    logical, dimension(nz), intent(in) :: &
       l_in_precip_one_lev ! Whether we are in precipitation (T/F)
 
-    real( kind = core_rknd ), intent(out), dimension(pdf_dim) :: &
+    real( kind = core_rknd ), intent(out), dimension(pdf_dim,nz) :: &
       X_nl_one_lev ! Sample that is transformed ultimately to normal-lognormal
     ! Local Variables
 
 
-    logical, dimension(pdf_dim) :: &
+    logical, dimension(pdf_dim,nz) :: &
       l_d_variable_lognormal ! Whether a given variable in X_nl has a lognormal dist.
 
     real( kind = core_rknd ), dimension(pdf_dim,pdf_dim) :: &
@@ -102,7 +103,7 @@ module transform_to_pdf_module
     logical :: &
       l_Sigma1_scaling, l_Sigma2_scaling ! Whether we're scaling Sigma1 or Sigma2
 
-    integer :: i !, ivar1, ivar2
+    integer :: i, k !, ivar1, ivar2
     ! Flag to clip sample point values of chi in extreme situations.
 
     logical, parameter :: &
@@ -112,8 +113,11 @@ module transform_to_pdf_module
 
 
     i = max( iiPDF_chi, iiPDF_eta, iiPDF_w )
-    l_d_variable_lognormal(1:i) = .false. ! The 1st 3 variates
-    l_d_variable_lognormal(i+1:pdf_dim) = .true.  ! Hydrometeors
+
+    !$acc parallel
+    do k=1,nz
+    l_d_variable_lognormal(1:i,k) = .false. ! The 1st 3 variates
+    l_d_variable_lognormal(i+1:pdf_dim,k) = .true.  ! Hydrometeors
     !---------------------------------------------------------------------------
     ! Generate a set of sample points for a microphysics/radiation scheme
     !---------------------------------------------------------------------------
@@ -128,23 +132,23 @@ module transform_to_pdf_module
     l_Sigma2_scaling = .false.
     Sigma1_scaling = one
     Sigma2_scaling = one
-    if ( X_mixt_comp_one_lev == 1 ) then
+    if ( X_mixt_comp_one_lev(k) == 1 ) then
 
       Sigma1_Cholesky = zero ! Initialize the variance to zero
       ! Multiply the first three elements of the variance matrix by the
       ! values of the standard deviation of chi_1, eta_1, and w1
 
       call row_mult_lower_tri_matrix &
-           ( pdf_dim, sigma1, corr_Cholesky_mtx_1, & ! In
+           ( pdf_dim, sigma1(:,k), corr_Cholesky_mtx_1(:,:,k), & ! In
              Sigma1_Cholesky ) ! Out
 
-    elseif ( X_mixt_comp_one_lev == 2 ) then
+    elseif ( X_mixt_comp_one_lev(k) == 2 ) then
       Sigma2_Cholesky = zero
       ! Multiply the first three elements of the variance matrix by the
       ! values of the standard deviation of s2, t2, and w2
 
       call row_mult_lower_tri_matrix &
-           ( pdf_dim, sigma2, corr_Cholesky_mtx_2, & ! In
+           ( pdf_dim, sigma2(:,k), corr_Cholesky_mtx_2(:,:,k), & ! In
              Sigma2_Cholesky ) ! Out
 
     end if ! X_mixt_comp_one_lev == 1
@@ -152,22 +156,24 @@ module transform_to_pdf_module
     ! for this level
 
     call sample_points( pdf_dim, d_uniform_extra, &  ! intent(in)
-                        mu1, mu2, &  ! intent(in)
-                        l_d_variable_lognormal, & ! intent(in)
-                        X_u_one_lev, & ! intent(in)
-                        X_mixt_comp_one_lev, & ! intent(in)
+                        mu1(:,k), mu2(:,k), &  ! intent(in)
+                        l_d_variable_lognormal(:,k), & ! intent(in)
+                        X_u_one_lev(:,k), & ! intent(in)
+                        X_mixt_comp_one_lev(k), & ! intent(in)
                         Sigma1_Cholesky, Sigma2_Cholesky, & ! intent(in)
                         Sigma1_scaling, Sigma2_scaling, & ! intent(in)
                         l_Sigma1_scaling, l_Sigma2_scaling, & ! intent(in)
-                        X_nl_one_lev ) ! intent(out)
+                        X_nl_one_lev(:,k) ) ! intent(out)
     ! Zero precipitation hydrometeors if not in precipitation
 
-    if ( .not. l_in_precip_one_lev ) then
+    if ( .not. l_in_precip_one_lev(k) ) then
 
       call zero_precip_hydromets( pdf_dim, & ! Intent(in)
-                                  X_nl_one_lev ) ! Intent(inout)
+                                  X_nl_one_lev(:,k) ) ! Intent(inout)
 
     end if
+    enddo
+    !$acc end parallel
     ! Clip extreme sample point values of chi, when necessary.
     ! The values of PDF component cloud fraction have been clipped within PDF
     ! closure under extreme conditions.  This code forces the sample point
@@ -176,55 +182,57 @@ module transform_to_pdf_module
 
     if ( l_clip_extreme_chi_sample_pts ) then
 
-       if ( X_mixt_comp_one_lev == 1 ) then
+       do k=1,nz
+       if ( X_mixt_comp_one_lev(k) == 1 ) then
           ! The sample is from the 1st PDF component.
 
 
-          if ( cloud_frac_1 < epsilon( cloud_frac_1 ) ) then
+          if ( cloud_frac_1(k) < epsilon( cloud_frac_1(k) ) ) then
              ! Cloud fraction in the 1st PDF component is 0.
              ! All sample point values of chi must be <= 0.
 
-             if ( X_nl_one_lev(iiPDF_chi) > zero ) then
+             if ( X_nl_one_lev(iiPDF_chi,k) > zero ) then
                 ! Clip the sample point value of chi back to 0.
-                X_nl_one_lev(iiPDF_chi) = zero
+                X_nl_one_lev(iiPDF_chi,k) = zero
              endif ! X_nl_one_lev(iiPDF_chi) > zero
 
-          elseif ( cloud_frac_1 > ( one - epsilon( cloud_frac_1 ) ) ) then
+          elseif ( cloud_frac_1(k) > ( one - epsilon( cloud_frac_1(k) ) ) ) then
              ! Cloud fraction in the 1st PDF component is 1.
              ! All sample point values of chi must be > 0.
 
-             if ( X_nl_one_lev(iiPDF_chi) <= zero ) then
+             if ( X_nl_one_lev(iiPDF_chi,k) <= zero ) then
                 ! Clip the sample point value of chi to epsilon.
-                X_nl_one_lev(iiPDF_chi) = epsilon( zero )
+                X_nl_one_lev(iiPDF_chi,k) = epsilon( zero )
              endif ! X_nl_one_lev(iiPDF_chi) <= zero
 
           endif ! cloud_frac_1
 
-       elseif ( X_mixt_comp_one_lev == 2 ) then
+       elseif ( X_mixt_comp_one_lev(k) == 2 ) then
           ! The sample is from the 2nd PDF component.
 
 
-          if ( cloud_frac_2 < epsilon( cloud_frac_2 ) ) then
+          if ( cloud_frac_2(k) < epsilon( cloud_frac_2(k) ) ) then
              ! Cloud fraction in the 2nd PDF component is 0.
              ! All sample point values of chi must be <= 0.
 
-             if ( X_nl_one_lev(iiPDF_chi) > zero ) then
+             if ( X_nl_one_lev(iiPDF_chi,k) > zero ) then
                 ! Clip the sample point value of chi back to 0.
-                X_nl_one_lev(iiPDF_chi) = zero
+                X_nl_one_lev(iiPDF_chi,k) = zero
              endif ! X_nl_one_lev(iiPDF_chi) > zero
 
-          elseif ( cloud_frac_2 > ( one - epsilon( cloud_frac_2 ) ) ) then
+          elseif ( cloud_frac_2(k) > ( one - epsilon( cloud_frac_2(k) ) ) ) then
              ! Cloud fraction in the 2nd PDF component is 1.
              ! All sample point values of chi must be > 0.
 
-             if ( X_nl_one_lev(iiPDF_chi) <= zero ) then
+             if ( X_nl_one_lev(iiPDF_chi,k) <= zero ) then
                 ! Clip the sample point value of chi to epsilon.
-                X_nl_one_lev(iiPDF_chi) = epsilon( zero )
+                X_nl_one_lev(iiPDF_chi,k) = epsilon( zero )
              endif ! X_nl_one_lev(iiPDF_chi) <= zero
 
           endif ! cloud_frac_2
 
        endif ! X_mixt_comp_one_lev
+       enddo  ! do k=1,nz
 
     endif ! l_clip_extreme_chi_sample_pts
 

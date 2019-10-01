@@ -264,28 +264,27 @@ module latin_hypercube_driver_module
        X_nl_all_levs_tmp(:,k,sample) = X_nl_all_levs(k,sample,:)
     enddo
     enddo
-    !$acc parallel
-    !$acc loop collapse(2)
-    do k = 1, nz
+    !!$acc parallel
+    !do k = 1, nz
       ! Generate LH sample, represented by X_u and X_nl, for level k
       do sample = 1, num_samples, 1
         ! Transform the uniformly distributed samples to
         !   ones distributed according to CLUBB's PDF.
         call transform_uniform_sample_to_pdf &
-             ( pdf_dim, d_uniform_extra, & ! In
-               mu1(:,k), mu2(:,k), sigma1(:,k), sigma2(:,k), & ! In
-               corr_cholesky_mtx_1(:,:,k), & ! In
-               corr_cholesky_mtx_2(:,:,k), & ! In
+             ( pdf_dim, d_uniform_extra, nz, & ! In
+               mu1, mu2, sigma1, sigma2, & ! In
+               corr_cholesky_mtx_1, & ! In
+               corr_cholesky_mtx_2, & ! In
                !X_u_all_levs(k,sample,:), X_mixt_comp_all_levs(k,sample), & ! In
-               X_u_all_levs_tmp(:,k,sample), X_mixt_comp_all_levs(k,sample), & ! In
-               pdf_params(k)%cloud_frac_1, pdf_params(k)%cloud_frac_2, & ! In
+               X_u_all_levs_tmp(:,:,sample), X_mixt_comp_all_levs(:,sample), & ! In
+               pdf_params(:)%cloud_frac_1, pdf_params(:)%cloud_frac_2, & ! In
                !cloud_frac_1_tmp(k), cloud_frac_2_tmp(k), & ! In
-               l_in_precip(k,sample), & ! In
+               l_in_precip(:,sample), & ! In
                !X_nl_all_levs(k,sample,:) ) ! Out
-               X_nl_all_levs_tmp(:,k,sample) ) ! Out
+               X_nl_all_levs_tmp(:,:,sample) ) ! Out
       end do ! sample = 1, num_samples, 1
-    end do ! k = 1, nz
-    !$acc end parallel
+    !end do ! k = 1, nz
+    !!$acc end parallel
     do k=1,nz
     do sample = 1, num_samples
        X_u_all_levs(k,sample,:)  = X_u_all_levs_tmp(:,k,sample)
