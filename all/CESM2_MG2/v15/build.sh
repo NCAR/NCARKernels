@@ -18,5 +18,5 @@ module list
 
 echo $LD_LIBRARY_PATH
 
-make clean 
+#make clean 
 make pcols=192

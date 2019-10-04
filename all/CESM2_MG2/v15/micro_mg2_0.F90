@@ -1085,8 +1085,7 @@ subroutine micro_mg_tend ( &
   end do 
   !$acc end kernels
 
-  !$acc kernels
-  !$acc loop collapse(2)
+  !$acc parallel loop collapse(2) private(dum,dum1)
   do k=1,nlev
     do i=1,mgncol
         ! freezing of rain at -5 C
@@ -1123,7 +1122,7 @@ subroutine micro_mg_tend ( &
         end if
      end do
   end do 
-  !$acc end kernels
+  !$acc end parallel
 
   !$acc kernels
   !$acc loop collapse(2)
@@ -1971,7 +1970,7 @@ subroutine micro_mg_tend ( &
   ! rain mass and number, divide by rhow to get rain number in kg^-1
 
 
-
+  !$acc data 
   call size_dist_param_basic_vec(mg_rain_props, qric, nric, lamr, mgncol*nlev, n0=n0r)
   do k=1,nlev
 !     call size_dist_param_basic_vec(mg_rain_props, qric(:,k), nric(:,k), lamr(:,k), mgncol, n0=n0r(:,k))
@@ -1983,6 +1982,7 @@ subroutine micro_mg_tend ( &
           rercld(:,k), mgncol)
 
   enddo
+  !$acc end data
   ! Assign variables back to start-of-timestep values
   ! Some state variables are changed before the main microphysics loop
   ! to make "instantaneous" adjustments. Afterward, we must move those changes
@@ -2023,6 +2023,7 @@ subroutine micro_mg_tend ( &
   prain = prain + prodsnow
 
 
+  !$acc data
   !$acc kernels
   do k=1,nlev
      do i=1,mgncol
@@ -2059,17 +2060,7 @@ subroutine micro_mg_tend ( &
 
   call size_dist_param_basic_vec(mg_ice_props, dumi, dumni, lami, mgncol*nlev)
   call size_dist_param_liq_vec(mg_liq_props, dumc, dumnc, rho, pgam, lamc, mgncol*nlev)
-  !do k=1,nlev
-     ! obtain new slope parameter to avoid possible singularity
-
-
- !    call size_dist_param_basic_vec(mg_ice_props, dumi(:,k), dumni(:,k), &
- !         lami(:,k), mgncol)
-
- !    call size_dist_param_liq_vec(mg_liq_props, dumc(:,k), dumnc(:,k), rho(:,k), &
- !         pgam(:,k), lamc(:,k), mgncol)
-
-  !enddo
+  !$acc end data
 
   !NEC_BEGIN("loop_#18")
   !!$acc kernels
@@ -2132,6 +2123,7 @@ subroutine micro_mg_tend ( &
   !!$acc end kernels
   !NEC_END("loop_#18")
 
+  !$acc data
   ! fallspeed for rain
   call size_dist_param_basic_vec(mg_rain_props, dumr, dumnr, lamr, mgncol*nlev)
   ! fallspeed for snow
@@ -2195,15 +2187,13 @@ subroutine micro_mg_tend ( &
         if (dumr(i,k).lt.qsmall) dumnr(i,k)=0._rkind_comp
         if (dums(i,k).lt.qsmall) dumns(i,k)=0._rkind_comp
 
+        pdel_inv(i,k) = 1._rkind_comp/pdel(i,k)
+
      enddo
   end do       !!! vertical loop
   !$acc end kernels
+  !$acc end data
 
-  do k=1,nlev
-     do i=1,mgncol
-       pdel_inv(i,k) = 1._rkind_comp/pdel(i,k)
-     enddo
-  enddo
   !NEC_END("loop_#19")
   ! initialize nstep for sedimentation sub-steps
   ! calculate number of split time steps to ensure courant stability criteria
@@ -2322,18 +2312,18 @@ subroutine micro_mg_tend ( &
            if (dumr(i,k) > 0._rkind_comp) then
               ! make sure freezing rain doesn't increase temperature above threshold
 
-              dum = xlf/cpp*dumr(i,k)
-              if (t(i,k)+tlat(i,k)/cpp*deltat+dum.gt.rainfrze) then
-                 dum = -(t(i,k)+tlat(i,k)/cpp*deltat-rainfrze)*cpp/xlf
-                 dum = dum/dumr(i,k)
-                 dum = max(0._rkind_comp,dum)
-                 dum = min(1._rkind_comp,dum)
+              dum_2D(i,k) = xlf/cpp*dumr(i,k)
+              if (t(i,k)+tlat(i,k)/cpp*deltat+dum_2D(i,k).gt.rainfrze) then
+                 dum_2D(i,k) = -(t(i,k)+tlat(i,k)/cpp*deltat-rainfrze)*cpp/xlf
+                 dum_2D(i,k) = dum_2D(i,k)/dumr(i,k)
+                 dum_2D(i,k) = max(0._rkind_comp,dum_2D(i,k))
+                 dum_2D(i,k) = min(1._rkind_comp,dum_2D(i,k))
               else
-                 dum = 1._rkind_comp
+                 dum_2D(i,k) = 1._rkind_comp
               end if
 
-              qrtend(i,k)=qrtend(i,k)-dum*dumr(i,k)/deltat
-              nrtend(i,k)=nrtend(i,k)-dum*dumnr(i,k)/deltat
+              qrtend(i,k)=qrtend(i,k)-dum_2D(i,k)*dumr(i,k)/deltat
+              nrtend(i,k)=nrtend(i,k)-dum_2D(i,k)*dumnr(i,k)/deltat
               ! get mean size of rain = 1/lamr, add frozen rain to either snow or cloud ice
               ! depending on mean rain size
 
@@ -2352,15 +2342,15 @@ subroutine micro_mg_tend ( &
         if (t(i,k)+tlat(i,k)/cpp*deltat < rainfrze) then
            if (dumr(i,k) > 0._rkind_comp) then
               if (lamr(i,k) < 1._rkind_comp/Dcs) then
-                 qstend(i,k)=qstend(i,k)+dum*dumr(i,k)/deltat
-                 nstend(i,k)=nstend(i,k)+dum*dumnr(i,k)/deltat
+                 qstend(i,k)=qstend(i,k)+dum_2D(i,k)*dumr(i,k)/deltat
+                 nstend(i,k)=nstend(i,k)+dum_2D(i,k)*dumnr(i,k)/deltat
               else
-                 qitend(i,k)=qitend(i,k)+dum*dumr(i,k)/deltat
-                 nitend(i,k)=nitend(i,k)+dum*dumnr(i,k)/deltat
+                 qitend(i,k)=qitend(i,k)+dum_2D(i,k)*dumr(i,k)/deltat
+                 nitend(i,k)=nitend(i,k)+dum_2D(i,k)*dumnr(i,k)/deltat
               end if
               ! heating tendency
 
-              dum1 = xlf*dum*dumr(i,k)/deltat
+              dum1 = xlf*dum_2D(i,k)*dumr(i,k)/deltat
               frzrdttot(i,k)=frzrdttot(i,k) + dum1
               tlat(i,k)=tlat(i,k)+dum1
 
@@ -2372,6 +2362,7 @@ subroutine micro_mg_tend ( &
    !$acc end kernels
    NEC_END("loop_#23")
    if (do_cldice) then
+      !$acc data copyin(t(:mgncol,:nlev)) copy(tlat(:mgncol,:nlev))
       !$acc kernels
       do k=1,nlev
         do i=1,mgncol
@@ -2446,6 +2437,7 @@ subroutine micro_mg_tend ( &
         enddo 
      enddo 
      !$acc end kernels
+     !$acc end data
      ! remove any excess over-saturation, which is possible due to non-linearity when adding
      ! together all microphysical processes
      !-----------------------------------------------------------------
@@ -2505,7 +2497,6 @@ subroutine micro_mg_tend ( &
 
 
   !$acc kernels
-  !$acc loop collapse(2)
   do k=1,nlev
      do i=1,mgncol
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._rkind_comp)/lcldm(i,k)
