@@ -573,11 +573,10 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
 
         if (lam(i) < lbnd) then
            lam(i) = lbnd
-           nic(i) = lam(i)**(effDim) * qic(i)/shapeCoef
         else if (lam(i) > ubnd) then
            lam(i) = ubnd
-           nic(i) = lam(i)**(effDim) * qic(i)/shapeCoef
         end if
+        nic(i) = lam(i)**(effDim) * qic(i)/shapeCoef
 
      else
         lam(i) = 0._rkind_comp
@@ -625,11 +624,11 @@ subroutine size_dist_param_basic_vect2(props, qic, nic, shapeC,lbnd,ubnd, lam, v
 
         if (lam(i) < lbnd(i)) then
            lam(i) = lbnd(i)
-           nic(i) = lam(i)**(effDim) * qic(i)/shapeC(i)
+        !   nic(i) = lam(i)**(effDim) * qic(i)/shapeC(i)
         else if (lam(i) > ubnd(i)) then
            lam(i) = ubnd(i)
-           nic(i) = lam(i)**(effDim) * qic(i)/shapeC(i)
         end if
+        nic(i) = lam(i)**(effDim) * qic(i)/shapeC(i)
 
      else
         lam(i) = 0._rkind_comp

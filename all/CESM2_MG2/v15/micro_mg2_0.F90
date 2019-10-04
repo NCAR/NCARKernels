@@ -2231,6 +2231,7 @@ subroutine micro_mg_tend ( &
 
 
   !NEC_BEGIN("loop_#20")
+  !$acc data
   !$acc kernels
   do k=1,nlev
      do i=1,mgncol
@@ -2360,6 +2361,7 @@ subroutine micro_mg_tend ( &
       enddo
    enddo
    !$acc end kernels
+   !$acc end data
    NEC_END("loop_#23")
    if (do_cldice) then
       !$acc data copyin(t(:mgncol,:nlev)) copy(tlat(:mgncol,:nlev))
