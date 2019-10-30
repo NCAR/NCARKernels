@@ -96,7 +96,7 @@ contains
 
 
   elemental function shr_spfn_gamma_rkind_comp(x) result(res)
-
+    !$acc routine vector
     real(rkind_comp), intent(in) :: x
     real(rkind_comp) :: res
     ! No intrinsic
@@ -242,6 +242,7 @@ contains
 
 
   pure function shr_spfn_gamma_nonintrinsic_rkind_comp(X) result(gamma)
+    !$acc routine vector
 
     !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
     ! 7 Feb 2013 -- S. Santos

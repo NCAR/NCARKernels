@@ -268,7 +268,7 @@ subroutine  rising_factorial_rkind_comp(x, n, res)
 end subroutine rising_factorial_rkind_comp
 
 subroutine  rising_factorial_v8(x, n, res,vlen)
-
+  !$acc routine vector
   integer, intent(in)   :: vlen
   real(rkind_comp), intent(in)  :: x(vlen), n
   real(rkind_comp), intent(out) :: res(vlen)
@@ -315,7 +315,7 @@ subroutine rising_factorial_int(x, n, res)
 end subroutine rising_factorial_int
 
 subroutine rising_factorial_vint(x, n, res,vlen)
-
+  !$acc routine vector
   integer, intent(in) :: vlen
   real(rkind_comp), intent(in) :: x(vlen)
   integer, intent(in) :: n
@@ -434,7 +434,7 @@ end subroutine size_dist_param_liq_line
 
 
 subroutine size_dist_param_liq_vec(props, qcic, ncic, rho, pgam, lamc, veclen)
-
+  !$acc routine vector
 
   integer, intent(in) :: veclen
   type(mghydrometeorprops), intent(in) :: props
@@ -534,6 +534,7 @@ elemental subroutine size_dist_param_basic_line(props, qic, nic, lam, n0)
 end subroutine size_dist_param_basic_line
 
 subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
+  !$acc routine vector
 
   integer,  intent(in) :: vlen
   type (mghydrometeorprops), intent(in) :: props
@@ -555,6 +556,7 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
   minMass   = props%min_mean_mass
 
 !NEC$ IVDEP
+  !$acc loop vector 
   do i=1,vlen
 
      if (qic(i) > qsmall) then
@@ -588,6 +590,7 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
 end subroutine size_dist_param_basic_vec
 
 subroutine size_dist_param_basic_vect2(props, qic, nic, shapeC,lbnd,ubnd, lam, vlen, n0)
+  !$acc routine vector
 
   type (mghydrometeorprops), intent(in) :: props
   integer,                          intent(in) :: vlen
@@ -830,31 +833,31 @@ end subroutine ice_deposition_sublimation
 
 
 subroutine kk2000_liq_autoconversion(microp_uniform, qcic, &
-     ncic, rho, relvar, prc, nprc, nprc1, mgncol)
+     ncic, rho, relvar, prc, nprc, nprc1, vlen)
 
-  integer, intent(in) :: mgncol
+  integer, intent(in) :: vlen 
   logical, intent(in) :: microp_uniform
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: qcic
-  real(rkind_comp), dimension(mgncol), intent(in) :: ncic
-  real(rkind_comp), dimension(mgncol), intent(in) :: rho
+  real(rkind_comp), dimension(vlen), intent(in) :: qcic
+  real(rkind_comp), dimension(vlen), intent(in) :: ncic
+  real(rkind_comp), dimension(vlen), intent(in) :: rho
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: relvar
+  real(rkind_comp), dimension(vlen), intent(in) :: relvar
 
-  real(rkind_comp), dimension(mgncol), intent(out) :: prc
-  real(rkind_comp), dimension(mgncol), intent(out) :: nprc
-  real(rkind_comp), dimension(mgncol), intent(out) :: nprc1
+  real(rkind_comp), dimension(vlen), intent(out) :: prc
+  real(rkind_comp), dimension(vlen), intent(out) :: nprc
+  real(rkind_comp), dimension(vlen), intent(out) :: nprc1
 
-  real(rkind_comp), dimension(mgncol) :: prc_coef
+  real(rkind_comp), dimension(vlen) :: prc_coef
   integer :: i
   ! Take variance into account, or use uniform value.
 
   if (.not. microp_uniform) then
-     call var_coef(relvar, 2.47_rkind_comp, prc_coef,mgncol)
+     call var_coef(relvar, 2.47_rkind_comp, prc_coef,vlen)
   else
      prc_coef = 1._rkind_comp
   end if
-  do i=1,mgncol
+  do i=1,vlen
      if (qcic(i) >= icsmall) then
         ! nprc is increase in rain number conc due to autoconversion
         ! nprc1 is decrease in cloud droplet conc due to autoconversion
@@ -1571,58 +1574,59 @@ end subroutine accrete_cloud_ice_snow
 
 subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
      lcldm, precip_frac, arn, asn, qcic, qiic, qric, qsic, lamr, n0r, lams, n0s, &
-     pre, prds, am_evp_st, mgncol)
+     pre, prds, am_evp_st, vlen)
 
-  integer,  intent(in) :: mgncol
+  integer,  intent(in) :: vlen
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: t    ! temperature
-  real(rkind_comp), dimension(mgncol), intent(in) :: rho  ! air density
-  real(rkind_comp), dimension(mgncol), intent(in) :: dv   ! water vapor diffusivity
-  real(rkind_comp), dimension(mgncol), intent(in) :: mu   ! viscosity
-  real(rkind_comp), dimension(mgncol), intent(in) :: sc   ! schmidt number
-  real(rkind_comp), dimension(mgncol), intent(in) :: q    ! humidity
-  real(rkind_comp), dimension(mgncol), intent(in) :: qvl  ! saturation humidity (water)
-  real(rkind_comp), dimension(mgncol), intent(in) :: qvi  ! saturation humidity (ice)
-  real(rkind_comp), dimension(mgncol), intent(in) :: lcldm  ! liquid cloud fraction
-  real(rkind_comp), dimension(mgncol), intent(in) :: precip_frac ! precipitation fraction (maximum overlap)
+  real(rkind_comp), dimension(vlen), intent(in) :: t    ! temperature
+
+  real(rkind_comp), dimension(vlen), intent(in) :: rho  ! air density
+  real(rkind_comp), dimension(vlen), intent(in) :: dv   ! water vapor diffusivity
+  real(rkind_comp), dimension(vlen), intent(in) :: mu   ! viscosity
+  real(rkind_comp), dimension(vlen), intent(in) :: sc   ! schmidt number
+  real(rkind_comp), dimension(vlen), intent(in) :: q    ! humidity
+  real(rkind_comp), dimension(vlen), intent(in) :: qvl  ! saturation humidity (water)
+  real(rkind_comp), dimension(vlen), intent(in) :: qvi  ! saturation humidity (ice)
+  real(rkind_comp), dimension(vlen), intent(in) :: lcldm  ! liquid cloud fraction
+  real(rkind_comp), dimension(vlen), intent(in) :: precip_frac ! precipitation fraction (maximum overlap)
   ! fallspeed parameters
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: arn  ! rain
-  real(rkind_comp), dimension(mgncol), intent(in) :: asn  ! snow
+  real(rkind_comp), dimension(vlen), intent(in) :: arn  ! rain
+  real(rkind_comp), dimension(vlen), intent(in) :: asn  ! snow
   ! In-cloud MMRs
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: qcic ! cloud liquid
-  real(rkind_comp), dimension(mgncol), intent(in) :: qiic ! cloud ice
-  real(rkind_comp), dimension(mgncol), intent(in) :: qric ! rain
-  real(rkind_comp), dimension(mgncol), intent(in) :: qsic ! snow
+  real(rkind_comp), dimension(vlen), intent(in) :: qcic ! cloud liquid
+  real(rkind_comp), dimension(vlen), intent(in) :: qiic ! cloud ice
+  real(rkind_comp), dimension(vlen), intent(in) :: qric ! rain
+  real(rkind_comp), dimension(vlen), intent(in) :: qsic ! snow
   ! Size parameters
   ! rain
 
-  real(rkind_comp), dimension(mgncol), intent(in) :: lamr
-  real(rkind_comp), dimension(mgncol), intent(in) :: n0r
+  real(rkind_comp), dimension(vlen), intent(in) :: lamr
+  real(rkind_comp), dimension(vlen), intent(in) :: n0r
   ! snow
-  real(rkind_comp), dimension(mgncol), intent(in) :: lams
-  real(rkind_comp), dimension(mgncol), intent(in) :: n0s
+  real(rkind_comp), dimension(vlen), intent(in) :: lams
+  real(rkind_comp), dimension(vlen), intent(in) :: n0s
   ! Output tendencies
 
-  real(rkind_comp), dimension(mgncol), intent(out) :: pre
-  real(rkind_comp), dimension(mgncol), intent(out) :: prds
-  real(rkind_comp), dimension(mgncol), intent(out) :: am_evp_st ! Fractional area where rain evaporates.
+  real(rkind_comp), dimension(vlen), intent(out) :: pre
+  real(rkind_comp), dimension(vlen), intent(out) :: prds
+  real(rkind_comp), dimension(vlen), intent(out) :: am_evp_st ! Fractional area where rain evaporates.
 
   real(rkind_comp) :: qclr   ! water vapor mixing ratio in clear air
-  real(rkind_comp) :: abr(mgncol),abs(mgncol)     ! correction to account for latent heat
+  real(rkind_comp) :: abr(vlen),abs(vlen)     ! correction to account for latent heat
   real(rkind_comp) :: eps    ! 1/ sat relaxation timescale
 
-  real(rkind_comp), dimension(mgncol) :: dum
+  real(rkind_comp), dimension(vlen) :: dum
 
   integer :: i
-  logical, dimension(mgncol) :: cond1,cond2,cond3
+  logical, dimension(vlen) :: cond1,cond2,cond3
 
   am_evp_st = 0._rkind_comp
   ! set temporary cloud fraction to zero if cloud water + ice is very small
   ! this will ensure that evaporation/sublimation of precip occurs over
   ! entire grid cell, since min cloud fraction is specified otherwise
-  do i=1,mgncol
+  do i=1,vlen
      if (qcic(i)+qiic(i) < 1.e-6_rkind_comp) then
         dum(i) = 0._rkind_comp
      else
@@ -1633,12 +1637,12 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   cond1 = (precip_frac > dum)
   cond2 = cond1 .and. (qric >= qsmall)
   cond3 = cond1 .and. (qsic >= qsmall)
-  print *,'evaporate_sublimate_precip: mgncol: ',mgncol
+  print *,'evaporate_sublimate_precip: vlen: ',vlen
   print *,'evaporate_sublimate_precip: COND2: ',COUNT(cond2)
   print *,'evaporate_sublimate_precip: COND3: ',COUNT(cond3)
   print *,'evaporate_sublimate_precip: COND4: ',COUNT(cond3 .or. cond2)
 #endif
-  do i=1,mgncol
+  do i=1,vlen
   ! only calculate if there is some precip fraction > cloud fraction
 
      if (precip_frac(i) > dum(i)) then
@@ -1754,6 +1758,7 @@ end subroutine bergeron_process_snow
 
 
 pure function limiter_is_on(lim)
+!$acc routine seq
 
   real(rkind_comp), intent(in) :: lim
   logical :: limiter_is_on
