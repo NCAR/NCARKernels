@@ -61,7 +61,7 @@ module micro_mg_utils
     &sb2001v2_liq_autoconversion, sb2001v2_accre_cld_water_rain, kk2000_liq_autoconversion, ice_autoconversion, &
     &immersion_freezing, contact_freezing, snow_self_aggregation, accrete_cloud_water_snow, secondary_ice_production, &
     &accrete_rain_snow, heterogeneous_rain_freezing, accrete_cloud_water_rain, self_collection_rain, accrete_cloud_ice_snow, &
-    &evaporate_sublimate_precip, bergeron_process_snow 
+    &evaporate_sublimate_precip, bergeron_process_snow, accrete_cloud_water_snow_v2
     PUBLIC avg_diameter_vec
     PUBLIC size_dist_param_basic_vec 
     PUBLIC size_dist_param_liq_vec
@@ -92,6 +92,8 @@ type(MGHydrometeorProps), public :: mg_liq_props
 type(MGHydrometeorProps), public :: mg_ice_props
 type(MGHydrometeorProps), public :: mg_rain_props
 type(MGHydrometeorProps), public :: mg_snow_props
+
+!$acc declare copyin(mg_liq_props,mg_ice_props)
 
 interface size_dist_param_liq
   module procedure size_dist_param_liq_line
@@ -214,6 +216,9 @@ real(rkind_comp) :: gamma_half_bs_plus5
 ! Utilities that are cheaper if the compiler knows that
 ! some argument is an integer.
 !=========================================================
+
+!$acc declare copyin(rv,cpp,tmelt,xxls,xxlv)
+!$acc declare copyin(gamma_bs_plus3,gamma_half_br_plus5,gamma_half_bs_plus5)
 
 
 interface rising_factorial
@@ -348,6 +353,7 @@ end subroutine rising_factorial_vint
 
 ! Calculate correction due to latent heat for evaporation/sublimation
 subroutine calc_ab_rkind_comp(t, qv, xxl,ab)
+  !$acc routine seq
 
   real(rkind_comp), intent(in) :: t     ! Temperature
   real(rkind_comp), intent(in) :: qv    ! Saturation vapor pressure
@@ -364,6 +370,8 @@ end subroutine  calc_ab_rkind_comp
 
 ! Calculate correction due to latent heat for evaporation/sublimation
 subroutine calc_ab_v8(t, qv, xxl,ab,vlen)
+  !$acc routine vector
+
   integer,  intent(in) :: vlen
   real(rkind_comp), intent(in) :: t(vlen)     ! Temperature
   real(rkind_comp), intent(in) :: qv(vlen)    ! Saturation vapor pressure
@@ -496,6 +504,7 @@ end subroutine size_dist_param_liq_vec
 ! Basic routine for getting size distribution parameters.
 
 elemental subroutine size_dist_param_basic_line(props, qic, nic, lam, n0)
+  !$acc routine seq
 
   type(MGHydrometeorProps), intent(in) :: props
   real(rkind_comp), intent(in) :: qic
@@ -692,7 +701,7 @@ subroutine var_coef_rkind_comp(relvar, a, res)
 end subroutine var_coef_rkind_comp
 
 subroutine var_coef_v8(relvar, a, res, vlen)
-
+  !$acc routine vector
   ! Finds a coefficient for process rates based on the relative variance
   ! of cloud water.
   integer :: vlen
@@ -750,7 +759,7 @@ end subroutine var_coef_vint
 subroutine ice_deposition_sublimation(t, qv, qi, ni, &
                                       icldm, rho, dv,qvl, qvi, &
                                       berg, vap_dep, ice_sublim, mgncol)
-
+  !$acc routine vector
   !INPUT VARS:
   !===============================================
 
@@ -834,7 +843,7 @@ end subroutine ice_deposition_sublimation
 
 subroutine kk2000_liq_autoconversion(microp_uniform, qcic, &
      ncic, rho, relvar, prc, nprc, nprc1, vlen)
-
+  !$acc routine vector
   integer, intent(in) :: vlen 
   logical, intent(in) :: microp_uniform
 
@@ -881,7 +890,7 @@ end subroutine kk2000_liq_autoconversion
   !========================================================================
   
 subroutine sb2001v2_liq_autoconversion(pgam,qc,nc,qr,rho,relvar,au,nprc,nprc1,mgncol)
-
+  !$acc routine vector
   ! ---------------------------------------------------------------------
   ! AUTO_SB:  calculates the evolution of mass- and number mxg-ratio for
   ! drizzle drops due to autoconversion. The autoconversion rate assumes
@@ -955,7 +964,7 @@ subroutine sb2001v2_liq_autoconversion(pgam,qc,nc,qr,rho,relvar,au,nprc,nprc1,mg
   
 
 subroutine sb2001v2_accre_cld_water_rain(qc,nc,qr,rho,relvar,pra,npra,mgncol)
-
+  !$acc routine vector
   ! ---------------------------------------------------------------------
   ! ACCR_SB calculates the evolution of mass mxng-ratio due to accretion
   ! and self collection following Seifert & Beheng (2001).  
@@ -1005,7 +1014,7 @@ subroutine sb2001v2_accre_cld_water_rain(qc,nc,qr,rho,relvar,pra,npra,mgncol)
 
 
 subroutine ice_autoconversion(t, qiic, lami, n0i, dcs, prci, nprci, mgncol)
-
+  !$acc routine vector
   integer, intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: t
   real(rkind_comp), dimension(mgncol), intent(in) :: qiic
@@ -1205,6 +1214,7 @@ end subroutine contact_freezing
 
 
 subroutine snow_self_aggregation(t, rho, asn, rhosn, qsic, nsic, nsagg, mgncol)
+  !$acc routine vector
 
   integer,                          intent(in) :: mgncol
 
@@ -1222,6 +1232,7 @@ subroutine snow_self_aggregation(t, rho, asn, rhosn, qsic, nsic, nsagg, mgncol)
 
   integer :: i
 
+  !$acc loop vector
   do i=1,mgncol
      if (qsic(i) >= qsmall .and. t(i) <= tmelt) then
         nsagg(i) = -1108._rkind_comp*eii/(4._rkind_comp*720._rkind_comp*rhosn)*asn(i)*qsic(i)*nsic(i)*rho(i)*&
@@ -1241,6 +1252,7 @@ end subroutine snow_self_aggregation
 
 subroutine accrete_cloud_water_snow(t, rho, asn, uns, mu, qcic, ncic, qsic, &
      pgam, lamc, lams, n0s, psacws, npsacws, mgncol)
+  !$acc routine vector
 
   integer, intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: t   ! Temperature
@@ -1278,6 +1290,7 @@ subroutine accrete_cloud_water_snow(t, rho, asn, uns, mu, qcic, ncic, qsic, &
   ! ignore collision of snow with droplets above freezing
 
 
+  !$acc loop vector
   do i=1,mgncol
      if (qsic(i) >= qsmall .and. t(i) <= tmelt .and. qcic(i) >= qsmall) then
         ! put in size dependent collection efficiency
@@ -1304,12 +1317,83 @@ subroutine accrete_cloud_water_snow(t, rho, asn, uns, mu, qcic, ncic, qsic, &
      end if
   enddo
 end subroutine accrete_cloud_water_snow
+
+subroutine accrete_cloud_water_snow_v2(t, rho, asn, uns, mu, qcic, ncic, qsic, &
+     pgam, lamc, lams, n0s, psacws, npsacws,dim1,dim2) 
+  !$acc routine vector
+
+  integer, intent(in) :: dim1,dim2
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: t   ! Temperature
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: rho ! Density
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: asn ! Fallspeed parameter (snow)
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: uns ! Current fallspeed   (snow)
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: mu  ! Viscosity
+  ! In-cloud liquid water
+
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: qcic ! MMR
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: ncic ! Number
+  ! In-cloud snow
+
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: qsic ! MMR
+  ! Cloud droplet size parameters
+
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: pgam
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: lamc
+  ! Snow size parameters
+
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: lams
+  real(rkind_comp), dimension(dim1,dim2), intent(in) :: n0s
+  ! Output tendencies
+
+  real(rkind_comp), dimension(dim1,dim2), intent(out) :: psacws  ! Mass mixing ratio
+  real(rkind_comp), dimension(dim1,dim2), intent(out) :: npsacws ! Number concentration
+
+  real(rkind_comp) :: dc0 ! Provisional mean droplet size
+  real(rkind_comp) :: dum
+  real(rkind_comp) :: eci ! collection efficiency for riming of snow by droplets
+  ! Fraction of cloud droplets accreted per second
+
+  real(rkind_comp) :: accrete_rate
+  integer :: i,j
+  ! ignore collision of snow with droplets above freezing
+
+
+  !$acc loop vector collapse(2)
+  do j=1,dim2
+  do i=1,dim1
+     if (qsic(i,j) >= qsmall .and. t(i,j) <= tmelt .and. qcic(i,j) >= qsmall) then
+        ! put in size dependent collection efficiency
+        ! mean diameter of snow is area-weighted, since
+        ! accretion is function of crystal geometric area
+        ! collection efficiency is approximation based on stoke's law (Thompson et al. 2004)
+
+
+        dc0 = (pgam(i,j)+1._rkind_comp)/lamc(i,j)
+        dum = dc0*dc0*uns(i,j)*rhow*lams(i,j)/(9._rkind_comp*mu(i,j))
+        eci = dum*dum/((dum+0.4_rkind_comp)*(dum+0.4_rkind_comp))
+
+        eci = max(eci,0._rkind_comp)
+        eci = min(eci,1._rkind_comp)
+        ! no impact of sub-grid distribution of qc since psacws
+        ! is linear in qc
+
+        accrete_rate = pi/4._rkind_comp*asn(i,j)*rho(i,j)*n0s(i,j)*eci*gamma_bs_plus3 / lams(i,j)**(bs+3._rkind_comp)
+        psacws(i,j) = accrete_rate*qcic(i,j)
+        npsacws(i,j) = accrete_rate*ncic(i,j)
+     else
+        psacws(i,j) = 0._rkind_comp
+        npsacws(i,j) = 0._rkind_comp
+     end if
+  enddo
+  enddo
+end subroutine accrete_cloud_water_snow_v2
 ! add secondary ice production due to accretion of droplets by snow
 !===================================================================
 ! (Hallet-Mossop process) (from Cotton et al., 1986)
 
 
 subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol)
+  !$acc routine vector
 
   integer, intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: t ! Temperature
@@ -1322,6 +1406,7 @@ subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol)
   real(rkind_comp), dimension(mgncol), intent(out) :: nsacwi ! Number
   integer :: i
 
+  !$acc loop vector
   do i=1,mgncol
      if((t(i) < 270.16_rkind_comp) .and. (t(i) >= 268.16_rkind_comp)) then
         nsacwi(i) = 3.5e8_rkind_comp*(270.16_rkind_comp-t(i))/2.0_rkind_comp*psacws(i)
@@ -1332,6 +1417,7 @@ subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol)
      endif
   enddo
 
+  !$acc loop vector
   do i=1,mgncol
      msacwi(i) = min(nsacwi(i)*mi0, psacws(i))
      psacws(i) = psacws(i) - msacwi(i)
@@ -1344,6 +1430,7 @@ end subroutine secondary_ice_production
 
 subroutine accrete_rain_snow(t, rho, umr, ums, unr, uns, qric, qsic, &
      lamr, n0r, lams, n0s, pracs, npracs, mgncol)
+  !$acc routine vector
 
   integer,                          intent(in) :: mgncol
 
@@ -1410,7 +1497,7 @@ end subroutine accrete_rain_snow
 
 
 subroutine heterogeneous_rain_freezing(t, qric, nric, lamr, mnuccr, nnuccr, mgncol)
-
+  !$acc routine vector
   integer,                          intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: t    ! Temperature
   ! In-cloud rain
@@ -1446,7 +1533,7 @@ end subroutine heterogeneous_rain_freezing
 
 subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
      ncic, relvar, accre_enhan, pra, npra, mgncol)
-
+  !$acc routine vector
   logical, intent(in) :: microp_uniform
   integer, intent(in) :: mgncol
   ! In-cloud rain
@@ -1470,6 +1557,7 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
   integer :: i
 
   if (.not. microp_uniform) then
+       ! This subroutine gives a fortran allocation error on the GPU
        call  var_coef(relvar, 1.15_rkind_comp, pra_coef,mgncol)
        pra_coef = pra_coef*accre_enhan
   else
@@ -1495,7 +1583,7 @@ end subroutine accrete_cloud_water_rain
 
 
 subroutine self_collection_rain(rho, qric, nric, nragg, mgncol)
-
+  !$acc routine vector
   integer,                          intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: rho  ! Air density
   ! Rain
@@ -1524,6 +1612,7 @@ end subroutine self_collection_rain
 
 subroutine accrete_cloud_ice_snow(t, rho, asn, qiic, niic, qsic, &
      lams, n0s, prai, nprai, mgncol)
+  !$acc routine vector
 
   integer,                          intent(in) :: mgncol
   real(rkind_comp), dimension(mgncol), intent(in) :: t    ! Temperature
@@ -1575,6 +1664,7 @@ end subroutine accrete_cloud_ice_snow
 subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
      lcldm, precip_frac, arn, asn, qcic, qiic, qric, qsic, lamr, n0r, lams, n0s, &
      pre, prds, am_evp_st, vlen)
+  !$acc routine vector
 
   integer,  intent(in) :: vlen
 
@@ -1707,6 +1797,7 @@ end subroutine evaporate_sublimate_precip
 
 subroutine bergeron_process_snow(t, rho, dv, mu, sc, qvl, qvi, asn, &
      qcic, qsic, lams, n0s, bergs, mgncol)
+  !$acc routine vector
 
   integer, intent(in) :: mgncol
 

@@ -356,7 +356,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 10
+    INTEGER, PARAMETER :: maxiter = 50
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
