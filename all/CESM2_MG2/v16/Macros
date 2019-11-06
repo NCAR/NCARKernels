@@ -2,8 +2,8 @@
 
 # User settings (all case-insensitive):
 #COMPILER = intel       # Intel, GNU, ARM (later, PGI?)
-#COMPILER = pgi
-COMPILER = pgi-gpu
+COMPILER = pgi
+#COMPILER = pgi-gpu
 #COMPILER = gnu        # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
 MPI      = no         # Yes/No, True/False or Enabled/Disabled
@@ -103,7 +103,7 @@ endif
 # ********* PGI compiler options  ************
 ifeq ($(COMPILER),pgi-gpu)
   FC := pgf90
-  FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,managed,lineinfo
+  FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,lineinfo
   FC_FLAGS_LOW := $(FC_FLAGS)
   LD_FLAGS += $(FC_FLAGS)
   FC_FLAGS +=

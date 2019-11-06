@@ -3,6 +3,7 @@
 !Generated at : 2018-08-07 15:55:26 
 !KGEN version : 0.7.3 
   
+#define ALLOCERROR 1
 
 
 module micro_mg_utils
@@ -717,6 +718,29 @@ subroutine var_coef_v8(relvar, a, res, vlen)
    enddo
 
 end subroutine var_coef_v8
+
+subroutine var_coef_bug(relvar, a, res, vlen)
+  !$acc routine vector
+  ! Finds a coefficient for process rates based on the relative variance
+  ! of cloud water.
+  integer :: vlen
+  real(rkind_comp), intent(in) :: relvar(vlen)
+  real(rkind_comp), intent(in) :: a
+  real(rkind_comp), intent(out) :: res(vlen)
+  integer :: i
+  real(rkind_comp) :: tmpA(vlen)
+
+#ifdef ALLOCERROR
+   call rising_factorial(relvar,a,tmpA,vlen)
+   !$acc loop vector
+   do i=1,vlen
+      res(i) = tmpA(i)/relvar(i)**a
+   enddo
+#endif
+
+end subroutine var_coef_bug
+
+
 
 subroutine var_coef_int(relvar, a, res)
 
@@ -1558,7 +1582,7 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
 
   if (.not. microp_uniform) then
        ! This subroutine gives a fortran allocation error on the GPU
-       call  var_coef(relvar, 1.15_rkind_comp, pra_coef,mgncol)
+       call  var_coef_bug(relvar, 1.15_rkind_comp, pra_coef,mgncol)
        pra_coef = pra_coef*accre_enhan
   else
     pra_coef = 1._rkind_comp

@@ -529,8 +529,6 @@ subroutine micro_mg_tend ( &
   real(rkind_comp) :: n0r(mgncol,nlev)    ! intercept
   ! Rates/tendencies due to:
   ! Instantaneous snow melting
-
-
   real(rkind_comp) :: minstsm(mgncol,nlev)    ! mass mixing ratio
   real(rkind_comp) :: ninstsm(mgncol,nlev)    ! number concentration
   ! Instantaneous rain freezing
@@ -1216,6 +1214,7 @@ subroutine micro_mg_tend ( &
      !     rho(1:mgncol,k), pgam(1:mgncol,k), lamc(1:mgncol,k), mgncol)
 
    !AUTO ALLOCATION ERROR
+   !TYPE-{C:CPU}
    !!$acc parallel num_gangs(128)
    call size_dist_param_liq_vec(mg_liq_props, qcic, ncic,rho, pgam, lamc, mgncol*nlev)
    !!$acc end parallel
@@ -1228,16 +1227,15 @@ subroutine micro_mg_tend ( &
    !AUTO ALLOCATION ERROR
    !!$acc parallel num_gangs(128)
    if (.not. do_sb_physics) then
-     !call kk2000_liq_autoconversion(microp_uniform, qcic(1:mgncol,k), &
-     !   ncic(:,k), rho(:,k), relvar(:,k), prc(:,k), nprc(:,k), nprc1(:,k), mgncol)
+     !TYPE-{C:CPU}
      call kk2000_liq_autoconversion(microp_uniform, qcic, &
         ncic, rho, relvar, prc, nprc, nprc1, mgncol*nlev)
    endif
    !!$acc end parallel
    ! assign qric based on prognostic qr, using assumed precip fraction
    ! note: this could be moved above for consistency with qcic and qiic calculations
+   !TYPE-{R:CPU}
    do k=1,nlev
-
      qric(:,k) = qr(:,k)/precip_frac(:,k)
      nric(:,k) = nr(:,k)/precip_frac(:,k)
      ! limit in-precip mixing ratios to 10 g/kg
@@ -1260,12 +1258,13 @@ subroutine micro_mg_tend ( &
    enddo
 
    
+   !TYPE-{I:GPU}
    !$acc parallel num_gangs(128)
    call size_dist_param_basic_vec(mg_ice_props, qiic, niic, lami, mgncol*nlev, n0=n0i)
+
    ! Alternative autoconversion 
    if (do_sb_physics) then
-!     call sb2001v2_liq_autoconversion(pgam(:,k),qcic(1:mgncol,k),ncic(:,k), &
-!          qric(:,k),rho(:,k),relvar(:,k),prc(:,k),nprc(:,k),nprc1(:,k), mgncol)     
+     !TYPE-{C:GPU}
      call sb2001v2_liq_autoconversion(pgam,qcic,ncic, &
           qric,rho,relvar,prc,nprc,nprc1, mgncol*nlev)     
    endif	  
@@ -1274,6 +1273,7 @@ subroutine micro_mg_tend ( &
      ! similar to Ferrier (1994)
 
 
+   !TYPE-{I:GPU}
    if (do_cldice) then
       call ice_autoconversion(t, qiic, lami, n0i, &
            dcs, prci, nprci, mgncol*nlev)
@@ -1290,11 +1290,11 @@ subroutine micro_mg_tend ( &
    end if
    !$acc end parallel
 
+   !TYPE-{S:CPU} 
    do k=1,nlev
      ! note, currently we don't have this
      ! inside the do_cldice block, should be changed later
      ! assign qsic based on prognostic qs, using assumed precip fraction
-
      qsic(:,k) = qs(:,k)/precip_frac(:,k)
      nsic(:,k) = ns(:,k)/precip_frac(:,k)
      ! limit in-precip mixing ratios to 10 g/kg
@@ -1318,13 +1318,16 @@ subroutine micro_mg_tend ( &
      ! rain
    enddo
 
+   !TYPE-{R:GPU}
    !$acc parallel num_gangs(128)
    call size_dist_param_basic_vec(mg_rain_props, qric, nric, lamr, mgncol*nlev, n0=n0r)
    !$acc end parallel
+   !TYPE-{S:GPU}
    !$acc parallel num_gangs(128)
    call size_dist_param_basic_vec(mg_snow_props, qsic, nsic, lams, mgncol*nlev, n0=n0s)
    !$acc end parallel
 
+   !TYPE-{R:CPU}
    do k=1,nlev
      NEC_BEGIN("where_block_#3")
      qtmpA = lamr(:,k)**br
@@ -1343,13 +1346,12 @@ subroutine micro_mg_tend ( &
         unr(:,k) = 0._rkind_comp
      end where
      NEC_END("where_block_#3")
-    enddo
+   enddo
+    
      !......................................................................
      ! snow
-
-
-
-     do k=1,nlev
+   !TYPE-{S:CPU}
+   do k=1,nlev
      NEC_BEGIN("where_block_#4")
      where (lams(:,k) > 0._rkind_comp)
         ! provisional snow number and mass weighted mean fallspeed (m/s)
@@ -1362,9 +1364,10 @@ subroutine micro_mg_tend ( &
         ums(:,k) = 0._rkind_comp
         uns(:,k) = 0._rkind_comp
      end where
-     enddo 
+   enddo 
      NEC_END("where_block_#4")
      if (do_cldice) then
+        !TYPE-{C:CPU}
         do k=1,nlev
         if (.not. use_hetfrz_classnuc) then
            ! heterogeneous freezing of cloud water
@@ -1427,6 +1430,7 @@ subroutine micro_mg_tend ( &
         enddo
 
      else
+        !TYPE-{C:CPU}
         mnuccc=0._rkind_comp
         nnuccc=0._rkind_comp
         mnucct=0._rkind_comp
@@ -1435,45 +1439,54 @@ subroutine micro_mg_tend ( &
         nnudep=0._rkind_comp
      end if
 
+     !TYPE-{S:GPU}
      !$acc parallel num_gangs(128)
      call snow_self_aggregation(t, rho, asn, rhosn, qsic, nsic, &
           nsagg, mgncol*nlev)
 
+     !TYPE-{S,C:GPU}
      call accrete_cloud_water_snow(t, rho, asn, uns, mu, &
           qcic, ncic, qsic, pgam, lamc, lams, n0s, &
           psacws, npsacws, mgncol*nlev)
 
      if (do_cldice) then
+        !TYPE-{I:GPU}
         call secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol*nlev)
      else
         nsacwi = 0.0_rkind_comp
         msacwi = 0.0_rkind_comp
      end if
 
+     !TYPE-{R,S:GPU}
      call accrete_rain_snow(t, rho, umr, ums, unr, uns, &
           qric, qsic, lamr, n0r, lams, n0s, &
           pracs, npracs, mgncol*nlev)
 
+     !TYPE-{R:GPU}
      call heterogeneous_rain_freezing(t, qric, nric, lamr, &
           mnuccr, nnuccr, mgncol*nlev)
      !$acc end parallel
 
      if (do_sb_physics) then
+       !TYPE-{C,R:GPU}
        !$acc parallel num_gangs(128)
        call sb2001v2_accre_cld_water_rain(qcic, ncic, qric, &
             rho, relvar, pra, npra, mgncol*nlev)     
        !$acc end parallel
      else
+       !TYPE-{C,R:CPU}
        !AUTO ALLOCATION ERROR
-       !!$acc parallel num_gangs(128)
+       !$acc parallel num_gangs(128)
        call accrete_cloud_water_rain(microp_uniform, qric, qcic, &
             ncic, relvar, accre_enhan, pra, npra, mgncol*nlev)
-       !!$acc end parallel
+       !$acc end parallel
      endif
 
      !$acc parallel num_gangs(128)
+     !TYPE-{R:GPU}
      call self_collection_rain(rho, qric, nric, nragg, mgncol*nlev)
 
+     !TYPE-{I,S:GPU}
      if (do_cldice) then
         call accrete_cloud_ice_snow(t, rho, asn, qiic, niic, &
              qsic, lams, n0s, prai, nprai, mgncol*nlev)
@@ -1484,6 +1497,7 @@ subroutine micro_mg_tend ( &
      !$acc end parallel
 
 
+     !TYPE-{I,C,R,S:CPU}
      !!$acc parallel num_gangs(128)
      call evaporate_sublimate_precip(t, rho, &
           dv, mu, sc, q, qvl, qvi, &
@@ -1493,6 +1507,7 @@ subroutine micro_mg_tend ( &
      !!$acc end parallel
 
 
+     !TYPE-{C,S:GPU}
      !$acc parallel num_gangs(128)
      call bergeron_process_snow(t, rho, dv, mu, sc, &
           qvl, qvi, asn, qcic, qsic, lams, n0s, &
@@ -1505,6 +1520,7 @@ subroutine micro_mg_tend ( &
 
      if (do_cldice) then
 
+        !TYPE-{I:CPU}
         !AUTO ALLOCATION FAILED
         !!$acc parallel num_gangs(128)
         call ice_deposition_sublimation(t, q, qi, ni, &
@@ -1514,6 +1530,7 @@ subroutine micro_mg_tend ( &
 
         berg=berg*micro_mg_berg_eff_factor
 
+        !TYPE-{I:CPU}
         where (ice_sublim < 0._rkind_comp .and. qi > qsmall .and. icldm > mincld)
            nsubi = sublim_factor*ice_sublim / qi * ni / icldm
 
@@ -1529,8 +1546,9 @@ subroutine micro_mg_tend ( &
      end if !do_cldice
      !---PMC 12/3/12
 
-     !!$acc parallel num_gangs(128)
-     !!$acc loop gang collapse(2)
+     !TYPE-{C:GPU}
+     !$acc parallel num_gangs(128)
+     !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
         ! conservation to ensure no negative values of cloud water/precipitation
@@ -1569,10 +1587,14 @@ subroutine micro_mg_tend ( &
         end if
 
      end do 
+     end do 
      !!$acc end parallel
      NEC_END("loop_#2")
 
      NEC_BEGIN("loop_#3")
+     !TYPE-{?:GPU}
+     !$acc loop gang collapse(2)
+     do k=1,nlev
      do i=1,mgncol
         !=================================================================
         ! apply limiter to ensure that ice/snow sublimation and rain evap
@@ -1600,8 +1622,12 @@ subroutine micro_mg_tend ( &
         end if
 
      end do
+     end do 
+     !$acc end parallel
+     !TYPE-{R:CPU}
      NEC_END("loop_#3")
      NEC_BEGIN("loop_#4")
+     do k=1,nlev
      do i=1,mgncol
         !===================================================================
         ! conservation of nc
@@ -1638,6 +1664,7 @@ subroutine micro_mg_tend ( &
 
      end do
      NEC_END("loop_#4")
+     !TYPE-{R:CPU}
      !NEC_BEGIN("loop_#5")
      do i=1,mgncol
         ! conservation of rain mixing ratio
@@ -1659,6 +1686,7 @@ subroutine micro_mg_tend ( &
 
      end do 
      !NEC_END("loop_#5")
+     !TYPE-{R:CPU}
      NEC_BEGIN("loop_#6")
      do i=1,mgncol
         ! conservation of rain number
@@ -1676,6 +1704,7 @@ subroutine micro_mg_tend ( &
 
      end do 
      NEC_END("loop_#6")
+     !TYPE-{R:CPU}
      !NEC_BEGIN("loop_#7")
      do i=1,mgncol
 
@@ -1696,9 +1725,8 @@ subroutine micro_mg_tend ( &
      end do
      !NEC_END("loop_#7")
      !NEC_BEGIN("loop_#8")
-
      if (do_cldice) then
-
+        !TYPE-{I:CPU}
         do i=1,mgncol
            ! conservation of qi
            !-------------------------------------------------------------------
@@ -1726,7 +1754,7 @@ subroutine micro_mg_tend ( &
      !NEC_BEGIN("loop_#9")
 
      if (do_cldice) then
-
+        !TYPE-{I:CPU}
         do i=1,mgncol
            ! conservation of ni
            !-------------------------------------------------------------------
@@ -1754,6 +1782,7 @@ subroutine micro_mg_tend ( &
 
      end if
      !NEC_END("loop_#9")
+     !TYPE-{S:CPU}
      !NEC_BEGIN("loop_#10")
      do i=1,mgncol
         ! conservation of snow mixing ratio
@@ -1771,8 +1800,8 @@ subroutine micro_mg_tend ( &
 
      end do
      !NEC_END("loop_#10")
+     !TYPE-{S:CPU}
      !NEC_BEGIN("loop_#11")
-
      do i=1,mgncol
         ! conservation of snow number
         !-------------------------------------------------------------------
@@ -2005,8 +2034,10 @@ subroutine micro_mg_tend ( &
   ! output is for gridbox average
 
 
+  !TYPE-{R:CPU}
   qrout = qr
   nrout = nr * rho
+  !TYPE-{S:CPU}
   qsout = qs
   nsout = ns * rho
   ! calculate n0r and lamr from rain mass and number
@@ -2018,9 +2049,11 @@ subroutine micro_mg_tend ( &
   !!$acc parallel num_gangs(128) copyin(nccons,ncnst,nicons,ninst,deltat)
   !!variables:  nccons,ncnst,nicons,ninst
   !$acc parallel num_gangs(128)
+  !TYPE-{R:GPU}
   call size_dist_param_basic_vec(mg_rain_props, qric, nric, lamr, mgncol*nlev, n0=n0r)
   !$acc end parallel
   !!$acc loop gang
+  !TYPE-{R,C:?}
 #if 1
   call calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, mgncol*nlev)
 #else
@@ -2048,6 +2081,7 @@ subroutine micro_mg_tend ( &
 
   !!$acc parallel num_gangs(128)
   !!$acc loop collapse(2)
+  !TYPE-{C,S,R:CPU}
   do k=1,nlev
   do i=1,mgncol
      nc(i,k)     = ncn(i,k)
@@ -2079,6 +2113,7 @@ subroutine micro_mg_tend ( &
   enddo
 
 !  !$acc loop gang collapse(2)
+  !TYPE-{C,I,R,S:CPU}
   do k=1,nlev
      do i=1,mgncol
         ! calculate sedimentation for cloud water and ice
@@ -2112,15 +2147,18 @@ subroutine micro_mg_tend ( &
   enddo
   !!$acc end parallel
 
+  !TYPE-{I:GPU}
   !$acc parallel num_gangs(128)
   call size_dist_param_basic_vec(mg_ice_props, dumi, dumni, lami, mgncol*nlev)
   !$acc end parallel
 
+  !TYPE-{C:CPU}
   !!$acc parallel num_gangs(128)
   call size_dist_param_liq_vec(mg_liq_props, dumc, dumnc, rho, pgam, lamc, mgncol*nlev)
   !!$acc end parallel
 
 
+  !TYPE-{C,I:CPU}
   !NEC_BEGIN("loop_#18")
   do k=1,nlev
      do i=1,mgncol
@@ -2182,14 +2220,17 @@ subroutine micro_mg_tend ( &
 
   !$acc parallel num_gangs(128)
   ! fallspeed for rain
+  !TYPE-{R:GPU}
   call size_dist_param_basic_vec(mg_rain_props, dumr, dumnr, lamr, mgncol*nlev)
   ! fallspeed for snow
+  !TYPE-{S:GPU}
   call size_dist_param_basic_vec(mg_snow_props, dums, dumns, lams, mgncol*nlev)
   !!$acc end parallel
 
   !NEC_BEGIN("loop_#19")
   !!$acc parallel num_gangs(128)
   !$acc loop collapse(2)
+  !TYPE-{R,S,C,I:GPU}
   do k=1,nlev
      do i=1,mgncol
         if (lamr(i,k).ge.qsmall) then
@@ -2250,21 +2291,25 @@ subroutine micro_mg_tend ( &
   !-------------------------------------------------------------------
 
 
+  !TYPE-{I:CPU} BIG
   NEC_BEGIN("sedim#1")
   call UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv, &
                        qitend,nitend,qisedten,dumi,dumni,prect,iflx, &
                        xxlx=xxls,qxsevap=qisevap,tlat=tlat,qvlat=qvlat, &
                        xcldm=icldm,preci=preci)
   NEC_END("sedim#1")
+  !TYPE-{C:CPU} BIG
   NEC_BEGIN("sedim#2")
   call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv, &
                        qctend,nctend,qcsedten,dumc,dumnc,prect,lflx, &
                        xxlx=xxlv,qxsevap=qcsevap,tlat=tlat,qvlat=qvlat,xcldm=lcldm)
   NEC_END("sedim#2")
+  !TYPE-{R:CPU} BIG
   NEC_BEGIN("sedim#3")
   call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
                        qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
   NEC_END("sedim#3")
+  !TYPE-{S:CPU} BIG
   NEC_BEGIN("sedim#4")
 !  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv,pdel, &
 !                       qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
@@ -2279,6 +2324,7 @@ subroutine micro_mg_tend ( &
   ! note : here dum variables are grid-average, NOT in-cloud
 
 
+  !TYPE-{I,C,R,S:CPU}
   !NEC_BEGIN("loop_#20")
   do k=1,nlev
      do i=1,mgncol
@@ -2315,6 +2361,7 @@ subroutine micro_mg_tend ( &
   ! melting of snow at +2 C
 
 
+  !TYPE-{R,S:CPU}
   !NEC_BEGIN("loop_#21")
   do k=1,nlev
      do i=1,mgncol
@@ -2346,6 +2393,7 @@ subroutine micro_mg_tend ( &
      enddo
   enddo
   !NEC_END("loop_#21")
+  !TYPE-{R:CPU}
   NEC_BEGIN("loop_#22")
    do k=1,nlev
       do i=1,mgncol
@@ -2377,10 +2425,12 @@ subroutine micro_mg_tend ( &
       enddo
     enddo
     NEC_END("loop_#22")
+    !TYPE-{R:GPU}
     !$acc parallel num_gangs(128)
     call size_dist_param_basic_vec(mg_rain_props, dumr, dumnr, lamr,mgncol*nlev)
     !$acc end parallel
     NEC_BEGIN("loop_#23")
+    !TYPE-{S,I,R:CPU}
     do k=1,nlev
       do i=1,mgncol
         if (t(i,k)+tlat(i,k)/cpp*deltat < rainfrze) then
@@ -2403,6 +2453,7 @@ subroutine micro_mg_tend ( &
 
       enddo
    enddo
+   !TYPE-{I,C:CPU}
    NEC_END("loop_#23")
    if (do_cldice) then
       do k=1,nlev
@@ -2444,6 +2495,7 @@ subroutine micro_mg_tend ( &
      !-----------------------------------------------------------------
 
 
+   !TYPE-{I,C:CPU}
      do k=1,nlev
         do i=1,mgncol
            if (t(i,k)+tlat(i,k)/cpp*deltat < 233.15_rkind_comp) then
@@ -2479,6 +2531,7 @@ subroutine micro_mg_tend ( &
      ! together all microphysical processes
      !-----------------------------------------------------------------
      ! follow code similar to old CAM scheme
+     !TYPE-{C,I:CPU}
      do k=1,nlev
         do i=1,mgncol
            qtmpA(i)=q(i,k)+qvlat(i,k)*deltat
@@ -2531,6 +2584,7 @@ subroutine micro_mg_tend ( &
   ! variables are in-cloud to calculate size dist parameters
 
 
+  !TYPE-{I,C,R,S:CPU}
   do k=1,nlev
      do i=1,mgncol
         dumc(i,k) = max(qc(i,k)+qctend(i,k)*deltat,0._rkind_comp)/lcldm(i,k)
@@ -2565,6 +2619,7 @@ subroutine micro_mg_tend ( &
   !-----------------------------------------------------------------
 
   if (do_cldice) then
+     !TYPE-{I:CPU,GPU}
      dum_2D = dumni
      !$acc parallel num_gangs(128)
      call size_dist_param_basic_vec(mg_ice_props, dumi, dumni, lami, mgncol*nlev, dumni0A2D)
@@ -2595,6 +2650,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#28")
   else
      NEC_BEGIN("loop_#29")
+     !TYPE-{I}
      do k=1,nlev
         do i=1,mgncol
            ! NOTE: If CARMA is doing the ice microphysics, then the ice effective
@@ -2609,6 +2665,7 @@ subroutine micro_mg_tend ( &
   ! cloud droplet effective radius
   !-----------------------------------------------------------------
 
+  !TYPE-{C:?}
   dum_2D = dumnc
   call size_dist_param_liq_vec(mg_liq_props, dumc, dumnc, rho, pgam, lamc,mgncol*nlev)
   NEC_BEGIN("loop_#30")
@@ -2651,6 +2708,7 @@ subroutine micro_mg_tend ( &
   enddo 
   NEC_END("loop_#30")
 
+  !TYPE-{C}
   call size_dist_param_liq_vec(mg_liq_props, dumc, dumnc, rho, pgam, lamc,mgncol*nlev)
 
   do k=1,nlev
@@ -2669,6 +2727,7 @@ subroutine micro_mg_tend ( &
   enddo
   ! recalculate 'final' rain size distribution parameters
   ! to ensure that rain size is in bounds, adjust rain number if needed
+  !TYPE-{R}
   dum_2D = dumnr
   !$acc parallel num_gangs(128)
   call size_dist_param_basic_vec(mg_rain_props, dumr, dumnr, lamr,mgncol*nlev)
@@ -2689,6 +2748,7 @@ subroutine micro_mg_tend ( &
   enddo
   ! recalculate 'final' snow size distribution parameters
   ! to ensure that snow size is in bounds, adjust snow number if needed
+  !TYPE-{S}
   dum_2D = dumns
   !$acc parallel num_gangs(128)
   call size_dist_param_basic_vec(mg_snow_props, dums, dumns, lams, mgncol*nlev, n0=dumns0A2D)
@@ -2710,6 +2770,7 @@ subroutine micro_mg_tend ( &
 
      end do ! vertical k loop
   enddo
+  !TYPE-{I,C,R,S}
   do k=1,nlev
      do i=1,mgncol
         ! if updated q (after microphysics) is zero, then ensure updated n is also zero
@@ -2727,7 +2788,9 @@ subroutine micro_mg_tend ( &
   ! so add qctend and qitend back in one more time
 
 
+  !TYPE-{C}
   qc = qc + qctend*deltat
+  !TYPE-{I}
   qi = qi + qitend*deltat
   ! averaging for snow and rain number and diameter
   !--------------------------------------------------
@@ -2743,6 +2806,7 @@ subroutine micro_mg_tend ( &
   ! necessary to prevent divide by zero in aerage_diameter_vec
 
   ! avoid divide by zero in avg_diameter_vec
+  !TYPE-{R}
   where(nrout .eq. 0._rkind_comp) nrout=1e-34_rkind_comp
   call avg_diameter_vec(qrout,nrout,rho,rhow,drout2,mgncol*nlev)
   where (qrout .gt. 1.e-7_rkind_comp &
@@ -2763,6 +2827,7 @@ subroutine micro_mg_tend ( &
      reff_rain = 0._rkind_comp
   end where
 
+  !TYPE-{S}
   ! avoid divide by zero in avg_diameter_vec
   where(nsout .eq. 0._rkind_comp) nsout = 1.e-34_rkind_comp
   call avg_diameter_vec(qsout, nsout, rho, rhosn,dsout2,mgncol*nlev)
@@ -2793,6 +2858,7 @@ subroutine micro_mg_tend ( &
   ! units of mm^6/m^3
 
 
+  !TYPE-{C,S}
   !NEC_BEGIN("loop_#31")
   do k=1,nlev
      do i = 1,mgncol
@@ -2873,8 +2939,11 @@ subroutine micro_mg_tend ( &
   !NEC_END("loop_#31")
   !redefine fice here....
 
+  !TYPE-{S,R,C,I)
   dum_2D = qsout + qrout + qc + qi
+  !TYPE-{S,I)
   dumi = qsout + qi
+  !TYPE-{I)
   where (dumi .gt. qsmall .and. dum_2D .gt. qsmall)
      nfice=min(dumi/dum_2D,1._rkind_comp)
   elsewhere
