@@ -18,5 +18,6 @@ module list
 
 echo $LD_LIBRARY_PATH
 #nvprof --print-gpu-trace ./kernel.exe
+export PGI_ACC_CUDA_HEAPSIZE=32M
 nvvp ./kernel.exe
 

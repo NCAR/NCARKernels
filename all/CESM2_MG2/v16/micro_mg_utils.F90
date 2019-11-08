@@ -281,7 +281,8 @@ subroutine  rising_factorial_v8(x, n, res,vlen)
   integer :: i
   real(rkind_comp) :: tmp(vlen)
 
-#if 0
+#if 1
+  !$acc loop vector
   do i=1,vlen
     tmp(i) = x(i)+n
     res(i) = gamma(tmp(i))/gamma(x(i))
@@ -713,6 +714,7 @@ subroutine var_coef_v8(relvar, a, res, vlen)
   real(rkind_comp) :: tmpA(vlen)
 
    call rising_factorial(relvar,a,tmpA,vlen)
+   !$acc loop vector 
    do i=1,vlen
       res(i) = tmpA(i)/relvar(i)**a
    enddo
@@ -729,6 +731,9 @@ subroutine var_coef_bug(relvar, a, res, vlen)
   real(rkind_comp), intent(out) :: res(vlen)
   integer :: i
   real(rkind_comp) :: tmpA(vlen)
+  real(rkind_comp) :: tmp
+
+  !!$acc enter data create(tmpA(1:vlen))
 
 #ifdef ALLOCERROR
    call rising_factorial(relvar,a,tmpA,vlen)
@@ -1582,11 +1587,12 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
 
   if (.not. microp_uniform) then
        ! This subroutine gives a fortran allocation error on the GPU
-       call  var_coef_bug(relvar, 1.15_rkind_comp, pra_coef,mgncol)
+       call  var_coef(relvar, 1.15_rkind_comp, pra_coef,mgncol)
        pra_coef = pra_coef*accre_enhan
   else
     pra_coef = 1._rkind_comp
   end if
+  !$acc loop vector
   do i=1,mgncol
     if (qric(i) >= qsmall .and. qcic(i) >= qsmall) then
       ! include sub-grid distribution of cloud water
