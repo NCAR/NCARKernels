@@ -1521,7 +1521,7 @@ subroutine micro_mg_tend ( &
      !---PMC 12/3/12
 
      !TYPE-{C:GPU}
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -1796,7 +1796,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#10")
      !TYPE-{S:CPU}
      NEC_BEGIN("loop_#11")
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -1846,7 +1846,7 @@ subroutine micro_mg_tend ( &
      call qsat_water_vector(ttmp2A, p, esnA, qvnAI,mgncol*nlev)
 
      NEC_BEGIN("loop_#13")
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -1870,7 +1870,7 @@ subroutine micro_mg_tend ( &
      call qsat_water_vector(ttmp2A, p, esnA, qvnA,mgncol*nlev)
 
      NEC_BEGIN("loop_#14")
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -1895,7 +1895,7 @@ subroutine micro_mg_tend ( &
      call qsat_ice_vector(ttmp2A, p, esnA, qvnA,mgncol*nlev)
 
      NEC_BEGIN("loop_#15")
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -1923,7 +1923,7 @@ subroutine micro_mg_tend ( &
 
 
      NEC_BEGIN("loop_#16")
-     !$acc parallel num_gangs(128)
+     !$acc parallel num_gangs(32)
      !$acc loop gang collapse(2)
      do k=1,nlev
      do i=1,mgncol
@@ -2229,9 +2229,8 @@ subroutine micro_mg_tend ( &
   !TYPE-{S:GPU}
   call size_dist_param_basic_vec(mg_snow_props, dums, dumns, lams, mgncol*nlev)
 
-  !$acc parallel num_gangs(128)
   !NEC_BEGIN("loop_#19")
-  !TYPE-{R,S,C,I:GPU}
+  !$acc parallel num_gangs(32)
   !$acc loop collapse(2)
   do k=1,nlev
      do i=1,mgncol
@@ -2262,9 +2261,19 @@ subroutine micro_mg_tend ( &
            fs(i,k)=0._rkind_comp
            fns(i,k)=0._rkind_comp
         end if
+        pdel_inv(i,k) = 1._rkind_comp/pdel(i,k)
+     end do
+  end do
+  !$acc end parallel
         ! redefine dummy variables - sedimentation is calculated over grid-scale
         ! quantities to ensure conservation
 
+  !$acc  data copy(qitend,nitend,dumi,dumni,qctend,nctend,dumc,dumnc,qrtend,nrtend,dumr,dumnr,qstend,nstend,dums,dumns,prect) copyin(pdel_inv)
+  !TYPE-{R,S,C,I:GPU}
+  !$acc parallel num_gangs(32)
+  !$acc loop collapse(2)
+  do k=1,nlev
+     do i=1,mgncol
 
         dumc(i,k) = (qc(i,k)+qctend(i,k)*deltat)
         dumnc(i,k) = max((nc(i,k)+nctend(i,k)*deltat),0._rkind_comp)
@@ -2280,7 +2289,6 @@ subroutine micro_mg_tend ( &
         if (dumr(i,k).lt.qsmall) dumnr(i,k)=0._rkind_comp
         if (dums(i,k).lt.qsmall) dumns(i,k)=0._rkind_comp
 
-        pdel_inv(i,k) = 1._rkind_comp/pdel(i,k)
 
      enddo
   end do       !!! vertical loop
@@ -2295,20 +2303,20 @@ subroutine micro_mg_tend ( &
 
   !TYPE-{I:CPU} BIG
   NEC_BEGIN("sedim#1")
-  call UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv, &
+  call UpdateTendencies_vecv2(mgncol,nlev,do_cldice,deltat,fi,fni,pdel_inv, &
                        qitend,nitend,qisedten,dumi,dumni,prect,iflx, &
                        xxlx=xxls,qxsevap=qisevap,tlat=tlat,qvlat=qvlat, &
                        xcldm=icldm,preci=preci)
   NEC_END("sedim#1")
   !TYPE-{C:CPU} BIG
   NEC_BEGIN("sedim#2")
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv, &
+  call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdel_inv, &
                        qctend,nctend,qcsedten,dumc,dumnc,prect,lflx, &
                        xxlx=xxlv,qxsevap=qcsevap,tlat=tlat,qvlat=qvlat,xcldm=lcldm)
   NEC_END("sedim#2")
   !TYPE-{R:CPU} BIG
   NEC_BEGIN("sedim#3")
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
+  call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
                        qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
   NEC_END("sedim#3")
   !TYPE-{S:CPU} BIG
@@ -2316,7 +2324,7 @@ subroutine micro_mg_tend ( &
 !  call UpdateTendencies(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv,pdel, &
 !                       qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
 !  print *,'preci: ', preci
-  call UpdateTendencies_vec(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv, &
+  call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv, &
                        qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
 !  stop
   NEC_END("sedim#4")
@@ -2328,6 +2336,7 @@ subroutine micro_mg_tend ( &
 
   !TYPE-{I,C,R,S:CPU}
   !NEC_BEGIN("loop_#20")
+  !$acc parallel num_gangs(32)
   !$acc loop gang collapse(2)
   do k=1,nlev
      do i=1,mgncol
@@ -2358,6 +2367,8 @@ subroutine micro_mg_tend ( &
 
      enddo
   enddo
+  !$acc end parallel
+  !$acc end data
   !NEC_END("loop_#20")
   ! calculate instantaneous processes (melting, homogeneous freezing)
   !====================================================================
@@ -3200,31 +3211,26 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
            faloutnx = 0._rkind_comp
         end if
 
-#if 0
-        do i=1,mgncol
-           if(n > iters(i)) then 
-             faloutx(i,:) = 0._rkind_comp
-             faloutnx(i,:) = 0._rkind_comp
-           endif
-        enddo
-#endif
-
         ! top of model
         k = 1
         ! add fallout terms to microphysical tendencies
 
-        faltndx = faloutx(:,k)*pdelInv(:,k)
-        faltndnx = faloutnx(:,k)*pdelInv(:,k)
-        qxtend(:,k) = qxtend(:,k)-faltndx*rnstep
-        nxtend(:,k) = nxtend(:,k)-faltndnx*rnstep
+      
+      do i=1,mgncol
+        faltndx(i) = faloutx(i,k)*pdelInv(i,k)
+        faltndnx(i) = faloutnx(i,k)*pdelInv(i,k)
+        qxtend(i,k) = qxtend(i,k)-faltndx(i)*rnstep(i)
+        nxtend(i,k) = nxtend(i,k)-faltndnx(i)*rnstep(i)
         ! sedimentation tendency for output
+        qxsedten(i,k)=qxsedten(i,k)-faltndx(i)*rnstep(i)
+        dumx(i,k)  = dumx(i,k)-faltndx(i)*deltat*rnstep(i)
+        dumnx(i,k) = dumnx(i,k)-faltndnx(i)*deltat*rnstep(i)
+      enddo
 
-        qxsedten(:,k)=qxsedten(:,k)-faltndx*rnstep
-
-        dumx(:,k)  = dumx(:,k)-faltndx*deltat*rnstep
-        dumnx(:,k) = dumnx(:,k)-faltndnx*deltat*rnstep
-
+        !!$acc parallel num_gangs(nlev-1)
+        !!$acc loop collapse(2)
         do k = 2,nlev
+        do i=1,mgncol
            ! for cloud liquid and ice, if cloud fraction increases with height
            ! then add flux from above to both vapor and cloud water of current level
            ! this means that flux entering clear portion of cell from above evaporates
@@ -3233,60 +3239,66 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
 
 
            if(present(xcldm)) then
-              dum1=xcldm(:,k)/xcldm(:,k-1)
-              dum1=min(dum1,1._rkind_comp)
+              dum1(i)=xcldm(i,k)/xcldm(i,k-1)
+              dum1(i)=min(dum1(i),1._rkind_comp)
            else
-              dum1=1.0
+              dum1(i)=1.0
            endif
-           faltndx(:)=(faloutx(:,k)-dum1(:)*faloutx(:,k-1))*pdelInv(:,k)
-           faltndnx(:)=(faloutnx(:,k)-dum1(:)*faloutnx(:,k-1))*pdelInv(:,k)
+           faltndx(i)=(faloutx(i,k)-dum1(i)*faloutx(i,k-1))*pdelInv(i,k)
+           faltndnx(i)=(faloutnx(i,k)-dum1(i)*faloutnx(i,k-1))*pdelInv(i,k)
            ! faltndqxe  = (faloutx(:,k)-faloutx(:,k-1))/pdel(:,k)
            !(faltndqxe-faltndx) == (faloutx(:,k) - faloutx(:,k-1) - faloutx(:,k)  + dum1*faloutx(:,k-1)  )/pdel(:,k)
            !(faltndqxe-faltndx) == ( (dum1-1.)*faloutx(:,k-1))/pdel(:,k)
            ! faltnqxe2 = 
-           faltndqxe2(:) = (dum1(:)-1._rkind_comp)*faloutx(:,k-1)*pdelInv(:,k)
+           faltndqxe2(i) = (dum1(i)-1._rkind_comp)*faloutx(i,k-1)*pdelInv(i,k)
            ! add fallout terms to eulerian tendencies
             
 
-           qxtend(:,k) = qxtend(:,k)-faltndx*rnstep
-           nxtend(:,k) = nxtend(:,k)-faltndnx*rnstep
+           qxtend(i,k) = qxtend(i,k)-faltndx(i)*rnstep(i)
+           nxtend(i,k) = nxtend(i,k)-faltndnx(i)*rnstep(i)
            ! sedimentation tendency for output
 
-           qxsedten(:,k)=qxsedten(:,k)-faltndx*rnstep
+           qxsedten(i,k)=qxsedten(i,k)-faltndx(i)*rnstep(i)
            ! add terms to to evap/sub of cloud water
 
            ! for output
            if(present(qxsevap)) then 
               ! qxsevap(:,k)=qxsevap(:,k)-(faltndqxe-faltndx)*rnstep
-              qxsevap(:,k)=qxsevap(:,k)- faltndqxe2*rnstep
+              qxsevap(i,k)=qxsevap(i,k)- faltndqxe2(i)*rnstep(i)
            endif
 
            !if(present(qvlat)) then 
            if(present_qvlat) then 
               ! qvlat(:,k)=qvlat(:,k)-(faltndqxe-faltndx)*rnstep
-              qvlat(:,k)=qvlat(:,k)-faltndqxe2*rnstep
+              qvlat(i,k)=qvlat(i,k)-faltndqxe2(i)*rnstep(i)
            endif
            ! if(present(tlat)) then 
            if(present_tlat) then 
               ! tlat(:,k)=tlat(:,k)+(faltndqxe-faltndx)*xxlx*rnstep
-              tlat(:,k)=tlat(:,k)+faltndqxe2*xxlx*rnstep
+              tlat(i,k)=tlat(i,k)+faltndqxe2(i)*xxlx*rnstep(i)
            endif
 
-           dumx(:,k)  = dumx(:,k)-faltndx*deltat*rnstep
-           dumnx(:,k) = dumnx(:,k)-faltndnx*deltat*rnstep
+           dumx(i,k)  = dumx(i,k)-faltndx(i)*deltat*rnstep(i)
+           dumnx(i,k) = dumnx(i,k)-faltndnx(i)*deltat*rnstep(i)
 
         end do
+        end do
+        !!$acc end parallel
         do k = 1,nlev
-           xflx(:,k+1) = xflx(:,k+1) + faloutx(:,k) / g * rnstep
+        do i=1,mgncol
+           xflx(i,k+1) = xflx(i,k+1) + faloutx(i,k) / g * rnstep(i)
+        enddo
         end do
         ! units below are m/s
         ! sedimentation flux at surface is added to precip flux at surface
         ! to get total precip (cloud + precip water) rate
 
-        prect = prect+faloutx(:,nlev)/g*rnstep/1000._rkind_comp
+        do i=1,mgncol
+        prect(i) = prect(i)+faloutx(i,nlev)/g*rnstep(i)/1000._rkind_comp
         if(present(preci)) then 
-          preci = preci+faloutx(:,nlev)/g*rnstep/1000._rkind_comp
+          preci(i) = preci(i)+faloutx(i,nlev)/g*rnstep(i)/1000._rkind_comp
         endif
+        enddo
 
 !     print *,'preci: ',preci
      ! calculate number of split time steps to ensure courant stability criteria
@@ -3299,7 +3311,178 @@ subroutine UpdateTendencies_vec(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxte
 
 
 end subroutine UpdateTendencies_vec
+subroutine UpdateTendencies_vecv2(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxtend,nxtend, &
+                              qxsedten,dumx,dumnx,prect,xflx,xxlx,qxsevap,xcldm,tlat,qvlat,preci)
 
+
+   integer, intent(in)               :: mgncol,nlev
+   logical, intent(in)               :: do_cldice
+   real(rkind_comp),intent(in)               :: deltat
+   real(rkind_comp), intent(in)              :: fx(mgncol,nlev)
+   real(rkind_comp), intent(in)              :: fnx(mgncol,nlev)
+   real(rkind_comp), intent(in)              :: pdelInv(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: qxtend(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: nxtend(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: qxsedten(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: dumx(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: dumnx(mgncol,nlev)
+   real(rkind_comp), intent(inout)           :: prect(mgncol)
+   real(rkind_comp), intent(inout)           :: xflx(mgncol,nlev+1)
+   real(rkind_comp), intent(in)   , optional :: xxlx
+   real(rkind_comp), intent(inout), optional :: qxsevap(mgncol,nlev)
+   real(rkind_comp), intent(in)   , optional :: xcldm(mgncol,nlev)
+   real(rkind_comp), intent(inout), optional :: tlat(mgncol,nlev)
+   real(rkind_comp), intent(inout), optional :: qvlat(mgncol,nlev)
+   real(rkind_comp), intent(inout), optional :: preci(mgncol)
+   integer :: i,k,n,nstep,nstepMax
+   real(rkind_comp) :: faltndx(mgncol,nlev),faltndnx(mgncol,nlev)
+   real(rkind_comp) :: rnstep(mgncol),faltndqxe(mgncol)
+   real(rkind_comp) :: faltndqxe2(mgncol,nlev)
+   !real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol)
+   real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol, nlev)
+   real(rkind_comp) :: tmpk1(nlev),tmpk2(nlev)
+   real(rkind_comp) :: tmp1(mgncol,nlev),tmp2(mgncol,nlev)
+   real(rkind_comp) :: mask(mgncol)
+   integer  :: iters(mgncol)
+   logical  :: present_tlat,present_qvlat, present_qxsevap, present_preci, present_xcldm
+
+
+   present_tlat    = present(tlat)
+   present_qvlat   = present(qvlat)
+   present_qxsevap = present(qxsevap)
+   present_preci   = present(preci)
+   present_xcldm   = present(xcldm)
+
+   !print *,'nstepMax: ',nstepMax
+
+     ! loop over sedimentation sub-time step to ensure stability
+     !==============================================================
+     !rnstep = 1._rkind_comp/real(nstepMax)
+
+     !$acc parallel num_gangs(mgncol)
+     !$acc loop gang
+     do i=1,mgncol
+        !iters(i) = 1 + max(maxval(tmp1(i,:)),maxval(tmp2(i,:)))
+        iters(i) = 1 + max(maxval(fx(i,:)*pdelInv(i,:)*deltat), &
+                           maxval(fnx(i,:)*pdelInv(i,:)*deltat))
+        rnstep(i) = 1._rkind_comp/real(iters(i))
+     do n = 1,iters(i)
+
+        !---------------------------------------------
+        ! mask out any additional changes to points 
+        ! that should have already converged. 
+        ! This code modification makes this 
+        ! reproduces existing answer
+        !---------------------------------------------
+        if (n>iters(i)) then
+           mask(i)=0._rkind_comp
+        else
+           mask(i)=1._rkind_comp
+        endif
+
+
+        if (do_cldice) then
+           do k=1,nlev
+              faloutx(i,k)  = fx(i,k)  * dumx(i,k)  * mask(i)
+              faloutnx(i,k) = fnx(i,k) * dumnx(i,k) * mask(i)
+           enddo
+        else
+           do k=1,nlev
+              faloutx(i,k)  = 0._rkind_comp
+              faloutnx(i,k) = 0._rkind_comp
+           enddo
+        end if
+
+        ! top of model
+        k = 1
+
+        ! add fallout terms to microphysical tendencies
+        faltndx(i,k) = faloutx(i,k)*pdelInv(i,k)
+        faltndnx(i,k) = faloutnx(i,k)*pdelInv(i,k)
+        qxtend(i,k) = qxtend(i,k)-faltndx(i,k)*rnstep(i)
+        nxtend(i,k) = nxtend(i,k)-faltndnx(i,k)*rnstep(i)
+        ! sedimentation tendency for output
+
+        qxsedten(i,k)=qxsedten(i,k)-faltndx(i,k)*rnstep(i)
+
+        dumx(i,k)  = dumx(i,k)-faltndx(i,k)*deltat*rnstep(i)
+        dumnx(i,k) = dumnx(i,k)-faltndnx(i,k)*deltat*rnstep(i)
+
+
+        do k = 2,nlev
+           if(present_xcldm) then
+              dum1(i,k) = xcldm(i,k)/xcldm(i,k-1)
+              dum1(i,k) =min(dum1(i,k),1._rkind_comp)
+           else
+              dum1(i,k) = 1.0
+           endif
+           ! for cloud liquid and ice, if cloud fraction increases with height
+           ! then add flux from above to both vapor and cloud water of current level
+           ! this means that flux entering clear portion of cell from above evaporates
+           ! instantly
+           ! note: this is not an issue with precip, since we assume max overlap
+
+           faltndx(i,k)=(faloutx(i,k)-dum1(i,k)*faloutx(i,k-1))*pdelInv(i,k)
+           faltndnx(i,k)=(faloutnx(i,k)-dum1(i,k)*faloutnx(i,k-1))*pdelInv(i,k)
+           ! faltndqxe  = (faloutx(:,k)-faloutx(:,k-1))/pdel(:,k)
+           !(faltndqxe-faltndx) == (faloutx(:,k) - faloutx(:,k-1) - faloutx(:,k)  + dum1*faloutx(:,k-1)  )/pdel(:,k)
+           !(faltndqxe-faltndx) == ( (dum1-1.)*faloutx(:,k-1))/pdel(:,k)
+           ! faltnqxe2 = 
+           faltndqxe2(i,k) = (dum1(i,k)-1._rkind_comp)*faloutx(i,k-1)*pdelInv(i,k)
+           ! add fallout terms to eulerian tendencies
+            
+
+           qxtend(i,k) = qxtend(i,k)-faltndx(i,k)*rnstep(i)
+           nxtend(i,k) = nxtend(i,k)-faltndnx(i,k)*rnstep(i)
+           ! sedimentation tendency for output
+
+           qxsedten(i,k)=qxsedten(i,k)-faltndx(i,k)*rnstep(i)
+           ! add terms to to evap/sub of cloud water
+
+           ! for output
+           if(present_qxsevap) then 
+              qxsevap(i,k)=qxsevap(i,k)- faltndqxe2(i,k)*rnstep(i)
+           endif
+
+           if(present_qvlat) then 
+              qvlat(i,k)=qvlat(i,k)-faltndqxe2(i,k)*rnstep(i)
+           endif
+           if(present_tlat) then 
+              tlat(i,k)=tlat(i,k)+faltndqxe2(i,k)*xxlx*rnstep(i)
+           endif
+
+           dumx(i,k)  = dumx(i,k)-faltndx(i,k)*deltat*rnstep(i)
+           dumnx(i,k) = dumnx(i,k)-faltndnx(i,k)*deltat*rnstep(i)
+
+        end do
+
+        do k = 1,nlev
+           xflx(i,k+1) = xflx(i,k+1) + faloutx(i,k) / g * rnstep(i)
+        end do
+
+        ! units below are m/s
+        ! sedimentation flux at surface is added to precip flux at surface
+        ! to get total precip (cloud + precip water) rate
+
+        prect(i) = prect(i)+faloutx(i,nlev)/g*rnstep(i)/1000._rkind_comp
+
+        if(present_preci) then 
+           preci(i) = preci(i)+faloutx(i,nlev)/g*rnstep(i)/1000._rkind_comp
+        endif
+
+
+!     print *,'preci: ',preci
+     ! calculate number of split time steps to ensure courant stability criteria
+     ! for sedimentation calculations
+     !-------------------------------------------------------------------
+     end do
+     end do
+     !$acc end parallel
+
+!   print *,'qxtend: ',qxtend
+
+
+end subroutine UpdateTendencies_vecv2
 !========================================================================
 !UTILITIES
 !========================================================================
