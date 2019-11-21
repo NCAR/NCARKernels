@@ -157,7 +157,6 @@ subroutine  wv_sat_svp_to_qsat_rkind_comp(es, p, qs)
 end subroutine wv_sat_svp_to_qsat_rkind_comp
 
 subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
-  !$acc routine vector
 
   integer,  intent(in) :: vlen
   real(rkind_comp), intent(in)  :: es(vlen)  ! SVP
@@ -166,6 +165,7 @@ subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
   integer :: i
   ! If pressure is less than SVP, set qs to maximum of 1.
 
+  !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen 
      if ( (p(i) - es(i)) <= 0._rkind_comp ) then
@@ -174,6 +174,7 @@ subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
         qs(i) = epsilo*es(i) / (p(i) - omeps*es(i))
      end if
   enddo
+  !$acc end parallel
 
 end subroutine wv_sat_svp_to_qsat_v8
 
@@ -204,7 +205,6 @@ subroutine wv_sat_qsat_water_scalar(t, p, es, qs, idx)
 end subroutine wv_sat_qsat_water_scalar
 
 subroutine wv_sat_qsat_water_vector(t, p, es, qs, vlen, idx)
-  !$acc routine vector
 
   !------------------------------------------------------------------!
   ! Purpose:                                                         !
@@ -225,12 +225,14 @@ subroutine wv_sat_qsat_water_vector(t, p, es, qs, vlen, idx)
 
   call wv_sat_svp_water(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
-  !$acc loop vector
 
+  !$acc parallel num_gangs(32)
+  !$acc loop vector
   do i=1,vlen
      ! Ensures returned es is consistent with limiters on qs.
      es(i) = min(es(i), p(i))
   enddo
+  !$acc end parallel
 
 end subroutine wv_sat_qsat_water_vector
 
@@ -261,7 +263,6 @@ subroutine wv_sat_qsat_ice_scalar(t, p, es, qs, idx)
 end subroutine wv_sat_qsat_ice_scalar
 
 subroutine wv_sat_qsat_ice_vector(t, p, es, qs, vlen, idx)
-  !$acc routine vector
 
   !------------------------------------------------------------------!
   ! Purpose:                                                         !
@@ -283,11 +284,13 @@ subroutine wv_sat_qsat_ice_vector(t, p, es, qs, vlen, idx)
   call wv_sat_svp_ice(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
 
+  !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen
      ! Ensures returned es is consistent with limiters on qs.
      es(i) = min(es(i), p(i))
   enddo
+  !$acc end parallel
 
 end subroutine wv_sat_qsat_ice_vector
 
@@ -325,7 +328,6 @@ subroutine  wv_sat_svp_water_rkind_comp(t, es, idx)
 end subroutine wv_sat_svp_water_rkind_comp
 
 subroutine  wv_sat_svp_water_v8(t, es, vlen, idx)
-  !$acc routine vector
 
   integer,  intent(in) :: vlen
   real(rkind_comp), intent(in) :: t(vlen)
@@ -390,7 +392,6 @@ subroutine wv_sat_svp_ice_rkind_comp(t, es, idx)
 end subroutine wv_sat_svp_ice_rkind_comp
 
 subroutine wv_sat_svp_ice_v8(t, es, vlen, idx)
-  !$acc routine vector
 
   integer,  intent(in) :: vlen
   real(rkind_comp), intent(in) :: t(vlen)
@@ -449,7 +450,6 @@ subroutine GoffGratch_svp_water_rkind_comp(t, es)
 end subroutine GoffGratch_svp_water_rkind_comp
 
 subroutine GoffGratch_svp_water_v8(t, es, vlen)
-  !$acc routine vector
 
   integer :: vlen
   real(rkind_comp), intent(in)  :: t(vlen)  ! Temperature in Kelvin
@@ -457,6 +457,7 @@ subroutine GoffGratch_svp_water_v8(t, es, vlen)
   integer :: i
   ! uncertain below -70 C
 
+  !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen
      es(i) = 10._rkind_comp**(-7.90298_rkind_comp*(tboil/t(i)-1._rkind_comp)+ &
@@ -465,6 +466,7 @@ subroutine GoffGratch_svp_water_v8(t, es, vlen)
        8.1328e-3_rkind_comp*(10._rkind_comp**(-3.49149_rkind_comp*(tboil/t(i)-1._rkind_comp))-1._rkind_comp)+ &
        log10(1013.246_rkind_comp))*100._rkind_comp
   enddo
+  !$acc end parallel
 
 end subroutine GoffGratch_svp_water_v8
 
@@ -480,7 +482,6 @@ subroutine GoffGratch_svp_ice_rkind_comp(t, es)
 end subroutine GoffGratch_svp_ice_rkind_comp
 
 subroutine GoffGratch_svp_ice_v8(t, es, vlen)
-  !$acc routine vector
 
   integer :: vlen
   real(rkind_comp), intent(in)  :: t(vlen)  ! Temperature in Kelvin
@@ -489,12 +490,14 @@ subroutine GoffGratch_svp_ice_v8(t, es, vlen)
   ! good down to -100 C
 
   
+  !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen
   es(i) = 10._rkind_comp**(-9.09718_rkind_comp*(h2otrip/t(i)-1._rkind_comp)-3.56654_rkind_comp* &
        log10(h2otrip/t(i))+0.876793_rkind_comp*(1._rkind_comp-t(i)/h2otrip)+ &
        log10(6.1071_rkind_comp))*100._rkind_comp
   enddo
+  !$acc end parallel
 
 end subroutine GoffGratch_svp_ice_v8
 
