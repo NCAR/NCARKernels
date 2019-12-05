@@ -874,7 +874,7 @@ subroutine var_coef_vint(relvar, a, res, vlen)
   real(rkind_comp) :: tmp(vlen)
   call rising_factorial(relvar, a,tmp,vlen)
   !$acc parallel num_gangs(32)
-  !$acc loop gang
+  !$acc loop vector
   do i=1,vlen
      res(i) = tmp(i) / relvar(i)**a
   enddo
@@ -925,6 +925,7 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
   integer :: i
 !  print *,'count(qi>qsmall), mgncol: ',count(qi>qsmall),mgncol
   !NEC$ IVDEP
+  !$acc data
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,mgncol
@@ -983,6 +984,7 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
      end if !qi>qsmall
   enddo
   !$acc end parallel
+  !$acc end data 
 end subroutine ice_deposition_sublimation
 !========================================================================
 ! autoconversion of cloud liquid water to rain
@@ -1325,7 +1327,7 @@ subroutine contact_freezing (microp_uniform, t, p, rndst, nacon, &
 
   integer  :: i
   !$acc parallel num_gangs(32)
-  !$acc loop gang
+  !$acc loop vector
   do i = 1,mgncol
 
      if (qcic(i) >= qsmall .and. t(i) < 269.15_rkind_comp) then
