@@ -710,6 +710,12 @@ subroutine micro_mg_tend ( &
   real(rkind_comp) :: ifrac
   real(rkind_comp) :: rnstep
 
+  !$acc declare create(dumi,dumr,dums,dumc,dumni,dumnr,dumns,dumnc)
+  !$acc declare create(qc,qi,nc,ni,qr,qs,nr,ns)
+  !$acc declare create(rho,dv,mu,sc,rhof,precip_frac,cldm,icldm,lcldm)
+  !$acc declare create(qcic,qiic,qsic,qric,ncic,niic,nsic,nric)
+  !$acc declare create(lami,lamc,lams,lamr,n0i,n0s,n0r,pgam)
+  !$acc declare create(esi,esl,qvi,qvl,esnA,qvnA,qvnAI,ttmp2A)
   !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! Return error message
 
@@ -727,13 +733,11 @@ subroutine micro_mg_tend ( &
   ! Copies of input concentrations that may be changed internally.
 
   !$acc data &
-  !$acc copyin(t,p) &
-  !$acc create(esi,qvi,ttmp2A,esnA,qvnA) &
-  !$acc create(esl,qvl,qvnAI) &
-  !$acc create(qiic,qric,qsic,ncic,niic,nric,nsic) &
-  !$acc create(lamc,lami,lamr,lams) &
-  !$acc create(dumi,dumni) &
-  !$acc copyout(qitend)
+  !$acc copyin(t,p)
+  !!$acc create(esl,qvl,qvnAI) &
+  !!$acc create(qiic,qric,qsic,ncic,niic,nric,nsic) &
+  !!$acc create(lamc,lami,lamr,lams) &
+  !!$acc copyout(qitend)
   
 
   !$acc parallel num_gangs(32)
@@ -2476,7 +2480,6 @@ subroutine micro_mg_tend ( &
   ! for sedimentation calculations
   !-------------------------------------------------------------------
 
-  !!$acc data create(dumi,dumni)
   !TYPE-{I:GPU}
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
@@ -2515,9 +2518,7 @@ subroutine micro_mg_tend ( &
      enddo
   enddo
   !$acc end parallel
-  !!$acc end data
 
-  !$acc data create(dumc,dumnc)
   !TYPE-{C:CPU} BIG
   !TYPE-{I:GPU}
   !$acc parallel num_gangs(32)
@@ -2535,9 +2536,7 @@ subroutine micro_mg_tend ( &
                        qctend,nctend,qcsedten,dumc,dumnc,prect,lflx, &
                        xxlx=xxlv,qxsevap=qcsevap,tlat=tlat,qvlat=qvlat,xcldm=lcldm)
   NEC_END("sedim#2")
-  !$acc end data
 
-  !$acc data create(dumr,dumnr)
   !TYPE-{R:GPU}
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
@@ -2553,9 +2552,7 @@ subroutine micro_mg_tend ( &
   call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
                        qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
   NEC_END("sedim#3")
-  !$acc end data
 
-  !$acc data create(dums,dumns)
   !TYPE-{S:CPU} BIG
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
@@ -2571,7 +2568,6 @@ subroutine micro_mg_tend ( &
   call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv, &
                        qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
   NEC_END("sedim#4")
-  !$acc end data 
   ! end sedimentation
   !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! get new update for variables that includes sedimentation tendency
@@ -3324,9 +3320,6 @@ subroutine micro_mg_tend ( &
   !$acc end parallel
   !$acc end data
 
-
-  !print *, "AFTER PARALLEL REGION"
-
 end subroutine micro_mg_tend
 !========================================================================
 !OUTPUT CALCULATIONS
@@ -3348,11 +3341,16 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, vlen)
   ! combined size of precip & cloud drops
 
   real(rkind_comp) :: Atmp(vlen),tmp(vlen), pgamp1(vlen)
-  !!$acc declare create(Atmp,tmp,pgamp1)
+  !$acc declare create(Atmp,tmp,pgamp1)
 
   integer :: i
 
-  pgamp1 = pgam+1._rkind_comp
+  !$acc parallel num_gangs(32)
+  !$acc loop vector
+  do i=1,vlen
+    pgamp1(i) = pgam(i)+1._rkind_comp
+  enddo
+  !$acc end parallel
   call rising_factorial(pgamp1, 2,tmp,vlen)
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -3686,11 +3684,11 @@ subroutine UpdateTendencies_vecv2(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    real(rkind_comp), intent(inout), optional :: preci(mgncol)
    integer :: i,k,n,nstep,nstepMax
    real(rkind_comp) :: faltndx(mgncol,nlev),faltndnx(mgncol,nlev)
-   real(rkind_comp) :: rnstep(mgncol),faltndqxe(mgncol)
+   real(rkind_comp) :: rnstep(mgncol)!,faltndqxe(mgncol)
    real(rkind_comp) :: faltndqxe2(mgncol,nlev)
    !real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol)
    real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol, nlev)
-   real(rkind_comp) :: tmp1(mgncol,nlev),tmp2(mgncol,nlev)
+   !real(rkind_comp) :: tmp1(mgncol,nlev),tmp2(mgncol,nlev)
    real(rkind_comp) :: mask(mgncol)
    integer  :: iters(mgncol)
    logical  :: present_tlat,present_qvlat, present_qxsevap, present_preci, present_xcldm
