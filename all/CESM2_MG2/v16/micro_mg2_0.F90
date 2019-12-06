@@ -726,7 +726,16 @@ subroutine micro_mg_tend ( &
   deltat = deltatin
   ! Copies of input concentrations that may be changed internally.
 
-  !$acc data copyin(t(:mgncol,:nlev),p(:mgncol,:nlev),q(:mgncol,:nlev),qsfm(:mgncol,:nlev)) copyout(esi,qvi,esl,qvl,relhum)
+  !$acc data &
+  !$acc copyin(t,p) &
+  !$acc create(esi,qvi,ttmp2A,esnA,qvnA) &
+  !$acc create(esl,qvl,qvnAI) &
+  !$acc create(qiic,qric,qsic,ncic,niic,nric,nsic) &
+  !$acc create(lamc,lami,lamr,lams) &
+  !$acc create(dumi,dumni) &
+  !$acc copyout(qitend)
+  
+
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
   do k=1,nlev
@@ -852,9 +861,6 @@ subroutine micro_mg_tend ( &
      end do
   end do
   !$acc end parallel
-  !$acc end data
-
-  !$acc data
   !===============================================
   ! set mtime here to avoid answer-changing
   mtime=deltat
@@ -1021,7 +1027,6 @@ subroutine micro_mg_tend ( &
    enddo
   enddo
   !$acc end parallel
-  !$acc end data
   NEC_END("initialize_to_zero")
   !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! droplet activation
@@ -1033,7 +1038,6 @@ subroutine micro_mg_tend ( &
   ! output activated liquid and ice (convert from #/kg -> #/m3)
   !--------------------------------------------------
 
-  !$acc data
   !$acc parallel num_gangs(32)
 
   !NEC_BEGIN("where_block_#1")
@@ -1293,9 +1297,6 @@ subroutine micro_mg_tend ( &
      endif
      NEC_END("precip_frac_method")
    !$acc end parallel
-   !$acc end data
-
-   !$acc data
    !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
    ! get size distribution parameters based on in-cloud cloud water
    ! these calculations also ensure consistency between number and mixing ratio
@@ -1315,10 +1316,8 @@ subroutine micro_mg_tend ( &
      call kk2000_liq_autoconversion(microp_uniform, qcic, &
         ncic, rho, relvar, prc, nprc, nprc1, mgncol*nlev)
    endif
-   !$acc end data
    ! assign qric based on prognostic qr, using assumed precip fraction
    ! note: this could be moved above for consistency with qcic and qiic calculations
-   !$acc data
    !$acc parallel num_gangs(32)
    !$acc loop vector collapse(2)
    do k=1,nlev
@@ -1471,7 +1470,6 @@ subroutine micro_mg_tend ( &
      enddo
    enddo 
    !$acc end parallel
-   !$acc end data
 
    !do k=1,nlev
    !  where (lams(:,k) > 0._rkind_comp)
@@ -1483,7 +1481,6 @@ subroutine micro_mg_tend ( &
    !     uns(:,k) = 0._rkind_comp
    !  end where
    !enddo 
-   !$acc data
    NEC_END("where_block_#4")
      if (do_cldice) then
         !TYPE-{C:CPU}
@@ -1494,7 +1491,6 @@ subroutine micro_mg_tend ( &
                 qcic, ncic, relvar, mnuccc, nnuccc, mgncol*nlev)
            ! make sure number of droplets frozen does not exceed available ice nuclei concentration
            ! this prevents 'runaway' droplet freezing
-
 
            !$acc parallel loop vector collapse(2)
            do k=1,nlev
@@ -1590,9 +1586,6 @@ subroutine micro_mg_tend ( &
         enddo
         enddo
      end if
-     !$acc end data
-
-     !$acc data copyin(t,rho,asn,qsic,qric,qcic,ncic,lams,lamr,n0s,uns)
      !TYPE-{S:GPU}
      call snow_self_aggregation(t, rho, asn, rhosn, qsic, nsic, &
           nsagg, mgncol*nlev)
@@ -1650,8 +1643,6 @@ subroutine micro_mg_tend ( &
           enddo
         enddo
      end if
-     !$acc end data
-     !$acc data
 
 
      !TYPE-{I,C,R,S:CPU}
@@ -2024,7 +2015,6 @@ subroutine micro_mg_tend ( &
      !$acc end parallel
      NEC_END("loop_#12")
      ! modify ice/precip evaporation rate if q > qsat
-     !call qsat_water_vector(ttmp2A(:,k), p(:,k), esnA(:,k), qvnAI(:,k),mgncol)
      call qsat_water_vector(ttmp2A, p, esnA, qvnAI,mgncol*nlev)
 
      NEC_BEGIN("loop_#13")
@@ -2047,7 +2037,6 @@ subroutine micro_mg_tend ( &
      !$acc end parallel
      NEC_END("loop_#13")
      ! use rhw to allow ice supersaturation
-     ! call qsat_water_vector(ttmp2A(:,k), p(:,k), esnA(:,k), qvnA(:,k),mgncol)
      call qsat_water_vector(ttmp2A, p, esnA, qvnA,mgncol*nlev)
 
      NEC_BEGIN("loop_#14")
@@ -2071,10 +2060,8 @@ subroutine micro_mg_tend ( &
      !$acc end parallel
      NEC_END("loop_#14")
      call qsat_ice_vector(ttmp2A, p, esnA, qvnA,mgncol*nlev)
-     !$acc end data
 
      NEC_BEGIN("loop_#15")
-     !$acc data copyin(precip_frac,ice_sublim,pre,prds) copy(ice_sublim)
      !$acc parallel num_gangs(32)
      !$acc loop vector collapse(2)
      do k=1,nlev
@@ -2244,12 +2231,10 @@ subroutine micro_mg_tend ( &
        end do
      end do 
      !$acc end parallel
-     !$acc end data
      NEC_END("loop_#16")
      ! End of "administration" loop
 
 
-  !$acc data
   !-----------------------------------------------------
   ! convert rain/snow q and N for output to history, note,
   ! output is for gridbox average
@@ -2437,10 +2422,8 @@ subroutine micro_mg_tend ( &
      enddo
   enddo
   !$acc end parallel
-  !$acc end data
   !NEC_END("loop_#18")
 
-  !$acc data copyin(dumr,dumnr,dums,dumns) copyout(lamr,lams)
   ! fallspeed for rain
   !TYPE-{R:GPU}
   call size_dist_param_basic_vec(mg_rain_props, dumr, dumnr, lamr, mgncol*nlev)
@@ -2484,7 +2467,6 @@ subroutine micro_mg_tend ( &
      end do
   end do
   !$acc end parallel
-  !$acc end data
         ! redefine dummy variables - sedimentation is calculated over grid-scale
         ! quantities to ensure conservation
 
@@ -2494,7 +2476,7 @@ subroutine micro_mg_tend ( &
   ! for sedimentation calculations
   !-------------------------------------------------------------------
 
-  !$acc  data copy(qitend,nitend) copyin(qi,ni,dumi,dumni,icldm)
+  !!$acc data create(dumi,dumni)
   !TYPE-{I:GPU}
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
@@ -2533,10 +2515,10 @@ subroutine micro_mg_tend ( &
      enddo
   enddo
   !$acc end parallel
-  !$acc end data
+  !!$acc end data
 
+  !$acc data create(dumc,dumnc)
   !TYPE-{C:CPU} BIG
-  !$acc  data copy(qctend,nctend) copyin(qc,nc,dumc,dumnc)
   !TYPE-{I:GPU}
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
@@ -2555,8 +2537,8 @@ subroutine micro_mg_tend ( &
   NEC_END("sedim#2")
   !$acc end data
 
+  !$acc data create(dumr,dumnr)
   !TYPE-{R:GPU}
-  !$acc  data copy(qrtend,nrtend) copyin(qr,nr,dumr,dumnr)
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
   do k=1,nlev
@@ -2570,11 +2552,11 @@ subroutine micro_mg_tend ( &
   NEC_BEGIN("sedim#3")
   call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fr,fnr,pdel_inv, &
                        qrtend,nrtend,qrsedten,dumr,dumnr,prect,rflx)
-  !$acc end data 
-
   NEC_END("sedim#3")
+  !$acc end data
+
+  !$acc data create(dums,dumns)
   !TYPE-{S:CPU} BIG
-  !$acc  data copy(qstend,nstend) copyin(qs,ns,dums,dumns)
   !$acc parallel num_gangs(32)
   !$acc loop vector collapse(2)
   do k=1,nlev
@@ -2588,9 +2570,8 @@ subroutine micro_mg_tend ( &
   NEC_BEGIN("sedim#4")
   call UpdateTendencies_vecv2(mgncol,nlev,.TRUE.,deltat,fs,fns,pdel_inv, &
                        qstend,nstend,qssedten,dums,dumns,prect,sflx,preci=preci)
-  !$acc end data
-  !$acc data
   NEC_END("sedim#4")
+  !$acc end data 
   ! end sedimentation
   !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
   ! get new update for variables that includes sedimentation tendency
@@ -3367,6 +3348,7 @@ subroutine calc_rercld(lamr, n0r, lamc, pgam, qric, qcic, ncic, rercld, vlen)
   ! combined size of precip & cloud drops
 
   real(rkind_comp) :: Atmp(vlen),tmp(vlen), pgamp1(vlen)
+  !!$acc declare create(Atmp,tmp,pgamp1)
 
   integer :: i
 
@@ -3420,7 +3402,6 @@ subroutine UpdateTendencies(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,pdel,qxt
    integer :: i,k,n,nstep
    real(rkind_comp) :: faltndx,faltndnx,rnstep,dum1,faltndqxe
    real(rkind_comp) :: faloutx(nlev),faloutnx(nlev)
-
    do i=1,mgncol
      nstep = 1 + int(max( &
           maxval( fx(i,:)*pdelInv(i,:)), &
@@ -3709,13 +3690,13 @@ subroutine UpdateTendencies_vecv2(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    real(rkind_comp) :: faltndqxe2(mgncol,nlev)
    !real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol)
    real(rkind_comp) :: faloutx(mgncol,nlev),faloutnx(mgncol,nlev),dum1(mgncol, nlev)
-   real(rkind_comp) :: tmpk1(nlev),tmpk2(nlev)
    real(rkind_comp) :: tmp1(mgncol,nlev),tmp2(mgncol,nlev)
    real(rkind_comp) :: mask(mgncol)
    integer  :: iters(mgncol)
    logical  :: present_tlat,present_qvlat, present_qxsevap, present_preci, present_xcldm
 
    !$acc declare create(iters,rnstep,faltndx,faltndnx,faloutx,faloutnx,faltndqxe2,mask,faloutx,dum1)
+   !$acc declare present(dumx,dumnx)
 
    present_tlat    = present(tlat)
    present_qvlat   = present(qvlat)

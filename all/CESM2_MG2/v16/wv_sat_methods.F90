@@ -163,8 +163,8 @@ subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
   real(rkind_comp), intent(in)  :: p(vlen)   ! Current pressure.
   real(rkind_comp), intent(out) :: qs(vlen)
   integer :: i
+  !$acc declare present(es,p,qs)
   ! If pressure is less than SVP, set qs to maximum of 1.
-
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen 
@@ -222,6 +222,7 @@ subroutine wv_sat_qsat_water_vector(t, p, es, qs, vlen, idx)
 
   integer,  intent(in), optional :: idx ! Scheme index
   integer :: i
+  !$acc declare present(es,p)
 
   call wv_sat_svp_water(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
@@ -280,6 +281,7 @@ subroutine wv_sat_qsat_ice_vector(t, p, es, qs, vlen, idx)
 
   integer,  intent(in), optional :: idx ! Scheme index
   integer :: i
+  !$acc declare present(es,p)
 
   call wv_sat_svp_ice(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
@@ -456,7 +458,7 @@ subroutine GoffGratch_svp_water_v8(t, es, vlen)
   real(rkind_comp), intent(out) :: es(vlen) ! SVP in Pa
   integer :: i
   ! uncertain below -70 C
-
+  !$acc declare present(t,es)
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen
@@ -488,8 +490,7 @@ subroutine GoffGratch_svp_ice_v8(t, es, vlen)
   real(rkind_comp), intent(out) :: es(vlen)             ! SVP in Pa
   integer :: i
   ! good down to -100 C
-
-  
+  !$acc declare present(es,t) 
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,vlen

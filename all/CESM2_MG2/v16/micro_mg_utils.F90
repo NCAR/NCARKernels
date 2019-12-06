@@ -346,6 +346,7 @@ subroutine  rising_factorial_v8(x, n, res,vlen)
   real(rkind_comp), intent(out) :: res(vlen)
   integer :: i
   real(rkind_comp) :: tmp(vlen)
+  !$acc declare create(tmp)
 
 #if defined(__OPENACC__)
   !$acc parallel num_gangs(32)
@@ -398,6 +399,7 @@ subroutine rising_factorial_vint(x, n, res,vlen)
 
   integer :: i,j
   real(rkind_comp) :: factor(vlen)
+  !$acc declare create(factor)
 
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -462,6 +464,7 @@ subroutine calc_ab_v8(t, qv, xxl,ab,vlen)
   real(rkind_comp), intent(out) :: ab(vlen)
   real(rkind_comp) :: dqsdt(vlen)
   integer :: i
+  !$acc declare create(dqsdt)
 
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -539,6 +542,7 @@ subroutine size_dist_param_liq_vec(props, qcic, ncic, rho, pgam, lamc, veclen)
   integer :: i, cnt
   real(rkind_comp) :: tmp(veclen),pgamp1(veclen)
   real(rkind_comp) :: shapeC(veclen),lbnd(veclen),ubnd(veclen)
+  !$acc declare create(tmp,pgamp1,shapeC,lbnd,ubnd)
 
   !YSK Reductions on a gang loop in acc routine are not supported
   cnt = COUNT(qcic>qsmall)
@@ -647,8 +651,8 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
   integer :: cnt
   logical :: limiterActive
   real(rkind_comp) :: effDim,shapeCoef,ubnd,lbnd, minMass
-!  cnt = count(qic > qsmall) 
-!  print *,'param_basic: ',cnt,mgncol
+  !!$acc declare pcopyin(qic,nic,lam)
+  !$acc parallel num_gangs(32)
   limiterActive = limiter_is_on(props%min_mean_mass)
   effDim    = props%eff_dim
   shapeCoef = props%shape_coef
@@ -656,7 +660,6 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
   ubnd      = props%lambda_bounds(2)
   minMass   = props%min_mean_mass
 
-  !$acc parallel num_gangs(32)
 !NEC$ IVDEP
   !$acc loop vector 
   do i=1,vlen
@@ -687,13 +690,17 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
 
   enddo
 
-  if (present(n0)) n0 = nic * lam
+  if (present(n0)) then 
+    !$acc loop vector
+    do i=1,vlen
+      n0(i) = nic(i) * lam(i)
+    enddo
+  endif
   !$acc end parallel
 
 end subroutine size_dist_param_basic_vec
 
 subroutine size_dist_param_basic_vect2(props, qic, nic, shapeC,lbnd,ubnd, lam, vlen, n0)
-  !!$acc routine vector
 
   type (mghydrometeorprops), intent(in) :: props
   integer,                          intent(in) :: vlen
@@ -706,10 +713,10 @@ subroutine size_dist_param_basic_vect2(props, qic, nic, shapeC,lbnd,ubnd, lam, v
   integer :: cnt
   logical :: limiterActive
   real(rkind_comp) :: effDim,shapeCoef, minMass
+  !$acc parallel num_gangs(32)
   limiterActive = limiter_is_on(props%min_mean_mass)
   effDim    = props%eff_dim
   minMass   = props%min_mean_mass
-  !$acc parallel num_gangs(32)
   !$acc loop vector
   !NEC$ IVDEP
   do i=1,vlen
@@ -813,6 +820,7 @@ subroutine var_coef_v8(relvar, a, res, vlen)
   real(rkind_comp), intent(out) :: res(vlen)
   integer :: i
   real(rkind_comp) :: tmpA(vlen)
+  !$acc declare create(tmpA)
 
    call rising_factorial(relvar,a,tmpA,vlen)
    !$acc parallel num_gangs(32)
@@ -872,6 +880,8 @@ subroutine var_coef_vint(relvar, a, res, vlen)
   real(rkind_comp), intent(out) :: res(vlen)
   integer :: i
   real(rkind_comp) :: tmp(vlen)
+  !$acc declare create(tmp)
+
   call rising_factorial(relvar, a,tmp,vlen)
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -923,9 +933,10 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
   real(rkind_comp) :: lami(mgncol)
   real(rkind_comp) :: n0i(mgncol)
   integer :: i
+  !$acc declare create(ab,qiic,niic,lami,n0i)
+
 !  print *,'count(qi>qsmall), mgncol: ',count(qi>qsmall),mgncol
   !NEC$ IVDEP
-  !$acc data
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,mgncol
@@ -945,9 +956,9 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
   !call size_dist_param_basic(mg_ice_props, qiic(i), niic(i), lami(i),n0=n0i(i))
   call size_dist_param_basic_vec(mg_ice_props, qiic, niic, lami,mgncol,n0=n0i)
 
-!  !NEC$ IVDEP
   !$acc parallel num_gangs(32)
   !$acc loop vector
+  !NEC$ IVDEP
   do i=1,mgncol
      if (qi(i)>=qsmall) then
 
@@ -984,7 +995,6 @@ subroutine ice_deposition_sublimation(t, qv, qi, ni, &
      end if !qi>qsmall
   enddo
   !$acc end parallel
-  !$acc end data 
 end subroutine ice_deposition_sublimation
 !========================================================================
 ! autoconversion of cloud liquid water to rain
@@ -1010,6 +1020,7 @@ subroutine kk2000_liq_autoconversion(microp_uniform, qcic, &
   real(rkind_comp), dimension(vlen) :: prc_coef
   integer :: i
   ! Take variance into account, or use uniform value.
+  !$acc declare create(prc_coef)
 
   if (.not. microp_uniform) then
      call var_coef(relvar, 2.47_rkind_comp, prc_coef,vlen)
@@ -1080,6 +1091,7 @@ subroutine sb2001v2_liq_autoconversion(pgam,qc,nc,qr,rho,relvar,au,nprc,nprc1,mg
   real(rkind_comp), parameter :: kr = 5.78e3_rkind_comp
   real(rkind_comp) :: dum, dum1, nu, pra_coef
   integer :: dumi, i
+  !$acc declare create(dnu)
 
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -1247,6 +1259,8 @@ subroutine immersion_freezing(microp_uniform, t, pgam, lamc, &
   real(rkind_comp), dimension(mgncol) :: dum
   integer :: i
   real(rkind_comp) :: tmp
+  !$acc declare create(dum)
+
   if (.not. microp_uniform) then
      call  var_coef(relvar, 2,dum,mgncol)
   else
@@ -1326,6 +1340,7 @@ subroutine contact_freezing (microp_uniform, t, p, rndst, nacon, &
   real(rkind_comp) :: contact_factor
 
   integer  :: i
+  !$acc declare create(nslip,ndfaer)
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i = 1,mgncol
@@ -1726,6 +1741,7 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
   real(rkind_comp), dimension(mgncol) :: pra_coef
 
   integer :: i
+  !$acc declare create(pra_coef)
 
   if (.not. microp_uniform) then
        ! This subroutine gives a fortran allocation error on the GPU
@@ -1894,12 +1910,14 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   real(rkind_comp), dimension(vlen) :: dum
 
   integer :: i
-  logical, dimension(vlen) :: cond1,cond2,cond3
+  !$acc declare create(abs,abs,dum)
+  !logical, dimension(vlen) :: cond1,cond2,cond3
 
   ! set temporary cloud fraction to zero if cloud water + ice is very small
   ! this will ensure that evaporation/sublimation of precip occurs over
   ! entire grid cell, since min cloud fraction is specified otherwise
   !$acc parallel num_gangs(32)
+  !$acc loop vector
   do i=1,vlen
      am_evp_st(i) = 0._rkind_comp
      if (qcic(i)+qiic(i) < 1.e-6_rkind_comp) then
@@ -1908,17 +1926,7 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         dum(i) = lcldm(i)
      end if
   enddo
-  !$acc end parallel
-#if 0
-  cond1 = (precip_frac > dum)
-  cond2 = cond1 .and. (qric >= qsmall)
-  cond3 = cond1 .and. (qsic >= qsmall)
-  print *,'evaporate_sublimate_precip: vlen: ',vlen
-  print *,'evaporate_sublimate_precip: COND2: ',COUNT(cond2)
-  print *,'evaporate_sublimate_precip: COND3: ',COUNT(cond3)
-  print *,'evaporate_sublimate_precip: COND4: ',COUNT(cond3 .or. cond2)
-#endif
-  !$acc parallel num_gangs(32)
+  !$acc loop vector
   do i=1,vlen
   ! only calculate if there is some precip fraction > cloud fraction
 
