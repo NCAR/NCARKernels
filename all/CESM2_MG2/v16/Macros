@@ -103,8 +103,8 @@ endif
 # ********* PGI compiler options  ************
 ifeq ($(COMPILER),pgi-gpu)
   FC := pgf90
-  FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,managed,lineinfo -D__OPENACC__
-  #FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,lineinfo -D__OPENACC__
+  #FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,managed,lineinfo -D__OPENACC__
+  FC_FLAGS += -O3 -tp=skylake-64 -fast -Minfo=accel -ta=tesla:cc70,lineinfo -D__OPENACC__
   FC_FLAGS_LOW := $(FC_FLAGS)
   LD_FLAGS += $(FC_FLAGS)
   FC_FLAGS +=

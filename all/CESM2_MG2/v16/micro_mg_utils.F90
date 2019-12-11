@@ -94,7 +94,7 @@ type(MGHydrometeorProps), public :: mg_ice_props
 type(MGHydrometeorProps), public :: mg_rain_props
 type(MGHydrometeorProps), public :: mg_snow_props
 
-!$acc declare copyin(mg_liq_props,mg_ice_props)
+!$acc declare copyin(mg_liq_props,mg_ice_props,mg_rain_props,mg_snow_props)
 
 interface size_dist_param_liq
   module procedure size_dist_param_liq_line
@@ -347,6 +347,7 @@ subroutine  rising_factorial_v8(x, n, res,vlen)
   integer :: i
   real(rkind_comp) :: tmp(vlen)
   !$acc declare create(tmp)
+  !$acc declare present(x,res)
 
 #if defined(__OPENACC__)
   !$acc parallel num_gangs(32)
@@ -400,6 +401,7 @@ subroutine rising_factorial_vint(x, n, res,vlen)
   integer :: i,j
   real(rkind_comp) :: factor(vlen)
   !$acc declare create(factor)
+  !$acc declare present(x,res)
 
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -425,6 +427,7 @@ subroutine rising_factorial_vint(x, n, res,vlen)
       res(i)    = res(i) * factor(i)
     enddo
   else
+    !$acc loop seq
     do j = 1, n
        !$acc loop vector
        do i=1,vlen
@@ -543,56 +546,56 @@ subroutine size_dist_param_liq_vec(props, qcic, ncic, rho, pgam, lamc, veclen)
   real(rkind_comp) :: tmp(veclen),pgamp1(veclen)
   real(rkind_comp) :: shapeC(veclen),lbnd(veclen),ubnd(veclen)
   !$acc declare create(tmp,pgamp1,shapeC,lbnd,ubnd)
+  !$acc declare present(qcic,ncic,rho,pgam,lamc)
 
-  !YSK Reductions on a gang loop in acc routine are not supported
-  cnt = COUNT(qcic>qsmall)
-  if(cnt>0) then 
-     !$acc parallel num_gangs(32)
-     !$acc loop vector
-     do i=1,veclen
-        if (qcic(i) > qsmall) then
-          ! Local copy of properties that can be modified.
-          ! (Elemental routines that operate on arrays can't modify scalar
-          ! arguments.)
-          ! Get pgam from fit to observations of martin et al. 1994
-          pgam(i) = 1.0_rkind_comp - 0.7_rkind_comp * exp(-0.008_rkind_comp*1.e-6_rkind_comp*ncic(i)*rho(i))
-          pgam(i) = 1._rkind_comp/(pgam(i)**2) - 1._rkind_comp
-          pgam(i) = max(pgam(i), 2._rkind_comp)
-          pgamp1(i) = pgam(i)+1._rkind_comp
-        endif
-     enddo
-     !$acc end parallel
-     if (props%eff_dim == 3._rkind_comp) then
-        call rising_factorial(pgamp1,3,tmp,veclen)
-     else
-        call rising_factorial(pgamp1, props%eff_dim,tmp,veclen)
-     endif
-     !$acc parallel num_gangs(32)
-     !$acc loop vector
-     do i=1,veclen
-        if (qcic(i) > qsmall) then
-           ! Set coefficient for use in size_dist_param_basic.
-           ! The 3D case is so common and optimizable that we specialize
-           ! it:
-           shapeC(i) = pi / 6._rkind_comp * props%rho * tmp(i)
-           ! Limit to between 2 and 50 microns mean size.
-           lbnd(i)   = pgamp1(i)*1._rkind_comp/50.e-6_rkind_comp
-           ubnd(i)   = pgamp1(i)*1._rkind_comp/2.e-6_rkind_comp
-        endif
-     enddo
-     !$acc end parallel 
-     call size_dist_param_basic(props,qcic,ncic,shapeC,lbnd,ubnd,lamc,veclen)
+  !$acc parallel num_gangs(32)
+  !$acc loop vector
+  do i=1,veclen
+    if (qcic(i) > qsmall) then
+      ! Local copy of properties that can be modified.
+      ! (Elemental routines that operate on arrays can't modify scalar
+      ! arguments.)
+      ! Get pgam from fit to observations of martin et al. 1994
+      pgam(i) = 1.0_rkind_comp - 0.7_rkind_comp * exp(-0.008_rkind_comp*1.e-6_rkind_comp*ncic(i)*rho(i))
+      pgam(i) = 1._rkind_comp/(pgam(i)**2) - 1._rkind_comp
+      pgam(i) = max(pgam(i), 2._rkind_comp)
+      pgamp1(i) = pgam(i)+1._rkind_comp
+    endif
+  enddo
+  !$acc end parallel
+  if (props%eff_dim == 3._rkind_comp) then
+    !do i=1,veclen
+    !   call rising_factorial(pgamp1(i),3,tmp(i))
+    !enddo
+    call rising_factorial(pgamp1,3,tmp,veclen)
+  else
+    call rising_factorial(pgamp1, props%eff_dim,tmp,veclen)
   endif
   !$acc parallel num_gangs(32)
   !$acc loop vector
   do i=1,veclen
-     if (qcic(i) <= qsmall) then
-        ! pgam not calculated in this case, so set it to a value likely to
-        ! cause an error if it is accidentally used
-        ! (gamma function undefined for negative integers)
-        pgam(i) = -100._rkind_comp
-        lamc(i) = 0._rkind_comp
-     end if
+    if (qcic(i) > qsmall) then
+      ! Set coefficient for use in size_dist_param_basic.
+      ! The 3D case is so common and optimizable that we specialize
+      ! it:
+      shapeC(i) = pi / 6._rkind_comp * props%rho * tmp(i)
+      ! Limit to between 2 and 50 microns mean size.
+      lbnd(i)   = pgamp1(i)*1._rkind_comp/50.e-6_rkind_comp
+      ubnd(i)   = pgamp1(i)*1._rkind_comp/2.e-6_rkind_comp
+    endif
+  enddo
+  !$acc end parallel 
+  call size_dist_param_basic(props,qcic,ncic,shapeC,lbnd,ubnd,lamc,veclen)
+  !$acc parallel num_gangs(32)
+  !$acc loop vector
+  do i=1,veclen
+    if (qcic(i) <= qsmall) then
+      ! pgam not calculated in this case, so set it to a value likely to
+      ! cause an error if it is accidentally used
+      ! (gamma function undefined for negative integers)
+      pgam(i) = -100._rkind_comp
+      lamc(i) = 0._rkind_comp
+    end if
   enddo
   !$acc end parallel
 
@@ -651,7 +654,8 @@ subroutine size_dist_param_basic_vec(props, qic, nic, lam, vlen, n0)
   integer :: cnt
   logical :: limiterActive
   real(rkind_comp) :: effDim,shapeCoef,ubnd,lbnd, minMass
-  !!$acc declare pcopyin(qic,nic,lam)
+  !$acc declare present(qic,nic,lam,n0)
+  
   !$acc parallel num_gangs(32)
   limiterActive = limiter_is_on(props%min_mean_mass)
   effDim    = props%eff_dim
@@ -713,6 +717,7 @@ subroutine size_dist_param_basic_vect2(props, qic, nic, shapeC,lbnd,ubnd, lam, v
   integer :: cnt
   logical :: limiterActive
   real(rkind_comp) :: effDim,shapeCoef, minMass
+  !$acc declare present(qic,nic,shapeC,lbnd,ubnd,lam,n0)
   !$acc parallel num_gangs(32)
   limiterActive = limiter_is_on(props%min_mean_mass)
   effDim    = props%eff_dim
@@ -821,6 +826,7 @@ subroutine var_coef_v8(relvar, a, res, vlen)
   integer :: i
   real(rkind_comp) :: tmpA(vlen)
   !$acc declare create(tmpA)
+  !$acc declare present(relvar,res)
 
    call rising_factorial(relvar,a,tmpA,vlen)
    !$acc parallel num_gangs(32)
@@ -1021,11 +1027,17 @@ subroutine kk2000_liq_autoconversion(microp_uniform, qcic, &
   integer :: i
   ! Take variance into account, or use uniform value.
   !$acc declare create(prc_coef)
+  !$acc declare present(qcic,ncic,rho,relvar,prc,nprc,nprc1)
 
   if (.not. microp_uniform) then
      call var_coef(relvar, 2.47_rkind_comp, prc_coef,vlen)
   else
-     prc_coef = 1._rkind_comp
+     !$acc parallel num_gangs(32)
+     !$acc loop vector
+     do i=1,vlen
+       prc_coef(i) = 1._rkind_comp
+     enddo
+     !$acc end parallel
   end if
   !$acc parallel num_gangs(32)
   !$acc loop vector
@@ -1741,6 +1753,7 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
   real(rkind_comp), dimension(mgncol) :: pra_coef
 
   integer :: i
+  !$acc declare present(qric,qcic,ncic,relvar,accre_enhan,pra,npra)
   !$acc declare create(pra_coef)
 
   if (.not. microp_uniform) then
@@ -1910,7 +1923,9 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   real(rkind_comp), dimension(vlen) :: dum
 
   integer :: i
-  !$acc declare create(abs,abs,dum)
+  !$acc declare create(abr,abs,dum)
+  !$acc declare present(t,rho,dv,mu,sc,q,qvl,qvi,lcldm,precip_frac,arn,asn,qcic,qiic,qric,qsic)
+  !$acc declare present(lamr,n0r,lams,n0s,pre,prds,am_evp_st)
   !logical, dimension(vlen) :: cond1,cond2,cond3
 
   ! set temporary cloud fraction to zero if cloud water + ice is very small
