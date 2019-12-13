@@ -1275,7 +1275,7 @@ subroutine immersion_freezing(microp_uniform, t, pgam, lamc, &
   if (.not. microp_uniform) then
      call  var_coef(relvar, 2,dum,mgncol,queue)
   else
-     !$acc parallel
+     !$acc parallel vector_length(VLEN)
      !$acc loop gang vector
      do i=1,mgncol
         dum(i) = 1._rkind_comp
@@ -1760,12 +1760,14 @@ subroutine accrete_cloud_water_rain(microp_uniform, qric, qcic, &
   if (.not. microp_uniform) then
        ! This subroutine gives a fortran allocation error on the GPU
        call  var_coef(relvar, 1.15_rkind_comp, pra_coef,mgncol,queue)
-       !$acc parallel loop 
+       !$acc parallel vector_length(VLEN)
+       !$acc loop gang vector
        do i=1,mgncol
           pra_coef(i) = pra_coef(i)*accre_enhan(i)
        enddo
+       !$acc end parallel
   else
-    !$acc parallel
+    !$acc parallel vector_length(VLEN)
     !$acc loop gang vector
     do i=1,mgncol
        pra_coef(i) = 1._rkind_comp
@@ -1934,7 +1936,7 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
   ! this will ensure that evaporation/sublimation of precip occurs over
   ! entire grid cell, since min cloud fraction is specified otherwise
   !$acc parallel vector_length(VLEN)
-  !$acc loop gang vector private(qclr,eps)
+  !$acc loop gang vector
   do i=1,vlen
      am_evp_st(i) = 0._rkind_comp
      if (qcic(i)+qiic(i) < 1.e-6_rkind_comp) then
@@ -1943,7 +1945,7 @@ subroutine evaporate_sublimate_precip(t, rho, dv, mu, sc, q, qvl, qvi, &
         dum(i) = lcldm(i)
      end if
   enddo
-  !$acc loop gang vector
+  !$acc loop gang vector private(qclr,eps)
   do i=1,vlen
   ! only calculate if there is some precip fraction > cloud fraction
 

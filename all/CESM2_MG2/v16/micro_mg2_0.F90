@@ -1676,7 +1676,7 @@ subroutine micro_mg_tend ( &
 
      NEC_BEGIN("loop_#3")
      !TYPE-{?:GPU}
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,dum1)
      do k=1,nlev
        do i=1,mgncol
         !=================================================================
@@ -1710,7 +1710,7 @@ subroutine micro_mg_tend ( &
 
      NEC_BEGIN("loop_#4")
      !TYPE-{R:GPU}
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,ratio)
      do k=1,nlev
        do i=1,mgncol
         !===================================================================
@@ -1752,7 +1752,7 @@ subroutine micro_mg_tend ( &
 
      NEC_BEGIN("loop_#5")
      !TYPE-{R:GPU}
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,ratio)
      do k=1,nlev
        do i=1,mgncol
         ! conservation of rain mixing ratio
@@ -1777,7 +1777,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#5")
      NEC_BEGIN("loop_#6")
      !TYPE-{R:GPU}
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum)
      do k=1,nlev
        do i=1,mgncol
         ! conservation of rain number
@@ -1798,7 +1798,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#6")
      !TYPE-{R:GPU}
      NEC_BEGIN("loop_#7")
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,ratio)
      do k=1,nlev
        do i=1,mgncol
 
@@ -1822,7 +1822,7 @@ subroutine micro_mg_tend ( &
      NEC_BEGIN("loop_#8")
      if (do_cldice) then
         !TYPE-{I:CPU}
-        !$acc loop gang vector collapse(2)
+        !$acc loop gang vector collapse(2) private(dum,ratio)
         do k=1,nlev
           do i=1,mgncol
            ! conservation of qi
@@ -1852,7 +1852,7 @@ subroutine micro_mg_tend ( &
      NEC_BEGIN("loop_#9")
      if (do_cldice) then
         !TYPE-{I:CPU}
-        !$acc loop gang vector collapse(2)
+        !$acc loop gang vector collapse(2) private(tmpfrz,dum,ratio)
         do k=1,nlev
           do i=1,mgncol
            ! conservation of ni
@@ -1884,7 +1884,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#9")
      !TYPE-{S:CPU}
      NEC_BEGIN("loop_#10")
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,ratio)
      do k=1,nlev
        do i=1,mgncol
         ! conservation of snow mixing ratio
@@ -1905,7 +1905,7 @@ subroutine micro_mg_tend ( &
      NEC_END("loop_#10")
      !TYPE-{S:CPU}
      NEC_BEGIN("loop_#11")
-     !$acc loop gang vector  collapse(2)
+     !$acc loop gang vector collapse(2) private(dum,ratio)
      do k=1,nlev
        do i=1,mgncol
         ! conservation of snow number
@@ -1976,7 +1976,7 @@ subroutine micro_mg_tend ( &
 
      NEC_BEGIN("loop_#14")
      !$acc parallel vector_length(VLEN)
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum)
      do k=1,nlev
        do i=1,mgncol
         if ((pre(i,k)+prds(i,k))*precip_frac(i,k)+ice_sublim(i,k) < -1.e-20_rkind_comp) then
@@ -1998,7 +1998,7 @@ subroutine micro_mg_tend ( &
 
      NEC_BEGIN("loop_#15")
      !$acc parallel vector_length(VLEN)
-     !$acc loop gang vector collapse(2)
+     !$acc loop gang vector collapse(2) private(dum)
      do k=1,nlev
        do i=1,mgncol
         if ((pre(i,k)+prds(i,k))*precip_frac(i,k)+ice_sublim(i,k) < -1.e-20_rkind_comp) then

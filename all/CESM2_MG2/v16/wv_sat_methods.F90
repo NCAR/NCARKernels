@@ -3,6 +3,7 @@
 !Generated at : 2018-08-07 15:55:26 
 !KGEN version : 0.7.3 
   
+#define VLEN 128
 
 
 module wv_sat_methods
@@ -165,8 +166,8 @@ subroutine  wv_sat_svp_to_qsat_v8(es, p, qs, vlen)
   integer :: i
   !$acc declare present(es,p,qs)
   ! If pressure is less than SVP, set qs to maximum of 1.
-  !$acc parallel num_gangs(32)
-  !$acc loop vector
+  !$acc parallel vector_length(VLEN)
+  !$acc loop gang vector
   do i=1,vlen 
      if ( (p(i) - es(i)) <= 0._rkind_comp ) then
         qs(i) = 1.0_rkind_comp
@@ -227,8 +228,8 @@ subroutine wv_sat_qsat_water_vector(t, p, es, qs, vlen, idx)
   call wv_sat_svp_water(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
 
-  !$acc parallel num_gangs(32)
-  !$acc loop vector
+  !$acc parallel vector_length(VLEN)
+  !$acc loop gang vector
   do i=1,vlen
      ! Ensures returned es is consistent with limiters on qs.
      es(i) = min(es(i), p(i))
@@ -286,8 +287,8 @@ subroutine wv_sat_qsat_ice_vector(t, p, es, qs, vlen, idx)
   call wv_sat_svp_ice(t, es, vlen, idx)
   call wv_sat_svp_to_qsat(es, p, qs, vlen)
 
-  !$acc parallel num_gangs(32)
-  !$acc loop vector
+  !$acc parallel vector_length(VLEN)
+  !$acc loop gang vector
   do i=1,vlen
      ! Ensures returned es is consistent with limiters on qs.
      es(i) = min(es(i), p(i))
@@ -348,17 +349,17 @@ subroutine  wv_sat_svp_water_v8(t, es, vlen, idx)
   case(GoffGratch_idx)
      call GoffGratch_svp_water(t,es,vlen)
   case(MurphyKoop_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call MurphyKoop_svp_water(t(i),es(i))
      enddo
   case(OldGoffGratch_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call OldGoffGratch_svp_water(t(i),es(i))
      enddo
   case(Bolton_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call Bolton_svp_water(t(i),es(i))
      enddo
@@ -413,17 +414,17 @@ subroutine wv_sat_svp_ice_v8(t, es, vlen, idx)
   case(GoffGratch_idx)
      call GoffGratch_svp_ice(t,es,vlen)
   case(MurphyKoop_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call MurphyKoop_svp_ice(t(i),es(i))
      enddo
   case(OldGoffGratch_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call OldGoffGratch_svp_ice(t(i),es(i))
      enddo
   case(Bolton_idx)
-     !$acc loop vector
+     !$acc loop gang vector
      do i=1,vlen
         call Bolton_svp_water(t(i),es(i))
      enddo
@@ -459,8 +460,8 @@ subroutine GoffGratch_svp_water_v8(t, es, vlen)
   integer :: i
   ! uncertain below -70 C
   !$acc declare present(t,es)
-  !$acc parallel num_gangs(32)
-  !$acc loop vector
+  !$acc parallel vector_length(VLEN)
+  !$acc loop gang vector
   do i=1,vlen
      es(i) = 10._rkind_comp**(-7.90298_rkind_comp*(tboil/t(i)-1._rkind_comp)+ &
        5.02808_rkind_comp*log10(tboil/t(i))- &
@@ -491,8 +492,8 @@ subroutine GoffGratch_svp_ice_v8(t, es, vlen)
   integer :: i
   ! good down to -100 C
   !$acc declare present(es,t) 
-  !$acc parallel num_gangs(32)
-  !$acc loop vector
+  !$acc parallel vector_length(VLEN)
+  !$acc loop gang vector
   do i=1,vlen
   es(i) = 10._rkind_comp**(-9.09718_rkind_comp*(h2otrip/t(i)-1._rkind_comp)-3.56654_rkind_comp* &
        log10(h2otrip/t(i))+0.876793_rkind_comp*(1._rkind_comp-t(i)/h2otrip)+ &
