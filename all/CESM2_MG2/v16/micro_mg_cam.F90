@@ -3,6 +3,7 @@
 !Generated at : 2018-08-07 15:55:26 
 !KGEN version : 0.7.3 
   
+#define DFACT 1
 
 
 module micro_mg_cam
@@ -356,7 +357,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 100
+    INTEGER, PARAMETER :: maxiter = 200
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
@@ -460,14 +461,42 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     call mpi_comm_rank(mpi_comm_world, myrank, info)
     call mpi_comm_size(mpi_comm_world, mpisize, info)
 #endif
+
+#if 0
+    subroutine readSizeA(funit,name,var)
+      integer, intent(in) :: funit
+      character(len=*), intent(in) :: name
+      real(kind=rkind_comp), intent(in), dimension(DFACT*mgncol,nlev) :: var 
+
+      !local
+      logical istrue
+      real(kind=rkind_io), dimension(mgncol,nlev) :: tmp
+     
+
+      read (unit=funit) istrue 
+      if (istrue) then 
+         READ (unit=funit) array_sum
+         READ (unit=funit) tmp
+         call kgen_array_sumcheck(TRIME(name), array_sum,DBLE(SUM(tmp,mask=.true.)), .true.)
+         do i=1,DFACT
+            var((i-1)*mgncol+1:i*mgncol,1:nlev) = real(tmp(1:mgncol,1:nlev),kind=rkind_comp) 
+         enddo
+      endif
+
+    end subroutine readSizeA
+#endif
+
       
     !local input variables 
+    call readSize2D(kgen_unit,"packed_t",mgncol,nlev,packed_t)
+#if 0
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
         READ (UNIT = kgen_unit) tmpA; packed_t = real(tmpA,kind=rkind_comp)
         CALL kgen_array_sumcheck("packed_t", kgen_array_sum, DBLE(SUM(tmpA, mask=.true. )), .TRUE.) 
     END IF   
+#endif
     READ (UNIT = kgen_unit) kgen_istrue 
     IF (kgen_istrue) THEN 
         READ (UNIT = kgen_unit) kgen_array_sum 
@@ -2597,5 +2626,32 @@ SUBROUTINE kr_externs_out_micro_mg_cam(kgen_unit)
     LOGICAL :: kgen_istrue 
     REAL(KIND=8) :: kgen_array_sum 
 END SUBROUTINE kr_externs_out_micro_mg_cam 
+
+subroutine readSize2D(funit,name,dim1,dim2,var)
+   integer, intent(in) :: funit
+   character(len=*), intent(in) :: name
+   integer, intent(in) :: dim1, dim2
+   real(kind=rkind_comp), intent(inout), dimension(DFACT*dim1,dim2) :: var
+
+   !local
+   logical istrue
+   real(kind=rkind_io) array_sum
+   real(kind=rkind_io), dimension(dim1,dim2) :: tmp
+
+   integer i
+
+
+   read (unit=funit) istrue
+   if (istrue) then
+      READ (unit=funit) array_sum
+      READ (unit=funit) tmp
+      call kgen_array_sumcheck(TRIM(name), array_sum,DBLE(SUM(tmp,mask=.true.)), .true.)
+      do i=1,DFACT
+        var((i-1)*dim1+1:i*dim1,1:dim2) = real(tmp(1:dim1,1:dim2),kind=rkind_comp)
+      enddo
+   endif
+
+end subroutine readSize2D
+
   
 end module micro_mg_cam
