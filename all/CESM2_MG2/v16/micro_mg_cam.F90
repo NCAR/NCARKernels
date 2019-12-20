@@ -355,7 +355,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 20
+    INTEGER, PARAMETER :: maxiter = 200
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
@@ -1294,6 +1294,28 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
       
     !call to kgen kernel 
+         !$acc data copyin(packed_t,packed_q,packed_qc,packed_qi,packed_nc,packed_ni) &
+         !$acc copyin(packed_qr,packed_qs,packed_nr,packed_ns,packed_relvar) &
+         !$acc copyin(packed_accre_enhan,packed_p,packed_pdel,packed_cldn) &
+         !$acc copyin(packed_liqcldf,packed_icecldf,packed_qsatfac,packed_naai,packed_npccn) &
+         !$acc copyin(packed_rndst,packed_nacon,packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice) &
+         !$acc copyin(packed_frzimm,  packed_frzcnt,  packed_frzdep) &
+         !$acc copyout(packed_qrout,packed_qsout,packed_nrout,packed_nsout,packed_tlat) &
+         !$acc copyout(packed_qvlat,packed_rercld,packed_qctend,packed_qitend,packed_nctend) &
+         !$acc copyout(packed_nitend,packed_qrtend,packed_qstend,packed_nrtend,packed_nstend) &
+         !$acc copyout(packed_rel,rel_fn_dum,packed_rei,packed_rate1ord_cw2pr_st) &
+         !$acc copyout(packed_nevapr,packed_prer_evap,packed_evapsnow,packed_am_evp_st,packed_prain) &
+         !$acc copyout(packed_prodsnow,packed_cmeout,packed_dei,packed_umr,packed_ums,packed_qcrat,packed_lambdac) &
+         !$acc copyout(packed_mu,packed_cflx,packed_iflx,packed_rflx,packed_sflx,packed_sadice,packed_sadsnow) &
+         !$acc copyout(packed_prect,packed_preci,packed_qrout2,packed_qsout2,packed_nrout2,packed_nsout2) &
+         !$acc copyout(drout_dum,dsout2_dum,packed_qsout,packed_des,packed_freqs,packed_freqr) &
+         !$acc copyout(reff_rain_dum,reff_snow_dum,packed_refl,packed_arefl,packed_areflz,packed_frefl) &
+         !$acc copyout(packed_csrfl,packed_acsrfl,packed_fcsrfl,packed_ncai,packed_ncal,packed_nfice) &
+         !$acc copyout(packed_qcsevap,packed_qisevap,packed_qvres,packed_cmei,packed_vtrmc,packed_vtrmi) &
+         !$acc copyout(packed_qcsedten,packed_qisedten,packed_qrsedten,packed_qssedten,packed_pra,packed_prc) &
+         !$acc copyout(packed_mnuccc,packed_mnucct,packed_msacwi,packed_psacws,packed_bergs,packed_berg) &
+         !$acc copyout(packed_melt,packed_homo,packed_qcres,packed_prci,packed_prai,packed_qires,packed_mnuccr) &
+         !$acc copyout(packed_pracs,packed_meltsdt,packed_frzrdt,packed_mnuccd)
             call micro_mg_tend2_0( &
                  DFACT*mgncol,         nlev,           dtime/num_steps,&
                  packed_t,               packed_q,               &
@@ -1350,6 +1372,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                  packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice,&
                  packed_prer_evap,                                     &
                  packed_frzimm,  packed_frzcnt,  packed_frzdep   )
+         !$acc end data
             IF (kgen_mainstage) THEN 
                   
                 !verify init 
@@ -1490,7 +1513,29 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #ifdef _MPI
                 call MPI_Barrier(MPI_COMM_WORLD,info)
 #endif
-                CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
+            !$acc data copyin(packed_t,packed_q,packed_qc,packed_qi,packed_nc,packed_ni) &
+            !$acc copyin(packed_qr,packed_qs,packed_nr,packed_ns,packed_relvar) &
+            !$acc copyin(packed_accre_enhan,packed_p,packed_pdel,packed_cldn) &
+            !$acc copyin(packed_liqcldf,packed_icecldf,packed_qsatfac,packed_naai,packed_npccn) &
+            !$acc copyin(packed_rndst,packed_nacon,packed_tnd_qsnow,packed_tnd_nsnow,packed_re_ice) &
+            !$acc copyin(packed_frzimm,  packed_frzcnt,  packed_frzdep) &
+            !$acc copyout(packed_qrout,packed_qsout,packed_nrout,packed_nsout,packed_tlat) &
+            !$acc copyout(packed_qvlat,packed_rercld,packed_qctend,packed_qitend,packed_nctend) &
+            !$acc copyout(packed_nitend,packed_qrtend,packed_qstend,packed_nrtend,packed_nstend) &
+            !$acc copyout(packed_rel,rel_fn_dum,packed_rei,packed_rate1ord_cw2pr_st) &
+            !$acc copyout(packed_nevapr,packed_prer_evap,packed_evapsnow,packed_am_evp_st,packed_prain) &
+            !$acc copyout(packed_prodsnow,packed_cmeout,packed_dei,packed_umr,packed_ums,packed_qcrat,packed_lambdac) &
+            !$acc copyout(packed_mu,packed_cflx,packed_iflx,packed_rflx,packed_sflx,packed_sadice,packed_sadsnow) &
+            !$acc copyout(packed_prect,packed_preci,packed_qrout2,packed_qsout2,packed_nrout2,packed_nsout2) &
+            !$acc copyout(drout_dum,dsout2_dum,packed_qsout,packed_des,packed_freqs,packed_freqr) &
+            !$acc copyout(reff_rain_dum,reff_snow_dum,packed_refl,packed_arefl,packed_areflz,packed_frefl) &
+            !$acc copyout(packed_csrfl,packed_acsrfl,packed_fcsrfl,packed_ncai,packed_ncal,packed_nfice) &
+            !$acc copyout(packed_qcsevap,packed_qisevap,packed_qvres,packed_cmei,packed_vtrmc,packed_vtrmi) &
+            !$acc copyout(packed_qcsedten,packed_qisedten,packed_qrsedten,packed_qssedten,packed_pra,packed_prc) &
+            !$acc copyout(packed_mnuccc,packed_mnucct,packed_msacwi,packed_psacws,packed_bergs,packed_berg) &
+            !$acc copyout(packed_melt,packed_homo,packed_qcres,packed_prci,packed_prai,packed_qires,packed_mnuccr) &
+            !$acc copyout(packed_pracs,packed_meltsdt,packed_frzrdt,packed_mnuccd)
+            CALL SYSTEM_CLOCK(kgen_start_clock, kgen_rate_clock) 
             !call ftrace_region_begin('micro_mg_tend2_0')
             do kgen_intvar=1,maxiter
             call micro_mg_tend2_0( &
@@ -1553,6 +1598,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             !call ftrace_region_end('micro_mg_tend2_0')
 
             CALL SYSTEM_CLOCK(kgen_stop_clock, kgen_rate_clock) 
+            !$acc end data
             kgen_measure = 1.0D6*(kgen_stop_clock - kgen_start_clock)/DBLE(kgen_rate_clock*maxiter) 
 #ifdef _MPI
             call MPI_AllReduce(kgen_measure,gkgen_measure,1,MPI_REAL8,MPI_MAX,MPI_COMM_WORLD,info)
@@ -1844,6 +1890,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 IF (check_result == CHECK_IDENTICAL) THEN 
                     IF (check_status%verboseLevel > 2) THEN 
                         if(check_status%rank==0) then 
+                        write (*, *) "For variable: ",trim(adjustl(varname)) 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
@@ -1855,6 +1902,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 ELSE IF (check_result == CHECK_OUT_TOL) THEN 
                     IF (check_status%verboseLevel > 0) THEN 
                         if(check_status%rank==0) then 
+                        write (*, *) "For variable: ",trim(adjustl(varname)) 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 
@@ -1866,6 +1914,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
                 ELSE IF (check_result == CHECK_IN_TOL) THEN 
                     IF (check_status%verboseLevel > 1) THEN 
                         if(check_status%rank==0) then 
+                        write (*, *) "For variable: ",trim(adjustl(varname)) 
                         WRITE (*, *) count( var /= kgenref_var), " of ", size( var ), " elements are different." 
                         WRITE (*, *) "Average - kernel ", sum(var)/real(size(var)) 
                         WRITE (*, *) "Average - reference ", sum(kgenref_var)/real(size(kgenref_var)) 

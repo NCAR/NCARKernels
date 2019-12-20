@@ -19,4 +19,4 @@ module list
 echo $LD_LIBRARY_PATH
 
 make clean 
-make pcols=192 dfact=32
+make pcols=192 dfact=64
