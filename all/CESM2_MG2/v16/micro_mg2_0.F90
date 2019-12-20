@@ -1538,7 +1538,7 @@ subroutine micro_mg_tend ( &
      if (do_cldice) then
         call secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol*nlev,Iqueue)
      else
-        !$acc parallel vector_length(VLEN) async(Iqueue)
+        !$acc parallel vector_length(VLEN) !async(Iqueue)
         !$acc loop gang vector collapse(2)
         do k=1,nlev
           do i=1,mgncol
@@ -1570,7 +1570,7 @@ subroutine micro_mg_tend ( &
      !TYPE-{R:GPU}
      call self_collection_rain(rho, qric, nric, nragg, mgncol*nlev, Rqueue)
 
-     !$acc wait(Iqueue)
+     !!$acc wait(Iqueue)
      !TYPE-{I,S:GPU}
      if (do_cldice) then
         call accrete_cloud_ice_snow(t, rho, asn, qiic, niic, &
@@ -2080,7 +2080,9 @@ subroutine micro_mg_tend ( &
 
        enddo
      enddo
+     !$acc end parallel
 
+     !$acc parallel vector_length(VLEN)
      !$acc loop gang vector collapse(2)
      do k=1,nlev
        do i=1,mgncol
@@ -2476,32 +2478,12 @@ subroutine micro_mg_tend ( &
    enddo
   !$acc end parallel
 
+  NEC_BEGIN("sedim#1")
   call UpdateTendencies_vecv3(mgncol,nlev,do_cldice,deltat,fi,fni,pdelInv, &
                        qitend,nitend,qisedten,dumi,dumni,precti,iflx, Iqueue,&
                        xxlx=xxls,qxsevap=qisevap,tlat=tlat,qvlat=qvlat, &
                        xcldm=icldm,preci=preci)
   NEC_END("sedim#1")
-
-#if 0
-  !$acc parallel vector_length(VLEN) !async(Iqueue)
-  !$acc loop gang vector collapse(2)
-  do k=1,nlev
-     do i=1,mgncol
-        dumi(i,k) = max(qi(i,k)+qitend(i,k)*deltat,0._rkind_comp)
-        dumni(i,k) = max(ni(i,k)+nitend(i,k)*deltat,0._rkind_comp)
-
-        ! switch for specification of cloud ice number
-
-        if (nicons) then
-           dumni(i,k)=ninst/rho(i,k)*icldm(i,k)
-        end if
-
-        if (dumi(i,k).lt.qsmall) dumni(i,k)=0._rkind_comp
-
-     enddo
-  enddo
-  !$acc end parallel
-#endif
 
   NEC_BEGIN("sedim#2")
   call UpdateTendencies_vecv3(mgncol,nlev,.TRUE.,deltat,fc,fnc,pdelInv, &
@@ -2524,17 +2506,15 @@ subroutine micro_mg_tend ( &
   ! note : here dum variables are grid-average, NOT in-cloud
 
 
-  !!$acc wait
-  !$acc parallel vector_length(VLEN)
+  !TYPE-{I,C,R,S:CPU}
+  !NEC_BEGIN("loop_#20")
+  !$acc parallel vector_length(VLEN) 
+
   !$acc loop gang vector
   do i=1,mgncol
     prect(i) = prects(i) + precti(i) + prectr(i) + prectc(i)
   enddo
 
-  !$acc end parallel
-  !TYPE-{I,C,R,S:CPU}
-  !NEC_BEGIN("loop_#20")
-  !$acc parallel vector_length(VLEN) 
   !$acc loop gang vector collapse(2)
   do k=1,nlev
      do i=1,mgncol
@@ -3862,7 +3842,7 @@ subroutine UpdateTendencies_vecv3(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    !$acc declare present(dumx,dumnx,qvlat,fx,qxsevap,xflx,xcldm,preci,nxtend,fnx,tlat,pdelinv) &
    !$acc         present(qxsedten,prect,qxtend,xxlx)
 
-   !$acc parallel vector_length(128) !async(queue)
+   !$acc parallel vector_length(VLEN) !async(queue)
    present_tlat    = present(tlat)
    present_qvlat   = present(qvlat)
    present_qxsevap = present(qxsevap)
@@ -3995,7 +3975,7 @@ subroutine UpdateTendencies_vecv4(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    !$acc declare present(dumx,dumnx,qvlat,fx,qxsevap,xflx,xcldm,preci,nxtend,fnx,tlat,pdelinv) &
    !$acc         present(qxsedten,prect,qxtend,xxlx)
 
-   !$acc parallel vector_length(128) !async(queue)
+   !$acc parallel vector_length(VLEN) !async(queue)
    present_tlat    = present(tlat)
    present_qvlat   = present(qvlat)
    present_qxsevap = present(qxsevap)

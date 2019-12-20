@@ -1600,7 +1600,7 @@ subroutine secondary_ice_production(t, psacws, msacwi, nsacwi, mgncol, queue)
   real(rkind_comp), dimension(mgncol), intent(out) :: nsacwi ! Number
   integer :: i
 
-  !$acc parallel vector_length(VLEN) async(queue)
+  !$acc parallel vector_length(VLEN) !async(queue)
   !$acc loop gang vector
   do i=1,mgncol
      if((t(i) < 270.16_rkind_comp) .and. (t(i) >= 268.16_rkind_comp)) then
