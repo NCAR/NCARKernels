@@ -159,7 +159,7 @@
         WRITE (*, "(4X,A)") "kernel execution summary: micro_mg_tend2_0" 
         WRITE (*, "(A)") "****************************************************" 
         kgen_avg_time = kgen_total_time / DBLE(kgen_case_count)
-        kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(DFACT*mgncol,kind=kgen_dp)/kgen_avg_time
+        kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(PCOLSSIZE,kind=kgen_dp)/kgen_avg_time
         IF (kgen_case_count == 0) THEN 
             WRITE (*, *) "No data file is verified." 
         ELSE 
@@ -171,7 +171,7 @@
             else
               WRITE (*,"(4X,A)") "kernel: CESM2_MG2: FAILED verification"
             endif
-            WRITE (*, "(4X,A19,I5)") "number of columns: ",DFACT*mgncol
+            WRITE (*, "(4X,A19,I3)") "number of columns: ",PCOLSSIZE
             WRITE (*, "(4X,A19,I3)") "number of mpi ranks: ",mpisize
             WRITE (*, *) "" 
             WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_avg_time

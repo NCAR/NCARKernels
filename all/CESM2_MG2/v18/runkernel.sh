@@ -16,8 +16,10 @@ module load pgi
 ulimit -s unlimited
 module list
 
+#export PGI_ACC_CUDA_HEAPSIZE=100M
+export PGI_ACC_DEBUG=1
+
 echo $LD_LIBRARY_PATH
 #nvprof --print-gpu-trace ./kernel.exe
-#export PGI_ACC_CUDA_HEAPSIZE=48M
-nvvp ./kernel.exe
-#nvvp ./NewSession1.nvvp
+./kernel.exe
+
