@@ -76,10 +76,17 @@ module micro_mg_cam
     USE tprof_mod, ONLY: tstart, tstop, tnull, tprnt 
     USE kgen_utils_mod, ONLY: check_t, kgen_init_check, kgen_tolerance, kgen_minvalue, CHECK_IDENTICAL, CHECK_IN_TOL, &
     &CHECK_OUT_TOL 
+#ifdef _OPENACC
+    USE openacc
+#endif
 
     IMPLICIT NONE 
     PRIVATE 
     SAVE 
+
+#ifdef _OPENACC
+    integer :: ngpus,gpunum
+#endif
 
 #ifdef _MPI
     include 'mpif.h'
@@ -355,7 +362,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 200
+    INTEGER, PARAMETER :: maxiter = 2000
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
@@ -1288,6 +1295,13 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     IF (kgen_mainstage) THEN 
     END IF   
       
+
+    ngpus = acc_get_num_devices(acc_device_default)
+    print *,'number of GPUs: ',ngpus
+    gpunum = MOD(myrank,ngpus)+1
+    print *,'GPU id: ',gpunum
+    call acc_set_device_num(gpunum,acc_device_default)
+
     !Uncomment following call statement to turn on perturbation experiment. 
     !Adjust perturbation value and/or kind parameter if required. 
     !CALL kgen_perturb_real( your_variable, 1.0E-15_8 ) 
@@ -1513,6 +1527,12 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #ifdef _MPI
                 call MPI_Barrier(MPI_COMM_WORLD,info)
 #endif
+    ngpus = acc_get_num_devices(acc_device_default)
+    print *,'number of GPUs: ',ngpus
+    gpunum = MOD(myrank,ngpus)+1
+    print *,'GPU id: ',gpunum
+    call acc_set_device_num(gpunum,acc_device_default)
+
             !$acc data copyin(packed_t,packed_q,packed_qc,packed_qi,packed_nc,packed_ni) &
             !$acc copyin(packed_qr,packed_qs,packed_nr,packed_ns,packed_relvar) &
             !$acc copyin(packed_accre_enhan,packed_p,packed_pdel,packed_cldn) &

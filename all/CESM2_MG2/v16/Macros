@@ -6,7 +6,7 @@
 COMPILER = pgi-gpu
 #COMPILER = gnu        # Intel, GNU, ARM (later, PGI?)
 ARCH     = bdw         # Not currently used (using xHost/native modes)
-MPI      = no         # Yes/No, True/False or Enabled/Disabled
+MPI      = no          # Yes/No, True/False or Enabled/Disabled
 DEBUG    = no
 
 # ******************************************************************
