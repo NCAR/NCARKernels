@@ -13,7 +13,9 @@
         USE micro_mg2_0, ONLY: kr_externs_in_micro_mg2_0 
         USE micro_mg_utils, ONLY: kr_externs_in_micro_mg_utils 
         USE wv_sat_methods, ONLY: kr_externs_in_wv_sat_methods 
+#if defined(__OPENACC__)
         USE openacc 
+#endif
 
         IMPLICIT NONE 
 
@@ -51,14 +53,6 @@
     myrank=0
     mpisize=1
 #endif
-#if 0
-    ngpus = acc_get_num_devices(acc_device_default)
-    print *,'number of GPUs: ',ngpus
-    gpunum = MOD(myrank,ngpus)+1
-    print *,'GPU id: ',gpunum
-    !call acc_set_device_num(gpunum,acc_device_default)
-#endif
-
           
         kgen_unit_list = kgen_get_newunit() 
         !OPEN (UNIT=kgen_unit_list, FILE="../data/pcols" // PCOLSSIZE // "/kgen_statefile.lst", STATUS="OLD", IOSTAT=kgen_ierr_list) 

@@ -76,7 +76,7 @@ module micro_mg_cam
     USE tprof_mod, ONLY: tstart, tstop, tnull, tprnt 
     USE kgen_utils_mod, ONLY: check_t, kgen_init_check, kgen_tolerance, kgen_minvalue, CHECK_IDENTICAL, CHECK_IN_TOL, &
     &CHECK_OUT_TOL 
-#ifdef _OPENACC
+#if defined(__OPENACC__)
     USE openacc
 #endif
 
@@ -84,7 +84,7 @@ module micro_mg_cam
     PRIVATE 
     SAVE 
 
-#ifdef _OPENACC
+#if defined(__OPENACC__)
     integer :: ngpus,gpunum
 #endif
 
@@ -1296,11 +1296,13 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
     END IF   
       
 
+#if defined(__OPENACC__)
     ngpus = acc_get_num_devices(acc_device_default)
     print *,'number of GPUs: ',ngpus
     gpunum = MOD(myrank,ngpus)+1
     print *,'GPU id: ',gpunum
     call acc_set_device_num(gpunum,acc_device_default)
+#endif
 
     !Uncomment following call statement to turn on perturbation experiment. 
     !Adjust perturbation value and/or kind parameter if required. 
@@ -1527,11 +1529,13 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #ifdef _MPI
                 call MPI_Barrier(MPI_COMM_WORLD,info)
 #endif
+#if defined(__OPENACC__)
     ngpus = acc_get_num_devices(acc_device_default)
     print *,'number of GPUs: ',ngpus
     gpunum = MOD(myrank,ngpus)+1
     print *,'GPU id: ',gpunum
     call acc_set_device_num(gpunum,acc_device_default)
+#endif
 
             !$acc data copyin(packed_t,packed_q,packed_qc,packed_qi,packed_nc,packed_ni) &
             !$acc copyin(packed_qr,packed_qs,packed_nr,packed_ns,packed_relvar) &
