@@ -13,6 +13,8 @@
         USE micro_mg2_0, ONLY: kr_externs_in_micro_mg2_0 
         USE micro_mg_utils, ONLY: kr_externs_in_micro_mg_utils 
         USE wv_sat_methods, ONLY: kr_externs_in_wv_sat_methods 
+        USE openacc 
+
         IMPLICIT NONE 
 
 #ifdef _MPI
@@ -35,6 +37,7 @@
         REAL(KIND=rkind_io)   :: dtime_io
         INTEGER :: nlev 
         INTEGER :: mgncol 
+        integer :: ngpus,gpunum
         integer :: info, myrank, mpisize
         kgen_total_time = 0.0_kgen_dp 
         kgen_case_count = 0 
@@ -47,6 +50,13 @@
 #else
     myrank=0
     mpisize=1
+#endif
+#if 0
+    ngpus = acc_get_num_devices(acc_device_default)
+    print *,'number of GPUs: ',ngpus
+    gpunum = MOD(myrank,ngpus)+1
+    print *,'GPU id: ',gpunum
+    !call acc_set_device_num(gpunum,acc_device_default)
 #endif
 
           

@@ -1684,10 +1684,13 @@ subroutine micro_mg_tend ( &
 
        end do 
      end do 
+     !$acc end parallel
      NEC_END("loop_#2")
+
 
      NEC_BEGIN("loop_#3")
      !TYPE-{?:GPU}
+     !$acc parallel vector_length(VLEN)
      !$acc loop gang vector collapse(2) private(dum,dum1)
      do k=1,nlev
        do i=1,mgncol
@@ -1948,13 +1951,10 @@ subroutine micro_mg_tend ( &
         ! get estimate of q and t at end of time step
         ! don't include other microphysical processes since they haven't
         ! been limited via conservation checks yet
-
-
-
-           qtmp2A(i,k)=q(i,k)-(ice_sublim(i,k)+vap_dep(i,k)+mnuccd(i,k)+ &
-                (pre(i,k)+prds(i,k))*precip_frac(i,k))*deltat
-           ttmp2A(i,k)=t(i,k)+((pre(i,k)*precip_frac(i,k))*xxlv+ &
-                (prds(i,k)*precip_frac(i,k)+vap_dep(i,k)+ice_sublim(i,k)+mnuccd(i,k))*xxls)*deltat/cpp
+        qtmp2A(i,k)=q(i,k)-(ice_sublim(i,k)+vap_dep(i,k)+mnuccd(i,k)+ &
+            (pre(i,k)+prds(i,k))*precip_frac(i,k))*deltat
+        ttmp2A(i,k)=t(i,k)+((pre(i,k)*precip_frac(i,k))*xxlv+ &
+            (prds(i,k)*precip_frac(i,k)+vap_dep(i,k)+ice_sublim(i,k)+mnuccd(i,k))*xxls)*deltat/cpp
            ! use rhw to allow ice supersaturation
            !call qsat_water_scalar(ttmpA(i), p(i,k), esnA(i,k), qvnAI(i,k))
      enddo
@@ -2301,34 +2301,6 @@ subroutine micro_mg_tend ( &
   !---------------------------------------------------
   !$acc parallel vector_length(VLEN)
   !$acc loop gang vector collapse(2) private(dum1,dum2,dum3,dum4)
-  !---------------------------------------------------
-  !!timing: 19.25 microsec
-  !!$acc parallel vector_length(32)
-  !!$acc loop gang vector collapse(2) private(dum1,dum2,dum3,dum4)
-  !---------------------------------------------------
-  !!timing: 19.4 microsec
-  !!$acc parallel vector_length(64)
-  !!$acc loop gang vector collapse(2) private(dum1,dum2,dum3,dum4)
-  !---------------------------------------------------
-  !!timing: 19.0  microsec
-  !!$acc parallel vector_length(128)
-  !!$acc loop gang vector collapse(2) private(dum1,dum2,dum3,dum4)
-  !---------------------------------------------------
-  !!timing: 166.1 microsec
-  !!$acc parallel num_gangs(32)
-  !!$acc loop gang vector collapse(2) private(dum1,dum2,dum3,dum4)
-  !---------------------------------------------------
-  !!timing: 168.9 microsec
-  !!$acc parallel num_gangs(32)
-  !!$acc loop gang vector collapse(2)
-  !---------------------------------------------------
-  !!timing: 168.9 microsec
-  !!$acc parallel num_gangs(32)
-  !!$acc loop vector collapse(2)
-  !---------------------------------------------------
-  !!timing: 241.9 microsec
-  !!$acc parallel
-  !!$acc loop gang vector private(dum1,dum2,dum3,dum4)
   !---------------------------------------------------
   do k=1,nlev
      do i=1,mgncol
