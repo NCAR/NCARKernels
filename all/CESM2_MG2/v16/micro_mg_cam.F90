@@ -362,7 +362,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
       
     TYPE(check_t) :: check_status 
     INTEGER*8 :: kgen_intvar, kgen_start_clock, kgen_stop_clock, kgen_rate_clock 
-    INTEGER, PARAMETER :: maxiter = 2000
+    INTEGER, PARAMETER :: maxiter = 500
     REAL(KIND=kgen_dp) :: gkgen_measure
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_rate1ord_cw2pr_st 
     REAL(KIND=rkind_io), dimension(mgncol,nlev) :: kgenref_packed_tlat 
@@ -1298,9 +1298,11 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 
 #if defined(__OPENACC__)
     ngpus = acc_get_num_devices(acc_device_default)
-    print *,'number of GPUs: ',ngpus
-    gpunum = MOD(myrank,ngpus)+1
-    print *,'GPU id: ',gpunum
+    gpunum = MOD(myrank,ngpus)
+    if (kgen_evalstage) then 
+       print *,'# of GPUs: ',ngpus
+       print *,'GPU id: ',gpunum
+    endif
     call acc_set_device_num(gpunum,acc_device_default)
 #endif
 
@@ -1531,10 +1533,12 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
 #endif
 #if defined(__OPENACC__)
     ngpus = acc_get_num_devices(acc_device_default)
-    print *,'number of GPUs: ',ngpus
-    gpunum = MOD(myrank,ngpus)+1
-    print *,'GPU id: ',gpunum
+    gpunum = MOD(myrank,ngpus)
     call acc_set_device_num(gpunum,acc_device_default)
+    if (kgen_evalstage) then 
+       print *,'number of GPUs: ',ngpus
+       print *,'GPU id: ',gpunum
+    endif
 #endif
 
             !$acc data copyin(packed_t,packed_q,packed_qc,packed_qi,packed_nc,packed_ni) &
@@ -1629,7 +1633,8 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             if(check_status%rank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", gkgen_measure
             kgen_measure=gkgen_measure
 #else
-            if(check_status%rank==0) WRITE (*, *) "micro_mg_tend2_0 : Time per call (usec): ", kgen_measure
+            !if(check_status%rank==0) WRITE (*, 200) "micro_mg_tend2_0 : mgncol : ",mgncol," Time per call (usec): ", kgen_measure
+            if(check_status%rank==0) WRITE (*, 200) mgncol,kgen_measure
 #endif
             END IF   
             IF (kgen_warmupstage) THEN 
@@ -1637,6 +1642,7 @@ SUBROUTINE micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtim
             IF (kgen_evalstage) THEN 
             END IF   
 
+   200 format(" micro_mg_tend2_0: mgncol: ",i5," Time per call (usec): ",f11.2)
    ! Divide ptend by substeps.
 
    ! Use summed outputs to produce averages

@@ -20,4 +20,4 @@ echo $LD_LIBRARY_PATH
 which pgf90
 
 make clean 
-make pcols=192 dfact=60
+make pcols=192 dfact=12

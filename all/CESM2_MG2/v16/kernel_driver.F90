@@ -32,6 +32,7 @@
         REAL(KIND=kgen_dp) :: kgen_total_rate, kgen_avg_rate
         REAL(KIND=8) :: kgen_array_sum 
         INTEGER :: kgen_mpirank, kgen_openmptid, kgen_kernelinvoke 
+        INTEGER :: total_columns, avg_columns
         LOGICAL :: kgen_evalstage, kgen_warmupstage, kgen_mainstage 
         COMMON / state / kgen_mpirank, kgen_openmptid, kgen_kernelinvoke, kgen_evalstage, kgen_warmupstage, kgen_mainstage 
           
@@ -68,6 +69,7 @@
             if(myrank==0) WRITE (*, *) "ERROR: ""kgen_statefile.lst"" is not found in current directory." 
             STOP 
         END IF   
+        total_columns=0
         DO WHILE ( kgen_ierr_list .EQ. 0 ) 
             READ (UNIT = kgen_unit_list, FMT="(A)", IOSTAT=kgen_ierr_list) kgen_filepath 
             IF (kgen_ierr_list .EQ. 0) THEN 
@@ -147,6 +149,7 @@
                     CALL micro_mg_cam_tend_pack(kgen_unit, kgen_measure, kgen_isverified, dtime, nlev, mgncol, kgen_filepath) 
 
                     kgen_total_time = kgen_total_time + kgen_measure 
+                    total_columns = total_columns + DFACT*mgncol
                     IF (kgen_isverified) THEN 
                         kgen_count_verified = kgen_count_verified + 1 
                     END IF   
@@ -162,8 +165,10 @@
         WRITE (*, "(A)") "****************************************************" 
         WRITE (*, "(4X,A)") "kernel execution summary: micro_mg_tend2_0" 
         WRITE (*, "(A)") "****************************************************" 
+        print *,'total_columns: ',total_columns
         kgen_avg_time = kgen_total_time / DBLE(kgen_case_count)
-        kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(DFACT*mgncol,kind=kgen_dp)/kgen_avg_time
+        avg_columns   = NINT(total_columns / DBLE(kgen_case_count))
+        kgen_avg_rate = 1.0e6*real(mpisize,kind=kgen_dp)*real(avg_columns,kind=kgen_dp)/kgen_avg_time
         IF (kgen_case_count == 0) THEN 
             WRITE (*, *) "No data file is verified." 
         ELSE 
@@ -175,7 +180,7 @@
             else
               WRITE (*,"(4X,A)") "kernel: CESM2_MG2: FAILED verification"
             endif
-            WRITE (*, "(4X,A19,I5)") "number of columns: ",DFACT*mgncol
+            WRITE (*, "(4X,A19,I5)") "number of columns: ",avg_columns
             WRITE (*, "(4X,A19,I3)") "number of mpi ranks: ",mpisize
             WRITE (*, *) "" 
             WRITE (*, "(4X, A, E12.4)") "Average call time (usec): ", kgen_avg_time

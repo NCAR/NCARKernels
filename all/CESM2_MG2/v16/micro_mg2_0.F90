@@ -2870,6 +2870,7 @@ subroutine micro_mg_tend ( &
     enddo
   enddo
   !$acc end parallel
+  !print *,'mg_liq_props%eff_dim: ',mg_liq_props%eff_dim
   call size_dist_param_liq_vec(mg_liq_props, dumc, dumnc, rho, pgam, lamc,mgncol*nlev,Cqueue)
   NEC_BEGIN("loop_#30")
   !$acc parallel vector_length(VLEN)
@@ -3807,6 +3808,7 @@ subroutine UpdateTendencies_vecv3(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    real(rkind_comp) :: faltndx, faltndnx, dum1(nlev), faltndqxe2
    real(rkind_comp) :: rnstep
    real(rkind_comp) :: faloutx(0:nlev),faloutnx(0:nlev)
+   real(rkind_comp) :: tmp1,tmp2
    !real(rkind_comp) :: mask(mgncol)
    integer  :: iters
    logical  :: present_tlat,present_qvlat, present_qxsevap, present_preci, present_xcldm
@@ -3824,10 +3826,18 @@ subroutine UpdateTendencies_vecv3(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
    ! loop over sedimentation sub-time step to ensure stability
    !==============================================================
 
-   !$acc loop gang vector private(faltndnx,faltndx,faltndqxe2,n,k,iters,rnstep,faloutx,faloutnx,dum1)
+   !$acc loop gang vector private(faltndnx,faltndx,faltndqxe2,n,k,iters,rnstep,faloutx,faloutnx,dum1,tmp1,tmp2)
    do i=1,mgncol
-      iters = 1 + max(maxval(fx(i,:)*pdelInv(i,:)*deltat), &
-                      maxval(fnx(i,:)*pdelInv(i,:)*deltat))
+      ! iters = 1 + max(maxval(fx(i,:)*pdelInv(i,:)*deltat), &
+      !                 maxval(fnx(i,:)*pdelInv(i,:)*deltat))
+      tmp1 = -1000.0
+      tmp2 = -1000.0
+      do k=1,nlev
+         tmp1 = max(tmp1, fx(i,k)*pdelInv(i,k)*deltat)
+         tmp2 = max(tmp2,fnx(i,k)*pdelInv(i,k)*deltat)
+      enddo
+      iters = 1 + NINT(max(tmp1,tmp2))
+
       rnstep  = 1._rkind_comp/real(iters)
       dum1(1) = 0._rkind_comp
       if(present_xcldm) then
@@ -3910,6 +3920,7 @@ subroutine UpdateTendencies_vecv3(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
      !$acc end parallel
 
 end subroutine UpdateTendencies_vecv3
+#if 0
 !========================================================================
 subroutine UpdateTendencies_vecv4(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qxtend,nxtend, &
                               qxsedten,dumx,dumnx,prect,xflx,queue,xxlx,qxsevap,xcldm,tlat,qvlat,preci)
@@ -4077,6 +4088,7 @@ subroutine UpdateTendencies_vecv4(mgncol,nlev,do_cldice,deltat,fx,fnx,pdelInv,qx
      !$acc end parallel
 
 end subroutine UpdateTendencies_vecv4
+#endif
 !========================================================================
 !========================================================================
 !UTILITIES
